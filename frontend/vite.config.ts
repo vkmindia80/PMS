@@ -18,12 +18,14 @@ export default defineConfig({
       '0.0.0.0',
       'guidethru.preview.emergentagent.com',
       '.emergentagent.com', // Allow all emergentagent.com subdomains
-      '.preview.emergentagent.com' // Allow all preview subdomains
+      '.preview.emergentagent.com', // Allow all preview subdomains
+      'all' // Allow all hosts for development flexibility
     ],
     proxy: {
       '/api': {
-        target: 'http://localhost:8001',
+        target: process.env.VITE_API_URL || 'http://localhost:8001',
         changeOrigin: true,
+        secure: false, // Allow self-signed certificates in development
       },
     },
   },
@@ -33,5 +35,11 @@ export default defineConfig({
   },
   define: {
     global: 'globalThis',
+    // Inject environment-specific API URL
+    __API_URL__: JSON.stringify(
+      process.env.NODE_ENV === 'production' 
+        ? process.env.VITE_PROD_API_URL || 'https://guidethru.preview.emergentagent.com'
+        : process.env.VITE_API_URL || 'http://localhost:8001'
+    ),
   },
 })
