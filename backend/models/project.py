@@ -56,7 +56,7 @@ class ProjectSettings(BaseModel):
     require_time_tracking: bool = Field(default=False, description="Require time tracking for tasks")
     allow_guest_access: bool = Field(default=False, description="Allow guest access to project")
     notification_settings: Dict[str, bool] = Field(default_factory=dict, description="Notification preferences")
-    custom_fields: Dict[str, any] = Field(default_factory=dict, description="Custom project fields")
+    custom_fields: Dict[str, Any] = Field(default_factory=dict, description="Custom project fields")
 
 class ProjectBase(BaseModel):
     """Base project model"""
