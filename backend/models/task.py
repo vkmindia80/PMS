@@ -73,7 +73,7 @@ class TaskBase(BaseModel):
     labels: List[str] = Field(default_factory=list, description="Task labels")
     
     # Custom fields
-    custom_fields: Dict[str, any] = Field(default_factory=dict, description="Custom task fields")
+    custom_fields: Dict[str, Any] = Field(default_factory=dict, description="Custom task fields")
     
     # Progress
     progress_percentage: float = Field(default=0.0, ge=0, le=100, description="Task completion percentage")
