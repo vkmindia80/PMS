@@ -52,7 +52,7 @@ app = FastAPI(
     title="Enterprise Portfolio Management API",
     description="A comprehensive SaaS platform for portfolio and project management with advanced features including multi-tenant architecture, real-time collaboration, and AI-powered insights.",
     version="1.0.0",
-    lifespan=lifespan,
+    # lifespan=lifespan,  # Temporarily commented out for debugging
     docs_url="/docs",
     redoc_url="/redoc"
 )
