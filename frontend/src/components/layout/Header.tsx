@@ -6,6 +6,8 @@ import { Shield, User, LogOut, Settings, ChevronDown, Building2, Users, BarChart
 const Header: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuth()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleLogout = async () => {
     await logout()
@@ -15,6 +17,12 @@ const Header: React.FC = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
   }
+
+  const navigationItems = [
+    { name: 'Dashboard', path: '/dashboard', icon: BarChart3 },
+    { name: 'Organization', path: '/organization', icon: Building2 },
+    { name: 'Teams', path: '/teams', icon: Users },
+  ]
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
