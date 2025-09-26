@@ -80,8 +80,31 @@ origins = [
     os.getenv("FRONTEND_URL", "http://localhost:3000"),
 ]
 
+# CORS Configuration
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+    "https://guidethru.preview.emergentagent.com",
+    "http://guidethru.preview.emergentagent.com",
+    os.getenv("FRONTEND_URL", "http://localhost:3000"),
+]
+
+# Add support for all emergentagent.com subdomains in production
+import re
+def is_allowed_origin(origin: str) -> bool:
+    """Check if origin is allowed including emergentagent.com subdomains"""
+    if origin in origins:
+        return True
+    # Allow all emergentagent.com subdomains
+    if re.match(r'https?://[\w-]+\.emergentagent\.com$', origin):
+        return True
+    return False
+
 app.add_middleware(
     CORSMiddleware,
+    allow_origin_regex=r'https?://[\w-]+\.emergentagent\.com$',
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
