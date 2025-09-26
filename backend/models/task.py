@@ -115,7 +115,7 @@ class TaskUpdate(BaseUpdateModel):
     subtasks: Optional[List[str]] = None
     tags: Optional[List[str]] = None
     labels: Optional[List[str]] = None
-    custom_fields: Optional[Dict[str, any]] = None
+    custom_fields: Optional[Dict[str, Any]] = None
     progress_percentage: Optional[float] = Field(None, ge=0, le=100)
 
 class Task(BaseDBModel, TaskBase):
