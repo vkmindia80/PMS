@@ -170,7 +170,7 @@ Build a comprehensive enterprise-grade SaaS platform for portfolio and project m
 **Prompt**: "Build comprehensive project management features using the Project model. Create APIs and UI for: project creation with templates, project dashboard with metrics, milestone management, budget tracking, team assignment, project status workflow (planning→active→completed), and project settings management. Include project visibility controls and permission management."
 
 ### 2.3 Task Management System
-**Prompt**: "Build a robust task management system with: task creation, assignment, priority levels, status tracking, dependencies, subtasks, time tracking, effort estimation. Include task boards (Kanban view), list view, calendar view, and task filtering/searching capabilities."
+**Prompt**: "Implement the complete task management system using Task models. Build: task creation and assignment, task boards (Kanban view), task dependencies management, time tracking interface, subtask functionality, task filtering and search, and task activity logging. Include task status workflow and bulk operations."
 
 ---
 
