@@ -87,7 +87,7 @@ origins = [
     "http://127.0.0.1:3003",
     "http://127.0.0.1:3004",
     "http://127.0.0.1:3005",
-    "https://portfolio-roadmap.preview.emergentagent.com",
+    "https://unterminated-jsx-fix.preview.emergentagent.com",
     os.getenv("FRONTEND_URL", "http://localhost:3000"),
 ]
 
