@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 from typing import Optional
 import logging
 
-from ..database import get_database
-from ..models.user import (
+from database import get_database
+from models.user import (
     User, UserCreate, UserUpdate, UserResponse, UserLogin,
     PasswordReset, PasswordResetConfirm, UserRole, UserStatus
 )
