@@ -83,7 +83,7 @@ origins = [
     "http://127.0.0.1:3003",
     "http://127.0.0.1:3004",
     "http://127.0.0.1:3005",
-    "https://login-not-found.preview.emergentagent.com",
+    "https://login-api-debug.preview.emergentagent.com",
     os.getenv("FRONTEND_URL", "http://localhost:3000"),
 ]
 

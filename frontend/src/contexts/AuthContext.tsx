@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const isProd = import.meta.env.PROD || isPreview
     
     if (isProd || isPreview) {
-      return import.meta.env.VITE_PROD_API_URL || 'https://login-not-found.preview.emergentagent.com/api'
+      return import.meta.env.VITE_PROD_API_URL || 'https://login-api-debug.preview.emergentagent.com/api'
     }
     
     return import.meta.env.VITE_API_URL || 'http://localhost:8001'
