@@ -59,30 +59,37 @@
 ## 🔄 **QUICK START COMMANDS**
 
 ```bash
-# Check current service status
+# Check all services status
 sudo supervisorctl status
 
-# Test current backend health
+# Test backend health (should show "healthy")
 curl http://localhost:8001/api/health
+
+# Test database connection and model info
+curl http://localhost:8001/api/database/status
+curl http://localhost:8001/api/models/info
+
+# Start frontend manually (if supervisor fails)
+cd /app/frontend && yarn dev
 
 # View backend logs
 tail -f /var/log/supervisor/backend.*.log
 
-# Restart services after fixes
+# Restart all services
 sudo supervisorctl restart all
 ```
 
 ---
 
-## 📋 **SUCCESS CRITERIA FOR PHASE 1.2 COMPLETION**
+## 📋 **PHASE 1.2 SUCCESS CRITERIA** ✅
 
-- [ ] All 8 models load without Pydantic errors
-- [ ] Backend starts with lifespan enabled 
-- [ ] Database connection established on startup
-- [ ] Health check returns `"status": "healthy"`
-- [ ] All API endpoints respond correctly
-- [ ] Database indexes created successfully
-- [ ] Frontend shows database connection status
+- [✅] All 8 models load without Pydantic errors
+- [✅] Backend starts with lifespan enabled 
+- [✅] Database connection established on startup
+- [✅] Health check returns `"status": "healthy"`
+- [✅] All API endpoints respond correctly
+- [✅] Database indexes created successfully
+- [✅] Frontend shows database connection status
 
 ---
 
