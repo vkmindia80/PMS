@@ -166,11 +166,8 @@ Build a comprehensive enterprise-grade SaaS platform for portfolio and project m
 **📋 EXACT CONTINUATION PROMPT**:
 "Implement Phase 2.1: Organization & Team Management using existing Organization and Team models. Create APIs and UI for organization creation, team management, user role assignments with 6-level RBAC, team hierarchy visualization, and member profile management with skills tracking and availability."
 
-### 2.1 Organization & Team Management
-**Prompt**: "Build organization and team management features. Create APIs and UI for: creating organizations, inviting team members, managing user roles, team hierarchy, department structure. Include team member profiles, skill tracking, and availability management. Add proper authorization checks for organizational data."
-
-### 2.2 Project Creation & Management
-**Prompt**: "Implement comprehensive project management features. Create project creation with templates, project settings (visibility, deadlines, budgets), project dashboard with key metrics, project status tracking (planning, active, on-hold, completed), milestone management, and project archival system."
+### 2.2 Project Creation & Management  
+**Prompt**: "Build comprehensive project management features using the Project model. Create APIs and UI for: project creation with templates, project dashboard with metrics, milestone management, budget tracking, team assignment, project status workflow (planning→active→completed), and project settings management. Include project visibility controls and permission management."
 
 ### 2.3 Task Management System
 **Prompt**: "Build a robust task management system with: task creation, assignment, priority levels, status tracking, dependencies, subtasks, time tracking, effort estimation. Include task boards (Kanban view), list view, calendar view, and task filtering/searching capabilities."
