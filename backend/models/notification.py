@@ -101,7 +101,7 @@ class NotificationBase(BaseModel):
 class NotificationCreate(BaseCreateModel, NotificationBase):
     """Notification creation model"""
     model_config = ConfigDict(
-        json_schema_extra = {
+        json_schema_extra={
             "example": {
                 "user_id": "user-123",
                 "title": "New Task Assigned",
@@ -126,6 +126,7 @@ class NotificationCreate(BaseCreateModel, NotificationBase):
                 }
             }
         }
+    )
 
 class NotificationUpdate(BaseUpdateModel):
     """Notification update model"""
@@ -236,7 +237,7 @@ class NotificationPreferences(BaseModel):
     group_similar_notifications: bool = Field(default=True, description="Group similar notifications")
     
     model_config = ConfigDict(
-        json_schema_extra = {
+        json_schema_extra={
             "example": {
                 "user_id": "user-123",
                 "channel_preferences": {
@@ -253,3 +254,4 @@ class NotificationPreferences(BaseModel):
                 "digest_frequency": "daily"
             }
         }
+    )

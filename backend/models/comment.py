@@ -61,7 +61,7 @@ class CommentBase(BaseModel):
 class CommentCreate(BaseCreateModel, CommentBase):
     """Comment creation model"""
     model_config = ConfigDict(
-        json_schema_extra = {
+        json_schema_extra={
             "example": {
                 "content": "This looks great! I think we should also consider adding validation for the email field. @johndoe what do you think?",
                 "type": "comment",
@@ -77,6 +77,7 @@ class CommentCreate(BaseCreateModel, CommentBase):
                 ]
             }
         }
+    )
 
 class CommentUpdate(BaseUpdateModel):
     """Comment update model"""

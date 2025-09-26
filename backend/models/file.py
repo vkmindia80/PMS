@@ -126,7 +126,7 @@ class FileBase(BaseModel):
 class FileCreate(BaseCreateModel, FileBase):
     """File creation model"""
     model_config = ConfigDict(
-        schema_extra = {
+        json_schema_extra={
             "example": {
                 "name": "project_mockup.png",
                 "original_name": "Mobile App Mockup v1.png",
@@ -142,6 +142,7 @@ class FileCreate(BaseCreateModel, FileBase):
                 "tags": ["mockup", "ui", "home-screen"]
             }
         }
+    )
 
 class FileUpdate(BaseUpdateModel):
     """File update model"""
