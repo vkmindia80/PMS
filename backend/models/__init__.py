@@ -1,11 +1,12 @@
 from .user import User, UserCreate, UserUpdate, UserInDB
 from .organization import Organization, OrganizationCreate, OrganizationUpdate, OrganizationInDB
-from .project import Project, ProjectCreate, ProjectUpdate, ProjectInDB, ProjectStatus, ProjectPriority
-from .task import Task, TaskCreate, TaskUpdate, TaskInDB, TaskStatus, TaskPriority
-from .team import Team, TeamCreate, TeamUpdate, TeamInDB
-from .comment import Comment, CommentCreate, CommentUpdate, CommentInDB
-from .file import File, FileCreate, FileUpdate, FileInDB
-from .notification import Notification, NotificationCreate, NotificationUpdate, NotificationInDB
+# Temporarily commented out until Pydantic v2 configs are fixed
+# from .project import Project, ProjectCreate, ProjectUpdate, ProjectInDB, ProjectStatus, ProjectPriority
+# from .task import Task, TaskCreate, TaskUpdate, TaskInDB, TaskStatus, TaskPriority
+# from .team import Team, TeamCreate, TeamUpdate, TeamInDB
+# from .comment import Comment, CommentCreate, CommentUpdate, CommentInDB
+# from .file import File, FileCreate, FileUpdate, FileInDB
+# from .notification import Notification, NotificationCreate, NotificationUpdate, NotificationInDB
 
 __all__ = [
     # User models
