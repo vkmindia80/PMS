@@ -575,6 +575,14 @@ const TeamsPage: React.FC = () => {
           availableMembers={organizationMembers}
         />
       )}
+
+      {/* Skills Overview Modal */}
+      {showSkillsModal && skillsOverview && (
+        <SkillsOverviewModal
+          skillsData={skillsOverview}
+          onClose={() => setShowSkillsModal(false)}
+        />
+      )}
     </div>
   )
 }
