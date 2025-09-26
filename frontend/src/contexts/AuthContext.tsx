@@ -68,28 +68,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Determine API URL based on environment
   const getApiUrl = () => {
     // Check if we're running in production or preview environment
-    const hostname = window.location.hostname
-    const isPreview = hostname.includes('emergentagent.com')
+    const isPreview = window.location.hostname.includes('emergentagent.com')
     const isProd = import.meta.env.PROD || isPreview
     
-    console.log('🔍 API URL Detection:', { 
-      hostname, 
-      isPreview, 
-      isProd, 
-      env: import.meta.env.MODE,
-      prodApiUrl: import.meta.env.VITE_PROD_API_URL,
-      devApiUrl: import.meta.env.VITE_API_URL
-    })
-    
     if (isProd || isPreview) {
-      const url = import.meta.env.VITE_PROD_API_URL || 'https://enterprise-roadmap.preview.emergentagent.com/api'
-      console.log('🌐 Using production API URL:', url)
-      return url
+      return import.meta.env.VITE_PROD_API_URL || 'https://enterprise-roadmap.preview.emergentagent.com/api'
     }
     
-    const url = import.meta.env.VITE_API_URL || 'http://localhost:8001'
-    console.log('💻 Using development API URL:', url)
-    return url
+    return import.meta.env.VITE_API_URL || 'http://localhost:8001'
   }
   
   const API_URL = getApiUrl()
