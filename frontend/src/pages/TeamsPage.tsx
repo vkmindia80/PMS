@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import {
   Users, Plus, Search, Filter, MoreVertical, Edit, Trash2,
   UserPlus, UserMinus, Settings, Star, Clock, Award,
-  Briefcase, Code, Palette, TrendingUp, Shield, Target
+  Briefcase, Code, Palette, TrendingUp, Shield, Target, BarChart3
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
