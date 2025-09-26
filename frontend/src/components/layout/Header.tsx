@@ -75,11 +75,6 @@ const Header: React.FC = () => {
               }`}>
                 {user.role.replace('_', ' ').toUpperCase()}
               </span>
-              {user.email_verified ? (
-                <span className="text-green-600 text-xs">✅ Verified</span>
-              ) : (
-                <span className="text-orange-600 text-xs">⚠️ Pending</span>
-              )}
             </div>
 
             {/* User Dropdown */}
