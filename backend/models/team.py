@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
 from enum import Enum
+from datetime import datetime
 from .base import BaseDBModel, BaseCreateModel, BaseUpdateModel
 
 class TeamType(str, Enum):
