@@ -88,9 +88,12 @@ const TeamsPage: React.FC = () => {
   const API_URL = getApiUrl()
 
   useEffect(() => {
-    fetchTeams()
-    fetchOrganizationMembers()
-  }, [])
+    if (user?.organization_id) {
+      fetchTeams()
+      fetchOrganizationMembers()
+      fetchSkillsOverview()
+    }
+  }, [user])
 
   const fetchTeams = async () => {
     try {
