@@ -114,6 +114,10 @@ app.add_middleware(
 # Include authentication routes
 app.include_router(auth_router)
 
+# Include organization and team management routes
+app.include_router(organizations_router)
+app.include_router(teams_router)
+
 # Health check endpoint
 @app.get("/api/health")
 async def health_check():
