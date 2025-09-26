@@ -108,6 +108,30 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             
+            {/* Database Status */}
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <div className={`w-3 h-3 rounded-full ${
+                  dbStatus?.status === 'connected' ? 'bg-success-500' : 
+                  apiStatus === 'connected' ? 'bg-warning-500' : 'bg-danger-500'
+                }`}></div>
+                <span className="font-medium">Database (MongoDB)</span>
+              </div>
+              <div className="text-right">
+                <div className={`text-sm font-semibold ${
+                  dbStatus?.status === 'connected' ? 'text-success-600' : 'text-danger-600'
+                }`}>
+                  {dbStatus?.status === 'connected' ? 'Connected' : 
+                   apiStatus === 'connected' ? 'Checking...' : 'Disconnected'}
+                </div>
+                {dbStatus && (
+                  <div className="text-xs text-gray-500">
+                    {dbStatus.database_name} • {dbStatus.database_size_mb}MB
+                  </div>
+                )}
+              </div>
+            </div>
+            
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center space-x-3">
                 <div className="w-3 h-3 rounded-full bg-success-500"></div>
@@ -121,6 +145,35 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Data Models Status */}
+      {modelsInfo && (
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title">Data Models Status</h3>
+            <p className="card-description">All enterprise data models loaded successfully</p>
+          </div>
+          <div className="card-content">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {Object.entries(modelsInfo.models).map(([modelName, modelInfo]: [string, any]) => (
+                <div key={modelName} className="p-4 border border-gray-200 rounded-lg hover:border-primary-300 transition-colors">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-success-500"></div>
+                    <h4 className="font-semibold text-sm">{modelName}</h4>
+                  </div>
+                  <p className="text-xs text-gray-600 mb-2">{modelInfo.description}</p>
+                  <div className="text-xs text-gray-500">
+                    {dbStatus?.collection_counts?.[modelName.toLowerCase() + 's'] !== undefined ? 
+                      `${dbStatus.collection_counts[modelName.toLowerCase() + 's']} records` :
+                      'Ready'
+                    }
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div className="card">
