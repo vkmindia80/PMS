@@ -4,15 +4,33 @@ import toast from 'react-hot-toast'
 const Dashboard: React.FC = () => {
   const [apiStatus, setApiStatus] = useState<'loading' | 'connected' | 'error'>('loading')
   const [apiData, setApiData] = useState<any>(null)
+  const [dbStatus, setDbStatus] = useState<any>(null)
+  const [modelsInfo, setModelsInfo] = useState<any>(null)
 
   useEffect(() => {
     const checkApiConnection = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/health`)
-        if (response.ok) {
-          const data = await response.json()
-          setApiData(data)
+        // Check API health
+        const healthResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/health`)
+        if (healthResponse.ok) {
+          const healthData = await healthResponse.json()
+          setApiData(healthData)
           setApiStatus('connected')
+          
+          // If API is connected, get database status
+          const dbResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/database/status`)
+          if (dbResponse.ok) {
+            const dbData = await dbResponse.json()
+            setDbStatus(dbData)
+          }
+          
+          // Get models information
+          const modelsResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/models/info`)
+          if (modelsResponse.ok) {
+            const modelsData = await modelsResponse.json()
+            setModelsInfo(modelsData)
+          }
+          
           toast.success('Successfully connected to backend API')
         } else {
           setApiStatus('error')
