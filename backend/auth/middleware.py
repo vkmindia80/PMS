@@ -7,8 +7,8 @@ from typing import List, Optional
 from functools import wraps
 
 from .utils import verify_token, TokenData
-from ..database import get_database
-from ..models.user import User, UserRole
+from database import get_database
+from models.user import User, UserRole
 
 security = HTTPBearer()
 
