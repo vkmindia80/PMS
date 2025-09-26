@@ -13,16 +13,17 @@ __all__ = [
     "User", "UserCreate", "UserUpdate", "UserInDB",
     # Organization models
     "Organization", "OrganizationCreate", "OrganizationUpdate", "OrganizationInDB",
-    # Project models
-    "Project", "ProjectCreate", "ProjectUpdate", "ProjectInDB", "ProjectStatus", "ProjectPriority",
-    # Task models
-    "Task", "TaskCreate", "TaskUpdate", "TaskInDB", "TaskStatus", "TaskPriority",
-    # Team models
-    "Team", "TeamCreate", "TeamUpdate", "TeamInDB",
-    # Comment models
-    "Comment", "CommentCreate", "CommentUpdate", "CommentInDB",
-    # File models
-    "File", "FileCreate", "FileUpdate", "FileInDB",
-    # Notification models
-    "Notification", "NotificationCreate", "NotificationUpdate", "NotificationInDB",
+    # Temporarily commented out until Pydantic v2 configs are fixed
+    # # Project models
+    # "Project", "ProjectCreate", "ProjectUpdate", "ProjectInDB", "ProjectStatus", "ProjectPriority",
+    # # Task models
+    # "Task", "TaskCreate", "TaskUpdate", "TaskInDB", "TaskStatus", "TaskPriority",
+    # # Team models
+    # "Team", "TeamCreate", "TeamUpdate", "TeamInDB",
+    # # Comment models
+    # "Comment", "CommentCreate", "CommentUpdate", "CommentInDB",
+    # # File models
+    # "File", "FileCreate", "FileUpdate", "FileInDB",
+    # # Notification models
+    # "Notification", "NotificationCreate", "NotificationUpdate", "NotificationInDB",
 ]
