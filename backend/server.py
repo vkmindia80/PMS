@@ -14,13 +14,12 @@ from database import connect_to_mongo, close_mongo_connection, get_database
 from models import (
     User, UserCreate, UserUpdate, UserInDB,
     Organization, OrganizationCreate, OrganizationUpdate, OrganizationInDB,
-    # Temporarily commented out until Pydantic v2 configs are fixed
-    # Project, ProjectCreate, ProjectUpdate, ProjectInDB, ProjectStatus, ProjectPriority,
-    # Task, TaskCreate, TaskUpdate, TaskInDB, TaskStatus, TaskPriority,
-    # Team, TeamCreate, TeamUpdate, TeamInDB,
-    # Comment, CommentCreate, CommentUpdate, CommentInDB,
-    # File, FileCreate, FileUpdate, FileInDB,
-    # Notification, NotificationCreate, NotificationUpdate, NotificationInDB
+    Project, ProjectCreate, ProjectUpdate, ProjectInDB, ProjectStatus, ProjectPriority,
+    Task, TaskCreate, TaskUpdate, TaskInDB, TaskStatus, TaskPriority,
+    Team, TeamCreate, TeamUpdate, TeamInDB,
+    Comment, CommentCreate, CommentUpdate, CommentInDB,
+    File, FileCreate, FileUpdate, FileInDB,
+    Notification, NotificationCreate, NotificationUpdate, NotificationInDB
 )
 
 # Load environment variables
