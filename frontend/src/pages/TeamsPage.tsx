@@ -137,7 +137,7 @@ const TeamsPage: React.FC = () => {
 
   const fetchSkillsOverview = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/organizations/${user?.organization_id}/skills-overview`, {
+      const response = await fetch(`${API_URL}/api/users/skills/overview`, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
