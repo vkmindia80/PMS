@@ -577,6 +577,16 @@ const OrganizationPage: React.FC = () => {
               </div>
             )}
 
+            {/* Role Management Tab */}
+            {activeTab === 'roles' && (
+              <RoleManagement />
+            )}
+
+            {/* Hierarchy Visualization Tab */}
+            {activeTab === 'hierarchy' && (
+              <HierarchyVisualization />
+            )}
+
             {/* Settings Tab */}
             {activeTab === 'settings' && (
               <div className="space-y-6">
