@@ -1,0 +1,138 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+
+const Dashboard: React.FC = () => {
+  const [apiStatus, setApiStatus] = useState<'loading' | 'connected' | 'error'>('loading')
+  const [apiData, setApiData] = useState<any>(null)
+
+  useEffect(() => {
+    const checkApiConnection = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/health`)
+        if (response.ok) {
+          const data = await response.json()
+          setApiData(data)
+          setApiStatus('connected')
+          toast.success('Successfully connected to backend API')
+        } else {
+          setApiStatus('error')
+          toast.error('Failed to connect to backend API')
+        }
+      } catch (error) {
+        setApiStatus('error')
+        toast.error('Unable to reach backend API')
+      }
+    }
+
+    checkApiConnection()
+  }, [])
+
+  return (
+    <div className="space-y-8">
+      {/* Welcome Section */}
+      <div className="card">
+        <div className="card-header">
+          <h2 className="card-title">Welcome to Enterprise Portfolio Management</h2>
+          <p className="card-description">
+            Your comprehensive SaaS platform for portfolio and project management
+          </p>
+        </div>
+        <div className="card-content">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center p-6 bg-primary-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-primary-900 mb-2">Projects</h3>
+              <p className="text-3xl font-bold text-primary-600">0</p>
+              <p className="text-sm text-primary-700">Active Projects</p>
+            </div>
+            <div className="text-center p-6 bg-success-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-success-900 mb-2">Teams</h3>
+              <p className="text-3xl font-bold text-success-600">0</p>
+              <p className="text-sm text-success-700">Team Members</p>
+            </div>
+            <div className="text-center p-6 bg-warning-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-warning-900 mb-2">Tasks</h3>
+              <p className="text-3xl font-bold text-warning-600">0</p>
+              <p className="text-sm text-warning-700">Pending Tasks</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* API Status Section */}
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">System Status</h3>
+          <p className="card-description">Current status of system components</p>
+        </div>
+        <div className="card-content">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <div className={`w-3 h-3 rounded-full ${
+                  apiStatus === 'connected' ? 'bg-success-500' :
+                  apiStatus === 'error' ? 'bg-danger-500' : 'bg-warning-500 animate-pulse'
+                }`}></div>
+                <span className="font-medium">Backend API</span>
+              </div>
+              <div className="text-right">
+                <div className={`text-sm font-semibold ${
+                  apiStatus === 'connected' ? 'text-success-600' :
+                  apiStatus === 'error' ? 'text-danger-600' : 'text-warning-600'
+                }`}>
+                  {apiStatus === 'connected' ? 'Connected' :
+                   apiStatus === 'error' ? 'Disconnected' : 'Connecting...'}
+                </div>
+                {apiData && (
+                  <div className="text-xs text-gray-500">
+                    Version {apiData.version}
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 rounded-full bg-success-500"></div>
+                <span className="font-medium">Frontend Application</span>
+              </div>
+              <div className="text-right">
+                <div className="text-sm font-semibold text-success-600">Active</div>
+                <div className="text-xs text-gray-500">Version 1.0.0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="card">
+        <div className="card-header">
+          <h3 className="card-title">Quick Actions</h3>
+          <p className="card-description">Get started with these common actions</p>
+        </div>
+        <div className="card-content">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <button className="btn-primary p-4 h-auto flex-col space-y-2" disabled>
+              <span className="font-semibold">Create Project</span>
+              <span className="text-xs opacity-75">Coming in Phase 2</span>
+            </button>
+            <button className="btn-secondary p-4 h-auto flex-col space-y-2" disabled>
+              <span className="font-semibold">Add Team Member</span>
+              <span className="text-xs opacity-75">Coming in Phase 2</span>
+            </button>
+            <button className="btn-outline p-4 h-auto flex-col space-y-2" disabled>
+              <span className="font-semibold">View Reports</span>
+              <span className="text-xs opacity-75">Coming in Phase 3</span>
+            </button>
+            <button className="btn-outline p-4 h-auto flex-col space-y-2" disabled>
+              <span className="font-semibold">Settings</span>
+              <span className="text-xs opacity-75">Coming in Phase 1</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Dashboard
