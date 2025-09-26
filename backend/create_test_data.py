@@ -26,6 +26,7 @@ async def create_test_data():
         {
             "id": "demo-org-001",
             "name": "Demo Organization",
+            "slug": "demo-organization",
             "display_name": "Demo Organization",
             "description": "A demo organization for testing the system",
             "type": "startup",
@@ -66,7 +67,11 @@ async def create_test_data():
                 "max_projects": 100,
                 "max_storage_gb": 10
             },
+            "owner_id": "demo-user-001",
+            "member_count": 1,
+            "project_count": 0,
             "is_active": True,
+            "status": "active",
             "created_at": datetime.utcnow(),
             "updated_at": datetime.utcnow()
         },
