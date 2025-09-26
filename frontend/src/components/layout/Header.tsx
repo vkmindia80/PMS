@@ -61,7 +61,7 @@ const Header: React.FC = () => {
             )}
           </div>
 
-        {isAuthenticated && user ? (
+          {isAuthenticated && user ? (
           <div className="flex items-center space-x-4">
             {/* User Role Badge */}
             <div className="hidden md:flex items-center space-x-2">
