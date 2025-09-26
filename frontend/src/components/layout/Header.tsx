@@ -151,28 +151,29 @@ const Header: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Mobile User Info */}
-      {isAuthenticated && user && (
-        <div className="md:hidden mt-4 pt-4 border-t border-gray-100">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                user.role === 'super_admin' ? 'bg-purple-100 text-purple-800' :
-                user.role === 'admin' ? 'bg-red-100 text-red-800' :
-                user.role === 'manager' ? 'bg-blue-100 text-blue-800' :
-                user.role === 'team_lead' ? 'bg-green-100 text-green-800' :
-                user.role === 'member' ? 'bg-yellow-100 text-yellow-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {user.role.replace('_', ' ').toUpperCase()}
-              </span>
-              {user.email_verified ? (
-                <span className="text-green-600 text-xs">✅ Verified</span>
-              ) : (
-                <span className="text-orange-600 text-xs">⚠️ Pending</span>
-              )}
-            </div>
+      
+      {/* Mobile Navigation */}
+      {isAuthenticated && (
+        <div className="md:hidden border-t border-gray-200 px-4 py-3">
+          <div className="flex space-x-4 overflow-x-auto">
+            {navigationItems.map((item) => {
+              const Icon = item.icon
+              const isActive = location.pathname === item.path
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => navigate(item.path)}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors ${
+                    isActive
+                      ? 'text-primary-600 bg-primary-50'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span>{item.name}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
