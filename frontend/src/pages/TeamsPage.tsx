@@ -135,6 +135,24 @@ const TeamsPage: React.FC = () => {
     }
   }
 
+  const fetchSkillsOverview = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/organizations/${user?.organization_id}/skills-overview`, {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setSkillsOverview(data)
+      }
+    } catch (error) {
+      console.error('Error fetching skills overview:', error)
+    }
+  }
+
   const fetchTeamDetails = async (teamId: string) => {
     try {
       const [teamResponse, statsResponse] = await Promise.all([
