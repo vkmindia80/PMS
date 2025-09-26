@@ -157,6 +157,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Login function
   const login = async (data: LoginData) => {
     try {
+      console.log('🚀 Starting login with:', { email: data.email, apiUrl: API_URL })
+      
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
@@ -165,17 +167,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify(data),
       })
 
+      console.log('📡 Login response status:', response.status)
+      console.log('📡 Login response headers:', Object.fromEntries(response.headers.entries()))
+
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.detail || 'Login failed')
+        console.error('❌ Login failed with error:', error)
+        throw new Error(error.detail || `Login failed with status ${response.status}`)
       }
 
       const result = await response.json()
+      console.log('✅ Login successful, received:', { hasTokens: !!result.tokens, hasUser: !!result.user })
+      
       const { tokens, user } = result
 
       storeAuthData(tokens, user)
       toast.success('Login successful!')
     } catch (error) {
+      console.error('🔥 Login error:', error)
       const message = error instanceof Error ? error.message : 'Login failed'
       toast.error(message)
       throw error
