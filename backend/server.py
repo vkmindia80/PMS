@@ -84,6 +84,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Include authentication routes
+app.include_router(auth_router)
+
 # Health check endpoint
 @app.get("/api/health")
 async def health_check():
