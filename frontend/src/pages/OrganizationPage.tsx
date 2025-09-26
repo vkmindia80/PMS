@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import RoleManagement from '../components/organization/RoleManagement'
+import HierarchyVisualization from '../components/organization/HierarchyVisualization'
 import { 
   Building2, Users, Settings, Plus, Search, Filter,
   MoreVertical, Edit, Trash2, UserPlus, Shield, 
-  Award, Clock, TrendingUp
+  Award, Clock, TrendingUp, MapPin, BarChart3
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
