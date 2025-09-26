@@ -12,15 +12,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
-    allowedHosts: [
-      'localhost',
-      '127.0.0.1',
-      '0.0.0.0',
-      'guidethru.preview.emergentagent.com',
-      '.emergentagent.com', // Allow all emergentagent.com subdomains
-      '.preview.emergentagent.com', // Allow all preview subdomains
-      'all' // Allow all hosts for development flexibility
-    ],
+    allowedHosts: 'all', // Allow all hosts for maximum compatibility with Emergent platform
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL || 'http://localhost:8001',
