@@ -25,6 +25,13 @@ from models import (
 # Load environment variables
 load_dotenv()
 
+# Add JWT secret key to environment if not present
+if not os.getenv("JWT_SECRET_KEY"):
+    import secrets
+    jwt_secret = secrets.token_urlsafe(32)
+    # In production, this should be set in environment variables
+    os.environ["JWT_SECRET_KEY"] = jwt_secret
+
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
