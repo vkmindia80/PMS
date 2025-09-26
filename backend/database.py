@@ -52,7 +52,7 @@ async def close_mongo_connection():
 
 async def get_database() -> AsyncIOMotorDatabase:
     """Get database instance"""
-    if not db_instance.database:
+    if db_instance.database is None:
         raise Exception("Database not initialized. Call connect_to_mongo() first.")
     return db_instance.database
 
