@@ -398,6 +398,13 @@ const TeamsPage: React.FC = () => {
               
               <div className="flex space-x-3">
                 <button
+                  onClick={() => setShowSkillsModal(true)}
+                  className="btn-outline"
+                >
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Skills Overview
+                </button>
+                <button
                   onClick={() => setShowCreateForm(true)}
                   className="btn-primary"
                 >
