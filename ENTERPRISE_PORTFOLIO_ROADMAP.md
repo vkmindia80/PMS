@@ -70,15 +70,10 @@ Build a comprehensive enterprise-grade SaaS platform for portfolio and project m
 
 ## 🚀 REMAINING IMPLEMENTATION PHASES
 
-### Phase 1.3: Authentication & Authorization System (NEXT - Credits: 7-9)
-**Prompt**: "Complete the authentication system using the existing User model. Implement JWT-based authentication with password hashing using bcrypt. Create registration, login, password reset, and email verification endpoints. Add middleware for route protection and user context management. Implement role-based access control (RBAC) with permissions for: super_admin, admin, manager, team_lead, member, viewer. Include secure session management and token refresh functionality."
-
----
-
 ## 🏗️ PHASE 2: Core Portfolio Management Features (Credits: 7-9 per prompt)
 
-### 2.1 Organization & Team Management
-**Prompt**: "Implement organization and team management using existing models. Create APIs and UI for: organization creation and settings, team creation and member management, user role assignments, team hierarchy visualization, department structure management. Include team member profiles with skills tracking, availability management, and proper authorization checks for organizational data access."
+### 2.1 Organization & Team Management (NEXT - Credits: 7-9)
+**Prompt**: "Implement organization and team management using existing Organization and Team models. Create APIs and UI for: organization creation and settings, team creation and member management, user role assignments with the 6-level role system (super_admin, admin, manager, team_lead, member, viewer), team hierarchy visualization, department structure management. Include team member profiles with skills tracking, availability management, and proper authorization checks for organizational data access. Build responsive interfaces for organization dashboard, team management, and user role administration."
 
 ### 2.2 Project Creation & Management  
 **Prompt**: "Build comprehensive project management features using the Project model. Create APIs and UI for: project creation with templates, project dashboard with metrics, milestone management, budget tracking, team assignment, project status workflow (planning→active→completed), and project settings management. Include project visibility controls and permission management."
