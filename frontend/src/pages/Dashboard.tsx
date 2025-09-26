@@ -10,22 +10,36 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const checkApiConnection = async () => {
       try {
+        // Get API URL consistently
+        const getApiUrl = () => {
+          const isPreview = window.location.hostname.includes('emergentagent.com')
+          const isProd = import.meta.env.PROD || isPreview
+          
+          if (isProd || isPreview) {
+            return import.meta.env.VITE_PROD_API_URL || 'https://login-api-debug.preview.emergentagent.com'
+          }
+          
+          return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
+        }
+        
+        const API_URL = getApiUrl()
+        
         // Check API health
-        const healthResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/health`)
+        const healthResponse = await fetch(`${API_URL}/api/health`)
         if (healthResponse.ok) {
           const healthData = await healthResponse.json()
           setApiData(healthData)
           setApiStatus('connected')
           
           // If API is connected, get database status
-          const dbResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/database/status`)
+          const dbResponse = await fetch(`${API_URL}/api/database/status`)
           if (dbResponse.ok) {
             const dbData = await dbResponse.json()
             setDbStatus(dbData)
           }
           
           // Get models information
-          const modelsResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/models/info`)
+          const modelsResponse = await fetch(`${API_URL}/api/models/info`)
           if (modelsResponse.ok) {
             const modelsData = await modelsResponse.json()
             setModelsInfo(modelsData)
