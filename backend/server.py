@@ -75,7 +75,7 @@ origins = [
     "http://localhost:3001", 
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3001",
-    "https://enterprise-roadmap.preview.emergentagent.com",
+    "https://login-not-found.preview.emergentagent.com",
     os.getenv("FRONTEND_URL", "http://localhost:3000"),
 ]
 
