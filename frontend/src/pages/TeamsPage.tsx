@@ -6,6 +6,7 @@ import {
   Briefcase, Code, Palette, TrendingUp, Shield, Target, BarChart3
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import SkillsOverviewModal from '../components/SkillsOverviewModal'
 
 interface TeamMember {
   user_id: string
