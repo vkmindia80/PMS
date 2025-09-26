@@ -94,7 +94,7 @@ class ProjectBase(BaseModel):
 class ProjectCreate(BaseCreateModel, ProjectBase):
     """Project creation model"""
     model_config = ConfigDict(
-        json_schema_extra = {
+        json_schema_extra={
             "example": {
                 "name": "Mobile App Development",
                 "description": "Develop a new mobile application for customer engagement",
@@ -110,6 +110,7 @@ class ProjectCreate(BaseCreateModel, ProjectBase):
                 "tags": ["mobile", "react-native", "app"]
             }
         }
+    )
 
 class ProjectUpdate(BaseUpdateModel):
     """Project update model"""

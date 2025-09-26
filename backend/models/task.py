@@ -81,7 +81,7 @@ class TaskBase(BaseModel):
 class TaskCreate(BaseCreateModel, TaskBase):
     """Task creation model"""
     model_config = ConfigDict(
-        json_schema_extra = {
+        json_schema_extra={
             "example": {
                 "title": "Implement user authentication",
                 "description": "Add JWT-based authentication system to the application",
@@ -98,6 +98,7 @@ class TaskCreate(BaseCreateModel, TaskBase):
                 }
             }
         }
+    )
 
 class TaskUpdate(BaseUpdateModel):
     """Task update model"""
@@ -176,7 +177,7 @@ class TaskActivity(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     
     model_config = ConfigDict(
-        json_schema_extra = {
+        json_schema_extra={
             "example": {
                 "id": "activity-123",
                 "task_id": "task-456",
@@ -189,3 +190,4 @@ class TaskActivity(BaseModel):
                 "timestamp": "2024-01-15T10:30:00Z"
             }
         }
+    )

@@ -60,7 +60,7 @@ class TeamBase(BaseModel):
 class TeamCreate(BaseCreateModel, TeamBase):
     """Team creation model"""
     model_config = ConfigDict(
-        json_schema_extra = {
+        json_schema_extra={
             "example": {
                 "name": "Frontend Development Team",
                 "description": "Team responsible for frontend development and UI/UX",
@@ -78,6 +78,7 @@ class TeamCreate(BaseCreateModel, TeamBase):
                 "tags": ["frontend", "react", "ui-ux"]
             }
         }
+    )
 
 class TeamUpdate(BaseUpdateModel):
     """Team update model"""
