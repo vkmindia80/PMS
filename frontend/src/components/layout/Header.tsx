@@ -25,19 +25,41 @@ const Header: React.FC = () => {
   ]
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <Shield className="h-8 w-8 text-primary-600" />
-            <h1 className="text-2xl font-bold text-gray-900">
-              Enterprise Portfolio
-            </h1>
+    <header className="bg-white border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
+              <Shield className="h-8 w-8 text-primary-600" />
+              <h1 className="text-xl font-bold text-gray-900">
+                Enterprise Portfolio
+              </h1>
+            </div>
+            
+            {/* Navigation Menu */}
+            {isAuthenticated && (
+              <nav className="hidden md:flex space-x-8">
+                {navigationItems.map((item) => {
+                  const Icon = item.icon
+                  const isActive = location.pathname === item.path
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => navigate(item.path)}
+                      className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                        isActive
+                          ? 'text-primary-600 bg-primary-50'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span>{item.name}</span>
+                    </button>
+                  )
+                })}
+              </nav>
+            )}
           </div>
-          <div className="hidden md:flex items-center space-x-1 text-sm text-gray-500">
-            <span>Phase 1.3: Authentication ✅</span>
-          </div>
-        </div>
 
         {isAuthenticated && user ? (
           <div className="flex items-center space-x-4">
