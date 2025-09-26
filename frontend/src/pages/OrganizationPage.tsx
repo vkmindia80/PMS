@@ -61,7 +61,7 @@ const OrganizationPage: React.FC = () => {
   const [members, setMembers] = useState<OrganizationMember[]>([])
   const [stats, setStats] = useState<OrganizationStats | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'settings'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'roles' | 'hierarchy' | 'settings'>('overview')
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [showEditForm, setShowEditForm] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
