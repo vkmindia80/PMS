@@ -60,7 +60,7 @@ class TeamBase(BaseModel):
 class TeamCreate(BaseCreateModel, TeamBase):
     """Team creation model"""
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "Frontend Development Team",
                 "description": "Team responsible for frontend development and UI/UX",

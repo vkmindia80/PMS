@@ -81,7 +81,7 @@ class TaskBase(BaseModel):
 class TaskCreate(BaseCreateModel, TaskBase):
     """Task creation model"""
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "title": "Implement user authentication",
                 "description": "Add JWT-based authentication system to the application",
@@ -176,7 +176,7 @@ class TaskActivity(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": "activity-123",
                 "task_id": "task-456",
