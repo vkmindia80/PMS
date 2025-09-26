@@ -5,6 +5,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Header from './components/layout/Header'
 import Dashboard from './pages/Dashboard'
 import AuthPage from './pages/AuthPage'
+import OrganizationPage from './pages/OrganizationPage'
+import TeamsPage from './pages/TeamsPage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import './App.css'
 
