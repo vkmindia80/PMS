@@ -53,6 +53,22 @@ const AppContent: React.FC = () => {
               </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/organization" 
+            element={
+              <ProtectedRoute>
+                <OrganizationPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/teams" 
+            element={
+              <ProtectedRoute>
+                <TeamsPage />
+              </ProtectedRoute>
+            } 
+          />
           {/* Additional protected routes can be added here */}
         </Routes>
       </main>
