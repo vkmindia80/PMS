@@ -10,6 +10,9 @@ import logging
 # Import database connection
 from database import connect_to_mongo, close_mongo_connection, get_database
 
+# Import authentication routes
+from auth.routes import router as auth_router
+
 # Import models
 from models import (
     User, UserCreate, UserUpdate, UserInDB,
