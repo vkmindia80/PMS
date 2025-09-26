@@ -26,18 +26,16 @@ class BaseDBModel(BaseModel):
 
 class BaseCreateModel(BaseModel):
     """Base model for create operations"""
-    class Config:
-        # Validate assignment
-        validate_assignment = True
-        # Use enum values
-        use_enum_values = True
+    model_config = ConfigDict(
+        validate_assignment=True,
+        use_enum_values=True
+    )
 
 class BaseUpdateModel(BaseModel):
     """Base model for update operations"""
-    updated_at: datetime = Field(default_factory=datetime.utcnow, description="Last update timestamp")
+    model_config = ConfigDict(
+        validate_assignment=True,
+        use_enum_values=True
+    )
     
-    class Config:
-        # Validate assignment
-        validate_assignment = True
-        # Use enum values
-        use_enum_values = True
+    updated_at: datetime = Field(default_factory=datetime.utcnow, description="Last update timestamp")
