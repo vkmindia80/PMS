@@ -311,6 +311,27 @@ const OrganizationPage: React.FC = () => {
                     Members ({members.length})
                   </button>
                   <button
+                    onClick={() => setActiveTab('roles')}
+                    className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === 'roles'
+                        ? 'border-primary-500 text-primary-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    Role Management
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('hierarchy')}
+                    className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === 'hierarchy'
+                        ? 'border-primary-500 text-primary-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    <MapPin className="h-4 w-4 mr-1 inline" />
+                    Organization Chart
+                  </button>
+                  <button
                     onClick={() => setActiveTab('settings')}
                     className={`py-2 px-1 border-b-2 font-medium text-sm ${
                       activeTab === 'settings'
