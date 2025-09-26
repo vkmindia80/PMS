@@ -68,7 +68,7 @@ class OrganizationCreate(BaseCreateModel, OrganizationBase):
     owner_id: str = Field(..., description="ID of the user creating the organization")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "Acme Corporation",
                 "slug": "acme-corp",

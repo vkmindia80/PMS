@@ -94,7 +94,7 @@ class ProjectBase(BaseModel):
 class ProjectCreate(BaseCreateModel, ProjectBase):
     """Project creation model"""
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "Mobile App Development",
                 "description": "Develop a new mobile application for customer engagement",

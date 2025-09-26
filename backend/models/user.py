@@ -48,7 +48,7 @@ class UserCreate(BaseCreateModel, UserBase):
     confirm_password: str = Field(..., description="Password confirmation")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "email": "john.doe@company.com",
                 "username": "johndoe",
