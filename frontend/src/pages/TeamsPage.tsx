@@ -70,6 +70,8 @@ const TeamsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState<string>('')
   const [organizationMembers, setOrganizationMembers] = useState<User[]>([])
+  const [skillsOverview, setSkillsOverview] = useState<any>(null)
+  const [showSkillsModal, setShowSkillsModal] = useState(false)
 
   // Get API URL consistently
   const getApiUrl = () => {
