@@ -15,9 +15,9 @@ class BaseDBModel(BaseModel):
     
     class Config:
         # Allow field population by name and alias
-        allow_population_by_field_name = True
+        populate_by_name = True
         # Generate schema with examples
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
                 "created_at": "2023-01-01T00:00:00Z",
