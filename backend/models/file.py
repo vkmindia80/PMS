@@ -125,7 +125,7 @@ class FileBase(BaseModel):
 
 class FileCreate(BaseCreateModel, FileBase):
     """File creation model"""
-    class Config:
+    model_config = ConfigDict(
         schema_extra = {
             "example": {
                 "name": "project_mockup.png",

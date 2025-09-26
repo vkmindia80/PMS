@@ -100,7 +100,7 @@ class NotificationBase(BaseModel):
 
 class NotificationCreate(BaseCreateModel, NotificationBase):
     """Notification creation model"""
-    class Config:
+    model_config = ConfigDict(
         json_schema_extra = {
             "example": {
                 "user_id": "user-123",
@@ -235,7 +235,7 @@ class NotificationPreferences(BaseModel):
     auto_read_on_web_view: bool = Field(default=True, description="Auto-mark as read when viewed on web")
     group_similar_notifications: bool = Field(default=True, description="Group similar notifications")
     
-    class Config:
+    model_config = ConfigDict(
         json_schema_extra = {
             "example": {
                 "user_id": "user-123",

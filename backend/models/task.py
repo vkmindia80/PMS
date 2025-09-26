@@ -80,7 +80,7 @@ class TaskBase(BaseModel):
 
 class TaskCreate(BaseCreateModel, TaskBase):
     """Task creation model"""
-    class Config:
+    model_config = ConfigDict(
         json_schema_extra = {
             "example": {
                 "title": "Implement user authentication",
@@ -175,7 +175,7 @@ class TaskActivity(BaseModel):
     details: Dict = Field(default_factory=dict, description="Activity details")
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     
-    class Config:
+    model_config = ConfigDict(
         json_schema_extra = {
             "example": {
                 "id": "activity-123",

@@ -93,7 +93,7 @@ class ProjectBase(BaseModel):
 
 class ProjectCreate(BaseCreateModel, ProjectBase):
     """Project creation model"""
-    class Config:
+    model_config = ConfigDict(
         json_schema_extra = {
             "example": {
                 "name": "Mobile App Development",
