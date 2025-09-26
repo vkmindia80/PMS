@@ -101,7 +101,7 @@ class NotificationBase(BaseModel):
 class NotificationCreate(BaseCreateModel, NotificationBase):
     """Notification creation model"""
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "user_id": "user-123",
                 "title": "New Task Assigned",
@@ -236,7 +236,7 @@ class NotificationPreferences(BaseModel):
     group_similar_notifications: bool = Field(default=True, description="Group similar notifications")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "user_id": "user-123",
                 "channel_preferences": {
