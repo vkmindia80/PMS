@@ -23,7 +23,6 @@ class UserStatus(str, Enum):
 class User(BaseDBModel):
     """User model with comprehensive profile and authentication fields"""
     model_config = ConfigDict(
-        populate_by_name=True,
         json_schema_extra={
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -163,7 +162,6 @@ class UserInDB(User):
 class UserResponse(BaseModel):
     """User response model without sensitive information"""
     model_config = ConfigDict(
-        populate_by_name=True,
         json_schema_extra={
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
