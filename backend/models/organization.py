@@ -67,8 +67,8 @@ class OrganizationCreate(BaseCreateModel, OrganizationBase):
     """Organization creation model"""
     owner_id: str = Field(..., description="ID of the user creating the organization")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "name": "Acme Corporation",
                 "slug": "acme-corp",
@@ -83,6 +83,7 @@ class OrganizationCreate(BaseCreateModel, OrganizationBase):
                 "owner_id": "123e4567-e89b-12d3-a456-426614174000"
             }
         }
+    )
 
 class OrganizationUpdate(BaseUpdateModel):
     """Organization update model"""
