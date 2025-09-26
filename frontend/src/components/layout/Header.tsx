@@ -150,6 +150,7 @@ const Header: React.FC = () => {
             <span className="text-sm text-gray-600">Version 1.0.0</span>
           </div>
         )}
+        </div>
       </div>
       
       {/* Mobile Navigation */}
