@@ -78,8 +78,40 @@ class TaskBase(BaseModel):
     # Progress
     progress_percentage: float = Field(default=0.0, ge=0, le=100, description="Task completion percentage")
 
-class TaskCreate(BaseCreateModel, TaskBase):
-    """Task creation model"""
+class TaskCreate(BaseCreateModel):
+    """Task creation model - reporter_id is set automatically from current user"""
+    title: str = Field(..., min_length=1, max_length=200, description="Task title")
+    description: Optional[str] = Field(None, max_length=2000, description="Task description")
+    status: TaskStatus = Field(default=TaskStatus.TODO, description="Task status")
+    priority: TaskPriority = Field(default=TaskPriority.MEDIUM, description="Task priority")
+    type: TaskType = Field(default=TaskType.TASK, description="Task type")
+    
+    # Relationships
+    project_id: str = Field(..., description="Project the task belongs to")
+    assignee_id: Optional[str] = Field(None, description="User assigned to the task")
+    parent_task_id: Optional[str] = Field(None, description="Parent task for subtasks")
+    
+    # Dates and tracking
+    due_date: Optional[datetime] = Field(None, description="Task due date and time")
+    start_date: Optional[datetime] = Field(None, description="Task start date")
+    
+    # Time tracking
+    time_tracking: TaskTimeTracking = Field(default_factory=TaskTimeTracking, description="Time tracking data")
+    
+    # Dependencies and relationships
+    dependencies: List[TaskDependency] = Field(default_factory=list, description="Task dependencies")
+    subtasks: List[str] = Field(default_factory=list, description="Subtask IDs")
+    
+    # Organization and labels
+    tags: List[str] = Field(default_factory=list, description="Task tags")
+    labels: List[str] = Field(default_factory=list, description="Task labels")
+    
+    # Custom fields
+    custom_fields: Dict[str, Any] = Field(default_factory=dict, description="Custom task fields")
+    
+    # Progress
+    progress_percentage: float = Field(default=0.0, ge=0, le=100, description="Task completion percentage")
+    
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
@@ -90,7 +122,6 @@ class TaskCreate(BaseCreateModel, TaskBase):
                 "type": "feature",
                 "project_id": "project-123",
                 "assignee_id": "user-456",
-                "reporter_id": "user-789",
                 "due_date": "2024-02-15T17:00:00Z",
                 "tags": ["authentication", "security"],
                 "time_tracking": {
