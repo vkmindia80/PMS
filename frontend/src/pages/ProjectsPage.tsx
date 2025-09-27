@@ -98,10 +98,10 @@ const ProjectsPage: React.FC = () => {
   }
 
   useEffect(() => {
-    if (token && user) {
+    if (tokens?.access_token && user) {
       fetchProjects()
     }
-  }, [token, user, statusFilter, priorityFilter])
+  }, [tokens?.access_token, user, statusFilter, priorityFilter])
 
   const handleProjectCreated = () => {
     setShowCreateModal(false)
