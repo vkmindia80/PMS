@@ -3,6 +3,7 @@ Authentication utilities for JWT token management and password hashing
 """
 import os
 import jwt
+from jwt import InvalidTokenError
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 from passlib.context import CryptContext
