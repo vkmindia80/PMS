@@ -215,7 +215,7 @@ const TasksPage: React.FC = () => {
       const response = await fetch(`${API_BASE}/api/tasks/kanban/move?task_id=${taskId}&new_status=${newStatus}${newAssigneeId ? `&new_assignee_id=${newAssigneeId}` : ''}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json'
         }
       })
