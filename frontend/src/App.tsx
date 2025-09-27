@@ -79,6 +79,14 @@ const AppContent: React.FC = () => {
               </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/tasks" 
+            element={
+              <ProtectedRoute>
+                <TasksPage />
+              </ProtectedRoute>
+            } 
+          />
           {/* Additional protected routes can be added here */}
         </Routes>
       </main>
