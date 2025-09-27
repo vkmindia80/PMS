@@ -9,7 +9,7 @@ import {
   ClockIcon,
   UserIcon,
   FlagIcon
-} from '@heroicons/react/24/outline'
+} from '@heroicons/react/outline'
 import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
 
