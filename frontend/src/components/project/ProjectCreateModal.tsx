@@ -638,7 +638,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
                           {milestone.description && (
                             <p className="text-sm text-gray-600">{milestone.description}</p>
                           )}
-                          {milestone.due_date && (
+                          {milestone.due_date && milestone.due_date !== '' && (
                             <p className="text-xs text-gray-500 mt-1">Due: {milestone.due_date}</p>
                           )}
                         </div>
