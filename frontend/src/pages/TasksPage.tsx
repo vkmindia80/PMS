@@ -372,7 +372,7 @@ const TasksPage: React.FC = () => {
                 onClick={() => setShowCreateModal(true)}
                 className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
               >
-                <PlusIcon className="h-4 w-4" />
+                <span>+</span>
                 <span>New Task</span>
               </button>
             </div>
