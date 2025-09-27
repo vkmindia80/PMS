@@ -29,7 +29,7 @@ interface ProjectStats {
 }
 
 const ProjectsPage: React.FC = () => {
-  const { user, token } = useAuth()
+  const { user, tokens } = useAuth()
   const [projects, setProjects] = useState<ProjectSummary[]>([])
   const [stats, setStats] = useState<ProjectStats>({
     total_projects: 0,
