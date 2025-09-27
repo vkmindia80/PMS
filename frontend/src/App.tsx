@@ -88,6 +88,14 @@ const AppContent: React.FC = () => {
               </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/analytics" 
+            element={
+              <ProtectedRoute>
+                <PortfolioDashboard />
+              </ProtectedRoute>
+            } 
+          />
           {/* Additional protected routes can be added here */}
         </Routes>
       </main>
