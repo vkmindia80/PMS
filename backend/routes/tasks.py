@@ -22,7 +22,7 @@ router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 @router.post("/", response_model=Task, status_code=status.HTTP_201_CREATED)
 async def create_task(
     task_data: TaskCreate,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Create a new task"""
     try:
@@ -97,7 +97,7 @@ async def get_tasks(
     search: Optional[str] = Query(None, description="Search in title and description"),
     skip: int = Query(0, ge=0, description="Number of tasks to skip"),
     limit: int = Query(100, ge=1, le=1000, description="Number of tasks to return"),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Get tasks with filtering and pagination"""
     try:
@@ -154,7 +154,7 @@ async def get_tasks(
 @router.get("/{task_id}", response_model=Task)
 async def get_task(
     task_id: str,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Get a specific task by ID"""
     try:
@@ -181,7 +181,7 @@ async def get_task(
 async def update_task(
     task_id: str,
     task_update: TaskUpdate,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Update a task"""
     try:
@@ -228,7 +228,7 @@ async def update_task(
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_task(
     task_id: str,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Delete a task"""
     try:
@@ -270,7 +270,7 @@ async def delete_task(
 async def get_kanban_board(
     project_id: Optional[str] = Query(None, description="Filter by project ID"),
     view_by: str = Query("status", description="Group by: status, assignee, project"),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Get tasks organized for Kanban board view"""
     try:
@@ -365,7 +365,7 @@ async def move_task_on_board(
     task_id: str,
     new_status: TaskStatus,
     new_assignee_id: Optional[str] = None,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Move task on Kanban board (update status and/or assignee)"""
     try:
@@ -421,7 +421,7 @@ async def log_time_entry(
     hours: float = Query(..., gt=0, description="Hours to log"),
     description: Optional[str] = Query(None, description="Time entry description"),
     date: Optional[date] = Query(None, description="Date for time entry (defaults to today)"),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Log time entry for a task (manual entry)"""
     try:
@@ -489,7 +489,7 @@ async def log_time_entry(
 @router.get("/{task_id}/activity", response_model=List[TaskActivity])
 async def get_task_activity(
     task_id: str,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Get task activity history"""
     try:
@@ -534,7 +534,7 @@ async def get_task_activity(
 async def bulk_update_tasks(
     task_ids: List[str],
     update_data: TaskUpdate,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Bulk update multiple tasks"""
     try:
@@ -575,7 +575,7 @@ async def bulk_update_tasks(
 @router.delete("/bulk/delete", status_code=status.HTTP_200_OK)
 async def bulk_delete_tasks(
     task_ids: List[str],
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Bulk delete multiple tasks"""
     try:
@@ -602,7 +602,7 @@ async def bulk_delete_tasks(
 async def get_task_analytics(
     project_id: Optional[str] = Query(None, description="Filter by project ID"),
     assignee_id: Optional[str] = Query(None, description="Filter by assignee ID"),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """Get task analytics and metrics"""
     try:
