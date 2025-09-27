@@ -17,6 +17,7 @@ export const config = {
 
 // Export individual values for convenience
 export const API_URL = config.apiUrl;
+export const BACKEND_URL = config.apiUrl; // Alias for compatibility
 export const APP_NAME = config.appName;
 export const APP_VERSION = config.appVersion;
 
