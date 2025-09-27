@@ -287,14 +287,13 @@ async def root():
             "api_access": "Full REST API access"
         },
         "endpoints": {
+            "auth": "/api/auth",
             "users": "/api/users",
             "organizations": "/api/organizations", 
             "projects": "/api/projects",
             "tasks": "/api/tasks",
             "teams": "/api/teams",
-            "comments": "/api/comments",
-            "files": "/api/files",
-            "notifications": "/api/notifications"
+            "hierarchy": "/api/hierarchy"
         }
     }
 
