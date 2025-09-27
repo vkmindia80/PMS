@@ -22,6 +22,7 @@ const Header: React.FC = () => {
     { name: 'Dashboard', path: '/dashboard', icon: BarChart3 },
     { name: 'Organization', path: '/organization', icon: Building2 },
     { name: 'Teams', path: '/teams', icon: Users },
+    { name: 'Projects', path: '/projects', icon: FolderOpen },
   ]
 
   return (
