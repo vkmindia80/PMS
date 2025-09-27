@@ -1,6 +1,10 @@
 from .user import User, UserCreate, UserUpdate, UserInDB
 from .organization import Organization, OrganizationCreate, OrganizationUpdate, OrganizationInDB
-from .project import Project, ProjectCreate, ProjectUpdate, ProjectInDB, ProjectStatus, ProjectPriority
+from .project import (
+    Project, ProjectCreate, ProjectUpdate, ProjectInDB, ProjectSummary,
+    ProjectStatus, ProjectPriority, ProjectVisibility,
+    ProjectBudget, ProjectMilestone, ProjectSettings
+)
 from .task import Task, TaskCreate, TaskUpdate, TaskInDB, TaskStatus, TaskPriority
 from .team import Team, TeamCreate, TeamUpdate, TeamInDB
 from .comment import Comment, CommentCreate, CommentUpdate, CommentInDB
