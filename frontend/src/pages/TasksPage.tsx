@@ -108,7 +108,7 @@ const TasksPage: React.FC = () => {
 
   // Fetch tasks
   const fetchTasks = async () => {
-    if (!token) return
+    if (!tokens?.access_token) return
     
     setLoading(true)
     setError(null)
