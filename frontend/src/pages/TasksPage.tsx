@@ -209,7 +209,7 @@ const TasksPage: React.FC = () => {
 
   // Update task status (for Kanban drag & drop)
   const handleUpdateTaskStatus = async (taskId: string, newStatus: string, newAssigneeId?: string) => {
-    if (!token) return
+    if (!tokens?.access_token) return
     
     try {
       const response = await fetch(`${API_BASE}/api/tasks/kanban/move?task_id=${taskId}&new_status=${newStatus}${newAssigneeId ? `&new_assignee_id=${newAssigneeId}` : ''}`, {
