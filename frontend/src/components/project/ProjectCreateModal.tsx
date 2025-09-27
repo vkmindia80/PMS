@@ -91,7 +91,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
     try {
       const response = await fetch(`${BACKEND_URL}/api/projects/templates/`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
         },
       })
@@ -108,7 +108,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
     try {
       const response = await fetch(`${BACKEND_URL}/api/users/`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
         },
       })
@@ -125,7 +125,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
     try {
       const response = await fetch(`${BACKEND_URL}/api/teams/`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
         },
       })
@@ -211,7 +211,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
       const response = await fetch(`${BACKEND_URL}/api/projects/`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(submitData),
