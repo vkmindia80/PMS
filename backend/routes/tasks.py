@@ -68,7 +68,7 @@ async def create_task(
         # Log activity
         await log_task_activity(
             db, task_id, current_user.id, "task_created",
-            {"title": task_data.title, "status": task_data.status.value}
+            {"title": task_data.title, "status": task_data.status.value if hasattr(task_data.status, 'value') else task_data.status}
         )
         
         # Get created task
