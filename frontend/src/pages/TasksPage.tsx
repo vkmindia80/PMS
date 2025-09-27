@@ -630,13 +630,13 @@ const KanbanBoard: React.FC<{
                     <div className="flex items-center space-x-2">
                       {task.assignee_id && (
                         <div className="flex items-center space-x-1">
-                          <UserIcon className="h-3 w-3" />
+                          <span>👤</span>
                           <span>Assigned</span>
                         </div>
                       )}
                       {task.due_date && (
                         <div className="flex items-center space-x-1">
-                          <ClockIcon className="h-3 w-3" />
+                          <span>⏰</span>
                           <span>{new Date(task.due_date).toLocaleDateString()}</span>
                         </div>
                       )}
