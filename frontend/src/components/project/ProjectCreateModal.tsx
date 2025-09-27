@@ -196,6 +196,9 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
     try {
       const submitData = {
         ...formData,
+        // Convert empty strings to null for dates
+        start_date: formData.start_date || null,
+        due_date: formData.due_date || null,
         budget: {
           total_budget: formData.budget.total_budget ? parseFloat(formData.budget.total_budget) : null,
           spent_amount: 0,
@@ -203,6 +206,8 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
         },
         milestones: formData.milestones.map(m => ({
           ...m,
+          id: `milestone-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate unique ID
+          due_date: m.due_date || null, // Convert empty string to null
           completed: false,
           completed_at: null
         }))
