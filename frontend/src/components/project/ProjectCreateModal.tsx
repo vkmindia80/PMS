@@ -44,7 +44,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
   onClose,
   onProjectCreated,
 }) => {
-  const { user, token } = useAuth()
+  const { user, tokens } = useAuth()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [templates, setTemplates] = useState<ProjectTemplate[]>([])
