@@ -49,7 +49,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
       const response = await fetch(`${BACKEND_URL}/api/projects/${projectId}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ status: newStatus }),
@@ -76,7 +76,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
         const response = await fetch(`${BACKEND_URL}/api/projects/${projectId}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${tokens?.access_token}`,
           },
         })
 
