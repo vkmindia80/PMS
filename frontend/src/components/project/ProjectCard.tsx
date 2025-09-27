@@ -49,7 +49,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       const response = await fetch(`${BACKEND_URL}/api/projects/${project.id}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ status: newStatus }),
@@ -76,7 +76,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         const response = await fetch(`${BACKEND_URL}/api/projects/${project.id}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${tokens?.access_token}`,
           },
         })
 
