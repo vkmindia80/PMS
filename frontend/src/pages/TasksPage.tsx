@@ -61,7 +61,7 @@ interface TaskAnalytics {
 }
 
 const TasksPage: React.FC = () => {
-  const { user, token } = useAuth()
+  const { user, tokens } = useAuth()
   const [tasks, setTasks] = useState<Task[]>([])
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
