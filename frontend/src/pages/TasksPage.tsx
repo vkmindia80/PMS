@@ -419,7 +419,7 @@ const TasksPage: React.FC = () => {
                 onClick={() => setShowFilters(!showFilters)}
                 className="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50"
               >
-                <FunnelIcon className="h-4 w-4" />
+                <span>⚙️</span>
                 <span>Filters</span>
               </button>
             </div>
