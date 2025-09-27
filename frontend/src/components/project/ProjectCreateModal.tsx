@@ -218,8 +218,24 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
       })
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.detail || 'Failed to create project')
+        let errorMessage = 'Failed to create project'
+        try {
+          const error = await response.json()
+          if (typeof error === 'string') {
+            errorMessage = error
+          } else if (error.detail) {
+            if (typeof error.detail === 'string') {
+              errorMessage = error.detail
+            } else {
+              errorMessage = JSON.stringify(error.detail)
+            }
+          } else if (error.message) {
+            errorMessage = error.message
+          }
+        } catch (e) {
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
       }
 
       toast.success('Project created successfully!')
