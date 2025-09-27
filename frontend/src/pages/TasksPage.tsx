@@ -186,7 +186,7 @@ const TasksPage: React.FC = () => {
       const response = await fetch(`${API_BASE}/api/tasks/`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(taskData)
