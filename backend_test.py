@@ -126,12 +126,14 @@ class ProjectAPITester:
             },
             "milestones": [
                 {
+                    "id": "milestone-setup-001",
                     "title": "Project Setup",
                     "description": "Initial project setup and planning",
                     "due_date": "2024-02-15",
                     "completed": False
                 },
                 {
+                    "id": "milestone-dev-001",
                     "title": "Development Phase",
                     "description": "Core development work",
                     "due_date": "2024-05-15",
