@@ -112,7 +112,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Fetch user profile
   const fetchUserProfile = async (accessToken: string): Promise<User> => {
-    const response = await fetch(`${API_URL}/api/auth/me`, {
+    const response = await fetch(API_ENDPOINTS.auth.me, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Login function
   const login = async (data: LoginData) => {
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
+      const response = await fetch(API_ENDPOINTS.auth.login, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Register function
   const register = async (data: RegisterData) => {
     try {
-      const response = await fetch(`${API_URL}/api/auth/register`, {
+      const response = await fetch(API_ENDPOINTS.auth.register, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify(data),
       })
 
-      if (!response.ok) {
+      if !response.ok) {
         const error = await response.json()
         throw new Error(error.detail || 'Registration failed')
       }
@@ -184,7 +184,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     try {
       if (tokens) {
-        await fetch(`${API_URL}/api/auth/logout`, {
+        await fetch(API_ENDPOINTS.auth.logout, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${tokens.access_token}`,
