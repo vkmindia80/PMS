@@ -29,7 +29,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
   getStatusColor,
   getPriorityColor,
 }) => {
-  const { token } = useAuth()
+  const { tokens } = useAuth()
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
   const [loading, setLoading] = useState<string | null>(null)
 
