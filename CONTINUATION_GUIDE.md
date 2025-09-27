@@ -81,11 +81,25 @@ sudo supervisorctl status
 # Test backend health (should show "healthy")
 curl http://localhost:8001/api/health
 
-# Test new organization and team endpoints
+# Test external access (should return 200 OK)
+curl -I https://continuation-guide.preview.emergentagent.com
+
+# Test demo login credentials
+curl -X POST https://continuation-guide.preview.emergentagent.com/api/auth/login \
+-H "Content-Type: application/json" \
+-d '{"email": "demo@company.com", "password": "demo123456"}'
+
+# Test organization and team endpoints
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/organizations/
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/teams/
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/users/
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/hierarchy/organization/$ORG_ID
+
+# System validation (comprehensive health check)
+/app/scripts/validate_system.sh
+
+# Start services reliably (if needed)
+/app/scripts/start_services.sh
 
 # View backend logs for debugging
 tail -f /var/log/supervisor/backend.*.log
@@ -93,6 +107,9 @@ tail -f /var/log/supervisor/backend.*.log
 # Restart services if needed
 sudo supervisorctl restart all
 ```
+
+### **🚨 502 Error Resolution:**
+The previous 502 error has been **PERMANENTLY RESOLVED** by adding the missing `start` script to package.json. External subdomain access now works reliably at: https://continuation-guide.preview.emergentagent.com
 
 ---
 
