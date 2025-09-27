@@ -166,7 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify(data),
       })
 
-      if !response.ok) {
+      if (!response.ok) {
         const error = await response.json()
         throw new Error(error.detail || 'Registration failed')
       }
