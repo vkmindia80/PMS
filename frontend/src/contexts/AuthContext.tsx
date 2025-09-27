@@ -66,22 +66,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [tokens, setTokens] = useState<AuthTokens | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Determine API URL based on environment
-  const getApiUrl = () => {
-    // Check if we're running in production or preview environment
-    const isPreview = window.location.hostname.includes('emergentagent.com')
-    const isProd = import.meta.env.PROD || isPreview
-    
-    if (isProd || isPreview) {
-      return import.meta.env.VITE_PROD_API_URL || 'https://continuation-guide.preview.emergentagent.com'
-    }
-    
-    // For development, use local backend
-    return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
-  }
-  
-  const API_URL = getApiUrl()
-
   // Initialize auth state from localStorage
   useEffect(() => {
     const initAuth = async () => {
