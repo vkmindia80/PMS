@@ -1,0 +1,701 @@
+from fastapi import APIRouter, HTTPException, Depends, status, Query
+from typing import Optional, List, Dict, Any
+from datetime import datetime, date
+import uuid
+from bson import ObjectId
+
+# Import database connection
+from database import get_database
+
+# Import authentication
+from auth.utils import get_current_user
+
+# Import models
+from models.task import (
+    Task, TaskCreate, TaskUpdate, TaskInDB, TaskSummary, TaskActivity,
+    TaskStatus, TaskPriority, TaskType, TaskTimeTracking, TaskDependency
+)
+from models.user import User
+
+router = APIRouter(prefix="/api/tasks", tags=["tasks"])
+
+@router.post("/", response_model=Task, status_code=status.HTTP_201_CREATED)
+async def create_task(
+    task_data: TaskCreate,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a new task"""
+    try:
+        db = await get_database()
+        
+        # Verify project exists and user has access
+        project = await db.projects.find_one({"id": task_data.project_id})
+        if not project:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found"
+            )
+        
+        # Verify assignee exists if provided
+        if task_data.assignee_id:
+            assignee = await db.users.find_one({"id": task_data.assignee_id})
+            if not assignee:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Assignee not found"
+                )
+        
+        # Create task with ID and timestamps
+        task_id = str(uuid.uuid4())
+        current_time = datetime.utcnow()
+        
+        task_dict = task_data.dict()
+        task_dict.update({
+            "id": task_id,
+            "reporter_id": current_user.id,
+            "created_at": current_time,
+            "updated_at": current_time,
+            "subtask_count": 0,
+            "comment_count": 0,
+            "attachment_count": 0,
+            "activity_log": [],
+            "watchers": [current_user.id]
+        })
+        
+        # Insert task
+        result = await db.tasks.insert_one(task_dict)
+        
+        # Log activity
+        await log_task_activity(
+            db, task_id, current_user.id, "task_created",
+            {"title": task_data.title, "status": task_data.status.value}
+        )
+        
+        # Get created task
+        created_task = await db.tasks.find_one({"id": task_id})
+        if not created_task:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to create task"
+            )
+        
+        return Task(**created_task)
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to create task: {str(e)}"
+        )
+
+@router.get("/", response_model=List[TaskSummary])
+async def get_tasks(
+    project_id: Optional[str] = Query(None, description="Filter by project ID"),
+    assignee_id: Optional[str] = Query(None, description="Filter by assignee ID"),
+    status: Optional[TaskStatus] = Query(None, description="Filter by status"),
+    priority: Optional[TaskPriority] = Query(None, description="Filter by priority"),
+    type: Optional[TaskType] = Query(None, description="Filter by type"),
+    search: Optional[str] = Query(None, description="Search in title and description"),
+    skip: int = Query(0, ge=0, description="Number of tasks to skip"),
+    limit: int = Query(100, ge=1, le=1000, description="Number of tasks to return"),
+    current_user: User = Depends(get_current_user)
+):
+    """Get tasks with filtering and pagination"""
+    try:
+        db = await get_database()
+        
+        # Build filter query
+        filter_query = {}
+        
+        if project_id:
+            filter_query["project_id"] = project_id
+        if assignee_id:
+            filter_query["assignee_id"] = assignee_id
+        if status:
+            filter_query["status"] = status.value
+        if priority:
+            filter_query["priority"] = priority.value
+        if type:
+            filter_query["type"] = type.value
+            
+        if search:
+            filter_query["$or"] = [
+                {"title": {"$regex": search, "$options": "i"}},
+                {"description": {"$regex": search, "$options": "i"}}
+            ]
+        
+        # Get tasks with pagination
+        cursor = db.tasks.find(filter_query).skip(skip).limit(limit).sort("created_at", -1)
+        tasks = await cursor.to_list(length=limit)
+        
+        # Convert to TaskSummary format
+        task_summaries = []
+        for task in tasks:
+            task_summaries.append(TaskSummary(
+                id=task["id"],
+                title=task["title"],
+                status=TaskStatus(task["status"]),
+                priority=TaskPriority(task["priority"]),
+                type=TaskType(task["type"]),
+                project_id=task["project_id"],
+                assignee_id=task.get("assignee_id"),
+                due_date=task.get("due_date"),
+                progress_percentage=task.get("progress_percentage", 0.0),
+                subtask_count=task.get("subtask_count", 0)
+            ))
+        
+        return task_summaries
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get tasks: {str(e)}"
+        )
+
+@router.get("/{task_id}", response_model=Task)
+async def get_task(
+    task_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get a specific task by ID"""
+    try:
+        db = await get_database()
+        
+        task = await db.tasks.find_one({"id": task_id})
+        if not task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        return Task(**task)
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get task: {str(e)}"
+        )
+
+@router.put("/{task_id}", response_model=Task)
+async def update_task(
+    task_id: str,
+    task_update: TaskUpdate,
+    current_user: User = Depends(get_current_user)
+):
+    """Update a task"""
+    try:
+        db = await get_database()
+        
+        # Get existing task
+        existing_task = await db.tasks.find_one({"id": task_id})
+        if not existing_task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        # Prepare update data
+        update_data = task_update.dict(exclude_unset=True)
+        if update_data:
+            update_data["updated_at"] = datetime.utcnow()
+            
+            # Log status changes
+            if "status" in update_data and update_data["status"] != existing_task["status"]:
+                await log_task_activity(
+                    db, task_id, current_user.id, "status_changed",
+                    {
+                        "from": existing_task["status"],
+                        "to": update_data["status"].value if hasattr(update_data["status"], 'value') else update_data["status"]
+                    }
+                )
+            
+            # Update task
+            await db.tasks.update_one({"id": task_id}, {"$set": update_data})
+        
+        # Get updated task
+        updated_task = await db.tasks.find_one({"id": task_id})
+        return Task(**updated_task)
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update task: {str(e)}"
+        )
+
+@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_task(
+    task_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Delete a task"""
+    try:
+        db = await get_database()
+        
+        # Check if task exists
+        existing_task = await db.tasks.find_one({"id": task_id})
+        if not existing_task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        # Delete task
+        result = await db.tasks.delete_one({"id": task_id})
+        if result.deleted_count == 0:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to delete task"
+            )
+        
+        # Log activity
+        await log_task_activity(
+            db, task_id, current_user.id, "task_deleted",
+            {"title": existing_task["title"]}
+        )
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete task: {str(e)}"
+        )
+
+# Kanban Board Endpoints
+
+@router.get("/kanban/board", response_model=Dict[str, List[TaskSummary]])
+async def get_kanban_board(
+    project_id: Optional[str] = Query(None, description="Filter by project ID"),
+    view_by: str = Query("status", description="Group by: status, assignee, project"),
+    current_user: User = Depends(get_current_user)
+):
+    """Get tasks organized for Kanban board view"""
+    try:
+        db = await get_database()
+        
+        # Build filter query
+        filter_query = {}
+        if project_id:
+            filter_query["project_id"] = project_id
+        
+        # Get all tasks
+        tasks = await db.tasks.find(filter_query).to_list(length=None)
+        
+        # Organize tasks by view type
+        board_data = {}
+        
+        if view_by == "status":
+            # Group by status
+            for status_value in TaskStatus:
+                board_data[status_value.value] = []
+            
+            for task in tasks:
+                status = task.get("status", "todo")
+                if status not in board_data:
+                    board_data[status] = []
+                
+                board_data[status].append(TaskSummary(
+                    id=task["id"],
+                    title=task["title"],
+                    status=TaskStatus(task["status"]),
+                    priority=TaskPriority(task["priority"]),
+                    type=TaskType(task["type"]),
+                    project_id=task["project_id"],
+                    assignee_id=task.get("assignee_id"),
+                    due_date=task.get("due_date"),
+                    progress_percentage=task.get("progress_percentage", 0.0),
+                    subtask_count=task.get("subtask_count", 0)
+                ))
+        
+        elif view_by == "assignee":
+            # Group by assignee
+            board_data["unassigned"] = []
+            
+            for task in tasks:
+                assignee = task.get("assignee_id", "unassigned")
+                if assignee not in board_data:
+                    board_data[assignee] = []
+                
+                board_data[assignee].append(TaskSummary(
+                    id=task["id"],
+                    title=task["title"],
+                    status=TaskStatus(task["status"]),
+                    priority=TaskPriority(task["priority"]),
+                    type=TaskType(task["type"]),
+                    project_id=task["project_id"],
+                    assignee_id=task.get("assignee_id"),
+                    due_date=task.get("due_date"),
+                    progress_percentage=task.get("progress_percentage", 0.0),
+                    subtask_count=task.get("subtask_count", 0)
+                ))
+        
+        elif view_by == "project":
+            # Group by project
+            for task in tasks:
+                project = task.get("project_id", "unknown")
+                if project not in board_data:
+                    board_data[project] = []
+                
+                board_data[project].append(TaskSummary(
+                    id=task["id"],
+                    title=task["title"],
+                    status=TaskStatus(task["status"]),
+                    priority=TaskPriority(task["priority"]),
+                    type=TaskType(task["type"]),
+                    project_id=task["project_id"],
+                    assignee_id=task.get("assignee_id"),
+                    due_date=task.get("due_date"),
+                    progress_percentage=task.get("progress_percentage", 0.0),
+                    subtask_count=task.get("subtask_count", 0)
+                ))
+        
+        return board_data
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get Kanban board: {str(e)}"
+        )
+
+@router.put("/kanban/move", response_model=Task)
+async def move_task_on_board(
+    task_id: str,
+    new_status: TaskStatus,
+    new_assignee_id: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Move task on Kanban board (update status and/or assignee)"""
+    try:
+        db = await get_database()
+        
+        # Get existing task
+        existing_task = await db.tasks.find_one({"id": task_id})
+        if not existing_task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        # Prepare update
+        update_data = {
+            "status": new_status.value,
+            "updated_at": datetime.utcnow()
+        }
+        
+        if new_assignee_id is not None:
+            update_data["assignee_id"] = new_assignee_id
+        
+        # Update task
+        await db.tasks.update_one({"id": task_id}, {"$set": update_data})
+        
+        # Log activity
+        await log_task_activity(
+            db, task_id, current_user.id, "task_moved",
+            {
+                "from_status": existing_task["status"],
+                "to_status": new_status.value,
+                "assignee_changed": new_assignee_id != existing_task.get("assignee_id")
+            }
+        )
+        
+        # Get updated task
+        updated_task = await db.tasks.find_one({"id": task_id})
+        return Task(**updated_task)
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to move task: {str(e)}"
+        )
+
+# Time Tracking Endpoints
+
+@router.post("/{task_id}/time/log", response_model=Task)
+async def log_time_entry(
+    task_id: str,
+    hours: float = Query(..., gt=0, description="Hours to log"),
+    description: Optional[str] = Query(None, description="Time entry description"),
+    date: Optional[date] = Query(None, description="Date for time entry (defaults to today)"),
+    current_user: User = Depends(get_current_user)
+):
+    """Log time entry for a task (manual entry)"""
+    try:
+        db = await get_database()
+        
+        # Get existing task
+        existing_task = await db.tasks.find_one({"id": task_id})
+        if not existing_task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        # Prepare time entry
+        entry_date = date or datetime.utcnow().date()
+        time_entry = {
+            "id": str(uuid.uuid4()),
+            "user_id": current_user.id,
+            "hours": hours,
+            "description": description or f"Time logged by {current_user.first_name} {current_user.last_name}",
+            "date": entry_date.isoformat(),
+            "created_at": datetime.utcnow().isoformat()
+        }
+        
+        # Update task time tracking
+        current_time_tracking = existing_task.get("time_tracking", {})
+        current_actual_hours = current_time_tracking.get("actual_hours", 0.0)
+        current_logged_time = current_time_tracking.get("logged_time", [])
+        
+        new_time_tracking = {
+            "estimated_hours": current_time_tracking.get("estimated_hours"),
+            "actual_hours": current_actual_hours + hours,
+            "logged_time": current_logged_time + [time_entry]
+        }
+        
+        # Update task
+        await db.tasks.update_one(
+            {"id": task_id},
+            {
+                "$set": {
+                    "time_tracking": new_time_tracking,
+                    "updated_at": datetime.utcnow()
+                }
+            }
+        )
+        
+        # Log activity
+        await log_task_activity(
+            db, task_id, current_user.id, "time_logged",
+            {"hours": hours, "description": description}
+        )
+        
+        # Get updated task
+        updated_task = await db.tasks.find_one({"id": task_id})
+        return Task(**updated_task)
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to log time: {str(e)}"
+        )
+
+@router.get("/{task_id}/activity", response_model=List[TaskActivity])
+async def get_task_activity(
+    task_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get task activity history"""
+    try:
+        db = await get_database()
+        
+        # Get task
+        task = await db.tasks.find_one({"id": task_id})
+        if not task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        # Get activity log
+        activity_log = task.get("activity_log", [])
+        
+        # Convert to TaskActivity objects
+        activities = []
+        for activity in activity_log:
+            activities.append(TaskActivity(
+                id=activity["id"],
+                task_id=activity["task_id"],
+                user_id=activity["user_id"],
+                action=activity["action"],
+                details=activity.get("details", {}),
+                timestamp=datetime.fromisoformat(activity["timestamp"])
+            ))
+        
+        return activities
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get task activity: {str(e)}"
+        )
+
+# Bulk Operations
+
+@router.post("/bulk/update", response_model=Dict[str, Any])
+async def bulk_update_tasks(
+    task_ids: List[str],
+    update_data: TaskUpdate,
+    current_user: User = Depends(get_current_user)
+):
+    """Bulk update multiple tasks"""
+    try:
+        db = await get_database()
+        
+        # Prepare update
+        update_dict = update_data.dict(exclude_unset=True)
+        if update_dict:
+            update_dict["updated_at"] = datetime.utcnow()
+            
+            # Update tasks
+            result = await db.tasks.update_many(
+                {"id": {"$in": task_ids}},
+                {"$set": update_dict}
+            )
+            
+            # Log bulk activity
+            for task_id in task_ids:
+                await log_task_activity(
+                    db, task_id, current_user.id, "bulk_updated",
+                    {"fields_updated": list(update_dict.keys())}
+                )
+            
+            return {
+                "updated_count": result.modified_count,
+                "task_ids": task_ids,
+                "message": f"Successfully updated {result.modified_count} tasks"
+            }
+        
+        return {"updated_count": 0, "message": "No update data provided"}
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to bulk update tasks: {str(e)}"
+        )
+
+@router.delete("/bulk/delete", status_code=status.HTTP_200_OK)
+async def bulk_delete_tasks(
+    task_ids: List[str],
+    current_user: User = Depends(get_current_user)
+):
+    """Bulk delete multiple tasks"""
+    try:
+        db = await get_database()
+        
+        # Delete tasks
+        result = await db.tasks.delete_many({"id": {"$in": task_ids}})
+        
+        return {
+            "deleted_count": result.deleted_count,
+            "task_ids": task_ids,
+            "message": f"Successfully deleted {result.deleted_count} tasks"
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to bulk delete tasks: {str(e)}"
+        )
+
+# Analytics Endpoints
+
+@router.get("/analytics/summary", response_model=Dict[str, Any])
+async def get_task_analytics(
+    project_id: Optional[str] = Query(None, description="Filter by project ID"),
+    assignee_id: Optional[str] = Query(None, description="Filter by assignee ID"),
+    current_user: User = Depends(get_current_user)
+):
+    """Get task analytics and metrics"""
+    try:
+        db = await get_database()
+        
+        # Build filter query
+        filter_query = {}
+        if project_id:
+            filter_query["project_id"] = project_id
+        if assignee_id:
+            filter_query["assignee_id"] = assignee_id
+        
+        # Get all tasks
+        tasks = await db.tasks.find(filter_query).to_list(length=None)
+        
+        # Calculate analytics
+        total_tasks = len(tasks)
+        status_counts = {}
+        priority_counts = {}
+        type_counts = {}
+        
+        total_estimated_hours = 0.0
+        total_actual_hours = 0.0
+        completed_tasks = 0
+        overdue_tasks = 0
+        
+        for task in tasks:
+            # Status counts
+            status = task.get("status", "todo")
+            status_counts[status] = status_counts.get(status, 0) + 1
+            
+            # Priority counts
+            priority = task.get("priority", "medium")
+            priority_counts[priority] = priority_counts.get(priority, 0) + 1
+            
+            # Type counts
+            task_type = task.get("type", "task")
+            type_counts[task_type] = type_counts.get(task_type, 0) + 1
+            
+            # Time tracking
+            time_tracking = task.get("time_tracking", {})
+            if time_tracking.get("estimated_hours"):
+                total_estimated_hours += time_tracking["estimated_hours"]
+            if time_tracking.get("actual_hours"):
+                total_actual_hours += time_tracking["actual_hours"]
+            
+            # Completion and overdue
+            if task.get("status") == "completed":
+                completed_tasks += 1
+            
+            if task.get("due_date"):
+                due_date = datetime.fromisoformat(task["due_date"].replace("Z", "+00:00"))
+                if due_date < datetime.utcnow() and task.get("status") not in ["completed", "cancelled"]:
+                    overdue_tasks += 1
+        
+        # Calculate rates
+        completion_rate = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+        time_variance = total_actual_hours - total_estimated_hours
+        
+        return {
+            "total_tasks": total_tasks,
+            "completed_tasks": completed_tasks,
+            "overdue_tasks": overdue_tasks,
+            "completion_rate": round(completion_rate, 2),
+            "status_distribution": status_counts,
+            "priority_distribution": priority_counts,
+            "type_distribution": type_counts,
+            "time_tracking": {
+                "total_estimated_hours": round(total_estimated_hours, 2),
+                "total_actual_hours": round(total_actual_hours, 2),
+                "time_variance": round(time_variance, 2)
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get task analytics: {str(e)}"
+        )
+
+# Helper function for activity logging
+async def log_task_activity(db, task_id: str, user_id: str, action: str, details: Dict):
+    """Helper function to log task activity"""
+    activity_entry = {
+        "id": str(uuid.uuid4()),
+        "task_id": task_id,
+        "user_id": user_id,
+        "action": action,
+        "details": details,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    
+    await db.tasks.update_one(
+        {"id": task_id},
+        {"$push": {"activity_log": activity_entry}}
+    )
