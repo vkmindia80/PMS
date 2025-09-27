@@ -180,7 +180,7 @@ const TasksPage: React.FC = () => {
 
   // Create task
   const handleCreateTask = async (taskData: any) => {
-    if (!token) return
+    if (!tokens?.access_token) return
     
     try {
       const response = await fetch(`${API_BASE}/api/tasks/`, {
