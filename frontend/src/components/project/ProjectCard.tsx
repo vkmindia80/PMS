@@ -29,7 +29,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   getStatusColor,
   getPriorityColor,
 }) => {
-  const { token } = useAuth()
+  const { tokens } = useAuth()
   const [showMenu, setShowMenu] = useState(false)
   const [loading, setLoading] = useState(false)
 
