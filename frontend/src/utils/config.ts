@@ -63,8 +63,7 @@ export const API_ENDPOINTS = {
 if (config.isDevelopment) {
   console.log('🔧 Config loaded:', {
     apiUrl: config.apiUrl,
-    hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
-    environment: import.meta.env.NODE_ENV,
+    environment: getEnvironmentInfo(),
   });
 }
 
