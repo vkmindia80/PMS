@@ -241,7 +241,7 @@ const TasksPage: React.FC = () => {
       const response = await fetch(`${API_BASE}/api/tasks/${taskId}/time/log?hours=${hours}&description=${encodeURIComponent(description)}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json'
         }
       })
