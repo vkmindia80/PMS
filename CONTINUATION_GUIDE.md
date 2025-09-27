@@ -105,10 +105,12 @@ curl -X POST https://portfolio-planner-3.preview.emergentagent.com/api/auth/logi
 -H "Content-Type: application/json" \
 -d '{"email": "demo@company.com", "password": "demo123456"}'
 
-# Test organization and team endpoints
+# Test organization, team, and project endpoints
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/organizations/
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/teams/
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/users/
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/projects/
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/projects/templates/
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/hierarchy/organization/$ORG_ID
 
 # System validation (comprehensive health check)
