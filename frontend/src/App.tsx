@@ -70,6 +70,14 @@ const AppContent: React.FC = () => {
               </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/projects" 
+            element={
+              <ProtectedRoute>
+                <ProjectsPage />
+              </ProtectedRoute>
+            } 
+          />
           {/* Additional protected routes can be added here */}
         </Routes>
       </main>
