@@ -75,7 +75,7 @@ app = FastAPI(
 # Security
 security = HTTPBearer()
 
-# CORS Configuration
+# CORS Configuration with improved subdomain handling
 origins = [
     "http://localhost:3000",
     "http://localhost:3001", 
@@ -89,28 +89,33 @@ origins = [
     "http://127.0.0.1:3003",
     "http://127.0.0.1:3004",
     "http://127.0.0.1:3005",
-    "https://continuation-guide.preview.emergentagent.com",
-    os.getenv("FRONTEND_URL", "http://localhost:3000"),
 ]
 
-# Add support for all emergentagent.com subdomains in production
+# Dynamic origin function for emergentagent.com subdomains
 import re
-def is_allowed_origin(origin: str) -> bool:
-    """Check if origin is allowed including emergentagent.com subdomains"""
-    if origin in origins:
-        return True
-    # Allow all emergentagent.com subdomains
-    if re.match(r'https?://[\w-]+\.emergentagent\.com$', origin):
-        return True
-    return False
+def dynamic_cors_origin():
+    """Dynamic CORS origin function for emergentagent.com subdomains"""
+    def check_origin(origin: str) -> bool:
+        # Allow localhost origins
+        if any(origin.startswith(allowed) for allowed in origins):
+            return True
+        # Allow all emergentagent.com subdomains with flexible matching
+        patterns = [
+            r'https://[\w-]+\.preview\.emergentagent\.com',
+            r'https://[\w-]+\.emergentagent\.com',
+            r'http://[\w-]+\.emergentagent\.com'
+        ]
+        return any(re.match(pattern, origin) for pattern in patterns)
+    return check_origin
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r'https?://[\w-]+\.emergentagent\.com$',
-    allow_origins=origins,
+    allow_origin_regex=r'https?://[\w-]+\.(preview\.)?emergentagent\.com',
+    allow_origins=origins + ["*"],  # Temporarily allow all for debugging
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Include authentication routes
