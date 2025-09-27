@@ -57,7 +57,7 @@ const ProjectsPage: React.FC = () => {
       
       const response = await fetch(`${BACKEND_URL}/api/projects/?${params}`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
         },
       })
