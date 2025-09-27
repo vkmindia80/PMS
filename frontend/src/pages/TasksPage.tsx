@@ -294,7 +294,7 @@ const TasksPage: React.FC = () => {
   useEffect(() => {
     fetchTasks()
     fetchAnalytics()
-  }, [token])
+  }, [tokens?.access_token])
 
   useEffect(() => {
     if (viewMode === 'kanban') {
