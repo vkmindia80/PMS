@@ -257,6 +257,7 @@ The previous 502 error has been **PERMANENTLY RESOLVED** by adding the missing `
 - **Teams**: `/api/teams/` (CRUD, members, stats, skills overview)
 - **Users**: `/api/users/` (CRUD, role management, status controls)
 - **Projects**: `/api/projects/` (CRUD, templates, filtering, dashboard metrics)
+- **Tasks**: `/api/tasks/` (CRUD, Kanban boards, time tracking, analytics, bulk operations)
 - **Hierarchy**: `/api/hierarchy/` (organization, team-structure, departments, reporting)
 - **Authentication**: `/api/auth/` (login, register, profile management)
 
