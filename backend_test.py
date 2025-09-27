@@ -11,7 +11,7 @@ from datetime import datetime, date
 from typing import Dict, Any, Optional
 
 class ProjectAPITester:
-    def __init__(self, base_url: str = "https://guide-extension.preview.emergentagent.com"):
+    def __init__(self, base_url: str = "https://portfolio-planner-3.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user_id = None
