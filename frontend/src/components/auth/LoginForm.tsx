@@ -200,14 +200,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
               <User className="h-4 w-4 mr-2" />
               Quick Demo Login
             </p>
-            <button
-              type="button"
-              onClick={fillDemoCredentials}
-              className="text-xs bg-primary-600 text-white px-3 py-1 rounded-md hover:bg-primary-700 transition-colors"
-              disabled={isLoading}
-            >
-              Auto Fill
-            </button>
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                onClick={fillDemoCredentials}
+                className="text-xs bg-primary-600 text-white px-3 py-1 rounded-md hover:bg-primary-700 transition-colors"
+                disabled={isLoading}
+              >
+                Auto Fill
+              </button>
+              <button
+                type="button"
+                onClick={performDemoLogin}
+                className="text-xs bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition-colors"
+                disabled={isLoading}
+                data-testid="quick-demo-login"
+              >
+                Quick Login
+              </button>
+            </div>
           </div>
           <div className="text-xs text-primary-700 space-y-1">
             <p>📧 Email: {DEMO_CREDENTIALS.email}</p>
