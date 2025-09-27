@@ -300,7 +300,7 @@ const TasksPage: React.FC = () => {
     if (viewMode === 'kanban') {
       fetchKanbanData()
     }
-  }, [viewMode, kanbanView, token])
+  }, [viewMode, kanbanView, tokens?.access_token])
 
   useEffect(() => {
     applyFilters()
