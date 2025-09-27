@@ -8,7 +8,7 @@ from bson import ObjectId
 from database import get_database
 
 # Import authentication
-from auth.utils import get_current_user
+from auth.middleware import get_current_user
 
 # Import models
 from models.task import (
