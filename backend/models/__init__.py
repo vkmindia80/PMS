@@ -17,7 +17,9 @@ __all__ = [
     # Organization models
     "Organization", "OrganizationCreate", "OrganizationUpdate", "OrganizationInDB",
     # Project models
-    "Project", "ProjectCreate", "ProjectUpdate", "ProjectInDB", "ProjectStatus", "ProjectPriority",
+    "Project", "ProjectCreate", "ProjectUpdate", "ProjectInDB", "ProjectSummary",
+    "ProjectStatus", "ProjectPriority", "ProjectVisibility",
+    "ProjectBudget", "ProjectMilestone", "ProjectSettings",
     # Task models
     "Task", "TaskCreate", "TaskUpdate", "TaskInDB", "TaskStatus", "TaskPriority",
     # Team models
