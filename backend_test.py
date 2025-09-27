@@ -77,8 +77,8 @@ class ProjectAPITester:
         
         success, response, status_code = self.make_request('POST', 'auth/login', login_data)
         
-        if success and 'access_token' in response:
-            self.token = response['access_token']
+        if success and 'tokens' in response and 'access_token' in response['tokens']:
+            self.token = response['tokens']['access_token']
             self.user_id = response.get('user', {}).get('id')
             self.organization_id = response.get('user', {}).get('organization_id')
             self.log_test("Authentication", True, f"Token obtained, User ID: {self.user_id}")
