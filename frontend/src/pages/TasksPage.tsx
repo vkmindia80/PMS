@@ -138,7 +138,7 @@ const TasksPage: React.FC = () => {
 
   // Fetch kanban board data
   const fetchKanbanData = async () => {
-    if (!token) return
+    if (!tokens?.access_token) return
     
     try {
       const response = await fetch(`${API_BASE}/api/tasks/kanban/board?view_by=${kanbanView}`, {
