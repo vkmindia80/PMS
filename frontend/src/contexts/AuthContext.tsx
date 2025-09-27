@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import toast from 'react-hot-toast'
+import { API_URL, DEMO_CREDENTIALS, API_ENDPOINTS } from '../utils/config'
 
 // Types
 interface User {
