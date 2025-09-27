@@ -341,7 +341,7 @@ const TasksPage: React.FC = () => {
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
-                  <Squares2X2Icon className="h-4 w-4" />
+                  <span>📋</span>
                   <span>Kanban</span>
                 </button>
                 <button
