@@ -3,30 +3,7 @@
  * across different emergentagent.com subdomains
  */
 
-// Get the current hostname to determine the API URL
-const getApiUrl = (): string => {
-  // If we're on a preview.emergentagent.com subdomain, use HTTPS with same subdomain
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    
-    // Check if we're on emergentagent.com subdomain
-    if (hostname.includes('emergentagent.com')) {
-      // Use the same subdomain but ensure it's the API endpoint
-      const protocol = window.location.protocol;
-      return `${protocol}//${hostname}`;
-    }
-    
-    // Check if we're on localhost
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return import.meta.env.VITE_LOCAL_API_URL || 'http://localhost:8001';
-    }
-  }
-  
-  // Fallback to environment variable
-  return import.meta.env.VITE_BACKEND_API_URL || 
-         import.meta.env.REACT_APP_BACKEND_URL || 
-         'http://localhost:8001';
-};
+import { getApiUrl, getEnvironmentInfo, isLocalEnvironment } from './environment';
 
 // Configuration object
 export const config = {
@@ -35,6 +12,7 @@ export const config = {
   appVersion: import.meta.env.REACT_APP_VERSION || '1.0.0',
   isDevelopment: import.meta.env.NODE_ENV === 'development',
   isProduction: import.meta.env.NODE_ENV === 'production',
+  isLocal: isLocalEnvironment(),
 };
 
 // Export individual values for convenience
