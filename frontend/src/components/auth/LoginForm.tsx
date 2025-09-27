@@ -180,12 +180,27 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
         </div>
 
         {/* Demo Credentials */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600 font-medium mb-2">Demo Credentials:</p>
-          <div className="text-xs text-gray-500 space-y-1">
-            <p>Email: demo@company.com</p>
-            <p>Password: demo123456</p>
-            <p className="italic">Note: You need to register first to create an account</p>
+        <div className="mt-6 p-4 bg-primary-50 border border-primary-200 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-primary-800 font-medium flex items-center">
+              <User className="h-4 w-4 mr-2" />
+              Quick Demo Login
+            </p>
+            <button
+              type="button"
+              onClick={fillDemoCredentials}
+              className="text-xs bg-primary-600 text-white px-3 py-1 rounded-md hover:bg-primary-700 transition-colors"
+              disabled={isLoading}
+            >
+              Auto Fill
+            </button>
+          </div>
+          <div className="text-xs text-primary-700 space-y-1">
+            <p>📧 Email: {DEMO_CREDENTIALS.email}</p>
+            <p>🔑 Password: {DEMO_CREDENTIALS.password}</p>
+            <p className="text-primary-600 font-medium mt-2">
+              ✨ Demo account ready with full admin access
+            </p>
           </div>
         </div>
       </div>
