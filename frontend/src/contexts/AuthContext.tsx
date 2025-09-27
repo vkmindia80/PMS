@@ -238,7 +238,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/me`, {
+      const response = await fetch(API_ENDPOINTS.auth.me, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
