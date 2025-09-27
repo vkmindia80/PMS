@@ -241,7 +241,9 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
       toast.success('Project created successfully!')
       onProjectCreated()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to create project')
+      console.error('Project creation error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create project'
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
