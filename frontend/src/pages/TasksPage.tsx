@@ -235,7 +235,7 @@ const TasksPage: React.FC = () => {
 
   // Log time entry
   const handleLogTime = async (taskId: string, hours: number, description: string) => {
-    if (!token) return
+    if (!tokens?.access_token) return
     
     try {
       const response = await fetch(`${API_BASE}/api/tasks/${taskId}/time/log?hours=${hours}&description=${encodeURIComponent(description)}`, {
