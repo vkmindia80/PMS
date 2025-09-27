@@ -174,9 +174,13 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
 
   const addMilestone = () => {
     if (newMilestone.title.trim()) {
+      const milestoneToAdd = {
+        ...newMilestone,
+        due_date: newMilestone.due_date || null // Convert empty string to null
+      }
       setFormData(prev => ({
         ...prev,
-        milestones: [...prev.milestones, { ...newMilestone }]
+        milestones: [...prev.milestones, milestoneToAdd]
       }))
       setNewMilestone({ title: '', description: '', due_date: '' })
     }
