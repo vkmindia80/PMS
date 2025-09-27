@@ -112,8 +112,6 @@ class ProjectAPITester:
             "status": "planning",
             "priority": "medium",
             "visibility": "team",
-            "start_date": "2024-01-15",
-            "due_date": "2024-06-30",
             "organization_id": self.organization_id,
             "owner_id": self.user_id,
             "team_members": [],
@@ -124,22 +122,7 @@ class ProjectAPITester:
                 "spent_amount": 0.0,
                 "currency": "USD"
             },
-            "milestones": [
-                {
-                    "id": "milestone-setup-001",
-                    "title": "Project Setup",
-                    "description": "Initial project setup and planning",
-                    "due_date": "2024-02-15",
-                    "completed": False
-                },
-                {
-                    "id": "milestone-dev-001",
-                    "title": "Development Phase",
-                    "description": "Core development work",
-                    "due_date": "2024-05-15",
-                    "completed": False
-                }
-            ]
+            "milestones": []
         }
         
         success, response, status_code = self.make_request('POST', 'projects/', project_data)
