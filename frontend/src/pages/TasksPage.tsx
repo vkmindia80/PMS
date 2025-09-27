@@ -88,7 +88,7 @@ const TasksPage: React.FC = () => {
   // Kanban board data
   const [kanbanData, setKanbanData] = useState<Record<string, Task[]>>({})
 
-  const API_BASE = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
+  const API_BASE = API_URL
 
   // Status configurations
   const statusConfig = {
