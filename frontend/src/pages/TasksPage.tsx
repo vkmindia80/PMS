@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { API_URL } from '../utils/config'
 import toast from 'react-hot-toast'
 
 // Task-related interfaces
