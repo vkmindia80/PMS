@@ -8,6 +8,7 @@ import AuthPage from './pages/AuthPage'
 import OrganizationPage from './pages/OrganizationPage'
 import TeamsPage from './pages/TeamsPage'
 import ProjectsPage from './pages/ProjectsPage'
+import TasksPage from './pages/TasksPage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import './App.css'
 
