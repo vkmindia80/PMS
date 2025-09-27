@@ -65,7 +65,7 @@ Build a comprehensive enterprise-grade SaaS platform for portfolio and project m
 - ✅ **Authorization Middleware**: Proper permission checks for all organization operations
 - ✅ **502 Error Resolution**: Fixed external subdomain access and service stability
 - ✅ **Demo Credentials**: Auto-loading demo user (demo@company.com / demo123456) with full admin access
-- ✅ **External Access**: Fully functional on https://continuation-guide.preview.emergentagent.com
+- ✅ **External Access**: Fully functional on https://guide-extension.preview.emergentagent.com
 - ✅ **Service Management**: All services running reliably via supervisor with persistent configuration
 
 **Key Features Implemented:**
@@ -254,7 +254,7 @@ Build a comprehensive enterprise-grade SaaS platform for portfolio and project m
 
 **🚀 Ready for**: Phase 2.2 Project Creation & Management (7-9 credits)
 
-**🌐 External Access**: ✅ **CONFIRMED WORKING** - https://continuation-guide.preview.emergentagent.com
+**🌐 External Access**: ✅ **CONFIRMED WORKING** - https://guide-extension.preview.emergentagent.com
 
 ---
 
