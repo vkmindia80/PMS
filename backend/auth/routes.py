@@ -10,7 +10,7 @@ import logging
 from database import get_database
 from models.user import (
     User, UserCreate, UserUpdate, UserResponse, UserLogin,
-    PasswordReset, PasswordResetConfirm, UserRole, UserStatus
+    PasswordReset, PasswordResetConfirm, PasswordChange, UserRole, UserStatus
 )
 from .utils import (
     hash_password, verify_password, create_token_pair, verify_token,
