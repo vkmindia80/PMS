@@ -420,8 +420,7 @@ async def verify_email(token: str):
 
 @router.put("/change-password")
 async def change_password(
-    current_password: str,
-    new_password: str,
+    password_data: PasswordChange,
     current_user: User = Depends(get_current_active_user)
 ):
     """Change user password"""
