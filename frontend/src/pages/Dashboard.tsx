@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Plus, Users, BarChart3, Settings as SettingsIcon } from 'lucide-react'
+import { Plus, Users, BarChart3, Settings as SettingsIcon, Brain } from 'lucide-react'
 import ProjectCreateModal from '../components/project/ProjectCreateModal'
 
 const Dashboard: React.FC = () => {
