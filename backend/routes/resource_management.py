@@ -70,11 +70,17 @@ async def get_ai_resource_allocation(
         db = await get_database()
         org_id = current_user.organization_id
         
-        # Get comprehensive data
-        users = await db.users.find({"organization_id": org_id}).to_list(length=None)
-        teams = await db.teams.find({"organization_id": org_id}).to_list(length=None)
-        projects = await db.projects.find({"organization_id": org_id}).to_list(length=None)
-        tasks = await db.tasks.find({}).to_list(length=None)
+        # Get comprehensive data and clean MongoDB ObjectIds
+        users_raw = await db.users.find({"organization_id": org_id}).to_list(length=None)
+        teams_raw = await db.teams.find({"organization_id": org_id}).to_list(length=None)
+        projects_raw = await db.projects.find({"organization_id": org_id}).to_list(length=None)
+        tasks_raw = await db.tasks.find({}).to_list(length=None)
+        
+        # Clean MongoDB ObjectIds
+        users = clean_mongo_docs(users_raw)
+        teams = clean_mongo_docs(teams_raw)
+        projects = clean_mongo_docs(projects_raw)
+        tasks = clean_mongo_docs(tasks_raw)
         
         # Filter tasks for organization projects
         project_ids = [p["id"] for p in projects]
