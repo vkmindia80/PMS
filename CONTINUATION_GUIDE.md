@@ -323,13 +323,13 @@ All previous 502 errors have been permanently resolved.
 - ✅ **Analytics**: Skills overview + project metrics + task performance insights
 
 ### **API Endpoints Available:**
-- **Organizations**: `/api/organizations/` (CRUD, members, stats, invitations)
+- **Organizations**: `/api/organizations/` (CRUD, members, stats, invitations) + `/api/organizations/invite-members` (bulk invitations)
 - **Teams**: `/api/teams/` (CRUD, members, stats, skills overview)
 - **Users**: `/api/users/` (CRUD, role management, status controls)
 - **Projects**: `/api/projects/` (CRUD, templates, filtering, dashboard metrics)
 - **Tasks**: `/api/tasks/` (CRUD, Kanban boards, time tracking, analytics, bulk operations)
 - **Hierarchy**: `/api/hierarchy/` (organization, team-structure, departments, reporting)
-- **Authentication**: `/api/auth/` (login, register, profile management)
+- **Authentication**: `/api/auth/` (login, register, profile management) + `/api/auth/change-password` (secure password changes)
 
 ### **Frontend Components:**
 - **Dashboard**: Functional quick actions with Create Project, Manage Teams, View Analytics, and Settings buttons
