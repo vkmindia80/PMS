@@ -417,3 +417,50 @@ async def verify_email(token: str):
     logger.info(f"Email verified for user: {user.email}")
     
     return {"message": "Email verified successfully"}
+
+@router.put("/change-password")
+async def change_password(
+    current_password: str,
+    new_password: str,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Change user password"""
+    db = await get_database()
+    
+    # Verify current password
+    if not verify_password(current_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect"
+        )
+    
+    # Validate new password length
+    if len(new_password) < 8:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password must be at least 8 characters long"
+        )
+    
+    # Hash new password
+    new_password_hash = hash_password(new_password)
+    
+    # Update password in database
+    result = await db.users.update_one(
+        {"id": current_user.id},
+        {
+            "$set": {
+                "password_hash": new_password_hash,
+                "updated_at": datetime.utcnow()
+            }
+        }
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update password"
+        )
+    
+    logger.info(f"Password changed for user: {current_user.email}")
+    
+    return {"message": "Password changed successfully"}
