@@ -24,6 +24,9 @@ load_dotenv()
 
 router = APIRouter(prefix="/api/resource-management", tags=["resource_management"])
 
+# Add enhanced endpoint flag
+ENABLE_ENHANCED_ANALYTICS = True
+
 def clean_mongo_doc(doc):
     """Clean MongoDB document by removing ObjectId fields and converting to JSON-serializable format"""
     from datetime import datetime
