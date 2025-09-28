@@ -91,7 +91,7 @@ async def create_task(
 async def get_tasks(
     project_id: Optional[str] = Query(None, description="Filter by project ID"),
     assignee_id: Optional[str] = Query(None, description="Filter by assignee ID"),
-    status: Optional[TaskStatus] = Query(None, description="Filter by status"),
+    task_status: Optional[TaskStatus] = Query(None, description="Filter by status"),
     priority: Optional[TaskPriority] = Query(None, description="Filter by priority"),
     type: Optional[TaskType] = Query(None, description="Filter by type"),
     search: Optional[str] = Query(None, description="Search in title and description"),
