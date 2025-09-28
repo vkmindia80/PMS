@@ -427,21 +427,21 @@ async def change_password(
     db = await get_database()
     
     # Verify current password
-    if not verify_password(current_password, current_user.password_hash):
+    if not verify_password(password_data.current_password, current_user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Current password is incorrect"
         )
     
-    # Validate new password length
-    if len(new_password) < 8:
+    # Validate new password length (already validated by Pydantic, but double check)
+    if len(password_data.new_password) < 8:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="New password must be at least 8 characters long"
         )
     
     # Hash new password
-    new_password_hash = hash_password(new_password)
+    new_password_hash = hash_password(password_data.new_password)
     
     # Update password in database
     result = await db.users.update_one(
