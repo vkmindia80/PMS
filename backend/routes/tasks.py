@@ -293,11 +293,11 @@ async def get_kanban_board(
                 board_data[status_value.value] = []
             
             for task in tasks:
-                status = task.get("status", "todo")
-                if status not in board_data:
-                    board_data[status] = []
+                task_status = task.get("status", "todo")
+                if task_status not in board_data:
+                    board_data[task_status] = []
                 
-                board_data[status].append(TaskSummary(
+                board_data[task_status].append(TaskSummary(
                     id=task["id"],
                     title=task["title"],
                     status=TaskStatus(task["status"]),
