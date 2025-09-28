@@ -5,10 +5,12 @@ import { Plus, Users, BarChart3, Settings as SettingsIcon } from 'lucide-react'
 import ProjectCreateModal from '../components/project/ProjectCreateModal'
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate()
   const [apiStatus, setApiStatus] = useState<'loading' | 'connected' | 'error'>('loading')
   const [apiData, setApiData] = useState<any>(null)
   const [dbStatus, setDbStatus] = useState<any>(null)
   const [modelsInfo, setModelsInfo] = useState<any>(null)
+  const [showProjectModal, setShowProjectModal] = useState(false)
 
   useEffect(() => {
     const checkApiConnection = async () => {
