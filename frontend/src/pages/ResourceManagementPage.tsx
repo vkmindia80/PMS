@@ -11,6 +11,7 @@ import {
   UserCheck,
   Calendar
 } from 'lucide-react';
+import { getApiUrl } from '../utils/environment';
 
 interface ResourceAllocation {
   current_state: {
