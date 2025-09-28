@@ -127,6 +127,9 @@ const ResourceManagementPage: React.FC = () => {
     setLoading(prev => ({ ...prev, [key]: true }));
     try {
       const token = localStorage.getItem('token');
+      console.log(`Fetching ${key} from ${backendUrl}${endpoint}`);
+      console.log(`Token available: ${!!token}`);
+      
       const response = await fetch(`${backendUrl}${endpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -134,11 +137,14 @@ const ResourceManagementPage: React.FC = () => {
         },
       });
 
+      console.log(`Response status for ${key}: ${response.status}`);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log(`Data received for ${key}:`, data);
         setter(data);
       } else {
-        console.error(`Failed to fetch ${key}:`, response.statusText);
+        console.error(`Failed to fetch ${key}:`, response.status, response.statusText);
       }
     } catch (error) {
       console.error(`Error fetching ${key}:`, error);
