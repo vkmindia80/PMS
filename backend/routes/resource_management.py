@@ -97,8 +97,8 @@ async def get_ai_resource_allocation(
         project_ids = [p["id"] for p in projects]
         org_tasks = [t for t in tasks if t.get("project_id") in project_ids]
         
-        # Analyze current resource allocation with enhanced metrics
-        resource_analysis = analyze_enhanced_resource_utilization(users, org_tasks, projects, teams)
+        # Analyze current resource allocation
+        resource_analysis = analyze_resource_utilization(users, org_tasks, projects)
         
         # Prepare AI context
         ai_context = {
