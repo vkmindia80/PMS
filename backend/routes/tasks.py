@@ -110,8 +110,8 @@ async def get_tasks(
             filter_query["project_id"] = project_id
         if assignee_id:
             filter_query["assignee_id"] = assignee_id
-        if status:
-            filter_query["status"] = status.value
+        if task_status:
+            filter_query["status"] = task_status.value
         if priority:
             filter_query["priority"] = priority.value
         if type:
