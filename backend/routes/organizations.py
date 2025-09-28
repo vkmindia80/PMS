@@ -12,6 +12,7 @@ from models.organization import (
     OrganizationSummary, OrganizationInDB
 )
 from models.user import User, UserRole
+from models.invitation import BulkInvitation, InvitationResponse
 from auth.middleware import get_current_active_user
 
 logger = logging.getLogger(__name__)
