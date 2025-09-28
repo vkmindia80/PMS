@@ -202,25 +202,53 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="card-content">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button className="btn-primary p-4 h-auto flex-col space-y-2" disabled>
+            <button 
+              className="btn-primary p-4 h-auto flex-col space-y-2 transition-all hover:scale-105" 
+              onClick={() => setShowProjectModal(true)}
+            >
+              <Plus className="h-6 w-6" />
               <span className="font-semibold">Create Project</span>
-              <span className="text-xs opacity-75">Coming in Phase 2</span>
+              <span className="text-xs opacity-90">Start a new project</span>
             </button>
-            <button className="btn-secondary p-4 h-auto flex-col space-y-2" disabled>
-              <span className="font-semibold">Add Team Member</span>
-              <span className="text-xs opacity-75">Coming in Phase 2</span>
+            <button 
+              className="btn-secondary p-4 h-auto flex-col space-y-2 transition-all hover:scale-105"
+              onClick={() => navigate('/teams')}
+            >
+              <Users className="h-6 w-6" />
+              <span className="font-semibold">Manage Teams</span>
+              <span className="text-xs opacity-90">Add or manage team members</span>
             </button>
-            <button className="btn-outline p-4 h-auto flex-col space-y-2" disabled>
-              <span className="font-semibold">View Reports</span>
-              <span className="text-xs opacity-75">Coming in Phase 3</span>
+            <button 
+              className="btn-outline p-4 h-auto flex-col space-y-2 transition-all hover:scale-105"
+              onClick={() => navigate('/analytics')}
+            >
+              <BarChart3 className="h-6 w-6" />
+              <span className="font-semibold">View Analytics</span>
+              <span className="text-xs opacity-90">Portfolio insights and reports</span>
             </button>
-            <button className="btn-outline p-4 h-auto flex-col space-y-2" disabled>
+            <button 
+              className="btn-outline p-4 h-auto flex-col space-y-2 transition-all hover:scale-105"
+              onClick={() => navigate('/settings')}
+            >
+              <SettingsIcon className="h-6 w-6" />
               <span className="font-semibold">Settings</span>
-              <span className="text-xs opacity-75">Coming in Phase 1</span>
+              <span className="text-xs opacity-90">Configure system preferences</span>
             </button>
           </div>
         </div>
       </div>
+
+      {/* Project Creation Modal */}
+      {showProjectModal && (
+        <ProjectCreateModal
+          isOpen={showProjectModal}
+          onClose={() => setShowProjectModal(false)}
+          onProjectCreated={() => {
+            setShowProjectModal(false)
+            toast.success('Project created successfully!')
+          }}
+        />
+      )}
     </div>
   )
 }
