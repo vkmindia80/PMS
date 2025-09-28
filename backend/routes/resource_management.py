@@ -154,6 +154,11 @@ async def get_ai_resource_allocation(
         # Calculate potential improvements
         improvement_metrics = calculate_improvement_potential(resource_analysis, ai_recommendations)
         
+        # Add enhanced analytics if enabled
+        enhanced_metrics = {}
+        if ENABLE_ENHANCED_ANALYTICS:
+            enhanced_metrics = generate_enhanced_analytics_summary(users, org_tasks, projects, teams)
+        
         return {
             "current_state": resource_analysis,
             "ai_recommendations": ai_recommendations,
@@ -161,7 +166,8 @@ async def get_ai_resource_allocation(
             "improvement_metrics": improvement_metrics,
             "action_items": generate_action_items(ai_recommendations, resource_analysis),
             "priority_assignments": suggest_priority_assignments(org_tasks, users),
-            "capacity_forecast": forecast_capacity_needs(projects, org_tasks, users)
+            "capacity_forecast": forecast_capacity_needs(projects, org_tasks, users),
+            "enhanced_analytics": enhanced_metrics
         }
         
     except Exception as e:
