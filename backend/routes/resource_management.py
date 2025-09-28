@@ -638,7 +638,138 @@ async def get_skills_gap_analysis(
             detail=f"Failed to get skills gap analysis: {str(e)}"
         )
 
-# Helper functions for resource management algorithms
+# Enhanced helper functions for resource management algorithms
+def analyze_enhanced_resource_utilization(users, tasks, projects, teams):
+    """Enhanced resource utilization analysis with advanced metrics"""
+    import statistics
+    
+    user_workloads = []
+    team_metrics = {}
+    
+    # Build team lookup
+    team_lookup = {team["id"]: team for team in teams}
+    
+    for user in users:
+        user_id = user["id"]
+        user_tasks = [t for t in tasks if t.get("assignee_id") == user_id]
+        
+        active_tasks = len([t for t in user_tasks if t.get("status") in ["todo", "in_progress"]])
+        completed_tasks = len([t for t in user_tasks if t.get("status") == "completed"])
+        
+        # Enhanced workload metrics
+        estimated_hours = sum(t.get("estimated_hours", 8) for t in user_tasks if t.get("status") in ["todo", "in_progress"])
+        actual_hours = sum(t.get("actual_hours", 0) for t in user_tasks)
+        
+        # Priority-weighted workload
+        priority_weights = {"critical": 3, "high": 2, "medium": 1, "low": 0.5}
+        weighted_workload = sum(
+            t.get("estimated_hours", 8) * priority_weights.get(t.get("priority", "medium"), 1)
+            for t in user_tasks if t.get("status") in ["todo", "in_progress"]
+        )
+        
+        # Overdue tasks analysis
+        overdue_tasks = 0
+        for t in user_tasks:
+            if t.get("due_date") and t.get("status") in ["todo", "in_progress"]:
+                try:
+                    due_date = datetime.fromisoformat(t["due_date"].replace("Z", "+00:00"))
+                    if due_date < datetime.utcnow():
+                        overdue_tasks += 1
+                except:
+                    pass
+        
+        # Calculate capacity utilization with context
+        base_capacity = 40  # Standard work week
+        utilization = min(100, (estimated_hours / base_capacity) * 100)
+        
+        # Skills assessment
+        user_skills = user.get("skills", [])
+        skill_count = len(user_skills)
+        avg_skill_level = statistics.mean([skill.get("level", 5) for skill in user_skills]) if user_skills else 0
+        
+        # Performance indicators
+        efficiency_ratio = (actual_hours / max(estimated_hours, 1)) if estimated_hours > 0 else 1.0
+        task_completion_rate = (completed_tasks / max(len(user_tasks), 1)) * 100
+        
+        # Stress and availability assessment
+        stress_factors = {
+            "overdue_tasks": overdue_tasks * 15,
+            "high_workload": max(0, (utilization - 80)) * 0.5,
+            "task_count": min(active_tasks * 2, 20)
+        }
+        stress_score = min(100, sum(stress_factors.values()))
+        
+        availability_status = determine_enhanced_availability(utilization, stress_score, overdue_tasks)
+        
+        user_workload = {
+            "user_id": user_id,
+            "name": f"{user.get('first_name', '')} {user.get('last_name', '')}".strip(),
+            "role": user.get("role", "member"),
+            "department": user.get("department", "Unknown"),
+            "active_tasks": active_tasks,
+            "completed_tasks": completed_tasks,
+            "estimated_hours": estimated_hours,
+            "actual_hours": actual_hours,
+            "weighted_workload": weighted_workload,
+            "capacity_utilization": round(utilization, 1),
+            "overdue_tasks": overdue_tasks,
+            "skill_count": skill_count,
+            "avg_skill_level": round(avg_skill_level, 1),
+            "efficiency_ratio": round(efficiency_ratio, 2),
+            "task_completion_rate": round(task_completion_rate, 1),
+            "stress_score": round(stress_score, 1),
+            "availability_status": availability_status,
+            "skills": [skill.get("name", "") for skill in user_skills]
+        }
+        
+        user_workloads.append(user_workload)
+    
+    # Calculate team-level metrics
+    for team in teams:
+        team_members = [u for u in user_workloads if u["user_id"] in [m.get("user_id", "") for m in team.get("members", [])]]
+        
+        if team_members:
+            team_metrics[team["id"]] = {
+                "team_name": team["name"],
+                "member_count": len(team_members),
+                "avg_utilization": round(statistics.mean([m["capacity_utilization"] for m in team_members]), 1),
+                "total_hours": sum(m["estimated_hours"] for m in team_members),
+                "avg_stress": round(statistics.mean([m["stress_score"] for m in team_members]), 1),
+                "overloaded_members": len([m for m in team_members if m["stress_score"] > 70]),
+                "available_members": len([m for m in team_members if m["availability_status"] == "available"])
+            }
+    
+    # Overall organizational metrics
+    all_utilizations = [u["capacity_utilization"] for u in user_workloads]
+    utilization_balance = round(100 - (statistics.stdev(all_utilizations) if len(all_utilizations) > 1 else 0), 1)
+    
+    return {
+        "user_workloads": user_workloads,
+        "team_metrics": team_metrics,
+        "organizational_metrics": {
+            "average_utilization": round(statistics.mean(all_utilizations) if all_utilizations else 0, 1),
+            "utilization_balance": utilization_balance,
+            "total_capacity_hours": len(users) * 40,
+            "utilized_hours": sum(u["estimated_hours"] for u in user_workloads),
+            "available_capacity_hours": (len(users) * 40) - sum(u["estimated_hours"] for u in user_workloads),
+            "high_performers": len([u for u in user_workloads if u["efficiency_ratio"] > 1.1 and u["task_completion_rate"] > 80]),
+            "at_risk_members": len([u for u in user_workloads if u["stress_score"] > 80])
+        }
+    }
+
+def determine_enhanced_availability(utilization, stress_score, overdue_tasks):
+    """Determine availability status with enhanced logic"""
+    if stress_score > 80 or overdue_tasks > 3:
+        return "critical"
+    elif utilization > 90 or stress_score > 60:
+        return "overloaded"
+    elif utilization > 70 or overdue_tasks > 0:
+        return "busy"
+    elif utilization < 30:
+        return "available"
+    else:
+        return "optimal"
+
 def analyze_resource_utilization(users, tasks, projects):
     """Analyze current resource utilization across the organization"""
     user_workloads = []
