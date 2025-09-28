@@ -227,7 +227,7 @@ app.add_middleware(
 # Include authentication routes
 app.include_router(auth_router)
 
-# Include organization, team, user, hierarchy, project, task, and analytics management routes
+# Include organization, team, user, hierarchy, project, task, analytics, and resource management routes
 app.include_router(organizations_router)
 app.include_router(teams_router)
 app.include_router(users_router)
@@ -235,6 +235,7 @@ app.include_router(hierarchy_router)
 app.include_router(projects_router)
 app.include_router(tasks_router)
 app.include_router(analytics_router)
+app.include_router(resource_management_router)
 
 # Health check endpoint
 @app.get("/api/health")
