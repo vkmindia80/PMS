@@ -82,6 +82,92 @@ async def test_phase_3_1():
             async with session.get(f"{API_BASE}/api/analytics/portfolio/overview", headers=headers) as resp:
                 if resp.status == 200:
                     data = await resp.json()
-                    overview = data.get("overview", {})\n                    financial = data.get("financial", {})\n                    trends = data.get("trends", {})\n                    alerts = data.get("alerts", [])\n                    \n                    print(f\"📈 Project Health Score: {overview.get('project_health_score', 0)}%\")\n                    print(f\"👥 Resource Utilization: {overview.get('resource_utilization', 0)}%\")\n                    print(f\"💰 Budget Utilization: {overview.get('budget_utilization', 0)}%\")\n                    print(f\"⚠️ Risk Score: {overview.get('risk_score', 0)}%\")\n                    print(f\"💵 Total Budget: ${financial.get('total_budget', 0):,}\")\n                    print(f\"💸 Spent Budget: ${financial.get('spent_budget', 0):,}\")\n                    print(f\"🚨 Active Alerts: {len(alerts)}\")\n                    \n                    if alerts:\n                        print(\"\🚨 Alert Details:\")\n                        for alert in alerts[:3]:  # Show first 3 alerts\n                            print(f\"   - {alert.get('title', 'Unknown')}: {alert.get('message', 'No message')}\")\n        except Exception as e:\n            print(f\"❌ Error testing enhanced overview: {e}\")\n        \n        # Resource Utilization Summary\n        try:\n            async with session.get(f"{API_BASE}/api/analytics/resource/utilization", headers=headers) as resp:\n                if resp.status == 200:\n                    data = await resp.json()\n                    summary = data.get(\"summary\", {})\n                    capacity = data.get(\"capacity_forecast\", {})\n                    recommendations = data.get(\"recommendations\", [])\n                    \n                    print(f\"\\n👥 Resource Planning:\")\n                    print(f\"   - Total Users: {summary.get('total_users', 0)}\")\n                    print(f\"   - Optimal Utilization: {summary.get('optimal_users', 0)} users\")\n                    print(f\"   - Overutilized: {summary.get('overutilized_users', 0)} users\")\n                    print(f\"   - Available Capacity: {capacity.get('available_capacity', 0)} tasks\")\n                    print(f\"   - Recommendations: {len(recommendations)}\")\n        except Exception as e:\n            print(f\"❌ Error testing resource utilization: {e}\")\n        \n        # Gantt Timeline Summary\n        try:\n            async with session.get(f"{API_BASE}/api/analytics/timeline/gantt", headers=headers) as resp:\n                if resp.status == 200:\n                    data = await resp.json()\n                    summary = data.get(\"summary\", {})\n                    insights = data.get(\"insights\", {})\n                    milestones = insights.get(\"upcoming_milestones\", [])\n                    \n                    print(f\"\\n📅 Timeline & Gantt:\")\n                    print(f\"   - Projects On Schedule: {summary.get('projects_on_schedule', 0)}\")\n                    print(f\"   - Projects Behind: {summary.get('projects_behind_schedule', 0)}\")\n                    print(f\"   - Critical Tasks: {summary.get('critical_tasks', 0)}\")\n                    print(f\"   - Schedule Variance: {insights.get('schedule_variance', 0)} days\")\n                    print(f\"   - Upcoming Milestones: {len(milestones)}\")\n        except Exception as e:\n            print(f\"❌ Error testing gantt timeline: {e}\")\n        \n        print(\"\\n\" + \"=\" * 60)\n        print(\"🎯 PHASE 3.1 COMPLETION SUMMARY:\")\n        print(\"=\" * 60)\n        \n        success_count = sum(1 for result in results.values() if \"SUCCESS\" in result[\"status\"])\n        total_count = len(results)\n        \n        print(f\"✅ Successfully implemented: {success_count}/{total_count} features\")\n        print(f\"📊 Advanced Analytics: {'✅ COMPLETE' if success_count >= 6 else '⚠️ PARTIAL'}\")\n        print(f\"🎨 Enhanced UI: {'✅ COMPLETE' if success_count >= 6 else '⚠️ PARTIAL'}\")\n        print(f\"📈 Real-time Data: {'✅ COMPLETE' if success_count >= 6 else '⚠️ PARTIAL'}\")\n        print(f\"🔄 Auto-refresh: {'✅ IMPLEMENTED' if success_count >= 6 else '⚠️ PENDING'}\")\n        \n        if success_count == total_count:\n            print(\"\\n🏆 PHASE 3.1: PORTFOLIO DASHBOARD & ANALYTICS - COMPLETE!\")\n            print(\"✨ All enhanced analytics features are fully operational\")\n            print(\"🚀 Ready for Phase 3.2 or next development phase\")\n        else:\n            print(f\"\\n⚠️ PHASE 3.1: {success_count}/{total_count} features working\")\n            print(\"🔧 Some features may need attention\")\n        \n        print(f\"\\n🌐 External Access: https://enterprise-guide-4.preview.emergentagent.com/analytics\")\n        print(f\"🔑 Demo Login: demo@company.com / demo123456\")\n        \n        return success_count == total_count
+                    overview = data.get("overview", {})
+                    financial = data.get("financial", {})
+                    trends = data.get("trends", {})
+                    alerts = data.get("alerts", [])
+                    
+                    print(f"📈 Project Health Score: {overview.get('project_health_score', 0)}%")
+                    print(f"👥 Resource Utilization: {overview.get('resource_utilization', 0)}%")
+                    print(f"💰 Budget Utilization: {overview.get('budget_utilization', 0)}%")
+                    print(f"⚠️ Risk Score: {overview.get('risk_score', 0)}%")
+                    print(f"💵 Total Budget: ${financial.get('total_budget', 0):,}")
+                    print(f"💸 Spent Budget: ${financial.get('spent_budget', 0):,}")
+                    print(f"🚨 Active Alerts: {len(alerts)}")
+                    
+                    if alerts:
+                        print("\🚨 Alert Details:")
+                        for alert in alerts[:3]:  # Show first 3 alerts
+                            print(f"   - {alert.get('title', 'Unknown')}: {alert.get('message', 'No message')}")
+        except Exception as e:
+            print(f"❌ Error testing enhanced overview: {e}")
+        
+        # Resource Utilization Summary
+        try:
+            async with session.get(f"{API_BASE}/api/analytics/resource/utilization", headers=headers) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    summary = data.get("summary", {})
+                    capacity = data.get("capacity_forecast", {})
+                    recommendations = data.get("recommendations", [])
+                    
+                    print(f"\
+👥 Resource Planning:")
+                    print(f"   - Total Users: {summary.get('total_users', 0)}")
+                    print(f"   - Optimal Utilization: {summary.get('optimal_users', 0)} users")
+                    print(f"   - Overutilized: {summary.get('overutilized_users', 0)} users")
+                    print(f"   - Available Capacity: {capacity.get('available_capacity', 0)} tasks")
+                    print(f"   - Recommendations: {len(recommendations)}")
+        except Exception as e:
+            print(f"❌ Error testing resource utilization: {e}")
+        
+        # Gantt Timeline Summary
+        try:
+            async with session.get(f"{API_BASE}/api/analytics/timeline/gantt", headers=headers) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    summary = data.get("summary", {})
+                    insights = data.get("insights", {})
+                    milestones = insights.get("upcoming_milestones", [])
+                    
+                    print(f"\
+📅 Timeline & Gantt:")
+                    print(f"   - Projects On Schedule: {summary.get('projects_on_schedule', 0)}")
+                    print(f"   - Projects Behind: {summary.get('projects_behind_schedule', 0)}")
+                    print(f"   - Critical Tasks: {summary.get('critical_tasks', 0)}")
+                    print(f"   - Schedule Variance: {insights.get('schedule_variance', 0)} days")
+                    print(f"   - Upcoming Milestones: {len(milestones)}")
+        except Exception as e:
+            print(f"❌ Error testing gantt timeline: {e}")
+        
+        print("\
+" + "=" * 60)
+        print("🎯 PHASE 3.1 COMPLETION SUMMARY:")
+        print("=" * 60)
+        
+        success_count = sum(1 for result in results.values() if "SUCCESS" in result["status"])
+        total_count = len(results)
+        
+        print(f"✅ Successfully implemented: {success_count}/{total_count} features")
+        print(f"📊 Advanced Analytics: {'✅ COMPLETE' if success_count >= 6 else '⚠️ PARTIAL'}")
+        print(f"🎨 Enhanced UI: {'✅ COMPLETE' if success_count >= 6 else '⚠️ PARTIAL'}")
+        print(f"📈 Real-time Data: {'✅ COMPLETE' if success_count >= 6 else '⚠️ PARTIAL'}")
+        print(f"🔄 Auto-refresh: {'✅ IMPLEMENTED' if success_count >= 6 else '⚠️ PENDING'}")
+        
+        if success_count == total_count:
+            print("\
+🏆 PHASE 3.1: PORTFOLIO DASHBOARD & ANALYTICS - COMPLETE!")
+            print("✨ All enhanced analytics features are fully operational")
+            print("🚀 Ready for Phase 3.2 or next development phase")
+        else:
+            print(f"\
+⚠️ PHASE 3.1: {success_count}/{total_count} features working")
+            print("🔧 Some features may need attention")
+        
+        print(f"\
+🌐 External Access: https://enterprise-guide-4.preview.emergentagent.com/analytics")
+        print(f"🔑 Demo Login: demo@company.com / demo123456")
+        
+        return success_count == total_count
 
 if __name__ == \"__main__\":\n    success = asyncio.run(test_phase_3_1())\n    print(f\"\\n{'🎉 PHASE 3.1 COMPLETE!' if success else '⚠️ PHASE 3.1 NEEDS ATTENTION'}\")\n    exit(0 if success else 1)\n
