@@ -103,8 +103,8 @@ async def get_tasks(
     try:
         db = await get_database()
         
-        # Build filter query
-        filter_query = {}
+        # Build filter query - always filter by organization
+        filter_query = {"organization_id": current_user.organization_id}
         
         if project_id:
             filter_query["project_id"] = project_id
