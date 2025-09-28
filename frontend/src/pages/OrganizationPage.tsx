@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import RoleManagement from '../components/organization/RoleManagement'
 import HierarchyVisualization from '../components/organization/HierarchyVisualization'
+import InviteMembersModal from '../components/organization/InviteMembersModal'
 import { 
   Building2, Users, Settings, Plus, Search, Filter,
   MoreVertical, Edit, Trash2, UserPlus, Shield, 
