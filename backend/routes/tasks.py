@@ -631,8 +631,8 @@ async def get_task_analytics(
         
         for task in tasks:
             # Status counts
-            status = task.get("status", "todo")
-            status_counts[status] = status_counts.get(status, 0) + 1
+            task_status = task.get("status", "todo")
+            status_counts[task_status] = status_counts.get(task_status, 0) + 1
             
             # Priority counts
             priority = task.get("priority", "medium")
