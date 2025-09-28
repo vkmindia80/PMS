@@ -174,13 +174,25 @@ async def list_projects(
         # Convert to ProjectSummary format
         project_summaries = []
         for project in projects:
+            # Handle due_date conversion from datetime string to date
+            due_date = None
+            if project.get("due_date"):
+                due_date_str = project["due_date"]
+                if isinstance(due_date_str, str):
+                    try:
+                        due_date = datetime.fromisoformat(due_date_str.replace("Z", "+00:00")).date()
+                    except:
+                        due_date = None
+                elif hasattr(due_date_str, 'date'):
+                    due_date = due_date_str.date()
+            
             project_summary = {
                 "id": project["id"],
                 "name": project["name"],
                 "status": project["status"],
                 "priority": project["priority"],
                 "progress_percentage": project.get("progress_percentage", 0),
-                "due_date": project.get("due_date"),
+                "due_date": due_date,
                 "owner_id": project["owner_id"],
                 "task_count": project.get("task_count", 0),
                 "team_member_count": len(project.get("team_members", []))
