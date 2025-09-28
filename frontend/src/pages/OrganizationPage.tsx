@@ -281,7 +281,10 @@ const OrganizationPage: React.FC = () => {
                     <Edit className="h-4 w-4 mr-2" />
                     Edit
                   </button>
-                  <button className="btn-primary">
+                  <button 
+                    className="btn-primary"
+                    onClick={() => setShowInviteModal(true)}
+                  >
                     <UserPlus className="h-4 w-4 mr-2" />
                     Invite Members
                   </button>
