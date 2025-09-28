@@ -170,4 +170,7 @@ async def test_phase_3_1():
         
         return success_count == total_count
 
-if __name__ == \"__main__\":\n    success = asyncio.run(test_phase_3_1())\n    print(f\"\\n{'🎉 PHASE 3.1 COMPLETE!' if success else '⚠️ PHASE 3.1 NEEDS ATTENTION'}\")\n    exit(0 if success else 1)\n
+if __name__ == "__main__":
+    success = asyncio.run(test_phase_3_1())
+    print(f"\n{'🎉 PHASE 3.1 COMPLETE!' if success else '⚠️ PHASE 3.1 NEEDS ATTENTION'}")
+    exit(0 if success else 1)
