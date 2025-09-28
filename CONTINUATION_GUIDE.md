@@ -294,9 +294,9 @@ tail -f /var/log/supervisor/backend.*.log
 ```
 
 ### **🌐 Access Points:**
-- **Main Application**: https://code-expand.preview.emergentagent.com
-- **Resource Management**: https://code-expand.preview.emergentagent.com/resource-management
-- **API Documentation**: https://code-expand.preview.emergentagent.com/docs
+- **Main Application**: https://portfolio-guide-3.preview.emergentagent.com
+- **Resource Management**: https://portfolio-guide-3.preview.emergentagent.com/resource-management
+- **API Documentation**: https://portfolio-guide-3.preview.emergentagent.com/docs
 - **Local Development**: http://localhost:3000
 
 ---
@@ -393,5 +393,5 @@ tail -f /var/log/supervisor/backend.*.log
 **Last Updated**: December 2024 - Phase 3.2 Enhanced Resource Management & AI Analytics Complete
 **System Status**: 🟢 **PRODUCTION READY** - All major systems operational with advanced AI capabilities
 **Next Session**: "Implement Phase 4.1 Advanced Integrations & Machine Learning" - System ready for ML enhancement and external system integrations
-**External URL**: ✅ https://code-expand.preview.emergentagent.com **CONFIRMED OPERATIONAL**
+**External URL**: ✅ https://portfolio-guide-3.preview.emergentagent.com **CONFIRMED OPERATIONAL**
 **Demo Credentials**: demo@company.com / demo123456 **READY FOR IMMEDIATE EVALUATION**
