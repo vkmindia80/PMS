@@ -607,6 +607,20 @@ const OrganizationPage: React.FC = () => {
           </>
         )}
       </div>
+
+      {/* Invite Members Modal */}
+      <InviteMembersModal
+        isOpen={showInviteModal}
+        onClose={() => setShowInviteModal(false)}
+        organizationId={organization?.id}
+        onMembersInvited={() => {
+          setShowInviteModal(false)
+          // Refresh members list
+          if (organization) {
+            fetchMembers(organization.id)
+          }
+        }}
+      />
     </div>
   )
 }
