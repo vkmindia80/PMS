@@ -375,11 +375,11 @@ tail -f /var/log/supervisor/frontend.*.log
 ```
 
 ### **🌐 Access Points (August 2025):**
-- **Main Application**: https://portfolio-guide-3.preview.emergentagent.com
-- **Resource Management**: https://portfolio-guide-3.preview.emergentagent.com/resource-management
-- **AI Analytics Dashboard**: https://portfolio-guide-3.preview.emergentagent.com/analytics
-- **API Documentation**: https://portfolio-guide-3.preview.emergentagent.com/docs
-- **System Health**: https://portfolio-guide-3.preview.emergentagent.com/health
+- **Main Application**: https://portfolio-roadmap-1.preview.emergentagent.com
+- **Resource Management**: https://portfolio-roadmap-1.preview.emergentagent.com/resource-management
+- **AI Analytics Dashboard**: https://portfolio-roadmap-1.preview.emergentagent.com/analytics
+- **API Documentation**: https://portfolio-roadmap-1.preview.emergentagent.com/docs
+- **System Health**: https://portfolio-roadmap-1.preview.emergentagent.com/health
 - **Local Development**: http://localhost:3000
 
 ---
@@ -483,7 +483,7 @@ tail -f /var/log/supervisor/frontend.*.log
 **Last Updated**: August 2025 - Phase 3.2 Enhanced Resource Management & AI Analytics Complete
 **System Status**: 🟢 **PRODUCTION READY** - All major systems operational with advanced AI capabilities
 **Next Session**: "Implement Phase 4.1 Advanced AI/ML Integration & Modern Ecosystem" - System ready for next-generation AI enhancement and modern integration ecosystem
-**External URL**: ✅ https://portfolio-guide-3.preview.emergentagent.com **CONFIRMED OPERATIONAL**
+**External URL**: ✅ https://portfolio-roadmap-1.preview.emergentagent.com **CONFIRMED OPERATIONAL**
 **Demo Credentials**: demo@company.com / demo123456 **READY FOR IMMEDIATE EVALUATION**
 
 **🚀 Market Position**: **NEXT-GENERATION AI-POWERED ENTERPRISE PORTFOLIO MANAGEMENT PLATFORM** ready for 2025 technology trends and modern enterprise requirements.

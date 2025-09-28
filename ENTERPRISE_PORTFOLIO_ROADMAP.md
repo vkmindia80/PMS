@@ -350,7 +350,7 @@
 
 ### **Current Environment**
 - ✅ **Local Development**: Fully functional on localhost
-- ✅ **External Access**: Available at https://portfolio-guide-3.preview.emergentagent.com
+- ✅ **External Access**: Available at https://portfolio-roadmap-1.preview.emergentagent.com
 - ✅ **Service Management**: Supervisor-based process management
 - ✅ **Database**: MongoDB with comprehensive indexing
 - ✅ **Authentication**: JWT-based with demo credentials ready
