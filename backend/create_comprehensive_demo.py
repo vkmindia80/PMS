@@ -269,7 +269,9 @@ class ComprehensiveDemoCreator:
                 role = "member"
             
             # Select skills based on role type
-            user_skills = random.sample(self.skill_sets[role_type], k=random.randint(3, 6))
+            available_skills = self.skill_sets[role_type]
+            skill_count = min(len(available_skills), random.randint(3, 6))
+            user_skills = random.sample(available_skills, k=skill_count)
             
             user_data = {
                 "id": user_id,
