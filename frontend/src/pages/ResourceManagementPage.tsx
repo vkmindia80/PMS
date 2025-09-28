@@ -118,7 +118,10 @@ const ResourceManagementPage: React.FC = () => {
   const [skillsGapAnalysis, setSkillsGapAnalysis] = useState<SkillsGapAnalysis | null>(null);
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+  // Use localhost for local development, external URL for production
+  const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:8001' 
+    : (import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001');
 
   const fetchData = async (endpoint: string, setter: Function, key: string) => {
     setLoading(prev => ({ ...prev, [key]: true }));
