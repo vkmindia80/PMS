@@ -240,3 +240,17 @@ class PasswordResetConfirm(BaseModel):
     token: str = Field(..., description="Password reset token")
     new_password: str = Field(..., min_length=8, description="New password")
     confirm_password: str = Field(..., description="Password confirmation")
+
+class PasswordChange(BaseModel):
+    """Password change schema"""
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "current_password": "currentpassword123",
+                "new_password": "newsecurepassword123"
+            }
+        }
+    )
+    
+    current_password: str = Field(..., description="Current password")
+    new_password: str = Field(..., min_length=8, description="New password")
