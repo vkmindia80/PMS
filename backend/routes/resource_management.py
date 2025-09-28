@@ -1003,6 +1003,86 @@ def calculate_simple_match_score(user, task):
     
     return min(100, base_score)
 
+def generate_enhanced_analytics_summary(users, tasks, projects, teams):
+    """Generate enhanced analytics summary for the standard endpoint"""
+    import statistics
+    
+    try:
+        # Team distribution analysis
+        team_distribution = {}
+        for team in teams:
+            team_distribution[team["name"]] = len(team.get("members", []))
+        
+        # Project status distribution
+        project_statuses = {}
+        for project in projects:
+            status = project.get("status", "unknown")
+            project_statuses[status] = project_statuses.get(status, 0) + 1
+        
+        # Task priority distribution
+        priority_distribution = {}
+        for task in tasks:
+            priority = task.get("priority", "medium")
+            priority_distribution[priority] = priority_distribution.get(priority, 0) + 1
+        
+        # Skills analysis
+        all_skills = set()
+        skill_levels = []
+        for user in users:
+            for skill in user.get("skills", []):
+                if isinstance(skill, dict):
+                    all_skills.add(skill.get("name", ""))
+                    skill_levels.append(skill.get("level", 5))
+                else:
+                    all_skills.add(skill)
+                    skill_levels.append(5)  # Default level
+        
+        # Performance metrics
+        completed_tasks = [t for t in tasks if t.get("status") == "completed"]
+        overdue_tasks = []
+        for task in tasks:
+            if task.get("due_date") and task.get("status") in ["todo", "in_progress"]:
+                try:
+                    due_date = datetime.fromisoformat(task["due_date"].replace("Z", "+00:00"))
+                    if due_date < datetime.utcnow():
+                        overdue_tasks.append(task)
+                except:
+                    pass
+        
+        return {
+            "team_distribution": team_distribution,
+            "project_status_breakdown": project_statuses,
+            "task_priority_distribution": priority_distribution,
+            "skills_summary": {
+                "total_unique_skills": len(all_skills),
+                "average_skill_level": round(statistics.mean(skill_levels) if skill_levels else 0, 1),
+                "top_skills": list(all_skills)[:10]  # Top 10 skills
+            },
+            "performance_indicators": {
+                "total_tasks": len(tasks),
+                "completed_tasks": len(completed_tasks),
+                "completion_rate": round(len(completed_tasks) / max(len(tasks), 1) * 100, 1),
+                "overdue_tasks": len(overdue_tasks),
+                "on_time_performance": round((1 - len(overdue_tasks) / max(len(tasks), 1)) * 100, 1)
+            },
+            "resource_insights": {
+                "total_team_members": len(users),
+                "teams_count": len(teams),
+                "active_projects": len([p for p in projects if p.get("status") == "active"]),
+                "workload_distribution": "balanced" if len(overdue_tasks) < len(tasks) * 0.1 else "unbalanced"
+            }
+        }
+    except Exception as e:
+        return {
+            "error": f"Enhanced analytics calculation failed: {str(e)}",
+            "basic_metrics": {
+                "users": len(users),
+                "tasks": len(tasks),
+                "projects": len(projects),
+                "teams": len(teams)
+            }
+        }
+
 # Additional helper functions for other endpoints would go here...
 # (Due to length constraints, I'll implement the remaining functions in the next file)
 
