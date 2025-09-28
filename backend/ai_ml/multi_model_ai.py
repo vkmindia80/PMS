@@ -8,7 +8,9 @@ import json
 from typing import Dict, List, Any, Optional, Union
 from datetime import datetime
 import logging
-from emergentintegrations import use_openai, use_anthropic, use_google
+
+# Import the Emergent LLM key functionality
+from emergentintegrations import get_llm_key
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +18,7 @@ class MultiModelAIService:
     """Advanced AI service supporting multiple LLM providers"""
     
     def __init__(self):
+        self.api_key = get_llm_key()  # Get the universal LLM key
         self.models = {
             "gpt-4o": {
                 "provider": "openai",
