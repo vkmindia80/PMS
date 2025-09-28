@@ -26,18 +26,29 @@ router = APIRouter(prefix="/api/resource-management", tags=["resource_management
 
 def clean_mongo_doc(doc):
     """Clean MongoDB document by removing ObjectId fields and converting to JSON-serializable format"""
+    from datetime import datetime
+    from bson import ObjectId
+    
     if isinstance(doc, dict):
         cleaned = {}
         for key, value in doc.items():
             if key == '_id':
                 continue  # Skip MongoDB ObjectId
+            elif isinstance(value, ObjectId):
+                cleaned[key] = str(value)  # Convert ObjectId to string
+            elif isinstance(value, datetime):
+                cleaned[key] = value.isoformat()  # Convert datetime to ISO string
             elif isinstance(value, dict):
                 cleaned[key] = clean_mongo_doc(value)
             elif isinstance(value, list):
-                cleaned[key] = [clean_mongo_doc(item) if isinstance(item, dict) else item for item in value]
+                cleaned[key] = [clean_mongo_doc(item) if isinstance(item, (dict, ObjectId, datetime)) else item for item in value]
             else:
                 cleaned[key] = value
         return cleaned
+    elif isinstance(doc, ObjectId):
+        return str(doc)
+    elif isinstance(doc, datetime):
+        return doc.isoformat()
     return doc
 
 def clean_mongo_docs(docs):
