@@ -163,31 +163,29 @@ Build a comprehensive enterprise-grade SaaS platform for portfolio and project m
 
 ### 🚧 NEXT PHASE - READY FOR IMPLEMENTATION
 
-#### Phase 3.1: Portfolio Dashboard & Analytics (READY) 🎯
-**Priority**: **HIGH** - Essential for enterprise portfolio management
+#### Phase 3.2: Resource Management & Allocation (NEXT PRIORITY) 🎯
+**Priority**: **HIGH** - Advanced resource optimization and management
 **Estimated Credits**: 8-9 credits
 
 **Implementation Focus:**
-- **Project Health Indicators**: Real-time status monitoring across all projects
-- **Resource Utilization Charts**: Team workload and capacity visualization
-- **Timeline Visualizations**: Gantt charts and milestone tracking
-- **Budget Tracking Analytics**: Financial performance and cost analysis
-- **Risk Assessment Metrics**: Automated risk identification and alerts
-- **Team Performance Dashboards**: Individual and team productivity insights
-- **Executive Summary Views**: High-level KPIs for leadership
-- **Interactive Data Visualization**: Chart.js integration with responsive design
+- **Advanced Resource Planning**: AI-powered resource allocation optimization
+- **Skills-Based Task Assignment**: Intelligent task routing based on team member skills and availability
+- **Capacity Planning Dashboard**: Predictive capacity analysis with forecasting models
+- **Resource Conflict Detection**: Automated scheduling conflict identification and resolution suggestions
+- **Vacation & Leave Management**: Integrated time-off tracking with resource impact analysis
+- **Resource Optimization Engine**: AI-driven recommendations for optimal resource distribution
+- **Workload Balancing**: Automated alerts for overloaded team members with rebalancing suggestions
+- **Skills Gap Analysis**: Identification of skill shortages and training recommendations
 
 **Success Criteria:**
-- [ ] Comprehensive portfolio overview dashboard
-- [ ] Real-time project health monitoring
-- [ ] Resource allocation visualization
-- [ ] Budget tracking and financial analytics
-- [ ] Risk assessment and early warning system
-- [ ] Team performance metrics and insights
-- [ ] Executive-level reporting capabilities
-
-**Implementation Prompt:**
-"Create comprehensive portfolio dashboard using existing Project, Task, Team, and User models. Build: project health indicators with status tracking, resource utilization charts showing team workload, timeline visualizations with Gantt charts, budget tracking analytics with variance reporting, risk assessment metrics with automated alerts, team performance dashboards with productivity insights. Use Chart.js for data visualization with responsive design and real-time updates. Include executive summary views and drill-down capabilities."
+- [ ] Intelligent resource allocation system
+- [ ] Skills-based task assignment automation
+- [ ] Predictive capacity planning with forecasting
+- [ ] Automated conflict detection and resolution
+- [ ] Integrated leave management system
+- [ ] AI-powered resource optimization
+- [ ] Real-time workload balancing
+- [ ] Skills gap analysis and recommendations
 
 ---
 
