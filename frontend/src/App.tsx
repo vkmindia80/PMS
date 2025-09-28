@@ -108,6 +108,14 @@ const AppContent: React.FC = () => {
             } 
           />
           <Route 
+            path="/ai-ml" 
+            element={
+              <ProtectedRoute>
+                <AIMLDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/settings" 
             element={
               <ProtectedRoute>
