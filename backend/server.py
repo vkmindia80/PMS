@@ -22,6 +22,7 @@ from routes.projects import router as projects_router
 from routes.tasks import router as tasks_router
 from routes.analytics import router as analytics_router
 from routes.resource_management import router as resource_management_router
+from routes.enhanced_resource_management import router as enhanced_resource_management_router
 
 # Import models
 from models import (
