@@ -201,7 +201,7 @@ const Dashboard: React.FC = () => {
           <p className="card-description">Get started with these common actions</p>
         </div>
         <div className="card-content">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <button 
               className="btn-primary p-4 h-auto flex-col space-y-2 transition-all hover:scale-105" 
               onClick={() => setShowProjectModal(true)}
@@ -225,6 +225,14 @@ const Dashboard: React.FC = () => {
               <BarChart3 className="h-6 w-6" />
               <span className="font-semibold">View Analytics</span>
               <span className="text-xs opacity-90">Portfolio insights and reports</span>
+            </button>
+            <button 
+              className="btn-outline p-4 h-auto flex-col space-y-2 transition-all hover:scale-105 bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200 hover:border-purple-300"
+              onClick={() => navigate('/resource-management')}
+            >
+              <Brain className="h-6 w-6 text-purple-600" />
+              <span className="font-semibold text-purple-700">AI Resources</span>
+              <span className="text-xs opacity-90 text-purple-600">Smart resource optimization</span>
             </button>
             <button 
               className="btn-outline p-4 h-auto flex-col space-y-2 transition-all hover:scale-105"
