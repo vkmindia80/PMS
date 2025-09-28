@@ -600,7 +600,34 @@ const OrganizationPage: React.FC = () => {
               <div className="space-y-6">
                 <div className="bg-white rounded-lg shadow p-6">
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Organization Settings</h3>
-                  <p className="text-gray-600">Settings management coming in next phase...</p>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-md">
+                      <p className="text-blue-700">
+                        <strong>Comprehensive Settings Available:</strong> Visit the main Settings page for complete
+                        organization configuration, user preferences, notifications, and security settings.
+                      </p>
+                      <button
+                        onClick={() => window.location.href = '/settings'}
+                        className="mt-3 btn-primary btn-sm"
+                      >
+                        Open Settings Page
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 border border-gray-200 rounded-md">
+                        <h4 className="font-medium text-gray-900 mb-2">Current Organization</h4>
+                        <p className="text-sm text-gray-600 mb-2">{organization?.name}</p>
+                        <p className="text-xs text-gray-500">{organization?.type} • {organization?.industry}</p>
+                      </div>
+                      
+                      <div className="p-4 border border-gray-200 rounded-md">
+                        <h4 className="font-medium text-gray-900 mb-2">Member Count</h4>
+                        <p className="text-sm text-gray-600 mb-2">{stats?.member_count || 0} active members</p>
+                        <p className="text-xs text-gray-500">Across {stats?.team_count || 0} teams</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
