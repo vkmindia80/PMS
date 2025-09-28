@@ -24,6 +24,26 @@ load_dotenv()
 
 router = APIRouter(prefix="/api/resource-management", tags=["resource_management"])
 
+def clean_mongo_doc(doc):
+    """Clean MongoDB document by removing ObjectId fields and converting to JSON-serializable format"""
+    if isinstance(doc, dict):
+        cleaned = {}
+        for key, value in doc.items():
+            if key == '_id':
+                continue  # Skip MongoDB ObjectId
+            elif isinstance(value, dict):
+                cleaned[key] = clean_mongo_doc(value)
+            elif isinstance(value, list):
+                cleaned[key] = [clean_mongo_doc(item) if isinstance(item, dict) else item for item in value]
+            else:
+                cleaned[key] = value
+        return cleaned
+    return doc
+
+def clean_mongo_docs(docs):
+    """Clean a list of MongoDB documents"""
+    return [clean_mongo_doc(doc) for doc in docs]
+
 # Initialize AI chat for resource optimization
 async def get_ai_chat():
     """Initialize AI chat for resource management recommendations"""
