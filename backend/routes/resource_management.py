@@ -375,9 +375,14 @@ async def detect_resource_conflicts(
         db = await get_database()
         org_id = current_user.organization_id
         
-        users = await db.users.find({"organization_id": org_id}).to_list(length=None)
-        projects = await db.projects.find({"organization_id": org_id}).to_list(length=None)
-        tasks = await db.tasks.find({}).to_list(length=None)
+        users_raw = await db.users.find({"organization_id": org_id}).to_list(length=None)
+        projects_raw = await db.projects.find({"organization_id": org_id}).to_list(length=None)
+        tasks_raw = await db.tasks.find({}).to_list(length=None)
+        
+        # Clean MongoDB ObjectIds
+        users = clean_mongo_docs(users_raw)
+        projects = clean_mongo_docs(projects_raw)
+        tasks = clean_mongo_docs(tasks_raw)
         
         # Filter tasks for organization
         project_ids = [p["id"] for p in projects]
