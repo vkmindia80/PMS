@@ -81,7 +81,7 @@ const RoleManagement: React.FC = () => {
       if (statusFilter) params.append('status', statusFilter)
       params.append('limit', '100')
 
-      const response = await fetch(`${API_URL}/api/users?${params}`, {
+      const response = await fetch(`${API_URL}/api/users/?${params}`, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
