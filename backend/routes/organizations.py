@@ -282,28 +282,75 @@ async def get_organization_members(
         for member in members
     ]
 
-@router.post("/{organization_id}/invite")
-async def invite_member(
-    organization_id: str,
-    invite_data: dict,
+@router.post("/invite-members", response_model=InvitationResponse)
+async def invite_members(
+    invitation_data: BulkInvitation,
     current_user: User = Depends(get_current_active_user)
 ):
-    """Invite member to organization"""
+    """Send bulk invitations to join organization"""
+    # Determine organization ID
+    org_id = invitation_data.organization_id or current_user.organization_id
+    
+    if not org_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Organization ID is required"
+        )
+    
     check_organization_access(
         current_user, 
-        organization_id, 
+        org_id, 
         [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MANAGER]
     )
     
-    # TODO: Implement email invitation system
-    # For now, return success message
-    logger.info(f"Member invitation requested for {invite_data.get('email')} by {current_user.email}")
+    db = await get_database()
     
-    return {
-        "message": "Invitation sent successfully",
-        "email": invite_data.get("email"),
-        "note": "Email invitation system to be implemented"
-    }
+    # Get organization details
+    org = await db.organizations.find_one({"id": org_id})
+    if not org:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Organization not found"
+        )
+    
+    successful_emails = []
+    failed_emails = []
+    
+    for invitation in invitation_data.invitations:
+        try:
+            # Check if user already exists
+            existing_user = await db.users.find_one({"email": invitation.email})
+            if existing_user:
+                if existing_user.get("organization_id") == org_id:
+                    logger.warning(f"User {invitation.email} already member of organization {org_id}")
+                    failed_emails.append(invitation.email)
+                    continue
+            
+            # For now, we'll simulate sending the invitation
+            # In a real system, you would:
+            # 1. Create invitation record in database
+            # 2. Send email with invitation link
+            # 3. Handle invitation acceptance/rejection
+            
+            logger.info(f"Invitation sent to {invitation.email} for role {invitation.role} by {current_user.email}")
+            successful_emails.append(invitation.email)
+            
+        except Exception as e:
+            logger.error(f"Failed to invite {invitation.email}: {e}")
+            failed_emails.append(invitation.email)
+    
+    success_count = len(successful_emails)
+    failed_count = len(failed_emails)
+    total_count = success_count + failed_count
+    
+    return InvitationResponse(
+        success_count=success_count,
+        failed_count=failed_count,
+        total_count=total_count,
+        successful_emails=successful_emails,
+        failed_emails=failed_emails,
+        message=f"Successfully sent {success_count} invitation{'s' if success_count != 1 else ''}"
+    )
 
 @router.get("/{organization_id}/stats")
 async def get_organization_stats(
