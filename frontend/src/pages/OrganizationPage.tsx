@@ -65,6 +65,7 @@ const OrganizationPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'members' | 'roles' | 'hierarchy' | 'settings'>('overview')
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [showEditForm, setShowEditForm] = useState(false)
+  const [showInviteModal, setShowInviteModal] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   
   // Get API URL consistently
