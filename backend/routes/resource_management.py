@@ -456,10 +456,16 @@ async def get_workload_balancing(
         db = await get_database()
         org_id = current_user.organization_id
         
-        users = await db.users.find({"organization_id": org_id}).to_list(length=None)
-        projects = await db.projects.find({"organization_id": org_id}).to_list(length=None)
-        tasks = await db.tasks.find({}).to_list(length=None)
-        teams = await db.teams.find({"organization_id": org_id}).to_list(length=None)
+        users_raw = await db.users.find({"organization_id": org_id}).to_list(length=None)
+        projects_raw = await db.projects.find({"organization_id": org_id}).to_list(length=None)
+        tasks_raw = await db.tasks.find({}).to_list(length=None)
+        teams_raw = await db.teams.find({"organization_id": org_id}).to_list(length=None)
+        
+        # Clean MongoDB ObjectIds
+        users = clean_mongo_docs(users_raw)
+        projects = clean_mongo_docs(projects_raw)
+        tasks = clean_mongo_docs(tasks_raw)
+        teams = clean_mongo_docs(teams_raw)
         
         # Filter tasks for organization
         project_ids = [p["id"] for p in projects]
@@ -535,10 +541,16 @@ async def get_skills_gap_analysis(
         db = await get_database()
         org_id = current_user.organization_id
         
-        users = await db.users.find({"organization_id": org_id}).to_list(length=None)
-        projects = await db.projects.find({"organization_id": org_id}).to_list(length=None)
-        tasks = await db.tasks.find({}).to_list(length=None)
-        teams = await db.teams.find({"organization_id": org_id}).to_list(length=None)
+        users_raw = await db.users.find({"organization_id": org_id}).to_list(length=None)
+        projects_raw = await db.projects.find({"organization_id": org_id}).to_list(length=None)
+        tasks_raw = await db.tasks.find({}).to_list(length=None)
+        teams_raw = await db.teams.find({"organization_id": org_id}).to_list(length=None)
+        
+        # Clean MongoDB ObjectIds
+        users = clean_mongo_docs(users_raw)
+        projects = clean_mongo_docs(projects_raw)
+        tasks = clean_mongo_docs(tasks_raw)
+        teams = clean_mongo_docs(teams_raw)
         
         # Filter tasks for organization
         project_ids = [p["id"] for p in projects]
