@@ -99,6 +99,14 @@ const AppContent: React.FC = () => {
             } 
           />
           <Route 
+            path="/resource-management" 
+            element={
+              <ProtectedRoute>
+                <ResourceManagementPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/settings" 
             element={
               <ProtectedRoute>
