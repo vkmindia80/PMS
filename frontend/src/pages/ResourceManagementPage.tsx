@@ -126,7 +126,8 @@ const ResourceManagementPage: React.FC = () => {
   const fetchData = async (endpoint: string, setter: Function, key: string) => {
     setLoading(prev => ({ ...prev, [key]: true }));
     try {
-      const token = localStorage.getItem('token');
+      const authTokens = localStorage.getItem('auth_tokens');
+      const token = authTokens ? JSON.parse(authTokens).access_token : null;
       console.log(`Fetching ${key} from ${backendUrl}${endpoint}`);
       console.log(`Token available: ${!!token}`);
       
