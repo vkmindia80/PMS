@@ -1,4 +1,4 @@
-import { getBackendUrl } from '../utils/environment'
+import { getApiUrl } from '../utils/environment'
 
 class SystemService {
   private getAuthHeaders() {
