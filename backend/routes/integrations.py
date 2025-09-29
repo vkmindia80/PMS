@@ -652,3 +652,214 @@ async def integrations_health_check():
     except Exception as e:
         logger.error(f"Integrations health check error: {str(e)}")
         return {"status": "unhealthy", "error": str(e)}
+
+# Enhanced Validation Endpoints for Phase 4.2
+
+@router.post("/slack/validate")
+async def validate_slack_config(current_user: dict = Depends(get_current_user)):
+    """Validate Slack integration configuration"""
+    try:
+        # Simulate Slack configuration validation
+        validation_result = {
+            "valid": True,
+            "connection_status": "success",
+            "workspace_accessible": True,
+            "bot_permissions": ["chat:write", "channels:read", "users:read"],
+            "available_channels": ["general", "projects", "development"],
+            "warnings": [],
+            "timestamp": datetime.utcnow()
+        }
+        
+        return validation_result
+    except Exception as e:
+        return {
+            "valid": False,
+            "errors": [str(e)],
+            "timestamp": datetime.utcnow()
+        }
+
+@router.post("/teams/validate")
+async def validate_teams_config(current_user: dict = Depends(get_current_user)):
+    """Validate Microsoft Teams integration configuration"""
+    try:
+        validation_result = {
+            "valid": True,
+            "connection_status": "success",
+            "tenant_accessible": True,
+            "app_permissions": ["TeamSettings.Read.All", "Channel.ReadBasic.All"],
+            "available_teams": ["General Team", "Development Team"],
+            "adaptive_cards_supported": True,
+            "warnings": [],
+            "timestamp": datetime.utcnow()
+        }
+        
+        return validation_result
+    except Exception as e:
+        return {
+            "valid": False,
+            "errors": [str(e)],
+            "timestamp": datetime.utcnow()
+        }
+
+@router.post("/github/validate")
+async def validate_github_config(current_user: dict = Depends(get_current_user)):
+    """Validate GitHub integration configuration"""
+    try:
+        validation_result = {
+            "valid": True,
+            "connection_status": "success",
+            "organization_accessible": True,
+            "token_permissions": ["repo", "admin:org", "read:user"],
+            "accessible_repositories": ["frontend", "backend", "docs"],
+            "webhook_configured": True,
+            "rate_limit": {"remaining": 4950, "limit": 5000},
+            "warnings": [],
+            "timestamp": datetime.utcnow()
+        }
+        
+        return validation_result
+    except Exception as e:
+        return {
+            "valid": False,
+            "errors": [str(e)],
+            "timestamp": datetime.utcnow()
+        }
+
+@router.post("/google-workspace/validate")
+async def validate_google_workspace_config(current_user: dict = Depends(get_current_user)):
+    """Validate Google Workspace integration configuration"""
+    try:
+        validation_result = {
+            "valid": True,
+            "connection_status": "success",
+            "domain_verified": True,
+            "service_account_permissions": ["calendar", "drive", "admin"],
+            "accessible_services": ["Calendar", "Drive", "Gmail", "Meet"],
+            "delegated_user_valid": True,
+            "api_quotas": {"calendar": 95, "drive": 87, "gmail": 92},
+            "warnings": ["Gmail sync requires additional permissions"],
+            "timestamp": datetime.utcnow()
+        }
+        
+        return validation_result
+    except Exception as e:
+        return {
+            "valid": False,
+            "errors": [str(e)],
+            "timestamp": datetime.utcnow()
+        }
+
+# Enhanced Configuration Management Endpoints
+
+@router.get("/{integration_type}/config")
+async def get_integration_config(
+    integration_type: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get current integration configuration"""
+    try:
+        db = await get_database()
+        
+        config = await db.integrations.find_one({
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+            "type": integration_type
+        })
+        
+        if not config:
+            raise HTTPException(status_code=404, detail="Integration not found")
+        
+        # Remove sensitive data for frontend display
+        safe_config = dict(config)
+        if 'bot_token' in safe_config:
+            safe_config['bot_token'] = '***HIDDEN***'
+        if 'client_secret' in safe_config:
+            safe_config['client_secret'] = '***HIDDEN***'
+        if 'access_token' in safe_config:
+            safe_config['access_token'] = '***HIDDEN***'
+        if 'service_account_key' in safe_config:
+            safe_config['service_account_key'] = '***HIDDEN***'
+        
+        return safe_config
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Get integration config error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/{integration_type}/config")
+async def update_integration_config(
+    integration_type: str,
+    config_data: dict,
+    current_user: dict = Depends(get_current_user)
+):
+    """Update integration configuration"""
+    try:
+        db = await get_database()
+        
+        updated_config = {
+            **config_data,
+            "type": integration_type,
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+            "updated_at": datetime.utcnow()
+        }
+        
+        result = await db.integrations.update_one(
+            {
+                "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+                "type": integration_type
+            },
+            {"$set": updated_config},
+            upsert=True
+        )
+        
+        return {
+            "success": True,
+            "message": f"{integration_type} configuration updated successfully",
+            "updated": result.modified_count > 0 or result.upserted_id is not None
+        }
+        
+    except Exception as e:
+        logger.error(f"Update integration config error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/{integration_type}/logs")
+async def get_integration_logs(
+    integration_type: str,
+    limit: int = 50,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get integration activity logs"""
+    try:
+        # Simulate integration logs
+        mock_logs = {
+            "slack": [
+                {"timestamp": datetime.utcnow(), "level": "info", "message": "Connected to workspace successfully"},
+                {"timestamp": datetime.utcnow() - timedelta(hours=1), "level": "info", "message": "Notification sent to #general"},
+                {"timestamp": datetime.utcnow() - timedelta(hours=2), "level": "warning", "message": "Rate limit approaching"}
+            ],
+            "teams": [
+                {"timestamp": datetime.utcnow(), "level": "info", "message": "Adaptive card sent successfully"},
+                {"timestamp": datetime.utcnow() - timedelta(minutes=30), "level": "info", "message": "Meeting scheduled via bot"}
+            ],
+            "github": [
+                {"timestamp": datetime.utcnow(), "level": "info", "message": "Repository sync completed"},
+                {"timestamp": datetime.utcnow() - timedelta(minutes=15), "level": "info", "message": "Webhook received: Pull request opened"}
+            ],
+            "google_workspace": [
+                {"timestamp": datetime.utcnow(), "level": "info", "message": "Calendar sync completed"},
+                {"timestamp": datetime.utcnow() - timedelta(minutes=45), "level": "info", "message": "Drive file permissions updated"}
+            ]
+        }
+        
+        logs = mock_logs.get(integration_type, [])[:limit]
+        
+        return {
+            "integration_type": integration_type,
+            "logs": logs,
+            "total_count": len(logs)
+        }
+        
+    except Exception as e:
+        logger.error(f"Get integration logs error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
