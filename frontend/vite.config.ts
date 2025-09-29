@@ -34,6 +34,10 @@ export default defineConfig({
   },
   define: {
     global: 'globalThis',
+    'process.env': JSON.stringify({
+      NODE_ENV: process.env.NODE_ENV || 'development',
+      REACT_APP_BACKEND_URL: process.env.REACT_APP_BACKEND_URL || process.env.VITE_API_URL || 'http://localhost:8001',
+    }),
     // Inject environment-specific API URL
     __API_URL__: JSON.stringify(
       process.env.NODE_ENV === 'production' 
