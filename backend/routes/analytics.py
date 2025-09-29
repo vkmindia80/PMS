@@ -88,9 +88,14 @@ async def get_portfolio_overview(
         spent_budget = 0
         for p in projects:
             budget_data = p.get("budget")
-            if budget_data and isinstance(budget_data, dict):
-                total_budget += budget_data.get("total_budget", 0)
-                spent_budget += budget_data.get("spent_amount", 0)
+            if budget_data:
+                if isinstance(budget_data, dict):
+                    total_budget += budget_data.get("total_budget", 0) or 0
+                    spent_budget += budget_data.get("spent_amount", 0) or 0
+                elif isinstance(budget_data, (int, float)):
+                    # Handle case where budget is just a number
+                    total_budget += budget_data
+                    spent_budget += 0
         budget_utilization = (spent_budget / total_budget * 100) if total_budget > 0 else 0
         
         # Risk assessment
