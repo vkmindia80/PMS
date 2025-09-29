@@ -117,6 +117,14 @@ const AppContent: React.FC = () => {
             } 
           />
           <Route 
+            path="/integrations" 
+            element={
+              <ProtectedRoute>
+                <IntegrationsPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/settings" 
             element={
               <ProtectedRoute>
