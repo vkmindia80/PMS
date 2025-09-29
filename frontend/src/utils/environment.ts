@@ -40,7 +40,7 @@ export const getCurrentSubdomain = (): string | null => {
 export const getApiUrl = (): string => {
   if (typeof window === 'undefined') {
     // Server-side rendering fallback
-    return process.env.VITE_BACKEND_API_URL || 'http://localhost:8001';
+    return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001';
   }
   
   const hostname = window.location.hostname;
