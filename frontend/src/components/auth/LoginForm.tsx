@@ -84,6 +84,49 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
     }
   }
 
+  const generateDemoData = async () => {
+    if (isGeneratingDemo) return
+    
+    setIsGeneratingDemo(true)
+    
+    try {
+      toast.loading('Generating comprehensive demo data...', { 
+        id: 'demo-generation',
+        duration: 0 // Keep showing until we dismiss it
+      })
+      
+      const result = await systemService.generateDemoData()
+      
+      if (result.success) {
+        toast.success(
+          `✅ Demo data generated successfully!\n` +
+          `📊 ${result.details?.total_data_points || 0}+ data points created\n` +
+          `⚡ Success rate: ${result.details?.success_rate || 0}%`,
+          { 
+            id: 'demo-generation',
+            duration: 5000,
+            style: {
+              maxWidth: '500px',
+            }
+          }
+        )
+      } else {
+        toast.error(`Failed to generate demo data: ${result.message}`, {
+          id: 'demo-generation',
+          duration: 4000
+        })
+      }
+    } catch (error) {
+      console.error('Demo data generation error:', error)
+      toast.error('Failed to generate demo data. Please try again.', {
+        id: 'demo-generation',
+        duration: 4000
+      })
+    } finally {
+      setIsGeneratingDemo(false)
+    }
+  }
+
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="bg-white rounded-lg shadow-lg p-8">
