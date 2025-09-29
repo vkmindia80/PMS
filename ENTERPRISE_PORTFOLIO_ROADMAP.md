@@ -273,12 +273,14 @@
 
 ### **Current Data Metrics (Live System)**
 - **Organizations**: 1 multi-tenant organization
-- **Users**: 29 professional users across 5 departments
-- **Teams**: 5 specialized teams (Development, Design, Marketing, Sales, Operations)
-- **Projects**: 12 diverse projects (7 Active, 3 Completed, 6 Overdue)
-- **Tasks**: 148 realistic tasks with proper assignments and progress tracking
-- **Comments**: 22+ contextual comments on tasks and projects
-- **File Attachments**: 12 file attachments (documents, images, specifications)
+- **Users**: 13 professional users across 6 departments with skill-based assignments
+- **Teams**: 6 specialized teams (Frontend Dev, Backend & Infrastructure, Design & UX, Data Science, Marketing, Business Development)
+- **Projects**: 10 enterprise projects with comprehensive financial tracking ($1.8M+ total budget)
+- **Tasks**: 109 realistic tasks with detailed time tracking and cost analysis
+- **Comments**: 36+ contextual comments on tasks and projects
+- **File Attachments**: 40 file attachments (documents, images, specifications)
+- **Financial Tracking**: Complete budget breakdown with $812K spent, 43.3% utilization
+- **Project Health**: All projects with health scores, risk assessment, and performance metrics
 
 ### **Performance Indicators** (Verified September 2025)
 - **Backend Response Time**: <200ms average (tested and confirmed)
