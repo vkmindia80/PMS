@@ -477,12 +477,12 @@ The Enterprise Portfolio Management system is now a **comprehensive, production-
 
 ## 💰 **INVESTMENT ANALYSIS & ROI**
 
-### **Development Investment (Updated September 2025)**
-- **Total Credits Invested**: 95 credits (All Phases 1-4.3 COMPLETE including security fixes)
-- **Phase 4.3 Investment**: 8 credits (Enterprise Security & Compliance - COMPLETE with fixes)
-- **Estimated Market Value**: $1M-$2M+ development effort (complete enterprise platform with security)
-- **Time Savings**: 24-36 months of traditional enterprise development
-- **ROI Timeline**: 2-4 months for enterprise deployment (immediate revenue potential)
+### **Development Investment (Updated January 2025)**
+- **Total Credits Invested**: 107 credits (All Phases 1-5.1 COMPLETE including advanced role management)
+- **Phase 5.1 Investment**: 12 credits (Advanced Role & Permission Management - COMPLETE)
+- **Estimated Market Value**: $1.2M-$2.5M+ development effort (complete enterprise platform with advanced role management)
+- **Time Savings**: 30-42 months of traditional enterprise development
+- **ROI Timeline**: 1-3 months for enterprise deployment (immediate revenue potential with advanced role features)
 
 ### **Revenue Potential**
 - **SaaS Pricing Model**: $50-200/user/month (competitive with Monday.com, Asana Enterprise)
