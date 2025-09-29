@@ -55,7 +55,7 @@ const ProjectsPage: React.FC = () => {
       if (statusFilter !== 'all') params.append('status_filter', statusFilter)
       if (priorityFilter !== 'all') params.append('priority_filter', priorityFilter)
       
-      const response = await fetch(`${BACKEND_URL}/api/projects/?${params}`, {
+      const response = await fetch(`${API_ENDPOINTS.projects.list}?${params}`, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
