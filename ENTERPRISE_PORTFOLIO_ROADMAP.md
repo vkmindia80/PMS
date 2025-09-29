@@ -124,15 +124,14 @@
 - ✅ **Role Hierarchy** from team members to department leads
 
 ### **Project Portfolio**
-- ✅ **8 Diverse Projects** spanning multiple domains:
-  - E-commerce Platform Redesign
-  - Mobile App Development
-  - Data Analytics Dashboard
+- ✅ **12 Diverse Projects** spanning multiple domains:
+  - E-commerce Platform Redesign (High Priority, 28% Progress)
+  - Mobile App Development (Critical Priority, 95% Complete)
+  - Brand Identity Refresh (Medium Priority, 83% Progress)
+  - Digital Marketing Campaign Q4
   - Customer Support Portal
-  - Marketing Automation System
-  - Infrastructure Modernization
-  - API Gateway Implementation
-  - Content Management System
+  - Data Analytics Dashboard (In Progress)
+  - Plus 6 additional enterprise projects with realistic budgets and timelines
 
 ### **Task Management**
 - ✅ **90 Realistic Tasks** with proper assignments
