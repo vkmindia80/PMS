@@ -119,12 +119,6 @@ const SecurityDashboard: React.FC = () => {
     }
   };
 
-  const refreshData = async () => {
-    setError(null);
-    setLoading(true);
-    await fetchSecurityData();
-  };
-
   const getSeverityColor = (severity: string): string => {
     switch (severity.toLowerCase()) {
       case 'critical': return 'text-red-600 bg-red-100';
