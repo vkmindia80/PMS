@@ -36,7 +36,7 @@ async def generate_comprehensive_demo_data():
                 # Try to get the latest report file
                 import glob
                 import os
-                report_files = glob.glob("/app/fixed_demo_data_report_*.json")
+                report_files = glob.glob("/app/comprehensive_demo_data_report_*.json")
                 if report_files:
                     latest_report_file = max(report_files, key=os.path.getctime)
                     with open(latest_report_file, 'r') as f:
