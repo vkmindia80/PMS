@@ -1,0 +1,101 @@
+{
+  "loading_timestamp": "2025-09-29T09:33:17.728147",
+  "phase": "Phase 4.1 - Master Sample Data Loading",
+  "loading_duration_seconds": 6.774691,
+  "summary": {
+    "total_operations": 15,
+    "successful": 1,
+    "errors": 3,
+    "success_rate": 6.67
+  },
+  "final_data_counts": {
+    "users": 29,
+    "organizations": 1,
+    "teams": 5,
+    "projects": 0,
+    "tasks": 0,
+    "comments": 0,
+    "files": 0,
+    "notifications": 0,
+    "ai_training_history": 0,
+    "integrations": 0
+  },
+  "total_data_points": 35,
+  "loading_results": [
+    {
+      "status": "info",
+      "message": "Clearing existing demo data...",
+      "timestamp": "2025-09-29 09:33:10.953538"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 5 items from teams",
+      "timestamp": "2025-09-29 09:33:11.053327"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 12 items from projects",
+      "timestamp": "2025-09-29 09:33:11.054204"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 145 items from tasks",
+      "timestamp": "2025-09-29 09:33:11.056717"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 22 items from comments",
+      "timestamp": "2025-09-29 09:33:11.057252"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 12 items from files",
+      "timestamp": "2025-09-29 09:33:11.057718"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from notifications",
+      "timestamp": "2025-09-29 09:33:11.057943"
+    },
+    {
+      "status": "success",
+      "message": "Existing demo data cleared",
+      "timestamp": "2025-09-29 09:33:11.057952"
+    },
+    {
+      "status": "info",
+      "message": "Loading comprehensive demo data...",
+      "timestamp": "2025-09-29 09:33:11.057989"
+    },
+    {
+      "status": "error",
+      "message": "Failed to load comprehensive demo data: batch op errors occurred, full error: {'writeErrors': [{'index': 0, 'code': 11000, 'errmsg': 'E11000 duplicate key error collection: enterprise_portfolio_db.users index: email_1 dup key: { email: \"alice.johnson@company.com\" }', 'keyPattern': {'email': 1}, 'keyValue': {'email': 'alice.johnson@company.com'}, 'op': {'id': 'b9658979-2c59-4004-a7bb-326a0531eaaa', 'email': 'alice.johnson@company.com', 'username': 'alice_johnson', 'password_hash': '$2b$12$LUd5wbNKYVWb9WVOCdSn6ea9tQE7ovCo9OohcRyCkSQ8GICHMNfdi', 'first_name': 'Alice', 'last_name': 'Johnson', 'phone': '+1-555-5442', 'bio': 'Experienced developer with expertise in multiple technologies and methodologies.', 'avatar_url': None, 'role': 'team_lead', 'organization_id': 'demo-org-001', 'team_memberships': ['5a014c11-64a8-403c-9802-e43952f6a272'], 'skills': [{'name': 'AWS', 'level': 'intermediate'}, {'name': 'Git', 'level': 'beginner'}, {'name': 'JavaScript', 'level': 'advanced'}, {'name': 'React', 'level': 'intermediate'}], 'is_active': True, 'status': 'active', 'email_verified': True, 'timezone': 'UTC', 'language': 'en', 'theme': 'light', 'notifications_enabled': True, 'profile_completed': True, 'onboarding_completed': True, 'created_at': datetime.datetime(2025, 7, 6, 9, 33, 11, 743895), 'updated_at': datetime.datetime(2025, 9, 29, 9, 33, 11, 743904), '_id': ObjectId('68da525ddc559313535d1335')}}], 'writeConcernErrors': [], 'nInserted': 0, 'nUpserted': 0, 'nMatched': 0, 'nModified': 0, 'nRemoved': 0, 'upserted': []}",
+      "timestamp": "2025-09-29 09:33:17.724041"
+    },
+    {
+      "status": "info",
+      "message": "Loading AI training data...",
+      "timestamp": "2025-09-29 09:33:17.724078"
+    },
+    {
+      "status": "error",
+      "message": "Failed to load AI training data: Cannot choose from an empty sequence",
+      "timestamp": "2025-09-29 09:33:17.725395"
+    },
+    {
+      "status": "info",
+      "message": "Loading integration sample data...",
+      "timestamp": "2025-09-29 09:33:17.725425"
+    },
+    {
+      "status": "error",
+      "message": "Failed to load integration sample data: name 'timedelta' is not defined",
+      "timestamp": "2025-09-29 09:33:17.725453"
+    },
+    {
+      "status": "info",
+      "message": "Generating data loading report...",
+      "timestamp": "2025-09-29 09:33:17.725481"
+    }
+  ]
+}
