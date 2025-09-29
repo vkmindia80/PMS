@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.responses import JSONResponse
-from auth.middleware import get_current_user_optional, get_current_user
+from auth.middleware import get_current_user
 import asyncio
 import logging
 
