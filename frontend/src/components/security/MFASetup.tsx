@@ -63,13 +63,17 @@ const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
 
     try {
       const token = localStorage.getItem('access_token');
+      const backendUrl = import.meta.env.VITE_API_URL || 
+                        import.meta.env.REACT_APP_BACKEND_URL || 
+                        'http://localhost:8001';
+      
       const setupData: any = { method: selectedMethod };
       
       if (selectedMethod === 'sms' && phoneNumber) {
         setupData.phone_number = phoneNumber;
       }
 
-      const response = await fetch('/api/security/mfa/setup', {
+      const response = await fetch(`${backendUrl}/api/security/mfa/setup`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
