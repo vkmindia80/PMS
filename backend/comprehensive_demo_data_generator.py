@@ -805,7 +805,11 @@ class ComprehensiveDemoDataGenerator:
                     assignee_id = random.choice(project["team_members"]) if project["team_members"] else None
                     
                     # Task dates
-                    task_start = project["start_date"] + timedelta(days=random.randint(0, 30)) if project.get("start_date") else datetime.now().date()
+                    task_start_date = project.get("start_date")
+                    if task_start_date:
+                        task_start = task_start_date + timedelta(days=random.randint(0, 30))
+                    else:
+                        task_start = datetime.utcnow()
                     task_due = task_start + timedelta(days=random.randint(3, 21))
                     
                     # Time tracking
