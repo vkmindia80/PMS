@@ -118,6 +118,14 @@ const AppContent: React.FC = () => {
             } 
           />
           <Route 
+            path="/advanced-ai" 
+            element={
+              <ProtectedRoute>
+                <AdvancedAIDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/integrations" 
             element={
               <ProtectedRoute>
