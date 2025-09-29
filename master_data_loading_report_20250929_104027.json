@@ -1,0 +1,111 @@
+{
+  "loading_timestamp": "2025-09-29T10:40:27.689748",
+  "phase": "Phase 4.1 - Master Sample Data Loading",
+  "loading_duration_seconds": 6.290311,
+  "summary": {
+    "total_operations": 17,
+    "successful": 5,
+    "errors": 1,
+    "success_rate": 29.41
+  },
+  "final_data_counts": {
+    "users": 29,
+    "organizations": 1,
+    "teams": 5,
+    "projects": 12,
+    "tasks": 145,
+    "comments": 22,
+    "files": 12,
+    "notifications": 20,
+    "ai_training_history": 20,
+    "integrations": 0
+  },
+  "total_data_points": 266,
+  "loading_results": [
+    {
+      "status": "info",
+      "message": "Clearing existing demo data...",
+      "timestamp": "2025-09-29 10:40:21.399507"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from teams",
+      "timestamp": "2025-09-29 10:40:21.405606"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from projects",
+      "timestamp": "2025-09-29 10:40:21.406877"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from tasks",
+      "timestamp": "2025-09-29 10:40:21.425269"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from comments",
+      "timestamp": "2025-09-29 10:40:21.426056"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from files",
+      "timestamp": "2025-09-29 10:40:21.426671"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from notifications",
+      "timestamp": "2025-09-29 10:40:21.427253"
+    },
+    {
+      "status": "success",
+      "message": "Existing demo data cleared",
+      "timestamp": "2025-09-29 10:40:21.427264"
+    },
+    {
+      "status": "info",
+      "message": "Loading comprehensive demo data...",
+      "timestamp": "2025-09-29 10:40:21.427293"
+    },
+    {
+      "status": "success",
+      "message": "Comprehensive demo data loaded successfully",
+      "timestamp": "2025-09-29 10:40:27.671076"
+    },
+    {
+      "status": "info",
+      "message": "Loading AI training data...",
+      "timestamp": "2025-09-29 10:40:27.671110"
+    },
+    {
+      "status": "success",
+      "message": "Created 20 AI-related notifications",
+      "timestamp": "2025-09-29 10:40:27.675673"
+    },
+    {
+      "status": "success",
+      "message": "Created 20 AI training records",
+      "timestamp": "2025-09-29 10:40:27.686709"
+    },
+    {
+      "status": "success",
+      "message": "AI training data loaded successfully",
+      "timestamp": "2025-09-29 10:40:27.686718"
+    },
+    {
+      "status": "info",
+      "message": "Loading integration sample data...",
+      "timestamp": "2025-09-29 10:40:27.686850"
+    },
+    {
+      "status": "error",
+      "message": "Failed to load integration sample data: name 'timedelta' is not defined",
+      "timestamp": "2025-09-29 10:40:27.686879"
+    },
+    {
+      "status": "info",
+      "message": "Generating data loading report...",
+      "timestamp": "2025-09-29 10:40:27.686902"
+    }
+  ]
+}
