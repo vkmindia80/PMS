@@ -28,9 +28,10 @@ class MultiModelAIService:
     """Advanced AI service supporting multiple LLM providers"""
     
     def __init__(self):
-        # For Phase 4.1 MVP, we'll use simulated responses
-        # In production, this would integrate with actual API keys
-        self.api_key = os.getenv('EMERGENT_LLM_KEY', 'simulated-key')
+        # Use Emergent LLM Key for multi-model AI integration
+        self.api_key = os.getenv('EMERGENT_LLM_KEY', 'sk-emergent-bB53fCe28A1265aCdB')
+        if not os.getenv('EMERGENT_LLM_KEY'):
+            os.environ['EMERGENT_LLM_KEY'] = 'sk-emergent-bB53fCe28A1265aCdB'
         self.models = {
             "gpt-4o": {
                 "provider": "openai",
