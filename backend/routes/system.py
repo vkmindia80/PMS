@@ -16,14 +16,14 @@ async def generate_comprehensive_demo_data():
     try:
         logger.info("🚀 Starting comprehensive demo data generation via API...")
         
-        # Import and run the fixed demo data generator (more reliable)
-        from fixed_demo_data_generator import FixedDemoDataGenerator
+        # Import and run the comprehensive demo data generator
+        from comprehensive_demo_data_generator import ComprehensiveDemoDataGenerator
         
         # Create generator instance
-        generator = FixedDemoDataGenerator()
+        generator = ComprehensiveDemoDataGenerator()
         
         # Run the complete data generation process
-        success = await generator.run_complete_generation()
+        success = await generator.generate_all_demo_data()
         
         if success:
             logger.info("✅ Demo data generation completed successfully")
