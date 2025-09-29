@@ -17,6 +17,52 @@ const Dashboard: React.FC = () => {
     tasks: 0
   })
 
+  const fetchDashboardData = async (API_URL: string) => {
+    try {
+      // Get auth token from localStorage
+      const token = localStorage.getItem('token')
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json'
+      }
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+
+      // Fetch projects count
+      const projectsResponse = await fetch(`${API_URL}/api/projects/`, { headers })
+      let projectsCount = 0
+      if (projectsResponse.ok) {
+        const projectsData = await projectsResponse.json()
+        projectsCount = Array.isArray(projectsData) ? projectsData.filter(p => p.status === 'active').length : 0
+      }
+
+      // Fetch teams count  
+      const teamsResponse = await fetch(`${API_URL}/api/teams/?organization_id=demo-org-001`, { headers })
+      let teamsCount = 0
+      if (teamsResponse.ok) {
+        const teamsData = await teamsResponse.json()
+        teamsCount = Array.isArray(teamsData) ? teamsData.reduce((sum, team) => sum + team.member_count, 0) : 0
+      }
+
+      // Fetch tasks count
+      const tasksResponse = await fetch(`${API_URL}/api/tasks/`, { headers })
+      let tasksCount = 0  
+      if (tasksResponse.ok) {
+        const tasksData = await tasksResponse.json()
+        tasksCount = Array.isArray(tasksData) ? tasksData.filter(t => t.status === 'todo' || t.status === 'in_progress').length : 0
+      }
+
+      setDashboardData({
+        projects: projectsCount,
+        teams: teamsCount,
+        tasks: tasksCount
+      })
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error)
+    }
+  }
+
   useEffect(() => {
     const checkApiConnection = async () => {
       try {
