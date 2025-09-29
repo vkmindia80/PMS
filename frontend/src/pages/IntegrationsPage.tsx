@@ -164,7 +164,28 @@ const IntegrationsPage: React.FC = () => {
 
   useEffect(() => {
     loadIntegrations()
+    loadIntegrationLogs()
   }, [])
+
+  const filteredIntegrations = useMemo(() => {
+    let filtered = Object.entries(availableIntegrations)
+    
+    if (searchFilter) {
+      filtered = filtered.filter(([type, integration]) =>
+        integration.name.toLowerCase().includes(searchFilter.toLowerCase()) ||
+        integration.description.toLowerCase().includes(searchFilter.toLowerCase())
+      )
+    }
+    
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(([type]) => {
+        const status = activeIntegrations[type]?.status
+        return statusFilter === 'active' ? status === 'active' : status !== 'active'
+      })
+    }
+    
+    return filtered
+  }, [availableIntegrations, activeIntegrations, searchFilter, statusFilter])
 
   const getAuthHeaders = () => {
     const authTokens = localStorage.getItem('auth_tokens')
