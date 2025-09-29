@@ -425,9 +425,21 @@ const SecurityDashboard: React.FC = () => {
             </div>
             <div className="p-6">
               {reports.length === 0 ? (
-                <div className="text-center py-8">
-                  <FileCheck className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">No compliance reports available</p>
+                <div className="text-center py-12">
+                  <FileCheck className="h-16 w-16 text-blue-400 mx-auto mb-4" />
+                  <h4 className="text-lg font-semibold text-gray-800 mb-2">No Compliance Reports</h4>
+                  <p className="text-gray-600 mb-6">No compliance assessments have been performed yet</p>
+                  <div className="space-y-4">
+                    <button
+                      onClick={() => window.open('/api/docs#/Enterprise%20Security/assess_compliance_api_security_compliance_assess_post', '_blank')}
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      Start Compliance Assessment
+                    </button>
+                    <div className="text-sm text-gray-500">
+                      Supported standards: SOC2, GDPR, HIPAA, ISO 27001
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-4">
