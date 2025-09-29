@@ -1,0 +1,106 @@
+{
+  "loading_timestamp": "2025-09-29T12:38:00.306228",
+  "phase": "Phase 4.1 - Master Sample Data Loading",
+  "loading_duration_seconds": 0.177829,
+  "summary": {
+    "total_operations": 16,
+    "successful": 3,
+    "errors": 2,
+    "success_rate": 18.75
+  },
+  "final_data_counts": {
+    "users": 44,
+    "organizations": 1,
+    "teams": 5,
+    "projects": 0,
+    "tasks": 0,
+    "comments": 0,
+    "files": 0,
+    "notifications": 0,
+    "ai_training_history": 40,
+    "integrations": 19
+  },
+  "total_data_points": 109,
+  "loading_results": [
+    {
+      "status": "info",
+      "message": "Clearing existing demo data...",
+      "timestamp": "2025-09-29 12:38:00.128470"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 5 items from teams",
+      "timestamp": "2025-09-29 12:38:00.134641"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from projects",
+      "timestamp": "2025-09-29 12:38:00.135042"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from tasks",
+      "timestamp": "2025-09-29 12:38:00.135310"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from comments",
+      "timestamp": "2025-09-29 12:38:00.135539"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from files",
+      "timestamp": "2025-09-29 12:38:00.135746"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from notifications",
+      "timestamp": "2025-09-29 12:38:00.135964"
+    },
+    {
+      "status": "success",
+      "message": "Existing demo data cleared",
+      "timestamp": "2025-09-29 12:38:00.135973"
+    },
+    {
+      "status": "info",
+      "message": "Loading comprehensive demo data...",
+      "timestamp": "2025-09-29 12:38:00.136000"
+    },
+    {
+      "status": "error",
+      "message": "Failed to load comprehensive demo data: batch op errors occurred, full error: {'writeErrors': [{'index': 0, 'code': 11000, 'errmsg': 'E11000 duplicate key error collection: enterprise_portfolio_db.users index: email_1 dup key: { email: \"alice.johnson@company.com\" }', 'keyPattern': {'email': 1}, 'keyValue': {'email': 'alice.johnson@company.com'}, 'op': {'id': '1493fbe3-0dae-4e44-81a3-25945bac1734', 'email': 'alice.johnson@company.com', 'username': 'alice_johnson', 'password_hash': 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'first_name': 'Alice', 'last_name': 'Johnson', 'phone': '+1-555-7825', 'bio': 'Experienced developer with expertise in multiple technologies and methodologies.', 'avatar_url': None, 'role': 'team_lead', 'organization_id': 'demo-org-001', 'team_memberships': ['ba0aa41d-19b6-4ff8-9778-a838b18a6c7f'], 'skills': [{'name': 'MongoDB', 'level': 'beginner'}, {'name': 'Python', 'level': 'intermediate'}, {'name': 'React', 'level': 'advanced'}, {'name': 'Docker', 'level': 'advanced'}, {'name': 'Node.js', 'level': 'intermediate'}], 'is_active': True, 'status': 'active', 'email_verified': True, 'timezone': 'UTC', 'language': 'en', 'theme': 'light', 'notifications_enabled': True, 'profile_completed': True, 'onboarding_completed': True, 'created_at': datetime.datetime(2025, 4, 19, 12, 38, 0, 147398), 'updated_at': datetime.datetime(2025, 9, 29, 12, 38, 0, 147405), '_id': ObjectId('68da7da8abb3a70bb2ad2ec8')}}], 'writeConcernErrors': [], 'nInserted': 0, 'nUpserted': 0, 'nMatched': 0, 'nModified': 0, 'nRemoved': 0, 'upserted': []}",
+      "timestamp": "2025-09-29 12:38:00.301500"
+    },
+    {
+      "status": "info",
+      "message": "Loading AI training data...",
+      "timestamp": "2025-09-29 12:38:00.301531"
+    },
+    {
+      "status": "error",
+      "message": "Failed to load AI training data: Cannot choose from an empty sequence",
+      "timestamp": "2025-09-29 12:38:00.303040"
+    },
+    {
+      "status": "info",
+      "message": "Loading integration sample data...",
+      "timestamp": "2025-09-29 12:38:00.303068"
+    },
+    {
+      "status": "success",
+      "message": "Created 4 integration configurations",
+      "timestamp": "2025-09-29 12:38:00.303563"
+    },
+    {
+      "status": "success",
+      "message": "Integration sample data loaded successfully",
+      "timestamp": "2025-09-29 12:38:00.303571"
+    },
+    {
+      "status": "info",
+      "message": "Generating data loading report...",
+      "timestamp": "2025-09-29 12:38:00.303598"
+    }
+  ]
+}
