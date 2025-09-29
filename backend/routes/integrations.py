@@ -145,7 +145,7 @@ async def send_slack_notification(
             "attachments": request.attachments or [],
             "priority": request.priority,
             "sent_at": datetime.utcnow(),
-            "sender": current_user.get("email", "system")
+            "sender": getattr(current_user, 'email', 'system')
         }
         
         # In production, this would use the Slack Web API
@@ -268,7 +268,7 @@ async def send_teams_adaptive_card(
             "channel_id": request.channel_id,
             "card": adaptive_card,
             "sent_at": datetime.utcnow(),
-            "sender": current_user.get("email", "system")
+            "sender": getattr(current_user, 'email', 'system')
         }
         
         logger.info(f"Teams adaptive card sent to {request.channel_id}")
