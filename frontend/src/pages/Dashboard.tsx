@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
           const isProd = import.meta.env.PROD || isPreview
           
           if (isProd || isPreview) {
-            return import.meta.env.VITE_PROD_API_URL || 'https://enterprise-vision.preview.emergentagent.com'
+            return import.meta.env.VITE_PROD_API_URL || 'https://portfolio-analytics-2.preview.emergentagent.com'
           }
           
           return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
