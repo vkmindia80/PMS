@@ -337,15 +337,15 @@
 
 ---
 
-## 🔄 **ENHANCED SYSTEM COMMANDS** (Updated September 2025)
+## 🔄 **ENHANCED SYSTEM COMMANDS** (Updated January 2025)
 
 ```bash
-# System Health Check (Enhanced Monitoring with Security)
+# System Health Check (Enhanced Monitoring with Security & Role Management)
 sudo supervisorctl status
 curl http://localhost:8001/api/health
 curl http://localhost:8001/api/system/metrics
 
-# Security System Health Check (NEW - September 29, 2025)
+# Security System Health Check (Verified Working)
 curl http://localhost:8001/api/security/health
 
 # Authentication & Resource Management Testing
@@ -356,6 +356,12 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/security/dashbo
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/security/threats/active
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/security/compliance/reports
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/security/mfa/status
+
+# Test Advanced Role Management Endpoints (NEW - January 2025)
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/roles
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/permissions
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/roles/templates
+curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -X POST http://localhost:8001/api/roles/custom -d '{"name": "Custom Manager", "permissions": ["create_project", "edit_task"]}'
 
 # Test Enhanced Resource Management Endpoints
 curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/resource-management/allocation/optimize
