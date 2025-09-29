@@ -95,7 +95,7 @@ const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
       const response = await fetch(`${backendUrl}/api/security/mfa/setup`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authTokens.access_token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(setupData)
