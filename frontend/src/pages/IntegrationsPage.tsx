@@ -533,220 +533,118 @@ const IntegrationsPage: React.FC = () => {
     }
   }
 
-  const renderSetupModal = () => {
+  const renderEnhancedSetupModal = () => {
     if (!setupModal) return null
 
-    const { type, integration } = setupModal
+    const { type, integration, mode } = setupModal
+    const isEditMode = mode === 'edit'
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 w-full max-w-md">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Setup {integration.name}</h3>
-            <button
-              onClick={() => setSetupModal(null)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              ×
-            </button>
+        <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+          {/* Modal Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <div className="flex items-center">
+              {getIntegrationIcon(type)}
+              <div className="ml-3">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {isEditMode ? 'Edit' : 'Setup'} {integration.name}
+                </h3>
+                <p className="text-sm text-gray-600">{integration.description}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => exportConfiguration(type)}
+                className="p-2 text-gray-400 hover:text-gray-600"
+                title="Export Configuration"
+              >
+                <Download className="w-4 h-4" />
+              </button>
+              <label className="p-2 text-gray-400 hover:text-gray-600 cursor-pointer" title="Import Configuration">
+                <Upload className="w-4 h-4" />
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={(e) => importConfiguration(type, e)}
+                  className="hidden"
+                />
+              </label>
+              <button
+                onClick={() => setSetupModal(null)}
+                className="p-2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-4">
-            {type === 'slack' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Workspace URL
-                  </label>
-                  <input
-                    type="url"
-                    value={slackConfig.workspace_url}
-                    onChange={(e) => setSlackConfig({ ...slackConfig, workspace_url: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="https://yourcompany.slack.com"
-                  />
+          {/* Modal Content */}
+          <div className="overflow-y-auto max-h-[60vh]">
+            <div className="p-6">
+              {/* Configuration Tabs */}
+              <div className="mb-6">
+                <div className="border-b border-gray-200">
+                  <nav className="-mb-px flex space-x-8">
+                    <button className="border-b-2 border-blue-500 py-2 px-1 text-sm font-medium text-blue-600">
+                      Basic Setup
+                    </button>
+                    <button
+                      onClick={() => setShowAdvancedConfig(prev => ({ ...prev, [type]: !prev[type] }))}
+                      className="py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700"
+                    >
+                      Advanced Options
+                    </button>
+                    <button className="py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700">
+                      Webhooks & API
+                    </button>
+                    <button className="py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700">
+                      Notifications
+                    </button>
+                  </nav>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Default Channel
-                  </label>
-                  <input
-                    type="text"
-                    value={slackConfig.default_channel}
-                    onChange={(e) => setSlackConfig({ ...slackConfig, default_channel: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="general"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="slack-notifications"
-                    checked={slackConfig.notifications_enabled}
-                    onChange={(e) => setSlackConfig({ ...slackConfig, notifications_enabled: e.target.checked })}
-                    className="mr-2"
-                  />
-                  <label htmlFor="slack-notifications" className="text-sm text-gray-700">
-                    Enable notifications
-                  </label>
-                </div>
-              </>
-            )}
+              </div>
 
-            {type === 'teams' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Tenant ID
-                  </label>
-                  <input
-                    type="text"
-                    value={teamsConfig.tenant_id}
-                    onChange={(e) => setTeamsConfig({ ...teamsConfig, tenant_id: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="12345678-1234-1234-1234-123456789012"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Default Team
-                  </label>
-                  <input
-                    type="text"
-                    value={teamsConfig.default_team}
-                    onChange={(e) => setTeamsConfig({ ...teamsConfig, default_team: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="General"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Webhook URL (Optional)
-                  </label>
-                  <input
-                    type="url"
-                    value={teamsConfig.webhook_url}
-                    onChange={(e) => setTeamsConfig({ ...teamsConfig, webhook_url: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="https://outlook.office.com/webhook/..."
-                  />
-                </div>
-              </>
-            )}
-
-            {type === 'github' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Organization
-                  </label>
-                  <input
-                    type="text"
-                    value={githubConfig.organization}
-                    onChange={(e) => setGithubConfig({ ...githubConfig, organization: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="mycompany"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Repositories (comma-separated)
-                  </label>
-                  <input
-                    type="text"
-                    onChange={(e) => setGithubConfig({ 
-                      ...githubConfig, 
-                      repositories: e.target.value.split(',').map(r => r.trim()).filter(r => r) 
-                    })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="frontend, backend, mobile-app"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="github-auto-sync"
-                    checked={githubConfig.auto_sync}
-                    onChange={(e) => setGithubConfig({ ...githubConfig, auto_sync: e.target.checked })}
-                    className="mr-2"
-                  />
-                  <label htmlFor="github-auto-sync" className="text-sm text-gray-700">
-                    Enable automatic sync
-                  </label>
-                </div>
-              </>
-            )}
-
-            {type === 'google_workspace' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Domain
-                  </label>
-                  <input
-                    type="text"
-                    value={googleConfig.domain}
-                    onChange={(e) => setGoogleConfig({ ...googleConfig, domain: e.target.value })}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="mycompany.com"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="calendar-sync"
-                      checked={googleConfig.calendar_sync}
-                      onChange={(e) => setGoogleConfig({ ...googleConfig, calendar_sync: e.target.checked })}
-                      className="mr-2"
-                    />
-                    <label htmlFor="calendar-sync" className="text-sm text-gray-700">
-                      Enable Calendar sync
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="drive-sync"
-                      checked={googleConfig.drive_sync}
-                      onChange={(e) => setGoogleConfig({ ...googleConfig, drive_sync: e.target.checked })}
-                      className="mr-2"
-                    />
-                    <label htmlFor="drive-sync" className="text-sm text-gray-700">
-                      Enable Drive sync
-                    </label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="gmail-sync"
-                      checked={googleConfig.gmail_sync}
-                      onChange={(e) => setGoogleConfig({ ...googleConfig, gmail_sync: e.target.checked })}
-                      className="mr-2"
-                    />
-                    <label htmlFor="gmail-sync" className="text-sm text-gray-700">
-                      Enable Gmail sync
-                    </label>
-                  </div>
-                </div>
-              </>
-            )}
+              {type === 'slack' && renderSlackConfiguration()}
+              {type === 'teams' && renderTeamsConfiguration()}
+              {type === 'github' && renderGitHubConfiguration()}
+              {type === 'google_workspace' && renderGoogleWorkspaceConfiguration()}
+            </div>
           </div>
 
-          <div className="flex space-x-3 mt-6">
-            <button
-              onClick={() => setupIntegration(type)}
-              disabled={isLoading}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            >
-              {isLoading ? 'Setting up...' : 'Setup Integration'}
-            </button>
-            <button
-              onClick={() => setSetupModal(null)}
-              className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400"
-            >
-              Cancel
-            </button>
+          {/* Modal Footer */}
+          <div className="flex items-center justify-between p-6 border-t border-gray-200">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => validateConfiguration(type)}
+                className="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                <Shield className="w-4 h-4 mr-2" />
+                Validate Config
+              </button>
+              <button
+                onClick={() => testIntegration(type)}
+                className="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                <Zap className="w-4 h-4 mr-2" />
+                Test Connection
+              </button>
+            </div>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setSetupModal(null)}
+                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => setupIntegration(type)}
+                disabled={isLoading}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              >
+                {isLoading ? 'Saving...' : isEditMode ? 'Save Changes' : 'Setup Integration'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
