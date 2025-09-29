@@ -364,7 +364,7 @@ const TeamsPage: React.FC = () => {
   const filteredTeams = teams.filter(team => {
     const matchesSearch = team.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          team.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         team.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+                         (team.tags && team.tags.length > 0 && team.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
     
     const matchesFilter = !filterType || team.type === filterType
     
