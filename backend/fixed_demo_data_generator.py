@@ -347,7 +347,7 @@ class FixedDemoDataGenerator:
                 {
                     "name": "Data Science Team",
                     "description": "Data analytics and business intelligence team",
-                    "type": "analytics", 
+                    "type": "operations", 
                     "department": "Data Science",
                     "skills_focus": ["Python", "Data Analysis", "Machine Learning", "PostgreSQL"]
                 },
