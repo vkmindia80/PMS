@@ -38,22 +38,28 @@ export const getCurrentSubdomain = (): string | null => {
 
 // Dynamic API URL generation
 export const getApiUrl = (): string => {
-  // For development, use the Vite proxy (empty string for relative URLs)
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    
-    // For localhost development, use proxy (relative URLs)
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return '';  // This will use Vite's proxy configuration
-    }
-    
-    // If on emergentagent.com domain, use the same subdomain for API
-    if (isEmergentagentDomain()) {
-      return `${window.location.protocol}//${hostname}`;
-    }
+  // Server-side rendering fallback
+  if (typeof window === 'undefined') {
+    return import.meta.env.VITE_API_URL || 'http://localhost:8001';
   }
   
-  // Server-side fallback
+  const hostname = window.location.hostname;
+  
+  // For localhost development, use the configured backend URL directly
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    // Check for environment variables first
+    const backendUrl = import.meta.env.VITE_API_URL || 
+                      import.meta.env.REACT_APP_BACKEND_URL || 
+                      'http://localhost:8001';
+    return backendUrl;
+  }
+  
+  // If on emergentagent.com domain, use the same subdomain for API
+  if (isEmergentagentDomain()) {
+    return `${window.location.protocol}//${hostname}`;
+  }
+  
+  // Default fallback
   return 'http://localhost:8001';
 };
 
