@@ -55,6 +55,9 @@ const Dashboard: React.FC = () => {
             setModelsInfo(modelsData)
           }
           
+          // Fetch dashboard data
+          await fetchDashboardData(API_URL)
+          
           toast.success('Successfully connected to backend API')
         } else {
           setApiStatus('error')
