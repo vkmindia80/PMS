@@ -81,9 +81,12 @@ async def setup_slack_integration(
         # For Phase 4.1 MVP, we'll store configuration and simulate setup
         db = await get_database()
         
+        # Extract organization_id from user object
+        organization_id = getattr(current_user, 'organization_id', 'demo-org-001')
+        
         integration_config = {
             "type": "slack",
-            "organization_id": current_user.get("organization_id"),
+            "organization_id": organization_id,
             "workspace_url": request.workspace_url,
             "default_channel": request.default_channel,
             "notifications_enabled": request.notifications_enabled,
@@ -96,7 +99,7 @@ async def setup_slack_integration(
         # Store in database
         await db.integrations.update_one(
             {
-                "organization_id": current_user.get("organization_id"),
+                "organization_id": organization_id,
                 "type": "slack"
             },
             {"$set": integration_config},
