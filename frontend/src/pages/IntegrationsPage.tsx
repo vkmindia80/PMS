@@ -231,6 +231,102 @@ const IntegrationsPage: React.FC = () => {
     }
   }
 
+  const loadIntegrationLogs = async () => {
+    try {
+      // Simulate loading integration logs
+      const mockLogs = {
+        slack: [
+          { timestamp: new Date(), level: 'info', message: 'Connected to workspace successfully' },
+          { timestamp: new Date(Date.now() - 3600000), level: 'info', message: 'Notification sent to #general' }
+        ],
+        teams: [
+          { timestamp: new Date(), level: 'info', message: 'Adaptive card sent successfully' }
+        ],
+        github: [
+          { timestamp: new Date(), level: 'info', message: 'Repository sync completed' },
+          { timestamp: new Date(Date.now() - 1800000), level: 'warning', message: 'Rate limit approaching' }
+        ],
+        google_workspace: [
+          { timestamp: new Date(), level: 'info', message: 'Calendar sync completed' }
+        ]
+      }
+      setIntegrationLogs(mockLogs)
+    } catch (error) {
+      console.error('Failed to load integration logs:', error)
+    }
+  }
+
+  const exportConfiguration = (type: string) => {
+    const config = activeIntegrations[type]
+    if (config) {
+      const configData = {
+        type,
+        configuration: config,
+        exported_at: new Date().toISOString(),
+        version: '1.0'
+      }
+      
+      const blob = new Blob([JSON.stringify(configData, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${type}-integration-config.json`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    }
+  }
+
+  const importConfiguration = (type: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        try {
+          const config = JSON.parse(e.target?.result as string)
+          if (config.type === type) {
+            // Apply configuration based on type
+            switch (type) {
+              case 'slack':
+                setSlackConfig(prev => ({ ...prev, ...config.configuration }))
+                break
+              case 'teams':
+                setTeamsConfig(prev => ({ ...prev, ...config.configuration }))
+                break
+              case 'github':
+                setGithubConfig(prev => ({ ...prev, ...config.configuration }))
+                break
+              case 'google_workspace':
+                setGoogleConfig(prev => ({ ...prev, ...config.configuration }))
+                break
+            }
+            alert('Configuration imported successfully')
+          } else {
+            alert('Invalid configuration file')
+          }
+        } catch (error) {
+          alert('Failed to parse configuration file')
+        }
+      }
+      reader.readAsText(file)
+    }
+  }
+
+  const validateConfiguration = async (type: string) => {
+    try {
+      // Simulate configuration validation
+      const response = await axios.post(
+        `${API_BASE_URL}/api/integrations/${type}/validate`,
+        {},
+        { headers: getAuthHeaders() }
+      )
+      return response.data
+    } catch (error) {
+      return { valid: false, errors: ['Connection failed'] }
+    }
+  }
+
   const setupIntegration = async (type: string) => {
     try {
       setIsLoading(true)
