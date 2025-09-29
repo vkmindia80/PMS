@@ -222,7 +222,7 @@ const RoleManagementPage: React.FC = () => {
         notes: `Bulk assignment of ${selectedRole.display_name} role`
       };
 
-      const response = await fetch('/api/roles/bulk-assign', {
+      const response = await fetch(`${getApiUrl()}/api/roles/bulk-assign`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
