@@ -60,7 +60,7 @@ class SystemService {
     cleared_counts?: Record<string, number>
   }> {
     try {
-      const response = await fetch(`${getBackendUrl()}/api/system/clear-demo-data`, {
+      const response = await fetch(`${getApiUrl()}/api/system/clear-demo-data`, {
         method: 'POST',
         headers: this.getAuthHeaders()
       })
