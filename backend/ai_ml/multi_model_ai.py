@@ -1,6 +1,6 @@
 """
 Multi-Model AI Integration Service
-Supports GPT-4o, Claude 3.5 Sonnet, and Gemini 2.0 Pro
+Supports GPT-4o, Claude 3.5 Sonnet, and Gemini 2.0 Pro with Emergent Integration
 """
 import os
 import asyncio
@@ -17,11 +17,12 @@ load_dotenv()
 try:
     from emergentintegrations.llm.chat import LlmChat, UserMessage
     EMERGENT_AVAILABLE = True
+    logger = logging.getLogger(__name__)
+    logger.info("Emergent integrations loaded successfully")
 except ImportError:
     EMERGENT_AVAILABLE = False
+    logger = logging.getLogger(__name__)
     logger.warning("emergentintegrations not available - using simulated responses")
-
-logger = logging.getLogger(__name__)
 
 class MultiModelAIService:
     """Advanced AI service supporting multiple LLM providers"""
