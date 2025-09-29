@@ -882,6 +882,8 @@ class ComprehensiveDemoDataGenerator:
             
         except Exception as e:
             logger.error(f"❌ Task creation failed: {e}")
+            import traceback
+            traceback.print_exc()
             return False
 
     async def create_comments_and_files(self):
