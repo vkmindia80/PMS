@@ -1,0 +1,101 @@
+{
+  "loading_timestamp": "2025-09-29T09:33:25.560926",
+  "phase": "Phase 4.1 - Master Sample Data Loading",
+  "loading_duration_seconds": 0.557246,
+  "summary": {
+    "total_operations": 15,
+    "successful": 1,
+    "errors": 3,
+    "success_rate": 6.67
+  },
+  "final_data_counts": {
+    "users": 29,
+    "organizations": 1,
+    "teams": 5,
+    "projects": 0,
+    "tasks": 0,
+    "comments": 0,
+    "files": 0,
+    "notifications": 0,
+    "ai_training_history": 0,
+    "integrations": 0
+  },
+  "total_data_points": 35,
+  "loading_results": [
+    {
+      "status": "info",
+      "message": "Clearing existing demo data...",
+      "timestamp": "2025-09-29 09:33:25.003757"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 5 items from teams",
+      "timestamp": "2025-09-29 09:33:25.103718"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from projects",
+      "timestamp": "2025-09-29 09:33:25.104020"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from tasks",
+      "timestamp": "2025-09-29 09:33:25.104260"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from comments",
+      "timestamp": "2025-09-29 09:33:25.104471"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from files",
+      "timestamp": "2025-09-29 09:33:25.104688"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from notifications",
+      "timestamp": "2025-09-29 09:33:25.104887"
+    },
+    {
+      "status": "success",
+      "message": "Existing demo data cleared",
+      "timestamp": "2025-09-29 09:33:25.104896"
+    },
+    {
+      "status": "info",
+      "message": "Loading comprehensive demo data...",
+      "timestamp": "2025-09-29 09:33:25.104929"
+    },
+    {
+      "status": "error",
+      "message": "Failed to load comprehensive demo data: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])",
+      "timestamp": "2025-09-29 09:33:25.557129"
+    },
+    {
+      "status": "info",
+      "message": "Loading AI training data...",
+      "timestamp": "2025-09-29 09:33:25.557171"
+    },
+    {
+      "status": "error",
+      "message": "Failed to load AI training data: Cannot choose from an empty sequence",
+      "timestamp": "2025-09-29 09:33:25.558292"
+    },
+    {
+      "status": "info",
+      "message": "Loading integration sample data...",
+      "timestamp": "2025-09-29 09:33:25.558322"
+    },
+    {
+      "status": "error",
+      "message": "Failed to load integration sample data: name 'timedelta' is not defined",
+      "timestamp": "2025-09-29 09:33:25.558348"
+    },
+    {
+      "status": "info",
+      "message": "Generating data loading report...",
+      "timestamp": "2025-09-29 09:33:25.558375"
+    }
+  ]
+}
