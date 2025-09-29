@@ -27,6 +27,7 @@ const Header: React.FC = () => {
     { name: 'Analytics', path: '/analytics', icon: BarChart3 },
     { name: 'Resources', path: '/resource-management', icon: Brain },
     { name: 'AI/ML', path: '/ai-ml', icon: Cpu },
+    { name: 'Integrations', path: '/integrations', icon: Zap },
   ]
 
   return (
