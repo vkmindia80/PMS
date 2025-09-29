@@ -92,15 +92,48 @@ class MultiModelAIService:
     
     async def _generate_openai(self, prompt: str, config: Dict, temperature: float, max_tokens: Optional[int]) -> Dict[str, Any]:
         """Generate response using OpenAI GPT-4o"""
-        # For now, return a simulated response since we need to properly integrate with OpenAI
-        return {
-            "success": True,
-            "content": f"[AI Response from {config['model_id']}] This is a simulated response to: {prompt[:100]}...",
-            "model": config["model_id"],
-            "provider": "openai",
-            "tokens_used": 150,
-            "timestamp": datetime.now().isoformat()
-        }
+        if not EMERGENT_AVAILABLE or not self.api_key:
+            return {
+                "success": True,
+                "content": f"[Simulated GPT-4o Response] Advanced AI analysis: {prompt[:100]}... (Emergent integration not available)",
+                "model": config["model_id"],
+                "provider": "openai",
+                "tokens_used": 150,
+                "timestamp": datetime.now().isoformat()
+            }
+        
+        try:
+            # Initialize chat with GPT-4o
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"openai-{datetime.now().timestamp()}",
+                system_message="You are an advanced AI assistant specialized in enterprise portfolio management and resource optimization."
+            ).with_model("openai", config["model_id"])
+            
+            # Create user message
+            user_message = UserMessage(text=prompt)
+            
+            # Generate response
+            response = await chat.send_message(user_message)
+            
+            return {
+                "success": True,
+                "content": response,
+                "model": config["model_id"],
+                "provider": "openai",
+                "tokens_used": len(response.split()) * 1.3,  # Approximate token count
+                "timestamp": datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"OpenAI generation error: {str(e)}")
+            return {
+                "success": False,
+                "error": str(e),
+                "model": config["model_id"],
+                "provider": "openai",
+                "timestamp": datetime.now().isoformat()
+            }
     
     async def _generate_anthropic(self, prompt: str, config: Dict, temperature: float, max_tokens: Optional[int]) -> Dict[str, Any]:
         """Generate response using Claude 3.5 Sonnet"""
