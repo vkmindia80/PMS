@@ -251,7 +251,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
                 type="button"
                 onClick={fillDemoCredentials}
                 className="text-xs bg-primary-600 text-white px-3 py-1 rounded-md hover:bg-primary-700 transition-colors"
-                disabled={isLoading}
+                disabled={isLoading || isGeneratingDemo}
               >
                 Auto Fill
               </button>
@@ -259,18 +259,57 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
                 type="button"
                 onClick={performDemoLogin}
                 className="text-xs bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition-colors"
-                disabled={isLoading}
+                disabled={isLoading || isGeneratingDemo}
                 data-testid="quick-demo-login"
               >
                 Quick Login
               </button>
             </div>
           </div>
+          
           <div className="text-xs text-primary-700 space-y-1">
             <p>📧 Email: {DEMO_CREDENTIALS.email}</p>
             <p>🔑 Password: {DEMO_CREDENTIALS.password}</p>
             <p className="text-primary-600 font-medium mt-2">
               ✨ Demo account ready with full admin access
+            </p>
+          </div>
+
+          {/* Demo Data Generation */}
+          <div className="mt-3 pt-3 border-t border-primary-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Database className="h-4 w-4 text-primary-600" />
+                <span className="text-xs text-primary-700 font-medium">
+                  Generate Sample Data
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={generateDemoData}
+                disabled={isLoading || isGeneratingDemo}
+                className={`text-xs px-3 py-1 rounded-md font-medium transition-colors flex items-center space-x-1 ${
+                  isGeneratingDemo
+                    ? 'bg-orange-500 text-white cursor-not-allowed'
+                    : 'bg-orange-600 text-white hover:bg-orange-700'
+                }`}
+                data-testid="generate-demo-data"
+              >
+                {isGeneratingDemo ? (
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <span>Generating...</span>
+                  </>
+                ) : (
+                  <>
+                    <Database className="h-3 w-3" />
+                    <span>Generate Data</span>
+                  </>
+                )}
+              </button>
+            </div>
+            <p className="text-xs text-primary-600 mt-1">
+              🚀 Create 500+ realistic demo data points for full system showcase
             </p>
           </div>
         </div>
