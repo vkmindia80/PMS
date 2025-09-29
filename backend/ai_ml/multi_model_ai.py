@@ -181,16 +181,49 @@ class MultiModelAIService:
             }
     
     async def _generate_google(self, prompt: str, config: Dict, temperature: float, max_tokens: Optional[int]) -> Dict[str, Any]:
-        """Generate response using Gemini 2.0 Pro"""
-        # For now, return a simulated response
-        return {
-            "success": True,
-            "content": f"[AI Response from {config['model_id']}] Multi-perspective analysis: {prompt[:100]}...",
-            "model": config["model_id"],
-            "provider": "google",
-            "tokens_used": 200,
-            "timestamp": datetime.now().isoformat()
-        }
+        """Generate response using Gemini 2.0 Flash"""
+        if not EMERGENT_AVAILABLE or not self.api_key:
+            return {
+                "success": True,
+                "content": f"[Simulated Gemini Response] Multi-modal enterprise insights: {prompt[:100]}... (Emergent integration not available)",
+                "model": config["model_id"],
+                "provider": "google",
+                "tokens_used": 200,
+                "timestamp": datetime.now().isoformat()
+            }
+        
+        try:
+            # Initialize chat with Gemini
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"google-{datetime.now().timestamp()}",
+                system_message="You are Gemini, a multi-modal AI assistant providing innovative solutions and multi-perspective analysis for enterprise portfolio management."
+            ).with_model("gemini", config["model_id"])
+            
+            # Create user message
+            user_message = UserMessage(text=prompt)
+            
+            # Generate response
+            response = await chat.send_message(user_message)
+            
+            return {
+                "success": True,
+                "content": response,
+                "model": config["model_id"],
+                "provider": "google",
+                "tokens_used": len(response.split()) * 1.3,  # Approximate token count
+                "timestamp": datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"Google generation error: {str(e)}")
+            return {
+                "success": False,
+                "error": str(e),
+                "model": config["model_id"],
+                "provider": "google",
+                "timestamp": datetime.now().isoformat()
+            }
     
     def _enhance_prompt(self, prompt: str, context: Optional[Dict[str, Any]], model: str) -> str:
         """Enhance prompt with context and model-specific optimizations"""
