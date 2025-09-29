@@ -167,7 +167,7 @@ class MultiModelAIService:
                 "content": response,
                 "model": config["model_id"],
                 "provider": "anthropic",
-                "tokens_used": len(response.split()) * 1.3,  # Approximate token count
+                "tokens_used": int(len(response.split()) * 1.3),  # Approximate token count
                 "timestamp": datetime.now().isoformat()
             }
             
