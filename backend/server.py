@@ -13,7 +13,7 @@ from database import connect_to_mongo, close_mongo_connection, get_database
 # Import authentication routes
 from auth.routes import router as auth_router
 
-# Import organization, team, user, hierarchy, project, task, analytics, and resource management routes
+# Import organization, team, user, hierarchy, project, task, analytics, resource management, and roles routes
 from routes.organizations import router as organizations_router
 from routes.teams import router as teams_router
 from routes.users import router as users_router
@@ -29,6 +29,7 @@ from routes.tensorflow import router as tensorflow_router
 from routes.realtime_ai import router as realtime_ai_router
 from routes.system import router as system_router
 from routes.security import router as security_router
+from routes.roles import router as roles_router
 
 # Import models
 from models import (
