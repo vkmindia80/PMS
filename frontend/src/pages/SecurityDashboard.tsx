@@ -74,30 +74,46 @@ const SecurityDashboard: React.FC = () => {
       const token = localStorage.getItem('access_token');
       if (!token) throw new Error('No authentication token');
 
+      // Get backend URL from environment
+      const backendUrl = import.meta.env.VITE_API_URL || 
+                        import.meta.env.REACT_APP_BACKEND_URL || 
+                        'http://localhost:8001';
+
       const headers = {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       };
 
+      console.log('Fetching security data from:', backendUrl);
+
       // Fetch security metrics
-      const metricsResponse = await fetch('/api/security/dashboard/metrics', { headers });
+      const metricsResponse = await fetch(`${backendUrl}/api/security/dashboard/metrics`, { headers });
       if (metricsResponse.ok) {
         const metricsData = await metricsResponse.json();
         setMetrics(metricsData);
+        console.log('Security metrics loaded:', metricsData);
+      } else {
+        console.error('Failed to fetch metrics:', metricsResponse.status, metricsResponse.statusText);
       }
 
       // Fetch active threats
-      const threatsResponse = await fetch('/api/security/threats/active', { headers });
+      const threatsResponse = await fetch(`${backendUrl}/api/security/threats/active`, { headers });
       if (threatsResponse.ok) {
         const threatsData = await threatsResponse.json();
         setThreats(threatsData);
+        console.log('Active threats loaded:', threatsData);
+      } else {
+        console.error('Failed to fetch threats:', threatsResponse.status, threatsResponse.statusText);
       }
 
       // Fetch compliance reports
-      const complianceResponse = await fetch('/api/security/compliance/reports', { headers });
+      const complianceResponse = await fetch(`${backendUrl}/api/security/compliance/reports`, { headers });
       if (complianceResponse.ok) {
         const complianceData = await complianceResponse.json();
         setReports(complianceData.slice(0, 5)); // Latest 5 reports
+        console.log('Compliance reports loaded:', complianceData);
+      } else {
+        console.error('Failed to fetch compliance reports:', complianceResponse.status, complianceResponse.statusText);
       }
 
       setLoading(false);
