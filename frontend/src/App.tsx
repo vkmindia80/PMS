@@ -135,6 +135,14 @@ const AppContent: React.FC = () => {
             } 
           />
           <Route 
+            path="/security" 
+            element={
+              <ProtectedRoute>
+                <SecurityDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/settings" 
             element={
               <ProtectedRoute>
