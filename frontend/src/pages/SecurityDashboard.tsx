@@ -205,7 +205,19 @@ const SecurityDashboard: React.FC = () => {
               <p className="text-gray-600">Monitor security events, threats, and compliance status</p>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={refreshData}
+              className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <RefreshCw className="h-4 w-4" />
+              <span>Refresh</span>
+            </button>
+            <div className="text-sm text-gray-500">
+              Last updated: {metrics?.system_health.last_updated ? 
+                new Date(metrics.system_health.last_updated).toLocaleTimeString() : 
+                'Never'}
+            </div>
             <div className={`px-3 py-1 rounded-full text-sm font-medium ${
               metrics?.system_health.overall_status === 'secure' 
                 ? 'bg-green-100 text-green-800' 
