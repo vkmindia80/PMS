@@ -27,6 +27,7 @@ from routes.ai_ml import router as ai_ml_router
 from routes.integrations import router as integrations_router
 from routes.tensorflow import router as tensorflow_router
 from routes.realtime_ai import router as realtime_ai_router
+from routes.system import router as system_router
 
 # Import models
 from models import (
