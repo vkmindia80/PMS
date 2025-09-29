@@ -48,7 +48,7 @@ class MultiModelAIService:
             },
             "gemini-2.0-pro": {
                 "provider": "google",
-                "model_id": "gemini-2.0-flash-exp",
+                "model_id": "gemini-2.0-flash",
                 "capabilities": ["text", "vision", "multimodal", "reasoning"],
                 "max_tokens": 1000000,
                 "cost_per_token": 0.000002
