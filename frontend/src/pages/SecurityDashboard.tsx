@@ -359,9 +359,15 @@ const SecurityDashboard: React.FC = () => {
             </div>
             <div className="p-6">
               {threats.length === 0 ? (
-                <div className="text-center py-8">
-                  <Shield className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                  <p className="text-gray-600">No active security threats detected</p>
+                <div className="text-center py-12">
+                  <Shield className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                  <h4 className="text-lg font-semibold text-gray-800 mb-2">All Clear!</h4>
+                  <p className="text-gray-600 mb-4">No active security threats detected</p>
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
+                    <p className="text-sm text-green-800">
+                      Your security monitoring is active and all systems are secure.
+                    </p>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-4">
