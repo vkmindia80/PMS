@@ -71,11 +71,13 @@ const SecurityDashboard: React.FC = () => {
 
   const fetchSecurityData = async () => {
     try {
-      const token = localStorage.getItem('access_token');
-      if (!token) throw new Error('No authentication token');
+      // Get auth token from localStorage - use the correct key
+      const authTokensStr = localStorage.getItem('auth_tokens');
+      if (!authTokensStr) throw new Error('No authentication token');
 
+      const authTokens = JSON.parse(authTokensStr);
       const headers = {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${authTokens.access_token}`,
         'Content-Type': 'application/json'
       };
 
