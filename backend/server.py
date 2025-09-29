@@ -241,6 +241,7 @@ app.include_router(analytics_router)
 app.include_router(resource_management_router)
 app.include_router(enhanced_resource_management_router)
 app.include_router(ai_ml_router)
+app.include_router(integrations_router)
 
 # Health check endpoint
 @app.get("/api/health")
