@@ -148,6 +148,12 @@ const SecurityDashboard: React.FC = () => {
     }
   };
 
+  const refreshData = async () => {
+    setError(null);
+    setLoading(true);
+    await fetchSecurityData();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
