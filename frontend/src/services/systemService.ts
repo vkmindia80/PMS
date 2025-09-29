@@ -15,7 +15,7 @@ class SystemService {
     details?: any
   }> {
     try {
-      const response = await fetch(`${getBackendUrl()}/api/system/generate-demo-data`, {
+      const response = await fetch(`${getApiUrl()}/api/system/generate-demo-data`, {
         method: 'POST',
         headers: this.getAuthHeaders()
       })
