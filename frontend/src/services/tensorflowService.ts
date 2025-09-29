@@ -42,7 +42,7 @@ class TensorFlowService {
   private models: Map<string, tf.LayersModel> = new Map()
   private modelConfigs: Map<string, ModelConfig> = new Map()
   private isInitialized: boolean = false
-  private readonly API_BASE_URL = import.meta.env.VITE_REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
+  private readonly API_BASE_URL = import.meta.env.VITE_REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
 
   /**
    * Initialize TensorFlow.js service
