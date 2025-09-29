@@ -714,7 +714,7 @@ const TeamDetailsPanel: React.FC<{
       {/* Members */}
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-medium text-gray-900">Members ({team.members.length})</h3>
+          <h3 className="text-sm font-medium text-gray-900">Members ({team.members ? team.members.length : 0})</h3>
           <button
             onClick={() => setShowAddMember(true)}
             className="text-primary-600 hover:text-primary-700 text-sm flex items-center"
