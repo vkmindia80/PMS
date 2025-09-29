@@ -2,10 +2,25 @@ import { getApiUrl } from '../utils/environment'
 
 class SystemService {
   private getAuthHeaders() {
-    const token = localStorage.getItem('access_token')
-    return {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` })
+    // Get auth token from localStorage - use the correct key
+    const authTokensStr = localStorage.getItem('auth_tokens');
+    if (!authTokensStr) {
+      return {
+        'Content-Type': 'application/json'
+      }
+    }
+    
+    try {
+      const authTokens = JSON.parse(authTokensStr);
+      return {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authTokens.access_token}`
+      }
+    } catch (error) {
+      console.error('Failed to parse auth tokens:', error);
+      return {
+        'Content-Type': 'application/json'
+      }
     }
   }
 
