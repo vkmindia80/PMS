@@ -38,7 +38,7 @@ class SystemService {
     user_count: number
   }> {
     try {
-      const response = await fetch(`${getBackendUrl()}/api/system/health`, {
+      const response = await fetch(`${getApiUrl()}/api/system/health`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       })
