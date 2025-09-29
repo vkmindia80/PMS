@@ -8,6 +8,18 @@ import json
 from typing import Dict, List, Any, Optional, Union
 from datetime import datetime
 import logging
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Import emergentintegrations
+try:
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    EMERGENT_AVAILABLE = True
+except ImportError:
+    EMERGENT_AVAILABLE = False
+    logger.warning("emergentintegrations not available - using simulated responses")
 
 logger = logging.getLogger(__name__)
 
