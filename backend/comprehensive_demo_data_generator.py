@@ -833,9 +833,9 @@ class ComprehensiveDemoDataGenerator:
                         "assignee_id": assignee_id,
                         "reporter_id": project["owner_id"],
                         "parent_task_id": None,
-                        "due_date": datetime.combine(task_due, datetime.min.time()) if task_due else None,
-                        "start_date": datetime.combine(task_start, datetime.min.time()) if task_start else None,
-                        "completed_at": datetime.combine(task_due, datetime.min.time()) if status == "completed" else None,
+                        "due_date": task_due if task_due else None,
+                        "start_date": task_start if task_start else None,
+                        "completed_at": task_due if status == "completed" else None,
                         "time_tracking": {
                             "estimated_hours": estimated_hours,
                             "actual_hours": actual_hours,
