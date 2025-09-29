@@ -253,6 +253,7 @@ app.include_router(integrations_router)
 app.include_router(tensorflow_router)
 app.include_router(realtime_ai_router)
 app.include_router(system_router)
+app.include_router(security_router)
 
 # Health check endpoint
 @app.get("/api/health")
