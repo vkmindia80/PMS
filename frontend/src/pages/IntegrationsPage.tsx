@@ -485,7 +485,150 @@ const IntegrationsPage: React.FC = () => {
     }
   }
 
-  const removeIntegration = async (type: string) => {
+  const renderSlackConfiguration = () => (
+    <div className="space-y-6">
+      {/* Basic Configuration */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Globe className="w-4 h-4 inline mr-1" />
+            Workspace URL
+          </label>
+          <input
+            type="url"
+            value={slackConfig.workspace_url}
+            onChange={(e) => setSlackConfig({ ...slackConfig, workspace_url: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="https://yourcompany.slack.com"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <MessageSquare className="w-4 h-4 inline mr-1" />
+            Default Channel
+          </label>
+          <input
+            type="text"
+            value={slackConfig.default_channel}
+            onChange={(e) => setSlackConfig({ ...slackConfig, default_channel: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="general"
+          />
+        </div>
+      </div>
+
+      {/* API Credentials */}
+      <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+        <h4 className="text-sm font-medium text-yellow-800 mb-3 flex items-center">
+          <Key className="w-4 h-4 mr-1" />
+          API Credentials
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Bot Token</label>
+            <div className="relative">
+              <input
+                type={showCredentials.slack ? 'text' : 'password'}
+                value={slackConfig.bot_token}
+                onChange={(e) => setSlackConfig({ ...slackConfig, bot_token: e.target.value })}
+                className="w-full p-2 pr-10 border border-gray-300 rounded text-sm"
+                placeholder="xoxb-..."
+              />
+              <button
+                type="button"
+                onClick={() => setShowCredentials(prev => ({ ...prev, slack: !prev.slack }))}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              >
+                {showCredentials.slack ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">App Token</label>
+            <input
+              type={showCredentials.slack ? 'text' : 'password'}
+              value={slackConfig.app_token}
+              onChange={(e) => setSlackConfig({ ...slackConfig, app_token: e.target.value })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+              placeholder="xapp-..."
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Advanced Settings */}
+      {showAdvancedConfig.slack && (
+        <div className="space-y-4 border-t pt-4">
+          <h4 className="text-sm font-medium text-gray-900">Advanced Configuration</h4>
+          
+          {/* Notification Settings */}
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h5 className="text-sm font-medium text-gray-700 mb-3">Notification Settings</h5>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                {['notifications_enabled', 'auto_create_channels', 'sync_user_status', 'enable_slash_commands'].map((key) => (
+                  <label key={key} className="flex items-center text-sm">
+                    <input
+                      type="checkbox"
+                      checked={slackConfig[key as keyof typeof slackConfig] as boolean}
+                      onChange={(e) => setSlackConfig({ ...slackConfig, [key]: e.target.checked })}
+                      className="mr-2"
+                    />
+                    {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  </label>
+                ))}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Notification Types</label>
+                <select
+                  multiple
+                  value={slackConfig.notification_types}
+                  onChange={(e) => setSlackConfig({ 
+                    ...slackConfig, 
+                    notification_types: Array.from(e.target.selectedOptions, option => option.value)
+                  })}
+                  className="w-full p-2 border border-gray-300 rounded text-sm"
+                >
+                  <option value="task_assigned">Task Assigned</option>
+                  <option value="project_update">Project Update</option>
+                  <option value="deadline_approaching">Deadline Approaching</option>
+                  <option value="milestone_reached">Milestone Reached</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Working Hours */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Working Hours Start</label>
+              <input
+                type="time"
+                value={slackConfig.working_hours.start}
+                onChange={(e) => setSlackConfig({ 
+                  ...slackConfig, 
+                  working_hours: { ...slackConfig.working_hours, start: e.target.value }
+                })}
+                className="w-full p-2 border border-gray-300 rounded text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 mb-1">Working Hours End</label>
+              <input
+                type="time"
+                value={slackConfig.working_hours.end}
+                onChange={(e) => setSlackConfig({ 
+                  ...slackConfig, 
+                  working_hours: { ...slackConfig.working_hours, end: e.target.value }
+                })}
+                className="w-full p-2 border border-gray-300 rounded text-sm"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
     if (!confirm(`Are you sure you want to remove the ${availableIntegrations[type]?.name} integration?`)) {
       return
     }
