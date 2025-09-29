@@ -37,7 +37,7 @@ export default defineConfig({
     // Inject environment-specific API URL
     __API_URL__: JSON.stringify(
       process.env.NODE_ENV === 'production' 
-        ? process.env.VITE_PROD_API_URL || 'https://modern-ecosystem.preview.emergentagent.com'
+        ? process.env.VITE_PROD_API_URL || 'https://milestone-planner.preview.emergentagent.com'
         : process.env.VITE_API_URL || 'http://localhost:8001'
     ),
   },
