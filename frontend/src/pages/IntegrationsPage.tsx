@@ -1250,7 +1250,7 @@ const IntegrationsPage: React.FC = () => {
                 <div className="flex space-x-3">
                   {!isActive ? (
                     <button
-                      onClick={() => setSetupModal({ type, integration })}
+                      onClick={() => setSetupModal({ type, integration, mode: 'setup' })}
                       className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >
                       <Plus className="w-4 h-4 mr-2" />
