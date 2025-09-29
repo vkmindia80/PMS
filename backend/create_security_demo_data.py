@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 import random
 import secrets
 from motor.motor_asyncio import AsyncIOMotorClient
-from passlib.totp import TOTP
+import base64
 
 # Add the backend directory to Python path
 sys.path.append('/app/backend')
