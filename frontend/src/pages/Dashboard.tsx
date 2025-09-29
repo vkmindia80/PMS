@@ -132,17 +132,17 @@ const Dashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center p-6 bg-primary-50 rounded-lg">
               <h3 className="text-lg font-semibold text-primary-900 mb-2">Projects</h3>
-              <p className="text-3xl font-bold text-primary-600">0</p>
+              <p className="text-3xl font-bold text-primary-600">{dashboardData.projects}</p>
               <p className="text-sm text-primary-700">Active Projects</p>
             </div>
             <div className="text-center p-6 bg-success-50 rounded-lg">
               <h3 className="text-lg font-semibold text-success-900 mb-2">Teams</h3>
-              <p className="text-3xl font-bold text-success-600">0</p>
+              <p className="text-3xl font-bold text-success-600">{dashboardData.teams}</p>
               <p className="text-sm text-success-700">Team Members</p>
             </div>
             <div className="text-center p-6 bg-warning-50 rounded-lg">
               <h3 className="text-lg font-semibold text-warning-900 mb-2">Tasks</h3>
-              <p className="text-3xl font-bold text-warning-600">0</p>
+              <p className="text-3xl font-bold text-warning-600">{dashboardData.tasks}</p>
               <p className="text-sm text-warning-700">Pending Tasks</p>
             </div>
           </div>
