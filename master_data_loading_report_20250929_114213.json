@@ -1,0 +1,116 @@
+{
+  "loading_timestamp": "2025-09-29T11:42:13.473196",
+  "phase": "Phase 4.1 - Master Sample Data Loading",
+  "loading_duration_seconds": 6.244554,
+  "summary": {
+    "total_operations": 18,
+    "successful": 7,
+    "errors": 0,
+    "success_rate": 38.89
+  },
+  "final_data_counts": {
+    "users": 44,
+    "organizations": 1,
+    "teams": 5,
+    "projects": 12,
+    "tasks": 132,
+    "comments": 26,
+    "files": 14,
+    "notifications": 20,
+    "ai_training_history": 40,
+    "integrations": 7
+  },
+  "total_data_points": 301,
+  "loading_results": [
+    {
+      "status": "info",
+      "message": "Clearing existing demo data...",
+      "timestamp": "2025-09-29 11:42:07.228715"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 6 items from teams",
+      "timestamp": "2025-09-29 11:42:07.239317"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 8 items from projects",
+      "timestamp": "2025-09-29 11:42:07.239974"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 88 items from tasks",
+      "timestamp": "2025-09-29 11:42:07.241630"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 31 items from comments",
+      "timestamp": "2025-09-29 11:42:07.242252"
+    },
+    {
+      "status": "info",
+      "message": "Cleared 30 items from files",
+      "timestamp": "2025-09-29 11:42:07.243174"
+    },
+    {
+      "status": "info",
+      "message": "No items to clear from notifications",
+      "timestamp": "2025-09-29 11:42:07.243428"
+    },
+    {
+      "status": "success",
+      "message": "Existing demo data cleared",
+      "timestamp": "2025-09-29 11:42:07.243437"
+    },
+    {
+      "status": "info",
+      "message": "Loading comprehensive demo data...",
+      "timestamp": "2025-09-29 11:42:07.243464"
+    },
+    {
+      "status": "success",
+      "message": "Comprehensive demo data loaded successfully",
+      "timestamp": "2025-09-29 11:42:13.465368"
+    },
+    {
+      "status": "info",
+      "message": "Loading AI training data...",
+      "timestamp": "2025-09-29 11:42:13.465399"
+    },
+    {
+      "status": "success",
+      "message": "Created 20 AI-related notifications",
+      "timestamp": "2025-09-29 11:42:13.467646"
+    },
+    {
+      "status": "success",
+      "message": "Created 20 AI training records",
+      "timestamp": "2025-09-29 11:42:13.468458"
+    },
+    {
+      "status": "success",
+      "message": "AI training data loaded successfully",
+      "timestamp": "2025-09-29 11:42:13.468467"
+    },
+    {
+      "status": "info",
+      "message": "Loading integration sample data...",
+      "timestamp": "2025-09-29 11:42:13.468570"
+    },
+    {
+      "status": "success",
+      "message": "Created 4 integration configurations",
+      "timestamp": "2025-09-29 11:42:13.469049"
+    },
+    {
+      "status": "success",
+      "message": "Integration sample data loaded successfully",
+      "timestamp": "2025-09-29 11:42:13.469059"
+    },
+    {
+      "status": "info",
+      "message": "Generating data loading report...",
+      "timestamp": "2025-09-29 11:42:13.469087"
+    }
+  ]
+}
