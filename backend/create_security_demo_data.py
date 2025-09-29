@@ -193,31 +193,49 @@ class SecurityDemoDataGenerator:
             threat = ThreatDetection(
                 organization_id=self.organization_id,
                 threat_type=threat_type,
-                severity=severity,
-                status=status,
-                description=f"Detected {threat_type.lower()} targeting our system",
-                source_ip="203.0.113." + str(random.randint(1, 255)),
-                target_resource=random.choice([
-                    "/api/auth/login", "/api/projects", "/api/users", 
-                    "/api/files/upload", "/api/data/export"
-                ]),
+                severity=RiskLevel(severity),
+                confidence=random.randint(60, 95) / 100.0,  # Convert to 0-1 range
                 detection_method=random.choice([
                     "Anomaly Detection", "Signature Matching", "Behavioral Analysis",
                     "Rate Limiting", "Pattern Recognition"
                 ]),
-                confidence_score=random.randint(60, 95),
-                detected_at=detected_time,
+                source_ip="203.0.113." + str(random.randint(1, 255)),
+                affected_resources=[{
+                    "resource_type": "endpoint",
+                    "resource_name": random.choice([
+                        "/api/auth/login", "/api/projects", "/api/users", 
+                        "/api/files/upload", "/api/data/export"
+                    ])
+                }],
+                first_detected=detected_time,
+                last_detected=detected_time + timedelta(minutes=random.randint(1, 60)),
                 investigation_status="closed" if status == "resolved" else "open",
-                investigation_notes=f"Threat analysis completed. Risk level: {severity}",
-                mitigation_actions=[
-                    "IP address blocked",
-                    "User account secured",
-                    "Security policies updated"
+                investigation_notes=[{
+                    "timestamp": detected_time,
+                    "analyst": self.admin_user_id,
+                    "note": f"Threat analysis completed. Risk level: {severity}",
+                    "action": "investigated"
+                }],
+                response_actions=[
+                    {"action": "IP address blocked", "timestamp": detected_time, "status": "completed"},
+                    {"action": "User account secured", "timestamp": detected_time, "status": "completed"},
+                    {"action": "Security policies updated", "timestamp": detected_time, "status": "completed"}
                 ] if status in ["contained", "resolved"] else [],
-                false_positive=False,
+                auto_response_taken=status in ["contained", "resolved"],
+                is_blocked=status in ["contained", "resolved"],
+                resolved_at=detected_time + timedelta(hours=random.randint(1, 24)) if status == "resolved" else None,
+                assigned_to=self.admin_user_id if status in ["investigating", "contained"] else None,
                 related_events=[f"event-{random.randint(1000, 9999)}" for _ in range(random.randint(1, 3))],
-                remediation_status="completed" if status == "resolved" else "in_progress",
-                assigned_to=self.admin_user_id if status in ["investigating", "contained"] else None
+                indicators=[{
+                    "type": "ip_address",
+                    "value": "203.0.113." + str(random.randint(1, 255)),
+                    "confidence": random.randint(70, 95)
+                }],
+                metadata={
+                    "detection_engine": "SecurityAI v2.0",
+                    "rule_version": "2025.01",
+                    "analyst_reviewed": status in ["investigating", "contained", "resolved"]
+                }
             )
             
             threats.append(threat.model_dump())
