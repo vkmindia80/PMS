@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Shield, Eye, Lock, Users, FileCheck, Activity, TrendingUp } from 'lucide-react';
+import { AlertTriangle, Shield, Eye, Lock, Users, FileCheck, Activity, TrendingUp, RefreshCw } from 'lucide-react';
 
 interface SecurityMetrics {
   security_events: {
