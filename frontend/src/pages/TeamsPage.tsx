@@ -725,7 +725,7 @@ const TeamDetailsPanel: React.FC<{
         </div>
 
         <div className="space-y-3">
-          {team.members.map((member) => (
+          {team.members && team.members.map((member) => (
             <div key={member.user_id} className="flex items-center justify-between">
               <div className="flex items-center">
                 <div className="flex-shrink-0 h-8 w-8">
