@@ -299,20 +299,19 @@ class SecurityDemoDataGenerator:
                 ] if failed_controls > 0 else [],
                 recommendations=[
                     {
-                        "recommendation_id": f"REC-{l+1:03d}",
+                        "recommendation_id": "REC-001",
                         "title": "Enhance Security Framework",
                         "description": "Implement automated compliance monitoring",
                         "priority": "high",
                         "timeline": "3 months"
                     },
                     {
-                        "recommendation_id": f"REC-{l+2:03d}",
+                        "recommendation_id": "REC-002",
                         "title": "Improve Training Program",
                         "description": "Enhance security awareness training",
                         "priority": "medium",
                         "timeline": "6 months"
                     }
-                    for l in range(1)
                 ],
                 remediation_plan=[
                     {
