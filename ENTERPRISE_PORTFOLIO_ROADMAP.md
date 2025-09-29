@@ -118,8 +118,8 @@
 **Status**: Fully Populated with Realistic Enterprise Scenarios
 
 ### **Organizational Structure**
-- ✅ **16 Professional Users** across 6 departments
-- ✅ **6 Specialized Teams** (Development, Design, Data Science, Marketing, Sales, Operations)
+- ✅ **29 Professional Users** across 5 departments  
+- ✅ **5 Specialized Teams** (Development, Design, Marketing, Sales, Operations)
 - ✅ **Realistic Skill Distributions** (50+ unique skills with experience levels)
 - ✅ **Role Hierarchy** from team members to department leads
 
