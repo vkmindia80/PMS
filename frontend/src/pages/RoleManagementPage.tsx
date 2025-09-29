@@ -163,7 +163,7 @@ const RoleManagementPage: React.FC = () => {
         organization_id: 'demo-org-001' // Should be dynamic in real app
       };
 
-      const response = await fetch('/api/roles/custom', {
+      const response = await fetch(`${getApiUrl()}/api/roles/custom`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
