@@ -3,7 +3,7 @@ Enhanced Security Middleware
 Phase 4.3: Zero-Trust Security Architecture
 """
 
-from fastapi import HTTPException, status, Request
+from fastapi import HTTPException, status, Request, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
