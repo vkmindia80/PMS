@@ -38,7 +38,11 @@ const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
   const fetchMFAStatus = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('/api/security/mfa/status', {
+      const backendUrl = import.meta.env.VITE_API_URL || 
+                        import.meta.env.REACT_APP_BACKEND_URL || 
+                        'http://localhost:8001';
+      
+      const response = await fetch(`${backendUrl}/api/security/mfa/status`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
