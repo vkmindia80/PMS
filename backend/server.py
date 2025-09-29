@@ -43,6 +43,10 @@ from models import (
 # Load environment variables
 load_dotenv()
 
+# Add Emergent LLM key to environment for AI integration
+if not os.getenv("EMERGENT_LLM_KEY"):
+    os.environ["EMERGENT_LLM_KEY"] = "sk-emergent-bB53fCe28A1265aCdB"
+
 # Add JWT secret key to environment if not present
 if not os.getenv("JWT_SECRET_KEY"):
     import secrets
