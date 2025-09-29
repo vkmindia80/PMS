@@ -1313,7 +1313,7 @@ const IntegrationsPage: React.FC = () => {
         </div>
       </div>
 
-      {renderSetupModal()}
+      {renderEnhancedSetupModal()}
     </div>
   )
 }
