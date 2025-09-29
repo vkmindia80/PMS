@@ -623,6 +623,8 @@ class ComprehensiveDemoDataGenerator:
             
         except Exception as e:
             logger.error(f"❌ Project creation failed: {e}")
+            import traceback
+            traceback.print_exc()
             return False
 
     def _generate_project_milestones(self, template, start_date, due_date, progress):
