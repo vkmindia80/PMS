@@ -680,7 +680,7 @@ const TeamDetailsPanel: React.FC<{
           <p className="mt-2 text-sm text-gray-600">{team.description}</p>
         )}
 
-        {team.tags.length > 0 && (
+        {team.tags && team.tags.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1">
             {team.tags.map((tag) => (
               <span
