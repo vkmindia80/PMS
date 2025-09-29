@@ -192,7 +192,7 @@ const RoleManagementPage: React.FC = () => {
     if (!confirm('Are you sure you want to delete this role?')) return;
 
     try {
-      const response = await fetch(`/api/roles/${roleId}`, {
+      const response = await fetch(`${getApiUrl()}/api/roles/${roleId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
