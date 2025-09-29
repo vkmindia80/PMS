@@ -1,7 +1,7 @@
-"""
-Security Dashboard Frontend Page
-Phase 4.3: Enterprise Security & Compliance Interface
-"""
+/**
+ * Security Dashboard Frontend Page
+ * Phase 4.3: Enterprise Security & Compliance Interface
+ */
 
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Shield, Eye, Lock, Users, FileCheck, Activity, TrendingUp } from 'lucide-react';
