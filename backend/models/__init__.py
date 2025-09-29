@@ -10,6 +10,11 @@ from .team import Team, TeamCreate, TeamUpdate, TeamInDB
 from .comment import Comment, CommentCreate, CommentUpdate, CommentInDB
 from .file import File, FileCreate, FileUpdate, FileInDB
 from .notification import Notification, NotificationCreate, NotificationUpdate, NotificationInDB
+from .role import (
+    Permission, PermissionCategory, CustomRole, CustomRoleCreate, CustomRoleUpdate, CustomRoleInDB,
+    RoleTemplate, RoleAssignment, RoleAssignmentCreate, BulkRoleAssignment,
+    UserPermissions, PermissionValidation, RoleType
+)
 
 __all__ = [
     # User models
@@ -30,4 +35,8 @@ __all__ = [
     "File", "FileCreate", "FileUpdate", "FileInDB",
     # Notification models
     "Notification", "NotificationCreate", "NotificationUpdate", "NotificationInDB",
+    # Role and Permission models
+    "Permission", "PermissionCategory", "CustomRole", "CustomRoleCreate", "CustomRoleUpdate", "CustomRoleInDB",
+    "RoleTemplate", "RoleAssignment", "RoleAssignmentCreate", "BulkRoleAssignment",
+    "UserPermissions", "PermissionValidation", "RoleType",
 ]
