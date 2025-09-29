@@ -64,10 +64,22 @@ const RoleManagementPage: React.FC = () => {
 
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
+  // Get API base URL
+  const getApiUrl = () => {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'http://localhost:8001';
+      }
+      return `${window.location.protocol}//${hostname}`;
+    }
+    return 'http://localhost:8001';
+  };
+
   // Fetch data
   const fetchRoles = async () => {
     try {
-      const response = await fetch('/api/roles', {
+      const response = await fetch(`${getApiUrl()}/api/roles`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -81,7 +93,7 @@ const RoleManagementPage: React.FC = () => {
 
   const fetchPermissions = async () => {
     try {
-      const response = await fetch('/api/roles/permissions', {
+      const response = await fetch(`${getApiUrl()}/api/roles/permissions`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -95,7 +107,7 @@ const RoleManagementPage: React.FC = () => {
 
   const fetchTemplates = async () => {
     try {
-      const response = await fetch('/api/roles/templates', {
+      const response = await fetch(`${getApiUrl()}/api/roles/templates`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
@@ -109,7 +121,7 @@ const RoleManagementPage: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch(`${getApiUrl()}/api/users`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
