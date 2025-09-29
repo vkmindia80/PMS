@@ -259,45 +259,80 @@ class SecurityDemoDataGenerator:
         
         for i, standard in enumerate(standards):
             report_date = now - timedelta(days=random.randint(30, 180))
+            end_date = report_date + timedelta(days=30)
             
             # Generate realistic compliance scores
             total_controls = random.randint(50, 150)
             passed_controls = int(total_controls * random.uniform(0.75, 0.95))
-            failed_controls = total_controls - passed_controls
+            failed_controls = random.randint(2, 8)
+            na_controls = total_controls - passed_controls - failed_controls
+            compliance_score = round((passed_controls / total_controls) * 100, 2)
             
             report = ComplianceReport(
                 organization_id=self.organization_id,
+                report_type="assessment",
                 compliance_standard=standard,
-                assessment_date=report_date,
-                assessor_name=f"Compliance Assessor {i+1}",
-                assessment_scope=f"{standard.value.upper()} compliance assessment for enterprise operations",
-                total_controls_assessed=total_controls,
-                controls_passed=passed_controls,
-                controls_failed=failed_controls,
-                compliance_score=round((passed_controls / total_controls) * 100, 2),
-                is_certified=passed_controls >= int(total_controls * 0.8),
-                certification_valid_until=report_date + timedelta(days=365) if passed_controls >= int(total_controls * 0.8) else None,
-                findings=[
-                    f"Control gap identified in {random.choice(['access management', 'data encryption', 'audit logging', 'incident response'])}",
-                    f"Improvement needed in {random.choice(['security training', 'vulnerability management', 'backup procedures', 'network security'])}"
-                ][:failed_controls] if failed_controls > 0 else [],
-                recommendations=[
-                    "Implement automated compliance monitoring",
-                    "Enhance security awareness training program",
-                    "Strengthen incident response procedures",
-                    "Improve data classification and handling"
+                report_period_start=report_date,
+                report_period_end=end_date,
+                overall_score=compliance_score,
+                compliance_percentage=compliance_score,
+                passed_controls=passed_controls,
+                failed_controls=failed_controls,
+                not_applicable_controls=na_controls,
+                control_assessments=[
+                    {
+                        "control_id": f"CTRL-{j+1:03d}",
+                        "control_name": f"Control {j+1}",
+                        "status": "passed" if j < passed_controls else "failed",
+                        "evidence": f"Evidence document {j+1}"
+                    }
+                    for j in range(min(total_controls, 10))  # Sample controls
                 ],
-                remediation_plan={
-                    "priority_actions": [
-                        "Address critical control gaps",
-                        "Update security policies",
-                        "Conduct staff training"
-                    ],
-                    "timeline": "6 months",
-                    "responsible_team": "Security & Compliance Team"
-                },
-                next_assessment_date=report_date + timedelta(days=365),
-                created_by=self.admin_user_id
+                critical_findings=[
+                    {
+                        "finding_id": f"CRIT-{k+1:03d}",
+                        "description": f"Critical control gap in {random.choice(['access control', 'data encryption', 'incident response'])}",
+                        "severity": "critical",
+                        "recommendation": "Immediate remediation required"
+                    }
+                    for k in range(min(failed_controls, 2))
+                ] if failed_controls > 0 else [],
+                recommendations=[
+                    {
+                        "recommendation_id": f"REC-{l+1:03d}",
+                        "title": "Enhance Security Framework",
+                        "description": "Implement automated compliance monitoring",
+                        "priority": "high",
+                        "timeline": "3 months"
+                    },
+                    {
+                        "recommendation_id": f"REC-{l+2:03d}",
+                        "title": "Improve Training Program",
+                        "description": "Enhance security awareness training",
+                        "priority": "medium",
+                        "timeline": "6 months"
+                    }
+                    for l in range(1)
+                ],
+                remediation_plan=[
+                    {
+                        "action": "Address critical control gaps",
+                        "responsible": "Security Team",
+                        "timeline": "30 days",
+                        "status": "in_progress"
+                    },
+                    {
+                        "action": "Update security policies",
+                        "responsible": "Compliance Team",
+                        "timeline": "60 days",
+                        "status": "planned"
+                    }
+                ],
+                is_certified=compliance_score >= 80.0,
+                certification_valid_until=report_date + timedelta(days=365) if compliance_score >= 80.0 else None,
+                auditor_name=f"Compliance Assessor {i+1}",
+                status="approved",
+                generated_by=self.admin_user_id
             )
             
             reports.append(report.model_dump())
