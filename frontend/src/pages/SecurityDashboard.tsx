@@ -201,8 +201,8 @@ const SecurityDashboard: React.FC = () => {
           <div className="flex items-center space-x-3">
             <Shield className="h-8 w-8 text-blue-600" />
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Security Dashboard</h1>
-              <p className="text-gray-600">Enterprise Security & Compliance Management</p>
+              <h1 className="text-2xl font-bold text-gray-900">Security Dashboard</h1>
+              <p className="text-gray-600">Monitor security events, threats, and compliance status</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
