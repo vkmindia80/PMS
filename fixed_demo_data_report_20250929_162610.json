@@ -1,0 +1,19 @@
+{
+  "generation_timestamp": "2025-09-29T16:26:10.400400",
+  "status": "completed",
+  "summary": {
+    "users_created": 15,
+    "teams_created": 6,
+    "projects_created": 8,
+    "tasks_created": 86,
+    "comments_created": 32,
+    "files_created": 30,
+    "total_data_points": 177
+  },
+  "access_information": {
+    "demo_login": "demo@company.com / demo123456",
+    "frontend_url": "http://localhost:3000",
+    "backend_api": "http://localhost:8001",
+    "api_docs": "http://localhost:8001/docs"
+  }
+}
