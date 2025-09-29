@@ -1,0 +1,36 @@
+{
+  "generation_timestamp": "2025-09-29T14:29:26.307535",
+  "generator_version": "enhanced_analytics_v2.0",
+  "status": "completed",
+  "summary": {
+    "users_created": 12,
+    "teams_created": 6,
+    "projects_created": 6,
+    "tasks_created": 109,
+    "comments_created": 36,
+    "files_created": 40,
+    "total_data_points": 209
+  },
+  "financial_summary": {
+    "total_budget": 1343156.25,
+    "total_spent": 382793.18,
+    "budget_utilization": 28.5,
+    "avg_project_health_score": 92.9
+  },
+  "analytics_features": [
+    "Project Health Tracking with 6-point scoring system",
+    "Comprehensive Financial Tracking with cost breakdowns",
+    "Enhanced Task Management with time and efficiency tracking",
+    "Team Performance Analytics with skill-based assignments",
+    "Budget Variance Analysis with real-time utilization",
+    "Risk Assessment with multi-factor analysis"
+  ],
+  "access_information": {
+    "demo_login": "demo@company.com / demo123456",
+    "frontend_url": "http://localhost:3000",
+    "portfolio_analytics": "http://localhost:3000/portfolio",
+    "backend_api": "http://localhost:8001",
+    "api_docs": "http://localhost:8001/docs",
+    "health_check": "http://localhost:8001/api/health"
+  }
+}
