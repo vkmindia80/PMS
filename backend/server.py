@@ -319,7 +319,8 @@ async def root():
             "projects": "/api/projects",
             "tasks": "/api/tasks",
             "teams": "/api/teams",
-            "hierarchy": "/api/hierarchy"
+            "hierarchy": "/api/hierarchy",
+            "roles": "/api/roles"
         }
     }
 
