@@ -11,6 +11,11 @@ const Dashboard: React.FC = () => {
   const [dbStatus, setDbStatus] = useState<any>(null)
   const [modelsInfo, setModelsInfo] = useState<any>(null)
   const [showProjectModal, setShowProjectModal] = useState(false)
+  const [dashboardData, setDashboardData] = useState({
+    projects: 0,
+    teams: 0,
+    tasks: 0
+  })
 
   useEffect(() => {
     const checkApiConnection = async () => {
