@@ -386,9 +386,10 @@ tail -f /var/log/supervisor/backend.*.log
 tail -f /var/log/supervisor/frontend.*.log
 ```
 
-### **🌐 Access Points (Updated September 2025):**
+### **🌐 Access Points (Updated January 2025):**
 - **Main Application**: https://roadmap-manager.preview.emergentagent.com ✅ VERIFIED & OPERATIONAL
-- **Security Dashboard**: https://roadmap-manager.preview.emergentagent.com/security ✅ **NEWLY OPERATIONAL - CRITICAL FIX COMPLETE**
+- **Security Dashboard**: https://roadmap-manager.preview.emergentagent.com/security ✅ FULLY OPERATIONAL WITH REAL-TIME MONITORING
+- **Role Management Dashboard**: https://roadmap-manager.preview.emergentagent.com/roles ✅ **NEW - ADVANCED ROLE CREATION & PERMISSION MANAGEMENT**
 - **Portfolio Analytics**: https://roadmap-manager.preview.emergentagent.com/analytics ✅ PROJECT HEALTH & FINANCIAL TRACKING OPERATIONAL
 - **Projects Management**: https://roadmap-manager.preview.emergentagent.com/projects ✅ AI-ENHANCED (10+ Projects Live)
 - **Resource Management**: https://roadmap-manager.preview.emergentagent.com/resource-management ✅ AI-POWERED & ML-OPTIMIZED
