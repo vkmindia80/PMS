@@ -71,7 +71,15 @@ const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
     setError(null);
 
     try {
-      const token = localStorage.getItem('access_token');
+      // Get auth token from localStorage - use the correct key
+      const authTokensStr = localStorage.getItem('auth_tokens');
+      if (!authTokensStr) {
+        setError('No authentication token');
+        setLoading(false);
+        return;
+      }
+
+      const authTokens = JSON.parse(authTokensStr);
       const backendUrl = import.meta.env.VITE_PROD_API_URL || 
                         import.meta.env.REACT_APP_BACKEND_URL || 
                         import.meta.env.VITE_API_URL || 
