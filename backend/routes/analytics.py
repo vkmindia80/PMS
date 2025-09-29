@@ -83,8 +83,13 @@ async def get_portfolio_overview(
         resource_utilization = calculate_resource_utilization(users, org_tasks)
         
         # Calculate budget metrics
-        total_budget = sum(p.get("budget", {}).get("total_budget", 0) for p in projects)
-        spent_budget = sum(p.get("budget", {}).get("spent_amount", 0) for p in projects)
+        total_budget = 0
+        spent_budget = 0
+        for p in projects:
+            budget_data = p.get("budget")
+            if budget_data and isinstance(budget_data, dict):
+                total_budget += budget_data.get("total_budget", 0)
+                spent_budget += budget_data.get("spent_amount", 0)
         budget_utilization = (spent_budget / total_budget * 100) if total_budget > 0 else 0
         
         # Risk assessment
