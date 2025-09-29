@@ -590,11 +590,11 @@ async def get_budget_analytics(
             remaining = allocated - spent
             
             # Determine budget status
-            status = "on_track"
+            budget_status = "on_track"
             if utilization_rate > 90:
-                status = "over_budget"
+                budget_status = "over_budget"
             elif utilization_rate > 75:
-                status = "at_risk"
+                budget_status = "at_risk"
             
             budget_data.append({
                 "project_id": project["id"],
@@ -604,7 +604,7 @@ async def get_budget_analytics(
                 "remaining_budget": remaining,
                 "utilization_rate": round(utilization_rate, 1),
                 "currency": currency,
-                "status": status,
+                "status": budget_status,
                 "completion_rate": project.get("progress_percentage", 0)
             })
         
