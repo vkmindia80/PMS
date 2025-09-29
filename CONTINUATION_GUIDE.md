@@ -387,18 +387,18 @@ tail -f /var/log/supervisor/frontend.*.log
 ```
 
 ### **🌐 Access Points (Updated January 2025):**
-- **Main Application**: https://org-data-loader.preview.emergentagent.com ✅ VERIFIED & OPERATIONAL
-- **Security Dashboard**: https://org-data-loader.preview.emergentagent.com/security ✅ FULLY OPERATIONAL WITH REAL-TIME MONITORING
-- **Role Management Dashboard**: https://org-data-loader.preview.emergentagent.com/roles ✅ **NEW - ADVANCED ROLE CREATION & PERMISSION MANAGEMENT**
-- **Portfolio Analytics**: https://org-data-loader.preview.emergentagent.com/analytics ✅ PROJECT HEALTH & FINANCIAL TRACKING OPERATIONAL
-- **Projects Management**: https://org-data-loader.preview.emergentagent.com/projects ✅ AI-ENHANCED (10+ Projects Live)
-- **Resource Management**: https://org-data-loader.preview.emergentagent.com/resource-management ✅ AI-POWERED & ML-OPTIMIZED
-- **Integration Hub**: https://org-data-loader.preview.emergentagent.com/integrations ✅ MODERN ECOSYSTEM ACTIVE
-- **Advanced AI Dashboard**: https://org-data-loader.preview.emergentagent.com/advanced-ai ✅ MULTI-MODEL AI OPERATIONAL
-- **Teams Management**: https://org-data-loader.preview.emergentagent.com/teams ✅ COLLABORATION-ENHANCED
-- **Organization Settings**: https://org-data-loader.preview.emergentagent.com/organization ✅ ENTERPRISE-GRADE
-- **API Documentation**: https://org-data-loader.preview.emergentagent.com/docs ✅ INTEGRATION-READY
-- **System Health**: https://org-data-loader.preview.emergentagent.com/health ✅ AI-MONITORED
+- **Main Application**: https://demo-data-wizard.preview.emergentagent.com ✅ VERIFIED & OPERATIONAL
+- **Security Dashboard**: https://demo-data-wizard.preview.emergentagent.com/security ✅ FULLY OPERATIONAL WITH REAL-TIME MONITORING
+- **Role Management Dashboard**: https://demo-data-wizard.preview.emergentagent.com/roles ✅ **NEW - ADVANCED ROLE CREATION & PERMISSION MANAGEMENT**
+- **Portfolio Analytics**: https://demo-data-wizard.preview.emergentagent.com/analytics ✅ PROJECT HEALTH & FINANCIAL TRACKING OPERATIONAL
+- **Projects Management**: https://demo-data-wizard.preview.emergentagent.com/projects ✅ AI-ENHANCED (10+ Projects Live)
+- **Resource Management**: https://demo-data-wizard.preview.emergentagent.com/resource-management ✅ AI-POWERED & ML-OPTIMIZED
+- **Integration Hub**: https://demo-data-wizard.preview.emergentagent.com/integrations ✅ MODERN ECOSYSTEM ACTIVE
+- **Advanced AI Dashboard**: https://demo-data-wizard.preview.emergentagent.com/advanced-ai ✅ MULTI-MODEL AI OPERATIONAL
+- **Teams Management**: https://demo-data-wizard.preview.emergentagent.com/teams ✅ COLLABORATION-ENHANCED
+- **Organization Settings**: https://demo-data-wizard.preview.emergentagent.com/organization ✅ ENTERPRISE-GRADE
+- **API Documentation**: https://demo-data-wizard.preview.emergentagent.com/docs ✅ INTEGRATION-READY
+- **System Health**: https://demo-data-wizard.preview.emergentagent.com/health ✅ AI-MONITORED
 - **Local Development**: http://localhost:3000 ✅ HOT-RELOAD OPTIMIZED
 
 ### **🔐 Authentication Options (All Verified Working):**
@@ -522,7 +522,7 @@ tail -f /var/log/supervisor/frontend.*.log
 **System Verification**: 🔍 **COMPLETE ENTERPRISE PLATFORM WITH ADVANCED ROLE MANAGEMENT** - All systems operational and production-ready
 **System Status**: 🟢 **COMMERCIALLY READY WITH ADVANCED ROLE MANAGEMENT** - Complete AI-enhanced enterprise platform with advanced role system
 **Current Status**: "Production-Ready Enterprise Platform with Advanced Role Management" - All features complete, tested, and operational
-**External URL**: ✅ https://org-data-loader.preview.emergentagent.com **COMPLETE PLATFORM WITH ADVANCED ROLE MANAGEMENT ACTIVE**
+**External URL**: ✅ https://demo-data-wizard.preview.emergentagent.com **COMPLETE PLATFORM WITH ADVANCED ROLE MANAGEMENT ACTIVE**
 **Demo Credentials**: demo@company.com / demo123456 **ALL FEATURES INCLUDING ADVANCED ROLE MANAGEMENT ACCESSIBLE** ✅
 **Demo Data Generation**: One-click from login page **AUTOMATED ENTERPRISE DATA CREATION** ✅
 **Security Dashboard**: Fully operational at /security **REAL-TIME MONITORING ACTIVE** ✅
