@@ -364,8 +364,9 @@ const IntegrationsPage: React.FC = () => {
         setSetupModal(null)
         await loadIntegrations()
         
-        // Show success message
-        alert(`${availableIntegrations[type]?.name} integration setup successful!`)
+        // Show success message with more details
+        const integrationName = availableIntegrations[type]?.name
+        alert(`${integrationName} integration ${setupModal?.mode === 'edit' ? 'updated' : 'setup'} successful!\n\nFeatures enabled:\n${response.data.data?.features?.join('\n') || 'Basic integration features'}`)
       } else {
         alert(`Setup failed: ${response.data.error}`)
       }
@@ -375,6 +376,31 @@ const IntegrationsPage: React.FC = () => {
       alert(`Setup failed: ${error.response?.data?.detail || error.message}`)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const editIntegrationConfig = (type: string) => {
+    const integration = availableIntegrations[type]
+    const currentConfig = activeIntegrations[type]
+    
+    if (integration && currentConfig) {
+      // Load current configuration into form
+      switch (type) {
+        case 'slack':
+          setSlackConfig(prev => ({ ...prev, ...currentConfig }))
+          break
+        case 'teams':
+          setTeamsConfig(prev => ({ ...prev, ...currentConfig }))
+          break
+        case 'github':
+          setGithubConfig(prev => ({ ...prev, ...currentConfig }))
+          break
+        case 'google_workspace':
+          setGoogleConfig(prev => ({ ...prev, ...currentConfig }))
+          break
+      }
+      
+      setSetupModal({ type, integration, mode: 'edit' })
     }
   }
 
