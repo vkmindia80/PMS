@@ -114,9 +114,15 @@ const SecurityDashboard: React.FC = () => {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching security data:', err);
-      setError('Failed to load security data');
+      setError('Failed to load security data. Please try refreshing the page or check your network connection.');
       setLoading(false);
     }
+  };
+
+  const refreshData = async () => {
+    setError(null);
+    setLoading(true);
+    await fetchSecurityData();
   };
 
   const getSeverityColor = (severity: string): string => {
