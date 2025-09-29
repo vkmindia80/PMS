@@ -38,26 +38,23 @@ export const getCurrentSubdomain = (): string | null => {
 
 // Dynamic API URL generation
 export const getApiUrl = (): string => {
-  if (typeof window === 'undefined') {
-    // Server-side rendering fallback
-    return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001';
+  // Force localhost for development to avoid any confusion
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    
+    // Always use localhost:8001 for local development
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:8001';
+    }
+    
+    // If on emergentagent.com domain, use the same subdomain for API
+    if (isEmergentagentDomain()) {
+      return `${window.location.protocol}//${hostname}`;
+    }
   }
   
-  const hostname = window.location.hostname;
-  const protocol = window.location.protocol;
-  
-  // If on emergentagent.com domain, use the same subdomain for API
-  if (isEmergentagentDomain()) {
-    return `${protocol}//${hostname}`;
-  }
-  
-  // Local development
-  if (isLocalEnvironment()) {
-    return import.meta.env.VITE_LOCAL_API_URL || 'http://localhost:8001';
-  }
-  
-  // Fallback to environment variable
-  return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001';
+  // Server-side or fallback
+  return 'http://localhost:8001';
 };
 
 // Environment info for debugging
