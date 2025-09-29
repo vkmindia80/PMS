@@ -50,8 +50,8 @@ export const API_ENDPOINTS = {
     details: (id: string) => `${API_URL}/api/users/${id}`,
   },
   projects: {
-    list: `${API_URL}/api/projects`,
-    create: `${API_URL}/api/projects`,
+    list: `${API_URL}/api/projects/`,
+    create: `${API_URL}/api/projects/`,
     details: (id: string) => `${API_URL}/api/projects/${id}`,
   },
   hierarchy: {
