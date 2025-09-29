@@ -64,33 +64,102 @@ const IntegrationsPage: React.FC = () => {
   const [availableIntegrations, setAvailableIntegrations] = useState<Record<string, Integration>>({})
   const [activeIntegrations, setActiveIntegrations] = useState<Record<string, any>>({})
   const [isLoading, setIsLoading] = useState(false)
-  const [setupModal, setSetupModal] = useState<{ type: string, integration: Integration } | null>(null)
+  const [setupModal, setSetupModal] = useState<{ type: string, integration: Integration, mode: 'setup' | 'edit' } | null>(null)
   const [testResults, setTestResults] = useState<Record<string, any>>({})
+  const [configModal, setConfigModal] = useState<string | null>(null)
+  const [searchFilter, setSearchFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [showAdvancedConfig, setShowAdvancedConfig] = useState<Record<string, boolean>>({})
+  const [showCredentials, setShowCredentials] = useState<Record<string, boolean>>({})
+  const [integrationLogs, setIntegrationLogs] = useState<Record<string, any[]>>({})
 
-  // Form states for different integrations
+  // Enhanced form states for different integrations with advanced options
   const [slackConfig, setSlackConfig] = useState({
     workspace_url: '',
+    bot_token: '',
+    app_token: '',
+    signing_secret: '',
     default_channel: 'general',
-    notifications_enabled: true
+    notifications_enabled: true,
+    auto_create_channels: false,
+    sync_user_status: true,
+    enable_slash_commands: true,
+    webhook_url: '',
+    custom_emoji: true,
+    thread_replies: false,
+    mention_users: true,
+    notification_types: ['task_assigned', 'project_update', 'deadline_approaching'],
+    working_hours: { start: '09:00', end: '17:00' },
+    timezone: 'UTC',
+    message_format: 'detailed'
   })
 
   const [teamsConfig, setTeamsConfig] = useState({
     tenant_id: '',
+    application_id: '',
+    client_secret: '',
     default_team: '',
-    webhook_url: ''
+    webhook_url: '',
+    enable_adaptive_cards: true,
+    bot_framework_enabled: true,
+    meeting_integration: true,
+    file_sharing: true,
+    calendar_sync: true,
+    notification_channels: ['general', 'projects'],
+    activity_feed: true,
+    presence_sync: true,
+    auto_create_teams: false,
+    tab_apps: ['tasks', 'projects', 'analytics'],
+    custom_actions: true,
+    approval_workflows: false
   })
 
   const [githubConfig, setGithubConfig] = useState({
     organization: '',
     repositories: [] as string[],
-    auto_sync: true
+    access_token: '',
+    webhook_secret: '',
+    auto_sync: true,
+    sync_frequency: '15',
+    branch_protection: true,
+    pr_reviews_required: 2,
+    status_checks: true,
+    deployment_tracking: true,
+    issue_sync: true,
+    milestone_sync: true,
+    label_sync: true,
+    release_notifications: true,
+    commit_status_updates: true,
+    code_scanning: true,
+    dependency_updates: true,
+    workflow_runs: true,
+    environments: ['development', 'staging', 'production'],
+    auto_merge: false,
+    delete_branch_on_merge: true
   })
 
   const [googleConfig, setGoogleConfig] = useState({
     domain: '',
+    service_account_key: '',
+    delegated_user: '',
     calendar_sync: true,
     drive_sync: true,
-    gmail_sync: false
+    gmail_sync: false,
+    meet_integration: true,
+    workspace_admin_sync: false,
+    shared_drives: true,
+    calendar_notifications: true,
+    meeting_auto_join: false,
+    drive_permissions: 'viewer',
+    calendar_working_hours: true,
+    gmail_labels: ['portfolio', 'projects', 'tasks'],
+    auto_schedule_optimization: true,
+    resource_booking: true,
+    room_management: false,
+    attendance_tracking: false,
+    recording_management: true,
+    chat_integration: false,
+    forms_integration: false
   })
 
   useEffect(() => {
