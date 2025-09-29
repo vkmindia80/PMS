@@ -135,7 +135,7 @@ class SecurityDemoDataGenerator:
         mfa_configs = []
         for i, user in enumerate(users[:3]):  # Enable MFA for first 3 users
             # Generate TOTP secret
-            totp_secret = TOTP.generate_secret()
+            totp_secret = base64.b32encode(secrets.token_bytes(20)).decode('utf-8')
             
             mfa_config = MFAConfiguration(
                 user_id=user["id"],
