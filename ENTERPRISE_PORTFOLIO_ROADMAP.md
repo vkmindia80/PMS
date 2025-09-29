@@ -142,10 +142,11 @@
 - ✅ **Project Status Distribution**: 7 Active, 3 Completed, 6 Overdue
 
 ### **Collaboration Data**
-- ✅ **70+ Comments** on active tasks and projects
-- ✅ **34 File Attachments** with various document types
-- ✅ **138 Notifications** across different channels
-- ✅ **Realistic Activity History** and user interactions
+- ✅ **22+ Contextual Comments** on tasks and projects
+- ✅ **12 File Attachments** (documents, images, specifications)
+- ✅ **Realistic Notifications** across different priority levels
+- ✅ **Activity History**: Realistic user interaction patterns
+- ✅ **Performance Metrics**: Real-time calculation with current project data
 
 ---
 
