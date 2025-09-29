@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
           const isProd = import.meta.env.PROD || isPreview
           
           if (isProd || isPreview) {
-            return import.meta.env.VITE_PROD_API_URL || 'https://data-gen-fix.preview.emergentagent.com'
+            return import.meta.env.VITE_PROD_API_URL || 'https://resource-dashboard.preview.emergentagent.com'
           }
           
           return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
