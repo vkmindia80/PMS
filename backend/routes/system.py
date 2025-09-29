@@ -23,7 +23,7 @@ async def generate_comprehensive_demo_data():
         generator = ComprehensiveDemoDataGenerator()
         
         # Run the complete data generation process
-        success = await generator.generate_all_demo_data()
+        success = await generator.run_complete_generation()
         
         if success:
             logger.info("✅ Demo data generation completed successfully")
