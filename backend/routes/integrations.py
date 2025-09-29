@@ -193,7 +193,7 @@ async def setup_teams_integration(
         
         integration_config = {
             "type": "teams",
-            "organization_id": current_user.get("organization_id"),
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
             "tenant_id": request.tenant_id,
             "webhook_url": request.webhook_url,
             "default_team": request.default_team,
@@ -205,7 +205,7 @@ async def setup_teams_integration(
         
         await db.integrations.update_one(
             {
-                "organization_id": current_user.get("organization_id"),
+                "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
                 "type": "teams"
             },
             {"$set": integration_config},
@@ -296,7 +296,7 @@ async def setup_github_integration(
         
         integration_config = {
             "type": "github",
-            "organization_id": current_user.get("organization_id"),
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
             "github_organization": request.organization,
             "repositories": request.repositories,
             "auto_sync": request.auto_sync,
@@ -308,7 +308,7 @@ async def setup_github_integration(
         
         await db.integrations.update_one(
             {
-                "organization_id": current_user.get("organization_id"),
+                "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
                 "type": "github"
             },
             {"$set": integration_config},
@@ -437,7 +437,7 @@ async def setup_google_workspace_integration(
         
         integration_config = {
             "type": "google_workspace",
-            "organization_id": current_user.get("organization_id"),
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
             "domain": request.domain,
             "calendar_sync": request.calendar_sync,
             "drive_sync": request.drive_sync,
@@ -450,7 +450,7 @@ async def setup_google_workspace_integration(
         
         await db.integrations.update_one(
             {
-                "organization_id": current_user.get("organization_id"),
+                "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
                 "type": "google_workspace"
             },
             {"$set": integration_config},
@@ -523,7 +523,7 @@ async def get_integration_status(current_user: dict = Depends(get_current_user))
         db = await get_database()
         
         integrations = await db.integrations.find({
-            "organization_id": current_user.get("organization_id")
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001')
         }).to_list(None)
         
         status_summary = {
@@ -612,7 +612,7 @@ async def remove_integration(
         db = await get_database()
         
         result = await db.integrations.delete_one({
-            "organization_id": current_user.get("organization_id"),
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
             "type": integration_type
         })
         
