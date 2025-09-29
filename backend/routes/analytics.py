@@ -580,6 +580,12 @@ async def get_budget_analytics(
         
         for project in projects:
             budget = project.get("budget", {})
+            if budget is None:
+                budget = {}
+            elif isinstance(budget, (int, float)):
+                # Handle case where budget is just a number
+                budget = {"total_budget": budget, "spent_amount": 0, "currency": "USD"}
+            
             allocated = budget.get("total_budget", 0) or 0
             spent = budget.get("spent_amount", 0) or 0
             currency = budget.get("currency", "USD")
