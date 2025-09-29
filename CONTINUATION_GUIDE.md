@@ -492,12 +492,12 @@ tail -f /var/log/supervisor/frontend.*.log
 
 ### **🌐 Access Points (December 2025):**
 - **Main Application**: https://portfolio-analytics-2.preview.emergentagent.com ✅ VERIFIED & OPERATIONAL
-- **Projects Management**: https://portfolio-analytics-2.preview.emergentagent.com/projects ✅ AI-ENHANCED (12+ Projects Live)
+- **Portfolio Analytics**: https://portfolio-analytics-2.preview.emergentagent.com/analytics ✅ PROJECT HEALTH & FINANCIAL TRACKING OPERATIONAL
+- **Projects Management**: https://portfolio-analytics-2.preview.emergentagent.com/projects ✅ AI-ENHANCED (10+ Projects Live)
 - **Resource Management**: https://portfolio-analytics-2.preview.emergentagent.com/resource-management ✅ AI-POWERED & ML-OPTIMIZED
 - **Integration Hub**: https://portfolio-analytics-2.preview.emergentagent.com/integrations ✅ MODERN ECOSYSTEM ACTIVE
 - **Advanced AI Dashboard**: https://portfolio-analytics-2.preview.emergentagent.com/advanced-ai ✅ MULTI-MODEL AI OPERATIONAL
 - **Teams Management**: https://portfolio-analytics-2.preview.emergentagent.com/teams ✅ COLLABORATION-ENHANCED
-- **Analytics Dashboard**: https://portfolio-analytics-2.preview.emergentagent.com/analytics ✅ PREDICTIVE & COMPREHENSIVE
 - **Organization Settings**: https://portfolio-analytics-2.preview.emergentagent.com/organization ✅ ENTERPRISE-GRADE
 - **API Documentation**: https://portfolio-analytics-2.preview.emergentagent.com/docs ✅ INTEGRATION-READY
 - **System Health**: https://portfolio-analytics-2.preview.emergentagent.com/health ✅ AI-MONITORED
