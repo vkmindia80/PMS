@@ -137,15 +137,48 @@ class MultiModelAIService:
     
     async def _generate_anthropic(self, prompt: str, config: Dict, temperature: float, max_tokens: Optional[int]) -> Dict[str, Any]:
         """Generate response using Claude 3.5 Sonnet"""
-        # For now, return a simulated response
-        return {
-            "success": True,
-            "content": f"[AI Response from {config['model_id']}] Strategic analysis: {prompt[:100]}...",
-            "model": config["model_id"],
-            "provider": "anthropic",
-            "tokens_used": 175,
-            "timestamp": datetime.now().isoformat()
-        }
+        if not EMERGENT_AVAILABLE or not self.api_key:
+            return {
+                "success": True,
+                "content": f"[Simulated Claude Response] Strategic enterprise analysis: {prompt[:100]}... (Emergent integration not available)",
+                "model": config["model_id"],
+                "provider": "anthropic",
+                "tokens_used": 175,
+                "timestamp": datetime.now().isoformat()
+            }
+        
+        try:
+            # Initialize chat with Claude
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id=f"anthropic-{datetime.now().timestamp()}",
+                system_message="You are Claude, an AI assistant excelling at strategic analysis, systematic thinking, and comprehensive portfolio management insights."
+            ).with_model("anthropic", config["model_id"])
+            
+            # Create user message
+            user_message = UserMessage(text=prompt)
+            
+            # Generate response
+            response = await chat.send_message(user_message)
+            
+            return {
+                "success": True,
+                "content": response,
+                "model": config["model_id"],
+                "provider": "anthropic",
+                "tokens_used": len(response.split()) * 1.3,  # Approximate token count
+                "timestamp": datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"Anthropic generation error: {str(e)}")
+            return {
+                "success": False,
+                "error": str(e),
+                "model": config["model_id"],
+                "provider": "anthropic",
+                "timestamp": datetime.now().isoformat()
+            }
     
     async def _generate_google(self, prompt: str, config: Dict, temperature: float, max_tokens: Optional[int]) -> Dict[str, Any]:
         """Generate response using Gemini 2.0 Pro"""
