@@ -370,7 +370,7 @@ def generate_sample_performance_data(limit: int) -> List[Dict[str, Any]]:
         collaboration_eff = max(0.2, min(1.0, collaboration_eff * random.uniform(0.8, 1.2)))
         
         # Skill development rate
-        skill_dev_rate = (avg_experience < 3 ? 0.8 : 0.6) * (collaboration_score / 9)
+        skill_dev_rate = (0.8 if avg_experience < 3 else 0.6) * (collaboration_score / 9)
         skill_dev_rate = max(0.1, min(1.0, skill_dev_rate * random.uniform(0.6, 1.4)))
         
         sample_data.append({
