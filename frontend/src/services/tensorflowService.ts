@@ -72,10 +72,16 @@ class TensorFlowService {
    */
   private async loadAvailableModels(): Promise<void> {
     try {
-      const token = localStorage.getItem('access_token')
+      // Get auth token from localStorage - use the correct key
+      const authTokensStr = localStorage.getItem('auth_tokens');
+      if (!authTokensStr) {
+        throw new Error('No authentication token');
+      }
+
+      const authTokens = JSON.parse(authTokensStr);
       const response = await fetch(`${this.API_BASE_URL}/api/tensorflow/models`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authTokens.access_token}`,
           'Content-Type': 'application/json'
         }
       })
