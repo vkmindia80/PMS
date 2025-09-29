@@ -499,7 +499,7 @@ const TeamsPage: React.FC = () => {
                       </span>
                     </div>
                     
-                    {team.tags.length > 0 && (
+                    {team.tags && team.tags.length > 0 && (
                       <div className="mt-3 flex flex-wrap gap-1">
                         {team.tags.slice(0, 3).map((tag) => (
                           <span
