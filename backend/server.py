@@ -24,6 +24,7 @@ from routes.analytics import router as analytics_router
 from routes.resource_management import router as resource_management_router
 from routes.enhanced_resource_management import router as enhanced_resource_management_router
 from routes.ai_ml import router as ai_ml_router
+from routes.integrations import router as integrations_router
 
 # Import models
 from models import (
