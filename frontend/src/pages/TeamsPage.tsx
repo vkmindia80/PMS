@@ -651,7 +651,7 @@ const TeamDetailsPanel: React.FC<{
   }
 
   const availableMembersForAdd = availableMembers.filter(
-    member => !team.members.some(teamMember => teamMember.user_id === member.id)
+    member => !(team.members && team.members.some(teamMember => teamMember.user_id === member.id))
   )
 
   return (
