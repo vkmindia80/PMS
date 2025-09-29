@@ -1267,6 +1267,13 @@ const IntegrationsPage: React.FC = () => {
                         Test
                       </button>
                       <button
+                        onClick={() => editIntegrationConfig(type)}
+                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </button>
+                      <button
                         onClick={() => removeIntegration(type)}
                         className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                       >
