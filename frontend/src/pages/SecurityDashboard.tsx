@@ -168,9 +168,26 @@ const SecurityDashboard: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-md">
           <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <p className="text-gray-600">{error}</p>
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">Security Dashboard Error</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <div className="space-x-4">
+            <button
+              onClick={refreshData}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Retry
+            </button>
+            <a
+              href="/api/security/health"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 inline-block"
+            >
+              Check Health
+            </a>
+          </div>
         </div>
       </div>
     );
