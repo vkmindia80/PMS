@@ -74,10 +74,12 @@ const SecurityDashboard: React.FC = () => {
       const token = localStorage.getItem('access_token');
       if (!token) throw new Error('No authentication token');
 
-      // Get backend URL from environment
-      const backendUrl = import.meta.env.VITE_API_URL || 
+      // Get backend URL - in production, use the external URL
+      const backendUrl = import.meta.env.VITE_PROD_API_URL || 
                         import.meta.env.REACT_APP_BACKEND_URL || 
-                        'http://localhost:8001';
+                        import.meta.env.VITE_API_URL || 
+                        process.env.REACT_APP_BACKEND_URL ||
+                        'https://data-shield-fix.preview.emergentagent.com';
 
       const headers = {
         'Authorization': `Bearer ${token}`,
