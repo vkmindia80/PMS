@@ -19,14 +19,19 @@ const Dashboard: React.FC = () => {
 
   const fetchDashboardData = async (API_URL: string) => {
     try {
-      // Get auth token from localStorage
-      const token = localStorage.getItem('token')
+      // Get auth token from localStorage - use the correct key
+      const authTokensStr = localStorage.getItem('auth_tokens')
       const headers: HeadersInit = {
         'Content-Type': 'application/json'
       }
       
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
+      if (authTokensStr) {
+        try {
+          const authTokens = JSON.parse(authTokensStr)
+          headers['Authorization'] = `Bearer ${authTokens.access_token}`
+        } catch (e) {
+          console.error('Failed to parse auth tokens:', e)
+        }
       }
 
       // Fetch projects count
