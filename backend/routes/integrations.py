@@ -500,7 +500,7 @@ async def schedule_google_calendar_meeting(
             "calendar_link": f"https://calendar.google.com/calendar/event?eid=example",
             "meet_link": f"https://meet.google.com/example-meet-link",
             "created_at": datetime.utcnow(),
-            "organizer": current_user.get("email", "system")
+            "organizer": getattr(current_user, 'email', 'system')
         }
         
         logger.info(f"Google Calendar meeting scheduled: {meeting_info['title']}")
