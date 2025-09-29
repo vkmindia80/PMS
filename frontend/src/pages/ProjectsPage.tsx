@@ -5,7 +5,7 @@ import ProjectCreateModal from '../components/project/ProjectCreateModal'
 import ProjectCard from '../components/project/ProjectCard'
 import ProjectList from '../components/project/ProjectList'
 import ProjectDashboard from '../components/project/ProjectDashboard'
-import { BACKEND_URL } from '../utils/config'
+import { BACKEND_URL, API_ENDPOINTS } from '../utils/config'
 
 interface ProjectSummary {
   id: string
