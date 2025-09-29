@@ -830,6 +830,7 @@ class ComprehensiveDemoDataGenerator:
                         "priority": random.choice(["low", "medium", "high", "critical"]),
                         "type": random.choice(["task", "feature", "bug", "improvement"]),
                         "project_id": project["id"],
+                        "organization_id": self.org_id,  # Add organization_id for API filtering
                         "assignee_id": assignee_id,
                         "reporter_id": project["owner_id"],
                         "parent_task_id": None,
