@@ -688,7 +688,7 @@ class ComprehensiveDemoDataGenerator:
                     "id": f"milestone-{uuid.uuid4().hex[:8]}",
                     "title": name,
                     "description": f"Complete {name.lower()} for {template['name']}",
-                    "due_date": milestone_due.date(),
+                    "due_date": milestone_due,  # Keep as datetime
                     "completed": completed,
                     "completed_at": milestone_due if completed else None
                 }
