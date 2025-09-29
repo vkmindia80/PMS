@@ -1170,118 +1170,184 @@ const IntegrationsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* Header with Enhanced Controls */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Advanced Integrations</h1>
-          <p className="text-gray-600">
-            Connect your enterprise tools for seamless workflow automation
-          </p>
-          <div className="flex items-center mt-4">
-            <button
-              onClick={loadIntegrations}
-              disabled={isLoading}
-              className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-              Refresh Status
-            </button>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Advanced Integrations</h1>
+              <p className="text-gray-600">
+                Connect your enterprise tools for seamless workflow automation
+              </p>
+            </div>
+            <div className="flex items-center mt-4 md:mt-0 space-x-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Search integrations..."
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value)}
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active Only</option>
+                <option value="inactive">Inactive Only</option>
+              </select>
+              <button
+                onClick={loadIntegrations}
+                disabled={isLoading}
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Integration Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {Object.entries(availableIntegrations).map(([type, integration]) => {
+          {filteredIntegrations.map(([type, integration]) => {
             const isActive = activeIntegrations[type]?.status === 'active'
             const testResult = testResults[type]
+            const logs = integrationLogs[type] || []
 
             return (
-              <div key={type} className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center">
-                    {getIntegrationIcon(type)}
-                    <div className="ml-3">
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {integration.name}
-                      </h3>
-                      <p className="text-sm text-gray-600">{integration.description}</p>
-                    </div>
-                  </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    getStatusColor(activeIntegrations[type]?.status)
-                  }`}>
-                    {activeIntegrations[type]?.status || 'Not configured'}
-                  </div>
-                </div>
-
-                {/* Features */}
-                <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Features:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {integration.features.map((feature, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
-                      >
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Test Results */}
-                {testResult && (
-                  <div className={`mb-4 p-3 rounded-lg ${
-                    testResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
-                  }`}>
+              <div key={type} className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center">
-                      {testResult.success ? (
-                        <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                      ) : (
-                        <AlertCircle className="w-4 h-4 text-red-600 mr-2" />
-                      )}
-                      <span className={`text-sm ${testResult.success ? 'text-green-800' : 'text-red-800'}`}>
-                        {testResult.success ? 'Test successful' : `Test failed: ${testResult.error}`}
-                      </span>
+                      {getIntegrationIcon(type)}
+                      <div className="ml-3">
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                          {integration.name}
+                          {isActive && <Activity className="w-4 h-4 ml-2 text-green-500" />}
+                        </h3>
+                        <p className="text-sm text-gray-600">{integration.description}</p>
+                        {activeIntegrations[type]?.last_updated && (
+                          <p className="text-xs text-gray-400 mt-1">
+                            Last updated: {new Date(activeIntegrations[type].last_updated).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      getStatusColor(activeIntegrations[type]?.status)
+                    }`}>
+                      {activeIntegrations[type]?.status || 'Not configured'}
                     </div>
                   </div>
-                )}
 
-                {/* Actions */}
-                <div className="flex space-x-3">
-                  {!isActive ? (
-                    <button
-                      onClick={() => setSetupModal({ type, integration, mode: 'setup' })}
-                      className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Setup
-                    </button>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => testIntegration(type)}
-                        disabled={isLoading}
-                        className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-                      >
-                        <Zap className="w-4 h-4 mr-2" />
-                        Test
-                      </button>
-                      <button
-                        onClick={() => editIntegrationConfig(type)}
-                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                      >
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => removeIntegration(type)}
-                        className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Remove
-                      </button>
-                    </>
+                  {/* Features */}
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Features:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {integration.features.map((feature, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Recent Activity Logs */}
+                  {isActive && logs.length > 0 && (
+                    <div className="mb-4 bg-gray-50 p-3 rounded-lg">
+                      <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <Activity className="w-4 h-4 mr-1" />
+                        Recent Activity
+                      </h4>
+                      <div className="space-y-1 max-h-20 overflow-y-auto">
+                        {logs.slice(0, 2).map((log, index) => (
+                          <div key={index} className="flex items-center text-xs">
+                            <div className={`w-2 h-2 rounded-full mr-2 ${
+                              log.level === 'info' ? 'bg-blue-400' : 
+                              log.level === 'warning' ? 'bg-yellow-400' : 'bg-red-400'
+                            }`} />
+                            <span className="text-gray-600 flex-1">{log.message}</span>
+                            <span className="text-gray-400 ml-2">
+                              {log.timestamp.toLocaleTimeString()}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   )}
+
+                  {/* Test Results */}
+                  {testResult && (
+                    <div className={`mb-4 p-3 rounded-lg ${
+                      testResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
+                    }`}>
+                      <div className="flex items-center">
+                        {testResult.success ? (
+                          <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                        ) : (
+                          <AlertCircle className="w-4 h-4 text-red-600 mr-2" />
+                        )}
+                        <span className={`text-sm font-medium ${testResult.success ? 'text-green-800' : 'text-red-800'}`}>
+                          {testResult.success ? 'Test successful' : 'Test failed'}
+                        </span>
+                      </div>
+                      {testResult.error && (
+                        <p className="text-xs text-red-700 mt-1">{testResult.error}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex flex-wrap gap-2">
+                    {!isActive ? (
+                      <button
+                        onClick={() => setSetupModal({ type, integration, mode: 'setup' })}
+                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Setup
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => editIntegrationConfig(type)}
+                          className="flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => testIntegration(type)}
+                          disabled={isLoading}
+                          className="flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
+                        >
+                          <Zap className="w-4 h-4 mr-1" />
+                          Test
+                        </button>
+                        <button
+                          onClick={() => exportConfiguration(type)}
+                          className="flex items-center px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                        >
+                          <Download className="w-4 h-4 mr-1" />
+                          Export
+                        </button>
+                        <button
+                          onClick={() => removeIntegration(type)}
+                          className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Remove
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             )
