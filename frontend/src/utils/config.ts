@@ -54,6 +54,24 @@ export const API_ENDPOINTS = {
     create: `${API_URL}/api/projects/`,
     details: (id: string) => `${API_URL}/api/projects/${id}`,
   },
+  tasks: {
+    list: `${API_URL}/api/tasks/`,
+    create: `${API_URL}/api/tasks/`,
+    details: (id: string) => `${API_URL}/api/tasks/${id}`,
+  },
+  analytics: {
+    dashboard: `${API_URL}/api/analytics/dashboard`,
+    projects: `${API_URL}/api/analytics/projects`,
+    tasks: `${API_URL}/api/analytics/tasks`,
+    teams: `${API_URL}/api/analytics/teams`,
+  },
+  security: {
+    dashboard: `${API_URL}/api/security/dashboard/metrics`,
+    threats: `${API_URL}/api/security/threats/active`,
+    compliance: `${API_URL}/api/security/compliance/reports`,
+    mfa: `${API_URL}/api/security/mfa/status`,
+    health: `${API_URL}/api/security/health`,
+  },
   hierarchy: {
     organization: (orgId: string) => `${API_URL}/api/hierarchy/organization/${orgId}`,
     teamStructure: (orgId: string) => `${API_URL}/api/hierarchy/team-structure/${orgId}`,
