@@ -74,22 +74,15 @@ const SecurityDashboard: React.FC = () => {
       const token = localStorage.getItem('access_token');
       if (!token) throw new Error('No authentication token');
 
-      // Get backend URL - in production, use the external URL
-      const backendUrl = import.meta.env.VITE_PROD_API_URL || 
-                        import.meta.env.REACT_APP_BACKEND_URL || 
-                        import.meta.env.VITE_API_URL || 
-                        process.env.REACT_APP_BACKEND_URL ||
-                        'https://data-shield-fix.preview.emergentagent.com';
-
       const headers = {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       };
 
-      console.log('Fetching security data from:', backendUrl);
+      console.log('Fetching security data using relative URLs...');
 
-      // Fetch security metrics
-      const metricsResponse = await fetch(`${backendUrl}/api/security/dashboard/metrics`, { headers });
+      // Use relative URLs - let proxy or ingress handle routing
+      const metricsResponse = await fetch('/api/security/dashboard/metrics', { headers });
       if (metricsResponse.ok) {
         const metricsData = await metricsResponse.json();
         setMetrics(metricsData);
@@ -99,7 +92,7 @@ const SecurityDashboard: React.FC = () => {
       }
 
       // Fetch active threats
-      const threatsResponse = await fetch(`${backendUrl}/api/security/threats/active`, { headers });
+      const threatsResponse = await fetch('/api/security/threats/active', { headers });
       if (threatsResponse.ok) {
         const threatsData = await threatsResponse.json();
         setThreats(threatsData);
@@ -109,7 +102,7 @@ const SecurityDashboard: React.FC = () => {
       }
 
       // Fetch compliance reports
-      const complianceResponse = await fetch(`${backendUrl}/api/security/compliance/reports`, { headers });
+      const complianceResponse = await fetch('/api/security/compliance/reports', { headers });
       if (complianceResponse.ok) {
         const complianceData = await complianceResponse.json();
         setReports(complianceData.slice(0, 5)); // Latest 5 reports
