@@ -40,7 +40,9 @@ from models import (
     Team, TeamCreate, TeamUpdate, TeamInDB,
     Comment, CommentCreate, CommentUpdate, CommentInDB,
     File, FileCreate, FileUpdate, FileInDB,
-    Notification, NotificationCreate, NotificationUpdate, NotificationInDB
+    Notification, NotificationCreate, NotificationUpdate, NotificationInDB,
+    CustomRole, CustomRoleCreate, CustomRoleUpdate, CustomRoleInDB,
+    Permission, PermissionCategory, RoleType
 )
 
 # Load environment variables
