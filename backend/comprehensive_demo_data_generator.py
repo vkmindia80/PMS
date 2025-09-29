@@ -585,8 +585,8 @@ class ComprehensiveDemoDataGenerator:
                     "status": template["status"],
                     "priority": template["priority"],
                     "visibility": "team",
-                    "start_date": start_date.date() if start_date else None,
-                    "due_date": due_date.date() if due_date else None,
+                    "start_date": start_date if start_date else None,  # Keep as datetime
+                    "due_date": due_date if due_date else None,  # Keep as datetime
                     "organization_id": self.org_id,
                     "owner_id": project_manager["id"],
                     "team_members": suitable_members,
