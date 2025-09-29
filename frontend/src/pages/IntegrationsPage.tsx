@@ -629,6 +629,379 @@ const IntegrationsPage: React.FC = () => {
       )}
     </div>
   )
+
+  const renderTeamsConfiguration = () => (
+    <div className="space-y-6">
+      {/* Basic Configuration */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Shield className="w-4 h-4 inline mr-1" />
+            Tenant ID
+          </label>
+          <input
+            type="text"
+            value={teamsConfig.tenant_id}
+            onChange={(e) => setTeamsConfig({ ...teamsConfig, tenant_id: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="12345678-1234-1234-1234-123456789012"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Users className="w-4 h-4 inline mr-1" />
+            Default Team
+          </label>
+          <input
+            type="text"
+            value={teamsConfig.default_team}
+            onChange={(e) => setTeamsConfig({ ...teamsConfig, default_team: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="General"
+          />
+        </div>
+      </div>
+
+      {/* API Credentials */}
+      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <h4 className="text-sm font-medium text-blue-800 mb-3 flex items-center">
+          <Key className="w-4 h-4 mr-1" />
+          Application Credentials
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Application ID</label>
+            <input
+              type="text"
+              value={teamsConfig.application_id}
+              onChange={(e) => setTeamsConfig({ ...teamsConfig, application_id: e.target.value })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+              placeholder="12345678-1234-1234-1234-123456789012"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Client Secret</label>
+            <input
+              type={showCredentials.teams ? 'text' : 'password'}
+              value={teamsConfig.client_secret}
+              onChange={(e) => setTeamsConfig({ ...teamsConfig, client_secret: e.target.value })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+              placeholder="Your client secret"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Features Configuration */}
+      <div className="bg-gray-50 p-4 rounded-lg">
+        <h4 className="text-sm font-medium text-gray-700 mb-3">Microsoft Teams Features</h4>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {[
+            'enable_adaptive_cards', 'bot_framework_enabled', 'meeting_integration',
+            'file_sharing', 'calendar_sync', 'activity_feed', 'presence_sync',
+            'auto_create_teams', 'custom_actions', 'approval_workflows'
+          ].map((key) => (
+            <label key={key} className="flex items-center text-sm">
+              <input
+                type="checkbox"
+                checked={teamsConfig[key as keyof typeof teamsConfig] as boolean}
+                onChange={(e) => setTeamsConfig({ ...teamsConfig, [key]: e.target.checked })}
+                className="mr-2"
+              />
+              {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Advanced Settings */}
+      {showAdvancedConfig.teams && (
+        <div className="space-y-4 border-t pt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Tab Applications</label>
+            <div className="flex flex-wrap gap-2">
+              {teamsConfig.tab_apps.map((app, index) => (
+                <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                  {app}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Notification Channels</label>
+            <input
+              type="text"
+              value={teamsConfig.notification_channels.join(', ')}
+              onChange={(e) => setTeamsConfig({ 
+                ...teamsConfig, 
+                notification_channels: e.target.value.split(',').map(s => s.trim())
+              })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+              placeholder="general, projects, announcements"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+
+  const renderGitHubConfiguration = () => (
+    <div className="space-y-6">
+      {/* Basic Configuration */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Github className="w-4 h-4 inline mr-1" />
+            Organization
+          </label>
+          <input
+            type="text"
+            value={githubConfig.organization}
+            onChange={(e) => setGithubConfig({ ...githubConfig, organization: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="your-organization"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Clock className="w-4 h-4 inline mr-1" />
+            Sync Frequency (minutes)
+          </label>
+          <select
+            value={githubConfig.sync_frequency}
+            onChange={(e) => setGithubConfig({ ...githubConfig, sync_frequency: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="5">Every 5 minutes</option>
+            <option value="15">Every 15 minutes</option>
+            <option value="30">Every 30 minutes</option>
+            <option value="60">Every hour</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Repository Configuration */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          <Database className="w-4 h-4 inline mr-1" />
+          Repositories
+        </label>
+        <input
+          type="text"
+          onChange={(e) => setGithubConfig({ 
+            ...githubConfig, 
+            repositories: e.target.value.split(',').map(r => r.trim()).filter(r => r) 
+          })}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          placeholder="frontend, backend, mobile-app, docs"
+        />
+        <p className="text-xs text-gray-500 mt-1">Comma-separated list of repository names</p>
+      </div>
+
+      {/* API Credentials */}
+      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+        <h4 className="text-sm font-medium text-gray-800 mb-3 flex items-center">
+          <Key className="w-4 h-4 mr-1" />
+          GitHub Credentials
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Access Token</label>
+            <input
+              type={showCredentials.github ? 'text' : 'password'}
+              value={githubConfig.access_token}
+              onChange={(e) => setGithubConfig({ ...githubConfig, access_token: e.target.value })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+              placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 mb-1">Webhook Secret</label>
+            <input
+              type={showCredentials.github ? 'text' : 'password'}
+              value={githubConfig.webhook_secret}
+              onChange={(e) => setGithubConfig({ ...githubConfig, webhook_secret: e.target.value })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+              placeholder="Your webhook secret"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Advanced Features */}
+      <div className="bg-gray-50 p-4 rounded-lg">
+        <h4 className="text-sm font-medium text-gray-700 mb-3">GitHub Features & Automation</h4>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {[
+            'auto_sync', 'branch_protection', 'status_checks', 'deployment_tracking',
+            'issue_sync', 'milestone_sync', 'label_sync', 'release_notifications',
+            'commit_status_updates', 'code_scanning', 'dependency_updates',
+            'workflow_runs', 'auto_merge', 'delete_branch_on_merge'
+          ].map((key) => (
+            <label key={key} className="flex items-center text-sm">
+              <input
+                type="checkbox"
+                checked={githubConfig[key as keyof typeof githubConfig] as boolean}
+                onChange={(e) => setGithubConfig({ ...githubConfig, [key]: e.target.checked })}
+                className="mr-2"
+              />
+              {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Environment Configuration */}
+      {showAdvancedConfig.github && (
+        <div className="space-y-4 border-t pt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Deployment Environments</label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {githubConfig.environments.map((env, index) => (
+                <span key={index} className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                  {env}
+                </span>
+              ))}
+            </div>
+            <input
+              type="text"
+              value={githubConfig.environments.join(', ')}
+              onChange={(e) => setGithubConfig({ 
+                ...githubConfig, 
+                environments: e.target.value.split(',').map(s => s.trim())
+              })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+              placeholder="development, staging, production"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Required PR Reviews</label>
+            <input
+              type="number"
+              min="1"
+              max="10"
+              value={githubConfig.pr_reviews_required}
+              onChange={(e) => setGithubConfig({ ...githubConfig, pr_reviews_required: parseInt(e.target.value) })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+
+  const renderGoogleWorkspaceConfiguration = () => (
+    <div className="space-y-6">
+      {/* Basic Configuration */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Globe className="w-4 h-4 inline mr-1" />
+            Domain
+          </label>
+          <input
+            type="text"
+            value={googleConfig.domain}
+            onChange={(e) => setGoogleConfig({ ...googleConfig, domain: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="your-company.com"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Users className="w-4 h-4 inline mr-1" />
+            Delegated User
+          </label>
+          <input
+            type="email"
+            value={googleConfig.delegated_user}
+            onChange={(e) => setGoogleConfig({ ...googleConfig, delegated_user: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            placeholder="admin@your-company.com"
+          />
+        </div>
+      </div>
+
+      {/* Service Account Configuration */}
+      <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+        <h4 className="text-sm font-medium text-orange-800 mb-3 flex items-center">
+          <Key className="w-4 h-4 mr-1" />
+          Service Account Configuration
+        </h4>
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1">Service Account Key (JSON)</label>
+          <textarea
+            value={googleConfig.service_account_key}
+            onChange={(e) => setGoogleConfig({ ...googleConfig, service_account_key: e.target.value })}
+            className="w-full p-2 border border-gray-300 rounded text-sm"
+            rows={4}
+            placeholder="Paste your service account JSON key here"
+          />
+          <p className="text-xs text-orange-600 mt-1">
+            Keep this secure! Service account keys provide admin-level access to your Google Workspace.
+          </p>
+        </div>
+      </div>
+
+      {/* Google Services Configuration */}
+      <div className="bg-gray-50 p-4 rounded-lg">
+        <h4 className="text-sm font-medium text-gray-700 mb-3">Google Workspace Services</h4>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {[
+            'calendar_sync', 'drive_sync', 'gmail_sync', 'meet_integration',
+            'workspace_admin_sync', 'shared_drives', 'calendar_notifications',
+            'meeting_auto_join', 'calendar_working_hours', 'auto_schedule_optimization',
+            'resource_booking', 'room_management', 'attendance_tracking',
+            'recording_management', 'chat_integration', 'forms_integration'
+          ].map((key) => (
+            <label key={key} className="flex items-center text-sm">
+              <input
+                type="checkbox"
+                checked={googleConfig[key as keyof typeof googleConfig] as boolean}
+                onChange={(e) => setGoogleConfig({ ...googleConfig, [key]: e.target.checked })}
+                className="mr-2"
+              />
+              {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Advanced Settings */}
+      {showAdvancedConfig.google_workspace && (
+        <div className="space-y-4 border-t pt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Drive Permissions Level</label>
+            <select
+              value={googleConfig.drive_permissions}
+              onChange={(e) => setGoogleConfig({ ...googleConfig, drive_permissions: e.target.value })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+            >
+              <option value="viewer">Viewer</option>
+              <option value="commenter">Commenter</option>
+              <option value="editor">Editor</option>
+              <option value="owner">Owner</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Gmail Labels</label>
+            <input
+              type="text"
+              value={googleConfig.gmail_labels.join(', ')}
+              onChange={(e) => setGoogleConfig({ 
+                ...googleConfig, 
+                gmail_labels: e.target.value.split(',').map(s => s.trim())
+              })}
+              className="w-full p-2 border border-gray-300 rounded text-sm"
+              placeholder="portfolio, projects, tasks"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+
+  const removeIntegration = async (type: string) => {
     if (!confirm(`Are you sure you want to remove the ${availableIntegrations[type]?.name} integration?`)) {
       return
     }
