@@ -435,7 +435,11 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:8001/api/resource-manage
 # Test AI Integration
 curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -X POST http://localhost:8001/api/ai/analyze-resource-allocation -d '{"project_id": "test"}'
 
-# Demo Data Management
+# Demo Data Management (UPDATED - December 29, 2025)
+# NEW: Fixed Demo Data Generator (Resolves all previous issues)
+cd /app/backend && python fixed_demo_data_generator.py
+
+# Legacy scripts (use only if needed for specific purposes)
 cd /app/backend && python create_enhanced_demo_data.py
 cd /app/backend && python create_comprehensive_demo.py
 
