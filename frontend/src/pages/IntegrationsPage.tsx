@@ -81,7 +81,18 @@ const IntegrationsPage: React.FC = () => {
   }, [])
 
   const getAuthHeaders = () => {
-    const token = localStorage.getItem('access_token')
+    const authTokens = localStorage.getItem('auth_tokens')
+    let token = null
+    
+    if (authTokens) {
+      try {
+        const parsedTokens = JSON.parse(authTokens)
+        token = parsedTokens.access_token
+      } catch (error) {
+        console.error('Failed to parse auth tokens:', error)
+      }
+    }
+    
     return {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
