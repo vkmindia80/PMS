@@ -13,7 +13,7 @@ python3 run_demo_data.py
 # Check if the script was successful
 if [ $? -eq 0 ]; then
     echo "✅ Enhanced demo data created successfully!"
-    echo "🌐 You can now access the system at: https://sec-loading-fix.preview.emergentagent.com"
+    echo "🌐 You can now access the system at: https://project-continue-17.preview.emergentagent.com"
     echo "🔑 Login credentials: demo@company.com / demo123456"
     echo "📊 The analytics dashboard now has meaningful data for visualization!"
 else
