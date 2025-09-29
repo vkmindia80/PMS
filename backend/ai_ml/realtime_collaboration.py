@@ -195,6 +195,59 @@ class RealTimeCollaborationEngine:
                 "timestamp": datetime.now().isoformat()
             })
     
+    async def handle_project_change(self, event: CollaborationEvent):
+        """Handle real-time project changes with AI analysis"""
+        project_data = event.data.get("project")
+        change_type = event.data.get("change_type")
+        
+        if not project_data:
+            return
+        
+        # Broadcast project change to session users
+        await self.broadcast_to_session(event.session_id, {
+            "type": "project_changed",
+            "project": project_data,
+            "change_type": change_type,
+            "updated_by": event.user_id,
+            "timestamp": event.timestamp.isoformat()
+        })
+        
+        # Generate AI analysis for project impact
+        impact_analysis = await self.generate_project_impact_analysis(project_data, change_type, event.session_id)
+        if impact_analysis:
+            await self.broadcast_to_session(event.session_id, {
+                "type": "ai_project_impact",
+                "analysis": impact_analysis,
+                "project_id": project_data.get("id"),
+                "timestamp": datetime.now().isoformat()
+            })
+    
+    async def handle_team_discussion(self, event: CollaborationEvent):
+        """Handle real-time team discussions with AI moderation"""
+        discussion_data = event.data.get("discussion")
+        message = event.data.get("message")
+        
+        if not discussion_data and not message:
+            return
+        
+        # Broadcast discussion update to session users
+        await self.broadcast_to_session(event.session_id, {
+            "type": "team_discussion_update",
+            "discussion": discussion_data,
+            "message": message,
+            "user_id": event.user_id,
+            "timestamp": event.timestamp.isoformat()
+        })
+        
+        # Generate AI discussion insights and suggestions
+        discussion_insights = await self.generate_discussion_insights(discussion_data, message, event.session_id)
+        if discussion_insights:
+            await self.broadcast_to_session(event.session_id, {
+                "type": "ai_discussion_insights",
+                "insights": discussion_insights,
+                "timestamp": datetime.now().isoformat()
+            })
+    
     async def handle_ai_query(self, event: CollaborationEvent):
         """Handle real-time AI queries from users"""
         query = event.data.get("query")
