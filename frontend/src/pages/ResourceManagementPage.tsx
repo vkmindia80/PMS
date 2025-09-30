@@ -979,12 +979,24 @@ const ResourceManagementPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900" data-testid="resource-management-title">
-            Resource Management & Allocation
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            AI-powered resource optimization, capacity planning, and intelligent allocation
-          </p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900" data-testid="resource-management-title">
+                Resource Management & Allocation
+              </h1>
+              <p className="mt-1 text-sm text-gray-500">
+                AI-powered resource optimization, capacity planning, and intelligent allocation
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <GlobalProjectFilter 
+                className="min-w-[200px]" 
+                placeholder="All Projects" 
+                label=""
+                multiSelect={true}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Navigation Tabs */}
