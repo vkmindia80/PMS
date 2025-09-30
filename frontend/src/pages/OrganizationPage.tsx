@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import RoleManagement from '../components/organization/RoleManagement'
+import EnhancedRoleManagement from '../components/organization/EnhancedRoleManagement'
 import HierarchyVisualization from '../components/organization/HierarchyVisualization'
 import InviteMembersModal from '../components/organization/InviteMembersModal'
 import { 
