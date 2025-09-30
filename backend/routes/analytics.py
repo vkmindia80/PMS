@@ -170,6 +170,7 @@ async def get_portfolio_overview(
 
 @router.get("/projects/health", response_model=Dict[str, Any])
 async def get_project_health_metrics(
+    project_id: Optional[str] = Query(None, description="Filter by project IDs (comma-separated for multiple)"),
     current_user: User = Depends(get_current_active_user)
 ):
     """Get detailed project health indicators with advanced analytics"""
@@ -177,7 +178,20 @@ async def get_project_health_metrics(
         db = await get_database()
         org_id = current_user.organization_id
         
-        projects = await db.projects.find({"organization_id": org_id}).to_list(length=None)
+        # Build project filter
+        project_filter = {"organization_id": org_id}
+        
+        if project_id:
+            if ',' in project_id:
+                project_ids = [pid.strip() for pid in project_id.split(',') if pid.strip()]
+                if len(project_ids) > 1:
+                    project_filter["id"] = {"$in": project_ids}
+                elif len(project_ids) == 1:
+                    project_filter["id"] = project_ids[0]
+            else:
+                project_filter["id"] = project_id
+        
+        projects = await db.projects.find(project_filter).to_list(length=None)
         tasks = await db.tasks.find({}).to_list(length=None)
         
         # Group tasks by project
