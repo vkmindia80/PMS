@@ -126,10 +126,8 @@ const TasksPage: React.FC = () => {
       // Add project filtering from global context
       const selectedProjectIds = getSelectedProjectIds()
       if (selectedProjectIds.length > 0) {
-        // Backend expects project_id parameter for filtering
-        selectedProjectIds.forEach(projectId => {
-          params.append('project_id', projectId)
-        })
+        // Send comma-separated project IDs
+        params.append('project_id', selectedProjectIds.join(','))
       }
       
       const queryString = params.toString()
