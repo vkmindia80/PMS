@@ -317,11 +317,14 @@ const GanttChart: React.FC<{
 
 // Main Timeline Page Component
 export const TimelinePage: React.FC = () => {
-  const { projectId } = useParams<{ projectId: string }>();
+  const { projectId: urlProjectId } = useParams<{ projectId: string }>();
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(urlProjectId || null);
+  const [projects, setProjects] = useState<any[]>([]);
   const [ganttData, setGanttData] = useState<GanttChartData | null>(null);
   const [viewMode, setViewMode] = useState('week');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [projectsLoading, setProjectsLoading] = useState(false);
 
   // Fetch Gantt chart data
   const fetchGanttData = useCallback(async () => {
