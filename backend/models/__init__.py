@@ -15,6 +15,16 @@ from .role import (
     RoleTemplate, RoleAssignment, RoleAssignmentCreate, BulkRoleAssignment,
     UserPermissions, PermissionValidation, RoleType
 )
+from .timeline import (
+    DependencyType, LagFormat, ConstraintType, TimelineViewMode,
+    TaskDependency, TaskDependencyCreate, TaskDependencyUpdate, TaskDependencyInDB,
+    TimelineTask, TimelineTaskCreate, TimelineTaskUpdate, TimelineTaskInDB,
+    TimelineProject, TimelineProjectCreate, TimelineProjectUpdate, TimelineProjectInDB,
+    WorkingTimeSlot, DayWorkingTime, TimelineCalendar, TimelineCalendarCreate, 
+    TimelineCalendarUpdate, TimelineCalendarInDB,
+    TimelineBaseline, TimelineBaselineCreate, TimelineBaselineUpdate, TimelineBaselineInDB,
+    GanttChartData, TimelineStats
+)
 
 __all__ = [
     # User models
