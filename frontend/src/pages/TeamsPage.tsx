@@ -426,6 +426,16 @@ const TeamsPage: React.FC = () => {
                     />
                   </div>
                 </div>
+                
+                <ProjectFilter
+                  selectedProject={selectedProject}
+                  onProjectChange={setSelectedProject}
+                  showAllOption={true}
+                  placeholder="All Projects"
+                  className="sm:w-48"
+                  label=""
+                />
+                
                 <div className="sm:w-48">
                   <select
                     value={filterType}
