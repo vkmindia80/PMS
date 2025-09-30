@@ -714,6 +714,8 @@
    - ✅ Maintained backward compatibility with fallback mechanisms
    - ✅ Enhanced error handling and user feedback
    - ✅ Improved project filtering integration
+
+### **📋 6.3: Advanced Scheduling Algorithms - PLANNED (12 credits)**
 **Microsoft Project-Compatible Scheduling Engine:**
 
 1. **Critical Path Method (CPM) Analysis**
@@ -740,7 +742,7 @@
    - Project baseline management (up to 11 baselines)
    - Earned Value Management (EVM) calculations
 
-### **📋 6.3: Real-time Collaboration Timeline - PLANNED (11 credits)**
+### **📋 6.4: Real-time Collaboration Timeline - PLANNED (11 credits)**
 **Multi-User Timeline Editing System:**
 
 1. **Real-time Timeline Collaboration**
