@@ -610,7 +610,7 @@ async def bulk_delete_tasks(
 
 @router.get("/analytics/summary", response_model=Dict[str, Any])
 async def get_task_analytics(
-    project_id: Optional[str] = Query(None, description="Filter by project ID"),
+    project_id: Optional[List[str]] = Query(None, description="Filter by project IDs (supports multiple)"),
     assignee_id: Optional[str] = Query(None, description="Filter by assignee ID"),
     current_user: User = Depends(get_current_active_user)
 ):
@@ -618,10 +618,16 @@ async def get_task_analytics(
     try:
         db = await get_database()
         
-        # Build filter query
-        filter_query = {}
-        if project_id:
-            filter_query["project_id"] = project_id
+        # Build filter query - always filter by organization
+        filter_query = {"organization_id": current_user.organization_id}
+        
+        # Handle multiple project IDs
+        if project_id and len(project_id) > 0:
+            if len(project_id) == 1:
+                filter_query["project_id"] = project_id[0]
+            else:
+                filter_query["project_id"] = {"$in": project_id}
+        
         if assignee_id:
             filter_query["assignee_id"] = assignee_id
         
