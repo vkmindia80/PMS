@@ -195,7 +195,21 @@ const TasksPage: React.FC = () => {
     if (!tokens?.access_token) return
     
     try {
-      const response = await fetch(`${API_BASE}/api/tasks/analytics/summary`, {
+      // Build query parameters including project filtering
+      const params = new URLSearchParams()
+      
+      // Add project filtering from global context
+      const selectedProjectIds = getSelectedProjectIds()
+      if (selectedProjectIds.length > 0) {
+        selectedProjectIds.forEach(projectId => {
+          params.append('project_id', projectId)
+        })
+      }
+      
+      const queryString = params.toString()
+      const url = `${API_BASE}/api/tasks/analytics/summary${queryString ? `?${queryString}` : ''}`
+      
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json'
