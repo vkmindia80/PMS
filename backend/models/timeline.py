@@ -321,7 +321,7 @@ class DayWorkingTime(BaseModel):
     )
 
 
-class TimelineCalendar(BaseMongoModel):
+class TimelineCalendar(BaseDBModel):
     """Calendar model for timeline working time definitions"""
     
     name: str = Field(..., description="Calendar name")
