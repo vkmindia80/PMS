@@ -69,22 +69,29 @@ const GanttChart: React.FC<{
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Set canvas size
-    canvas.width = 1200;
-    canvas.height = Math.max(600, data.tasks.length * 40 + 100);
+    // Set canvas size based on data
+    const taskCount = data.tasks.length;
+    canvas.width = Math.max(1200, 1000 + taskCount * 20);
+    canvas.height = Math.max(600, taskCount * 50 + 150);
 
-    // Draw timeline header
+    // Enhanced timeline header
     drawTimelineHeader(ctx, viewMode);
 
-    // Draw tasks
+    // Draw grid lines
+    drawGridLines(ctx, viewMode);
+
+    // Draw tasks with enhanced styling
     data.tasks.forEach((task, index) => {
       drawTaskBar(ctx, task, index, viewMode);
     });
 
-    // Draw dependencies
+    // Draw dependencies with enhanced styling
     data.dependencies.forEach(dependency => {
       drawDependencyLine(ctx, dependency, data.tasks);
     });
+
+    // Draw current date indicator
+    drawCurrentDateLine(ctx, viewMode);
   }, [data, viewMode]);
 
   const drawTimelineHeader = (ctx: CanvasRenderingContext2D, viewMode: string) => {
