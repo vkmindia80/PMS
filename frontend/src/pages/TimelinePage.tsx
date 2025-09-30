@@ -367,7 +367,10 @@ export const TimelinePage: React.FC = () => {
 
   // Fetch Gantt chart data
   const fetchGanttData = useCallback(async () => {
-    if (!projectId) return;
+    if (!selectedProjectId) {
+      setLoading(false);
+      return;
+    }
 
     try {
       setLoading(true);
@@ -379,7 +382,7 @@ export const TimelinePage: React.FC = () => {
         return;
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/timeline/gantt/${projectId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/timeline/gantt/${selectedProjectId}`, {
         headers: {
           'Authorization': `Bearer ${authData.access_token}`,
           'Content-Type': 'application/json'
@@ -399,7 +402,7 @@ export const TimelinePage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [projectId]);
+  }, [selectedProjectId]);
 
   // Handle task updates
   const handleTaskUpdate = useCallback(async (task: TimelineTask) => {
