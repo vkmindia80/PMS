@@ -72,6 +72,7 @@ const TeamsPage: React.FC = () => {
   const [teamStats, setTeamStats] = useState<TeamStats | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState<string>('')
+  const [selectedProject, setSelectedProject] = useState<string>('all')
   const [organizationMembers, setOrganizationMembers] = useState<User[]>([])
   const [skillsOverview, setSkillsOverview] = useState<any>(null)
   const [showSkillsModal, setShowSkillsModal] = useState(false)
