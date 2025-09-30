@@ -291,8 +291,15 @@ const TasksPage: React.FC = () => {
       )
     }
 
-    if (projectFilter !== 'all') {
-      filtered = filtered.filter(task => task.project_id === projectFilter)
+    if (projectFilter !== 'all' && projectFilter) {
+      if (Array.isArray(projectFilter)) {
+        const validProjects = projectFilter.filter(id => id !== 'all')
+        if (validProjects.length > 0) {
+          filtered = filtered.filter(task => validProjects.includes(task.project_id))
+        }
+      } else {
+        filtered = filtered.filter(task => task.project_id === projectFilter)
+      }
     }
 
     setFilteredTasks(filtered)
