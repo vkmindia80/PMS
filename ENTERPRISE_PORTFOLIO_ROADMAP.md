@@ -895,7 +895,7 @@ The Enterprise Portfolio Management system is now a **comprehensive, production-
 3. **Resource Leveling Algorithms**
 4. **Baseline Management System**
 
-### **Phase 6.3: Real-time Collaboration - FUTURE**
+### **Phase 6.4: Real-time Collaboration - FUTURE**
 **Planned Development** (11 credits, 3-5 weeks):
 
 1. **Multi-user Timeline Editing**
