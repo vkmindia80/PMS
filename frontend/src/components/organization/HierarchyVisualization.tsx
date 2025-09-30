@@ -90,6 +90,8 @@ const HierarchyVisualization: React.FC = () => {
 
     try {
       setLoading(true)
+      console.log('Fetching hierarchy data for organization:', user.organization_id)
+      console.log('Using API URL:', API_URL)
       
       // Fetch all hierarchy data
       const [hierarchyRes, teamStructureRes, departmentsRes, reportingRes] = await Promise.all([
@@ -121,22 +123,38 @@ const HierarchyVisualization: React.FC = () => {
 
       if (hierarchyRes.ok) {
         const hierarchyData = await hierarchyRes.json()
+        console.log('Hierarchy data loaded:', hierarchyData)
         setHierarchy(hierarchyData)
+      } else {
+        const errorText = await hierarchyRes.text()
+        console.error('Failed to load hierarchy:', hierarchyRes.status, errorText)
       }
 
       if (teamStructureRes.ok) {
         const teamData = await teamStructureRes.json()
+        console.log('Team structure data loaded:', teamData)
         setTeamStructure(teamData)
+      } else {
+        const errorText = await teamStructureRes.text()
+        console.error('Failed to load team structure:', teamStructureRes.status, errorText)
       }
 
       if (departmentsRes.ok) {
         const deptData = await departmentsRes.json()
+        console.log('Department data loaded:', deptData)
         setDepartments(deptData.departments)
+      } else {
+        const errorText = await departmentsRes.text()
+        console.error('Failed to load departments:', departmentsRes.status, errorText)
       }
 
       if (reportingRes.ok) {
         const reportData = await reportingRes.json()
+        console.log('Reporting data loaded:', reportData)
         setReportingStructure(reportData)
+      } else {
+        const errorText = await reportingRes.text()
+        console.error('Failed to load reporting structure:', reportingRes.status, errorText)
       }
 
     } catch (error) {
