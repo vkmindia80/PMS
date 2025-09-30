@@ -54,9 +54,10 @@ export const getApiUrl = (): string => {
     return backendUrl;
   }
   
-  // If on emergentagent.com domain, use the same subdomain for API
+  // If on emergentagent.com domain, use the same subdomain for API with correct protocol
   if (isEmergentagentDomain()) {
-    return `${window.location.protocol}//${hostname}`;
+    // Always use HTTPS for emergentagent.com domains to match frontend protocol
+    return `https://${hostname}`;
   }
   
   // Default fallback
