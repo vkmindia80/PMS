@@ -206,86 +206,207 @@ const GanttChart: React.FC<{
       ctx.fillRect(x - 1, headerHeight - 10, 2, 10);
     }
   };
-    const y = 80 + index * 40;
-    const taskNameWidth = 180;
+  // Helper functions for enhanced styling
+  const adjustBrightness = (color: string, amount: number): string => {
+    const hex = color.replace('#', '');
+    const r = Math.max(0, Math.min(255, parseInt(hex.substr(0, 2), 16) + amount));
+    const g = Math.max(0, Math.min(255, parseInt(hex.substr(2, 2), 16) + amount));
+    const b = Math.max(0, Math.min(255, parseInt(hex.substr(4, 2), 16) + amount));
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+  };
+
+  const getContrastColor = (hexColor: string): string => {
+    const hex = hexColor.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128 ? '#000000' : '#ffffff';
+  };
+
+  const getAvatarColor = (userId: string): string => {
+    const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'];
+    const hash = userId.split('').reduce((a, b) => {
+      a = ((a << 5) - a) + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    return colors[Math.abs(hash) % colors.length];
+  };
+
+  const drawTaskBar = (ctx: CanvasRenderingContext2D, task: TimelineTask, index: number, viewMode: string) => {
+    const taskNameWidth = 250;
+    const taskHeight = 50;
+    const headerHeight = 80;
+    const y = headerHeight + index * taskHeight;
     
-    // Task name background
-    ctx.fillStyle = task.outline_level === 1 ? '#f1f5f9' : '#ffffff';
-    ctx.fillRect(0, y - 15, taskNameWidth, 30);
+    // Task name background with alternating colors
+    ctx.fillStyle = index % 2 === 0 ? '#ffffff' : '#f9fafb';
+    ctx.fillRect(0, y, taskNameWidth, taskHeight);
     
-    // Task name
-    ctx.fillStyle = task.summary_task ? '#1e293b' : '#475569';
-    ctx.font = task.summary_task ? 'bold 13px -apple-system' : '13px -apple-system';
+    // Task name with better formatting
+    ctx.fillStyle = task.summary_task ? '#111827' : '#374151';
+    ctx.font = task.summary_task ? 'bold 14px -apple-system' : '13px -apple-system';
     ctx.textAlign = 'left';
     
     const indent = (task.outline_level - 1) * 20;
-    ctx.fillText(
-      task.name.length > 20 ? task.name.substring(0, 17) + '...' : task.name,
-      10 + indent,
-      y + 5
-    );
+    const maxWidth = taskNameWidth - indent - 20;
+    const taskName = task.name.length > 25 ? task.name.substring(0, 22) + '...' : task.name;
     
-    // Calculate task bar position and width
-    const timeUnit = viewMode === 'day' ? 50 : viewMode === 'week' ? 100 : 150;
-    const startX = 200 + (index * 2) * timeUnit; // Simplified positioning
-    const barWidth = Math.max(task.duration * (timeUnit / (viewMode === 'day' ? 8 : viewMode === 'week' ? 40 : 160)), 20);
-    
-    // Task bar
-    if (task.milestone) {
-      // Draw diamond for milestone
-      ctx.fillStyle = task.critical ? '#ef4444' : '#3b82f6';
+    // Draw outline level indicator
+    if (task.outline_level > 1) {
+      ctx.strokeStyle = '#d1d5db';
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(startX, y);
-      ctx.lineTo(startX + 10, y - 8);
-      ctx.lineTo(startX + 20, y);
-      ctx.lineTo(startX + 10, y + 8);
+      ctx.moveTo(10 + indent - 10, y + taskHeight / 2);
+      ctx.lineTo(10 + indent, y + taskHeight / 2);
+      ctx.stroke();
+    }
+    
+    ctx.fillText(taskName, 15 + indent, y + taskHeight / 2 + 5);
+    
+    // Task progress indicator in name area
+    if (task.percent_complete > 0) {
+      ctx.fillStyle = task.critical ? '#fecaca' : '#dbeafe';
+      ctx.fillRect(15 + indent, y + taskHeight - 8, maxWidth * (task.percent_complete / 100), 3);
+    }
+    
+    // Calculate enhanced task bar position and width
+    const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
+    const startX = taskNameWidth + (index * 0.5) * timeUnit; // Better positioning
+    const barWidth = Math.max(task.duration * (timeUnit / (viewMode === 'day' ? 8 : viewMode === 'week' ? 40 : 160)), 30);
+    
+    // Task bar with enhanced styling
+    if (task.milestone) {
+      // Enhanced diamond for milestone
+      const diamondSize = 12;
+      const centerX = startX + diamondSize / 2;
+      const centerY = y + taskHeight / 2;
+      
+      // Diamond shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.beginPath();
+      ctx.moveTo(centerX + 1, centerY - diamondSize / 2 + 1);
+      ctx.lineTo(centerX + diamondSize / 2 + 1, centerY + 1);
+      ctx.lineTo(centerX + 1, centerY + diamondSize / 2 + 1);
+      ctx.lineTo(centerX - diamondSize / 2 + 1, centerY + 1);
       ctx.closePath();
       ctx.fill();
+      
+      // Diamond
+      ctx.fillStyle = task.critical ? '#dc2626' : '#2563eb';
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY - diamondSize / 2);
+      ctx.lineTo(centerX + diamondSize / 2, centerY);
+      ctx.lineTo(centerX, centerY + diamondSize / 2);
+      ctx.lineTo(centerX - diamondSize / 2, centerY);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Diamond border
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
     } else {
+      const barY = y + (taskHeight - 20) / 2;
+      const barHeight = 20;
+      
+      // Task bar shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(startX + 2, barY + 2, barWidth, barHeight);
+      
       // Task bar background
       ctx.fillStyle = task.critical ? '#fef2f2' : '#f8fafc';
-      ctx.fillRect(startX, y - 8, barWidth, 16);
+      ctx.fillRect(startX, barY, barWidth, barHeight);
       
-      // Task bar
-      const barColor = task.color || (task.critical ? '#ef4444' : task.summary_task ? '#8b5cf6' : '#3b82f6');
-      ctx.fillStyle = barColor;
-      ctx.fillRect(startX, y - 8, barWidth, 16);
+      // Task bar with gradient effect
+      const gradient = ctx.createLinearGradient(startX, barY, startX, barY + barHeight);
+      const baseColor = task.color || (task.critical ? '#dc2626' : task.summary_task ? '#7c3aed' : '#2563eb');
+      gradient.addColorStop(0, baseColor);
+      gradient.addColorStop(1, adjustBrightness(baseColor, -20));
       
-      // Progress bar
+      ctx.fillStyle = gradient;
+      ctx.fillRect(startX, barY, barWidth, barHeight);
+      
+      // Progress bar with enhanced styling
       if (task.percent_complete > 0) {
         const progressWidth = (barWidth * task.percent_complete) / 100;
-        ctx.fillStyle = task.critical ? '#dc2626' : '#1d4ed8';
-        ctx.fillRect(startX, y - 8, progressWidth, 16);
+        const progressGradient = ctx.createLinearGradient(startX, barY, startX, barY + barHeight);
+        const progressColor = adjustBrightness(baseColor, -30);
+        progressGradient.addColorStop(0, progressColor);
+        progressGradient.addColorStop(1, adjustBrightness(progressColor, -20));
+        
+        ctx.fillStyle = progressGradient;
+        ctx.fillRect(startX, barY, progressWidth, barHeight);
       }
       
-      // Task bar border
-      ctx.strokeStyle = task.critical ? '#dc2626' : '#1e40af';
+      // Task bar border with enhanced styling
+      ctx.strokeStyle = adjustBrightness(baseColor, -40);
       ctx.lineWidth = 1;
-      ctx.strokeRect(startX, y - 8, barWidth, 16);
+      ctx.strokeRect(startX, barY, barWidth, barHeight);
       
-      // Progress percentage text
-      if (task.percent_complete > 0 && barWidth > 30) {
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '10px -apple-system';
+      // Progress percentage text with better visibility
+      if (task.percent_complete > 0 && barWidth > 50) {
+        ctx.fillStyle = getContrastColor(baseColor);
+        ctx.font = 'bold 11px -apple-system';
         ctx.textAlign = 'center';
         ctx.fillText(
-          `${task.percent_complete}%`,
+          `${Math.round(task.percent_complete)}%`,
           startX + barWidth / 2,
-          y + 3
+          barY + barHeight / 2 + 4
+        );
+      }
+      
+      // Task duration text
+      if (barWidth > 80) {
+        ctx.fillStyle = getContrastColor(baseColor);
+        ctx.font = '10px -apple-system';
+        ctx.textAlign = 'left';
+        ctx.fillText(
+          `${task.duration}h`,
+          startX + 5,
+          barY - 5
         );
       }
     }
     
-    // Assignee indicators
+    // Assignee indicators with enhanced styling
     if (task.assignee_ids.length > 0) {
-      ctx.fillStyle = '#64748b';
-      ctx.font = '10px -apple-system';
-      ctx.textAlign = 'right';
-      ctx.fillText(
-        `${task.assignee_ids.length} user${task.assignee_ids.length > 1 ? 's' : ''}`,
-        taskNameWidth - 5,
-        y - 5
-      );
+      const avatarSize = 16;
+      const avatarY = y + 5;
+      
+      for (let i = 0; i < Math.min(task.assignee_ids.length, 3); i++) {
+        const avatarX = taskNameWidth - 25 - (i * 18);
+        
+        // Avatar circle
+        ctx.fillStyle = getAvatarColor(task.assignee_ids[i]);
+        ctx.beginPath();
+        ctx.arc(avatarX, avatarY, avatarSize / 2, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Avatar border
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Avatar initial
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 10px -apple-system';
+        ctx.textAlign = 'center';
+        ctx.fillText(
+          task.assignee_ids[i].substring(0, 1).toUpperCase(),
+          avatarX,
+          avatarY + 3
+        );
+      }
+      
+      // Additional assignees indicator
+      if (task.assignee_ids.length > 3) {
+        const moreX = taskNameWidth - 25 - (3 * 18);
+        ctx.fillStyle = '#6b7280';
+        ctx.font = '10px -apple-system';
+        ctx.textAlign = 'center';
+        ctx.fillText(`+${task.assignee_ids.length - 3}`, moreX, y + taskHeight - 8);
+      }
     }
   };
 
