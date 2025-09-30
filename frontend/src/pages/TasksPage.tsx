@@ -435,7 +435,15 @@ const TasksPage: React.FC = () => {
           {/* Extended Filters */}
           {showFilters && (
             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <ProjectFilter
+                  selectedProject={projectFilter}
+                  onProjectChange={setProjectFilter}
+                  showAllOption={true}
+                  placeholder="All Projects"
+                  label=""
+                />
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                   <select
