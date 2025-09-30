@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
       }
 
       // Fetch teams count  
-      const teamsResponse = await fetch(`${API_URL}/api/teams?organization_id=demo-org-001`, { headers })
+      const teamsResponse = await fetch(`${API_URL}/api/teams/?organization_id=demo-org-001`, { headers })
       let teamsCount = 0
       if (teamsResponse.ok) {
         const teamsData = await teamsResponse.json()
