@@ -326,6 +326,45 @@ export const TimelinePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [projectsLoading, setProjectsLoading] = useState(false);
 
+  // Fetch available projects
+  const fetchProjects = useCallback(async () => {
+    try {
+      setProjectsLoading(true);
+      const token = localStorage.getItem('auth_tokens');
+      const authData = token ? JSON.parse(token) : null;
+      
+      if (!authData?.access_token) {
+        setError('Authentication required');
+        return;
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/projects`, {
+        headers: {
+          'Authorization': `Bearer ${authData.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch projects: ${response.status}`);
+      }
+
+      const projectsData = await response.json();
+      setProjects(projectsData);
+      
+      // Auto-select first project if no URL projectId and projects available
+      if (!urlProjectId && projectsData.length > 0) {
+        setSelectedProjectId(projectsData[0].id);
+      }
+      
+    } catch (err) {
+      console.error('Error fetching projects:', err);
+      setError('Failed to load projects');
+    } finally {
+      setProjectsLoading(false);
+    }
+  }, [urlProjectId]);
+
   // Fetch Gantt chart data
   const fetchGanttData = useCallback(async () => {
     if (!projectId) return;
