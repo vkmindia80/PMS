@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Plus, Users, BarChart3, Settings as SettingsIcon, Brain } from 'lucide-react'
 import ProjectCreateModal from '../components/project/ProjectCreateModal'
+import { API_URL as API_URL_CONFIG } from '../utils/config'
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate()
