@@ -79,20 +79,6 @@ const HierarchyVisualization: React.FC = () => {
   const [activeView, setActiveView] = useState<'hierarchy' | 'teams' | 'departments' | 'reporting'>('hierarchy')
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set())
 
-  const getApiUrl = () => {
-    const isPreview = window.location.hostname.includes('emergentagent.com')
-    const isProd = import.meta.env.PROD || isPreview
-    
-    if (isProd || isPreview) {
-      // Use the same backend URL from config
-      return import.meta.env.VITE_API_URL || process.env.REACT_APP_BACKEND_URL || 'https://enterprise-guide-5.preview.emergentagent.com'
-    }
-    
-    return import.meta.env.VITE_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
-  }
-
-  const API_URL = getApiUrl()
-
   useEffect(() => {
     if (user?.organization_id) {
       fetchHierarchyData()
