@@ -404,7 +404,7 @@ class TimelineCalendarInDB(TimelineCalendar):
 
 
 # Timeline Baseline Model
-class TimelineBaseline(BaseMongoModel):
+class TimelineBaseline(BaseDBModel):
     """Timeline baseline for tracking project progress against original plan"""
     
     name: str = Field(..., description="Baseline name")
