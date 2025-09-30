@@ -574,7 +574,7 @@ const OrganizationPage: React.FC = () => {
 
             {/* Role Management Tab */}
             {activeTab === 'roles' && (
-              <RoleManagement />
+              <EnhancedRoleManagement />
             )}
 
             {/* Hierarchy Visualization Tab */}
