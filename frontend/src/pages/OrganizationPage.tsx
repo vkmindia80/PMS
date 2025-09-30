@@ -3,6 +3,8 @@ import { useAuth } from '../contexts/AuthContext'
 import EnhancedRoleManagement from '../components/organization/EnhancedRoleManagement'
 import HierarchyVisualization from '../components/organization/HierarchyVisualization'
 import InviteMembersModal from '../components/organization/InviteMembersModal'
+import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
+import { useProjectFilterContext } from '../contexts/ProjectFilterContext'
 import { 
   Building2, Users, Settings, Plus, Search, Filter,
   MoreVertical, Edit, Trash2, UserPlus, Shield, 
