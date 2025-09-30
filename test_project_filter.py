@@ -116,10 +116,10 @@ def test_analytics_api(token, project_ids):
     """Test analytics API with project filtering"""
     headers = {"Authorization": f"Bearer {token}"}
     
-    query_params = "&".join([f"project_id={pid}" for pid in project_ids])
+    project_ids_str = ",".join(project_ids)
     
     response = requests.get(
-        f"{BASE_URL}/api/tasks/analytics/summary?{query_params}",
+        f"{BASE_URL}/api/tasks/analytics/summary?project_id={project_ids_str}",
         headers=headers
     )
     
