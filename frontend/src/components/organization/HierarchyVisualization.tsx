@@ -83,10 +83,11 @@ const HierarchyVisualization: React.FC = () => {
     const isProd = import.meta.env.PROD || isPreview
     
     if (isProd || isPreview) {
-      return import.meta.env.VITE_PROD_API_URL || 'https://enterprise-guide-5.preview.emergentagent.com'
+      // Use the same backend URL from config
+      return import.meta.env.VITE_API_URL || process.env.REACT_APP_BACKEND_URL || 'https://enterprise-guide-5.preview.emergentagent.com'
     }
     
-    return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
+    return import.meta.env.VITE_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
   }
 
   const API_URL = getApiUrl()
