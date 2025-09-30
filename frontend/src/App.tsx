@@ -43,9 +43,9 @@ const AppContent: React.FC = () => {
 
   // Show authenticated app
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="container mx-auto px-6 py-8">
+    <div className="min-h-screen bg-gray-50 flex">
+      <Sidebar />
+      <main className="flex-1 lg:ml-64 p-6 lg:p-8 pt-16 lg:pt-6">
         <Routes>
           <Route 
             path="/" 
