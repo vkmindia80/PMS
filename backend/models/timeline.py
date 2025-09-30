@@ -43,7 +43,7 @@ class TimelineViewMode(str, Enum):
 
 
 # Task Dependency Model
-class TaskDependency(BaseMongoModel):
+class TaskDependency(BaseDBModel):
     """Task dependency model for Gantt chart relationships"""
     
     predecessor_id: str = Field(..., description="ID of the predecessor task")
