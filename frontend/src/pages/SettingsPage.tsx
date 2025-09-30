@@ -6,6 +6,7 @@ import {
   Save, Eye, EyeOff, AlertCircle
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { API_URL } from '../utils/config'
 
 interface UserSettings {
   first_name: string
