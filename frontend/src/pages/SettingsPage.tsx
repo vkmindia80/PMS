@@ -93,23 +93,12 @@ const SettingsPage: React.FC = () => {
     }
   }, [user])
 
-  const getApiUrl = () => {
-    const isPreview = window.location.hostname.includes('emergentagent.com')
-    const isProd = import.meta.env.PROD || isPreview
-    
-    if (isProd || isPreview) {
-      return import.meta.env.VITE_PROD_API_URL || 'https://api-recovery-4.preview.emergentagent.com'
-    }
-    
-    return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
-  }
-
   const handleSaveProfile = async () => {
     if (!tokens?.access_token) return
 
     setLoading(true)
     try {
-      const response = await fetch(`${getApiUrl()}/api/users/me`, {
+      const response = await fetch(`${API_URL}/api/users/me`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
