@@ -416,6 +416,14 @@ const PortfolioDashboard: React.FC = () => {
             </div>
             
             <div className="flex items-center space-x-4">
+              {/* Project Filter */}
+              <GlobalProjectFilter 
+                className="min-w-[200px]" 
+                placeholder="All Projects" 
+                label=""
+                multiSelect={true}
+              />
+              
               {/* Auto-refresh toggle */}
               <label className="flex items-center space-x-2 text-sm">
                 <input
