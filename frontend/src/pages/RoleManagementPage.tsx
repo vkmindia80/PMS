@@ -68,7 +68,7 @@ const RoleManagementPage: React.FC = () => {
   // Fetch data
   const fetchRoles = async () => {
     try {
-      const response = await fetch(`${getApiUrl()}/api/roles`, {
+      const response = await fetch(`${API_URL}/api/roles`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
