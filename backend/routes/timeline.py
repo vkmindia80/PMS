@@ -6,7 +6,8 @@ import json
 import logging
 
 from database import get_database
-from auth.utils import get_current_user, verify_token
+from auth.utils import verify_token
+from auth.middleware import get_current_user
 from models import (
     User,
     TaskDependency, TaskDependencyCreate, TaskDependencyUpdate, TaskDependencyInDB,
