@@ -46,7 +46,7 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
       setLoading(true)
       setError(null)
       
-      const response = await fetch(`${API_URL}/api/projects/`, {
+      const response = await fetch(`${API_URL}/api/projects`, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json',
