@@ -20,6 +20,160 @@ from models.task import TaskStatus, TaskPriority
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
+@router.get("/dashboard/summary", response_model=Dict[str, Any])
+async def get_dashboard_summary(
+    project_id: Optional[str] = Query(None, description="Filter by project IDs (comma-separated for multiple)"),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get streamlined dashboard summary metrics optimized for frontend dashboard display"""
+    try:
+        db = await get_database()
+        org_id = current_user.organization_id
+        
+        # Build project filter for tasks and other entities
+        project_filter = {"organization_id": org_id}
+        selected_project_ids = []
+        
+        if project_id:
+            if ',' in project_id:
+                selected_project_ids = [pid.strip() for pid in project_id.split(',') if pid.strip()]
+                if len(selected_project_ids) > 1:
+                    project_filter["id"] = {"$in": selected_project_ids}
+                elif len(selected_project_ids) == 1:
+                    project_filter["id"] = selected_project_ids[0]
+            else:
+                project_filter["id"] = project_id
+                selected_project_ids = [project_id]
+        
+        # Get core data efficiently
+        projects = await db.projects.find(project_filter).to_list(length=None)
+        teams = await db.teams.find({"organization_id": org_id}).to_list(length=None)
+        users = await db.users.find({"organization_id": org_id}).to_list(length=None)
+        
+        # Get tasks filtered by selected projects
+        task_filter = {}
+        if selected_project_ids:
+            task_filter["project_id"] = {"$in": selected_project_ids}
+        else:
+            # If no specific projects selected, get all tasks for organization projects
+            project_ids = [p["id"] for p in projects]
+            task_filter["project_id"] = {"$in": project_ids}
+        
+        tasks = await db.tasks.find(task_filter).to_list(length=None)
+        
+        # Calculate streamlined dashboard metrics
+        
+        # Projects metrics
+        total_projects = len(projects)
+        active_projects = len([p for p in projects if p.get("status") == "active"])
+        completed_projects = len([p for p in projects if p.get("status") == "completed"])
+        projects_at_risk = len([p for p in projects if p.get("status") in ["on_hold", "cancelled"]])
+        
+        # Teams metrics (total team members)
+        total_team_members = sum(team.get("member_count", len(team.get("members", []))) for team in teams)
+        if total_team_members == 0:
+            # Fallback to counting users
+            total_team_members = len(users)
+        
+        # Tasks metrics
+        total_tasks = len(tasks)
+        pending_tasks = len([t for t in tasks if t.get("status") in ["todo", "in_progress"]])
+        completed_tasks = len([t for t in tasks if t.get("status") == "completed"])
+        overdue_tasks = 0
+        blocked_tasks = len([t for t in tasks if t.get("status") == "blocked"])
+        
+        # Calculate overdue tasks
+        for task in tasks:
+            if task.get("due_date") and task.get("status") not in ["completed", "cancelled"]:
+                try:
+                    due_date = datetime.fromisoformat(task["due_date"].replace("Z", "+00:00"))
+                    if due_date < datetime.utcnow():
+                        overdue_tasks += 1
+                except:
+                    continue
+        
+        # Calculate completion rates
+        project_completion_rate = (completed_projects / total_projects * 100) if total_projects > 0 else 0
+        task_completion_rate = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
+        
+        # Calculate health score
+        health_score = 100
+        if total_projects > 0:
+            # Deduct points for issues
+            overdue_penalty = min(40, (overdue_tasks / max(total_tasks, 1)) * 100)
+            at_risk_penalty = min(20, (projects_at_risk / total_projects) * 100)
+            blocked_penalty = min(15, (blocked_tasks / max(total_tasks, 1)) * 100)
+            health_score = max(0, 100 - overdue_penalty - at_risk_penalty - blocked_penalty)
+        
+        # Budget calculations
+        total_budget = 0
+        spent_budget = 0
+        for project in projects:
+            budget_data = project.get("budget")
+            if budget_data:
+                if isinstance(budget_data, dict):
+                    total_budget += budget_data.get("total_budget", 0) or 0
+                    spent_budget += budget_data.get("spent_amount", 0) or 0
+                elif isinstance(budget_data, (int, float)):
+                    total_budget += budget_data
+        
+        budget_utilization = (spent_budget / total_budget * 100) if total_budget > 0 else 0
+        
+        # Resource utilization (simplified)
+        active_users = len([u for u in users if u.get("is_active", True)])
+        resource_utilization = (pending_tasks / max(active_users * 5, 1)) * 100 if active_users > 0 else 0
+        resource_utilization = min(100, resource_utilization)
+        
+        return {
+            "projects": {
+                "total": total_projects,
+                "active": active_projects,
+                "completed": completed_projects,
+                "at_risk": projects_at_risk,
+                "completion_rate": round(project_completion_rate, 1)
+            },
+            "team_members": {
+                "total": total_team_members,
+                "teams_count": len(teams),
+                "active_users": active_users,
+                "avg_team_size": round(total_team_members / len(teams), 1) if teams else 0
+            },
+            "tasks": {
+                "total": total_tasks,
+                "pending": pending_tasks,
+                "completed": completed_tasks,
+                "overdue": overdue_tasks,
+                "blocked": blocked_tasks,
+                "completion_rate": round(task_completion_rate, 1)
+            },
+            "performance": {
+                "health_score": round(health_score, 1),
+                "resource_utilization": round(resource_utilization, 1),
+                "budget_utilization": round(budget_utilization, 1),
+                "projects_on_track": active_projects - projects_at_risk
+            },
+            "financial": {
+                "total_budget": total_budget,
+                "spent_budget": spent_budget,
+                "remaining_budget": total_budget - spent_budget,
+                "utilization_percentage": round(budget_utilization, 1),
+                "avg_project_budget": round(total_budget / total_projects, 2) if total_projects > 0 else 0
+            },
+            "alerts": {
+                "overdue_tasks": overdue_tasks,
+                "blocked_tasks": blocked_tasks,
+                "projects_at_risk": projects_at_risk,
+                "budget_alerts": 1 if budget_utilization > 85 else 0,
+                "critical_issues": overdue_tasks + blocked_tasks + projects_at_risk
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get dashboard summary: {str(e)}"
+        )
+
 @router.get("/portfolio/overview", response_model=Dict[str, Any])
 async def get_portfolio_overview(
     project_id: Optional[str] = Query(None, description="Filter by project IDs (comma-separated for multiple)"),
