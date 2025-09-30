@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Plus, Search, Filter, Grid, List, Calendar, BarChart3, Users, Clock, DollarSign } from 'lucide-react'
+import { Plus, Search, Filter, Grid, List, Calendar, BarChart3, Users, Clock, DollarSign, FolderOpen } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import ProjectCreateModal from '../components/project/ProjectCreateModal'
 import ProjectCard from '../components/project/ProjectCard'
 import ProjectList from '../components/project/ProjectList'
 import ProjectDashboard from '../components/project/ProjectDashboard'
+import ProjectFilter from '../components/common/ProjectFilter'
 import { BACKEND_URL, API_ENDPOINTS } from '../utils/config'
 
 interface ProjectSummary {
