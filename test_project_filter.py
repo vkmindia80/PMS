@@ -96,10 +96,10 @@ def test_kanban_api(token, project_ids):
     """Test kanban API with project filtering"""
     headers = {"Authorization": f"Bearer {token}"}
     
-    query_params = "&".join([f"project_id={pid}" for pid in project_ids])
+    project_ids_str = ",".join(project_ids)
     
     response = requests.get(
-        f"{BASE_URL}/api/tasks/kanban/board?{query_params}",
+        f"{BASE_URL}/api/tasks/kanban/board?project_id={project_ids_str}",
         headers=headers
     )
     
