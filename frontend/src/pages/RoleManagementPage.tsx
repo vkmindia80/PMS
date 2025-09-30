@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { FiPlus, FiEdit, FiTrash2, FiUsers, FiShield, FiCheck, FiX, FiDownload, FiUpload } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+import { API_URL } from '../utils/config';
 
 // Types
 interface Permission {
