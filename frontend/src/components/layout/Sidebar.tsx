@@ -46,6 +46,7 @@ const Sidebar: React.FC = () => {
     { name: 'Teams', path: '/teams', icon: Users },
     { name: 'Projects', path: '/projects', icon: FolderOpen },
     { name: 'Tasks', path: '/tasks', icon: CheckSquare },
+    { name: 'Timeline', path: '/timeline', icon: Calendar },
     { name: 'Analytics', path: '/analytics', icon: BarChart3 },
     { name: 'Resources', path: '/resource-management', icon: Brain },
     { name: 'AI/ML', path: '/ai-ml', icon: Cpu },
