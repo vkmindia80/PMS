@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
+import { useProjectFilterContext } from '../contexts/ProjectFilterContext'
 import {
   Settings, User, Bell, Shield, Globe, 
   Palette, Clock, Mail, Phone, Lock,
