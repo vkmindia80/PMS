@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import { Search, Filter, X, ChevronDown, AlertCircle, RefreshCw } from 'lucide-react'
 import { API_ENDPOINTS } from '../../utils/config'
-import { debounce } from 'lodash-es'
 
 interface Project {
   id: string
@@ -28,6 +27,15 @@ interface ProjectFilterProps {
   disabled?: boolean
   error?: string | null
   onError?: (error: string | null) => void
+}
+
+// Simple debounce function to avoid lodash dependency
+const debounce = <T extends (...args: any[]) => void>(func: T, delay: number): T => {
+  let timeoutId: NodeJS.Timeout
+  return ((...args: any[]) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => func(...args), delay)
+  }) as T
 }
 
 const ProjectFilter: React.FC<ProjectFilterProps> = ({
