@@ -1,7 +1,7 @@
-"""
-MFA Setup Component
-Phase 4.3: Multi-Factor Authentication Interface
-"""
+/**
+ * MFA Setup Component
+ * Phase 4.3: Multi-Factor Authentication Interface
+ */
 
 import React, { useState, useEffect } from 'react';
 import { Shield, Smartphone, Mail, Key, Copy, CheckCircle, AlertCircle, QrCode } from 'lucide-react';
