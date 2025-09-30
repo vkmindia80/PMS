@@ -445,7 +445,7 @@ const TasksPage: React.FC = () => {
           {showFilters && (
             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <ProjectFilter
+                <GlobalProjectFilter
                   selectedProject={projectFilter}
                   onProjectChange={setProjectFilter}
                   showAllOption={true}
