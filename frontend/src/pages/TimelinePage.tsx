@@ -491,8 +491,27 @@ export const TimelinePage: React.FC = () => {
             </div>
           </div>
 
-          {/* View Mode Selector */}
+          {/* View Mode Selector and Project Selector */}
           <div className="flex items-center space-x-4">
+            {/* Project Selector */}
+            {!urlProjectId && projects.length > 0 && (
+              <div className="flex items-center space-x-2">
+                <label className="text-sm font-medium text-gray-700">Project:</label>
+                <select
+                  value={selectedProjectId || ''}
+                  onChange={(e) => setSelectedProjectId(e.target.value)}
+                  className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select a project...</option>
+                  {projects.map((project) => (
+                    <option key={project.id} value={project.id}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700">View:</label>
               <select
