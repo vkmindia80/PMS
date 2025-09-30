@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-Timeline Demo Data Generator for Enterprise Portfolio Management System
-Generates realistic timeline tasks and dependencies for existing projects
+Timeline Demo Data Generator for Phase 6.1: Core Gantt Chart Engine
+Creates comprehensive timeline demo data with realistic project schedules, dependencies, and timeline configurations
 """
 
 import asyncio
 import sys
 import os
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import random
 import uuid
 from typing import List, Dict, Any
@@ -18,6 +18,14 @@ import logging
 sys.path.append('/app/backend')
 
 from database import connect_to_mongo, get_database
+from models import (
+    TimelineTask, TimelineTaskCreate, 
+    TimelineProject, TimelineProjectCreate,
+    TaskDependency, TaskDependencyCreate,
+    TimelineCalendar, TimelineCalendarCreate,
+    TimelineBaseline, TimelineBaselineCreate,
+    DependencyType, TimelineViewMode, ConstraintType
+)
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
