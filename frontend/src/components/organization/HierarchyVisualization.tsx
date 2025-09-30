@@ -83,7 +83,7 @@ const HierarchyVisualization: React.FC = () => {
     const isProd = import.meta.env.PROD || isPreview
     
     if (isProd || isPreview) {
-      return import.meta.env.VITE_PROD_API_URL || 'https://header-to-sidebar.preview.emergentagent.com'
+      return import.meta.env.VITE_PROD_API_URL || 'https://enterprise-guide-5.preview.emergentagent.com'
     }
     
     return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
