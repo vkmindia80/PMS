@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
       }
 
       // Fetch tasks count
-      const tasksResponse = await fetch(`${API_URL}/api/tasks/`, { headers })
+      const tasksResponse = await fetch(`${API_URL}/api/tasks`, { headers })
       let tasksCount = 0  
       if (tasksResponse.ok) {
         const tasksData = await tasksResponse.json()
