@@ -311,7 +311,7 @@ const TasksPage: React.FC = () => {
 
   useEffect(() => {
     applyFilters()
-  }, [tasks, searchTerm, statusFilter, priorityFilter, assigneeFilter])
+  }, [tasks, searchTerm, statusFilter, priorityFilter, assigneeFilter, projectFilter])
 
   if (loading) {
     return (
