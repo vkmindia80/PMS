@@ -97,7 +97,7 @@ class TaskDependencyInDB(TaskDependency):
 
 
 # Enhanced Timeline Task Model
-class TimelineTask(BaseMongoModel):
+class TimelineTask(BaseDBModel):
     """Enhanced task model with timeline-specific fields for Gantt chart"""
     
     name: str = Field(..., description="Task name")
