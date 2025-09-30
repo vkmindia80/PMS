@@ -685,6 +685,14 @@ export const TimelinePage: React.FC = () => {
 
           {/* View Mode Selector and Project Selector */}
           <div className="flex items-center space-x-4">
+            {/* Global Project Filter */}
+            <GlobalProjectFilter 
+              className="min-w-[200px]" 
+              placeholder="Filter Projects" 
+              label=""
+              multiSelect={true}
+            />
+            
             {/* Project Selector */}
             {!urlProjectId && projects.length > 0 && (
               <div className="flex items-center space-x-2">
