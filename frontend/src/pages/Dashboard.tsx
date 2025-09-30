@@ -57,6 +57,8 @@ const Dashboard: React.FC = () => {
         } else {
           projectsCount = Array.isArray(projectsData) ? projectsData.filter(p => p.status === 'active').length : 0
         }
+      } else {
+        console.error('Failed to fetch projects:', projectsResponse.status, projectsResponse.statusText)
       }
 
       // Fetch teams count  
