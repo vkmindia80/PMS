@@ -59,6 +59,13 @@ export const API_ENDPOINTS = {
     create: `${API_URL}/api/tasks`,
     details: (id: string) => `${API_URL}/api/tasks/${id}`,
   },
+  timeline: {
+    gantt: (projectId: string) => `${API_URL}/api/timeline/gantt/${projectId}`,
+    tasks: (projectId: string) => `${API_URL}/api/timeline/tasks/${projectId}`,
+    taskUpdate: (taskId: string) => `${API_URL}/api/timeline/tasks/${taskId}`,
+    dependencies: (projectId: string) => `${API_URL}/api/timeline/dependencies/${projectId}`,
+    project: (projectId: string) => `${API_URL}/api/timeline/project/${projectId}`,
+  },
   analytics: {
     dashboard: `${API_URL}/api/analytics/dashboard`,
     projects: `${API_URL}/api/analytics/projects`,
