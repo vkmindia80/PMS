@@ -427,10 +427,20 @@ async def get_gantt_chart_data(
         baselines_cursor = db.timeline_baselines.find({"project_id": project_id})
         baselines = await baselines_cursor.to_list(length=None)
         
-        # Convert MongoDB documents to proper format by removing _id fields
+        # Convert MongoDB documents to proper format by removing _id fields recursively
         def clean_mongo_doc(doc):
-            if doc and "_id" in doc:
-                doc.pop("_id")
+            if doc is None:
+                return doc
+            if isinstance(doc, dict):
+                # Remove _id field
+                if "_id" in doc:
+                    doc.pop("_id")
+                # Recursively clean nested dictionaries and lists
+                for key, value in doc.items():
+                    if isinstance(value, dict):
+                        doc[key] = clean_mongo_doc(value)
+                    elif isinstance(value, list):
+                        doc[key] = [clean_mongo_doc(item) if isinstance(item, dict) else item for item in value]
             return doc
         
         # Clean all documents
