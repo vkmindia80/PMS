@@ -71,19 +71,8 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const checkApiConnection = async () => {
       try {
-        // Get API URL consistently
-        const getApiUrl = () => {
-          const isPreview = window.location.hostname.includes('emergentagent.com')
-          const isProd = import.meta.env.PROD || isPreview
-          
-          if (isProd || isPreview) {
-            return import.meta.env.VITE_PROD_API_URL || 'https://api-recovery-4.preview.emergentagent.com'
-          }
-          
-          return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
-        }
-        
-        const API_URL = getApiUrl()
+        // Use consistent API URL from config
+        const API_URL = API_URL_CONFIG
         
         // Check API health
         const healthResponse = await fetch(`${API_URL}/api/health`)
