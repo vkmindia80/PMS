@@ -19,6 +19,8 @@ import {
   CheckCircle,
   Clock
 } from 'lucide-react'
+import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
+import { useProjectFilterContext } from '../contexts/ProjectFilterContext'
 import aiService, { AIModelResponse, ModelComparison } from '../services/aiService'
 import tensorflowService, { PredictionResult, TaskData, PerformanceMetrics } from '../services/tensorflowService'
 
