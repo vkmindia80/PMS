@@ -165,6 +165,11 @@ async def get_timeline_tasks(
         tasks_cursor = db.timeline_tasks.find({"project_id": project_id})
         tasks = await tasks_cursor.to_list(length=None)
         
+        # Clean MongoDB _id fields
+        for task in tasks:
+            if "_id" in task:
+                task.pop("_id")
+        
         return [TimelineTaskInDB(**task) for task in tasks]
         
     except Exception as e:
