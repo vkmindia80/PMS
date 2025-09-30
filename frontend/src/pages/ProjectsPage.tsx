@@ -256,6 +256,14 @@ const ProjectsPage: React.FC = () => {
 
             {/* Filters */}
             <div className="flex gap-2">
+              <ProjectFilter
+                selectedProject={selectedProject}
+                onProjectChange={setSelectedProject}
+                showAllOption={true}
+                placeholder="All Projects"
+                className="min-w-[200px]"
+              />
+
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
