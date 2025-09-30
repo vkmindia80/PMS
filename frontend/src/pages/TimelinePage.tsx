@@ -584,7 +584,16 @@ export const TimelinePage: React.FC = () => {
 
       {/* Timeline Content */}
       <div className="p-6">
-        {ganttData ? (
+        {!selectedProjectId && !urlProjectId ? (
+          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+            <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Project</h3>
+            <p className="text-gray-600 mb-4">Choose a project to view its timeline and Gantt chart.</p>
+            {projects.length === 0 && (
+              <p className="text-sm text-gray-500">No projects available. Create a project first.</p>
+            )}
+          </div>
+        ) : ganttData ? (
           <div className="bg-white rounded-lg shadow-sm">
             <div className="p-4 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">Project Timeline</h2>
