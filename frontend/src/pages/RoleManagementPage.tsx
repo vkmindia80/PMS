@@ -43,7 +43,8 @@ interface User {
 }
 
 const RoleManagementPage: React.FC = () => {
-  const { token } = useAuth();
+  const { tokens } = useAuth();
+  const token = tokens?.access_token;
   const [roles, setRoles] = useState<CustomRole[]>([]);
   const [permissions, setPermissions] = useState<Record<string, Permission[]>>({});
   const [templates, setTemplates] = useState<RoleTemplate[]>([]);
