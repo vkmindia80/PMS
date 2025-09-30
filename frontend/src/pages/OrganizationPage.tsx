@@ -9,6 +9,7 @@ import {
   Award, Clock, TrendingUp, MapPin, BarChart3
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { API_URL } from '../utils/config'
 
 interface Organization {
   id: string
