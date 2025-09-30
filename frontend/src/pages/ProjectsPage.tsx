@@ -48,6 +48,7 @@ const ProjectsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [priorityFilter, setPriorityFilter] = useState<string>('all')
+  const [selectedProject, setSelectedProject] = useState<string>('all')
 
   const fetchProjects = async () => {
     try {
