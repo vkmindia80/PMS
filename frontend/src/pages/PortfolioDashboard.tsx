@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { useProjectFilterContext } from '../contexts/ProjectFilterContext'
+import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
 import { API_URL } from '../utils/config'
 import toast from 'react-hot-toast'
 import {
