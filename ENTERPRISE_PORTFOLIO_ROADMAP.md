@@ -903,7 +903,7 @@ The Enterprise Portfolio Management system is now a **comprehensive, production-
 3. **Timeline Version Control**
 4. **Approval Workflows**
 
-### **Phase 6.4: Microsoft Project Integration - FINAL**
+### **Phase 6.5: Microsoft Project Integration - FINAL**
 **Planned Development** (10 credits, 3-4 weeks):
 
 1. **.mpp File Import/Export**
