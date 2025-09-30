@@ -16,6 +16,7 @@ import AdvancedAIDashboard from './pages/AdvancedAIDashboard'
 import IntegrationsPage from './pages/IntegrationsPage'
 import SecurityDashboard from './pages/SecurityDashboard'
 import SettingsPage from './pages/SettingsPage'
+import TimelinePage from './pages/TimelinePage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import './App.css'
 
