@@ -6,6 +6,7 @@ import {
   BarChart3, TrendingUp, Target, Palette, Code, Settings
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { API_URL } from '../../utils/config'
 
 interface HierarchyNode {
   id: string
