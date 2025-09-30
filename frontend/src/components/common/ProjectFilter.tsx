@@ -183,12 +183,49 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
     return selectedProject === projectId
   }
 
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element
+      if (isOpen && !target.closest('[data-testid="project-filter"]')) {
+        setIsOpen(false)
+        setSearchTerm('')
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isOpen])
+
+  // Handle keyboard navigation
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsOpen(false)
+      setSearchTerm('')
+    }
+    if (event.key === 'Enter' && !isOpen) {
+      setIsOpen(true)
+    }
+  }
+
   if (error) {
     return (
       <div className={`${className}`}>
-        <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
-        <div className="text-sm text-red-600 p-2 border border-red-200 rounded-md bg-red-50">
-          {error}
+        {label && (
+          <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+        )}
+        <div className="relative">
+          <div className="text-sm text-red-600 p-2 border border-red-200 rounded-md bg-red-50 flex items-center">
+            <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+            <span className="flex-1">{error}</span>
+            <button
+              onClick={fetchProjects}
+              className="ml-2 text-red-800 hover:text-red-900"
+              title="Retry loading projects"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -203,18 +240,44 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
       {/* Filter Button */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
+        disabled={disabled}
+        className={`relative w-full bg-white border rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-colors ${
+          disabled
+            ? 'border-gray-200 text-gray-400 cursor-not-allowed'
+            : error
+            ? 'border-red-300 text-red-900'
+            : 'border-gray-300 cursor-pointer hover:border-gray-400'
+        }`}
         data-testid="project-filter-button"
       >
         <span className="flex items-center">
-          <Filter className="h-4 w-4 text-gray-400 mr-2" />
+          <Filter className={`h-4 w-4 mr-2 ${disabled ? 'text-gray-300' : 'text-gray-400'}`} />
           <span className="block truncate">
-            {selectedProject && selectedProject !== 'all' ? selectedProjectName : placeholder}
+            {selectedProjectDisplay}
           </span>
         </span>
-        <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-          <ChevronDown className="h-4 w-4 text-gray-400" />
+        <span className="absolute inset-y-0 right-0 flex items-center pr-2">
+          {loading ? (
+            <RefreshCw className="h-4 w-4 text-gray-400 animate-spin" />
+          ) : (
+            <>
+              {!disabled && (selectedProject && 
+                ((Array.isArray(selectedProject) && selectedProject.length > 0 && selectedProject[0] !== 'all') || 
+                (!Array.isArray(selectedProject) && selectedProject !== 'all' && selectedProject !== ''))
+              ) && (
+                <button
+                  onClick={handleClearSelection}
+                  className="mr-1 text-gray-400 hover:text-gray-600"
+                  title="Clear selection"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+              <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </>
+          )}
         </span>
       </button>
 
