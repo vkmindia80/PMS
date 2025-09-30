@@ -273,6 +273,9 @@ const ProjectsPage: React.FC = () => {
                 showAllOption={true}
                 placeholder="All Projects"
                 className="min-w-[200px]"
+                multiSelect={true}
+                error={projectFilterError}
+                onError={setProjectFilterError}
               />
 
               <select
