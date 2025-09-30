@@ -16,7 +16,8 @@ import {
   Cpu, 
   Zap,
   Menu,
-  X
+  X,
+  Calendar
 } from 'lucide-react'
 
 const Sidebar: React.FC = () => {
