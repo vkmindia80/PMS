@@ -204,6 +204,12 @@ const SecurityDashboard: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center space-x-3">
+            <GlobalProjectFilter 
+              className="min-w-[200px]" 
+              placeholder="All Projects" 
+              label=""
+              multiSelect={true}
+            />
             <button
               onClick={refreshData}
               className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
