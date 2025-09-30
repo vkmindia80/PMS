@@ -260,6 +260,7 @@ interface TimelineAnalytics {
 
 const PortfolioDashboard: React.FC = () => {
   const { tokens, user } = useAuth()
+  const { selectedProject, getSelectedProjectIds } = useProjectFilterContext()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState(false)
@@ -287,7 +288,7 @@ const PortfolioDashboard: React.FC = () => {
     return () => {
       if (interval) clearInterval(interval)
     }
-  }, [autoRefresh, tokens?.access_token])
+  }, [autoRefresh, tokens?.access_token, selectedProject])
 
   // Fetch all analytics data
   const fetchAnalyticsData = async (isRefresh = false) => {
@@ -306,15 +307,21 @@ const PortfolioDashboard: React.FC = () => {
         'Content-Type': 'application/json'
       }
 
+      // Build query parameters for project filtering
+      const selectedProjectIds = getSelectedProjectIds()
+      const projectParam = selectedProjectIds.length > 0 
+        ? `?project_id=${selectedProjectIds.join(',')}` 
+        : ''
+
       // Fetch all analytics endpoints in parallel
       const [overviewRes, resourceRes, ganttRes, projectsRes, teamsRes, budgetRes, timelineRes] = await Promise.all([
-        fetch(`${API_URL}/api/analytics/portfolio/overview`, { headers }),
-        fetch(`${API_URL}/api/analytics/resource/utilization`, { headers }),
-        fetch(`${API_URL}/api/analytics/timeline/gantt`, { headers }),
-        fetch(`${API_URL}/api/analytics/projects/health`, { headers }),
-        fetch(`${API_URL}/api/analytics/teams/performance`, { headers }),
-        fetch(`${API_URL}/api/analytics/budget/tracking`, { headers }),
-        fetch(`${API_URL}/api/analytics/timeline/overview`, { headers })
+        fetch(`${API_URL}/api/analytics/portfolio/overview${projectParam}`, { headers }),
+        fetch(`${API_URL}/api/analytics/resource/utilization${projectParam}`, { headers }),
+        fetch(`${API_URL}/api/analytics/timeline/gantt${projectParam}`, { headers }),
+        fetch(`${API_URL}/api/analytics/projects/health${projectParam}`, { headers }),
+        fetch(`${API_URL}/api/analytics/teams/performance${projectParam}`, { headers }),
+        fetch(`${API_URL}/api/analytics/budget/tracking${projectParam}`, { headers }),
+        fetch(`${API_URL}/api/analytics/timeline/overview${projectParam}`, { headers })
       ])
 
       // Process responses
