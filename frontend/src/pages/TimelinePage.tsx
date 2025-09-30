@@ -233,33 +233,6 @@ const GanttChart: React.FC<{
     return colors[Math.abs(hash) % colors.length];
   };
 
-  // Helper functions for enhanced styling
-  const adjustBrightness = (color: string, amount: number): string => {
-    const hex = color.replace('#', '');
-    const r = Math.max(0, Math.min(255, parseInt(hex.substr(0, 2), 16) + amount));
-    const g = Math.max(0, Math.min(255, parseInt(hex.substr(2, 2), 16) + amount));
-    const b = Math.max(0, Math.min(255, parseInt(hex.substr(4, 2), 16) + amount));
-    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-  };
-
-  const getContrastColor = (hexColor: string): string => {
-    const hex = hexColor.replace('#', '');
-    const r = parseInt(hex.substr(0, 2), 16);
-    const g = parseInt(hex.substr(2, 2), 16);
-    const b = parseInt(hex.substr(4, 2), 16);
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    return brightness > 128 ? '#000000' : '#ffffff';
-  };
-
-  const getAvatarColor = (userId: string): string => {
-    const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#84cc16', '#f97316'];
-    const hash = userId.split('').reduce((a, b) => {
-      a = ((a << 5) - a) + b.charCodeAt(0);
-      return a & a;
-    }, 0);
-    return colors[Math.abs(hash) % colors.length];
-  };
-
   const drawTaskBar = (ctx: CanvasRenderingContext2D, task: TimelineTask, index: number, viewMode: string) => {
     const taskNameWidth = 250;
     const taskHeight = 50;
