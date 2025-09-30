@@ -11,6 +11,8 @@ import {
   UserCheck,
   Calendar
 } from 'lucide-react';
+import GlobalProjectFilter from '../components/common/GlobalProjectFilter';
+import { useProjectFilterContext } from '../contexts/ProjectFilterContext';
 import { API_URL } from '../utils/config';
 
 interface ResourceAllocation {
