@@ -213,7 +213,7 @@ class TimelineTaskInDB(TimelineTask):
 
 
 # Timeline Project Configuration
-class TimelineProject(BaseMongoModel):
+class TimelineProject(BaseDBModel):
     """Timeline-specific project configuration"""
     
     project_id: str = Field(..., description="Reference to the main project")
