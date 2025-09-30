@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import SkillsOverviewModal from '../components/SkillsOverviewModal'
+import { API_URL } from '../utils/config'
 
 interface TeamMember {
   user_id: string
