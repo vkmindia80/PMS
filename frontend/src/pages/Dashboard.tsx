@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Plus, Users, BarChart3, Settings as SettingsIcon, Brain } from 'lucide-react'
+import { Plus, Users, BarChart3, Settings as SettingsIcon, Brain, Filter } from 'lucide-react'
 import ProjectCreateModal from '../components/project/ProjectCreateModal'
+import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
+import { useProjectFilterContext } from '../contexts/ProjectFilterContext'
 import { API_URL as API_URL_CONFIG } from '../utils/config'
 
 const Dashboard: React.FC = () => {
