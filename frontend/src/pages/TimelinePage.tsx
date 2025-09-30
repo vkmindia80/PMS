@@ -95,25 +95,42 @@ const GanttChart: React.FC<{
   }, [data, viewMode]);
 
   const drawTimelineHeader = (ctx: CanvasRenderingContext2D, viewMode: string) => {
-    const headerHeight = 60;
+    const headerHeight = 80;
+    const taskNameWidth = 250;
     
     // Header background
     ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(200, 0, ctx.canvas.width - 200, headerHeight);
+    ctx.fillRect(0, 0, ctx.canvas.width, headerHeight);
     
-    // Draw time scale
-    ctx.strokeStyle = '#e2e8f0';
+    // Task name header
+    ctx.fillStyle = '#374151';
+    ctx.fillRect(0, 0, taskNameWidth, headerHeight);
+    
+    // Header text
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Task Name', taskNameWidth / 2, 30);
+    
+    // Timeline header
+    ctx.fillStyle = '#1f2937';
+    ctx.fillRect(taskNameWidth, 0, ctx.canvas.width - taskNameWidth, 40);
+    
+    // Draw time scale with enhanced styling
+    ctx.strokeStyle = '#e5e7eb';
     ctx.lineWidth = 1;
     
     const startDate = new Date();
-    const timeUnit = viewMode === 'day' ? 50 : viewMode === 'week' ? 100 : 150;
+    const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
     
-    for (let i = 0; i < 20; i++) {
-      const x = 200 + i * timeUnit;
+    for (let i = 0; i < 30; i++) {
+      const x = taskNameWidth + i * timeUnit;
+      
+      if (x > ctx.canvas.width) break;
       
       // Vertical grid line
       ctx.beginPath();
-      ctx.moveTo(x, 0);
+      ctx.moveTo(x, 40);
       ctx.lineTo(x, ctx.canvas.height);
       ctx.stroke();
       
@@ -121,26 +138,27 @@ const GanttChart: React.FC<{
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i * (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30));
       
-      ctx.fillStyle = '#64748b';
-      ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(
         date.toLocaleDateString('en-US', { 
           month: 'short', 
-          day: 'numeric' 
+          day: 'numeric',
+          ...(viewMode === 'month' && { year: '2-digit' })
         }),
         x + timeUnit / 2,
-        20
+        25
       );
       
-      // Weekday for day view
+      // Sub-header for weekdays
       if (viewMode === 'day') {
-        ctx.fillStyle = '#94a3b8';
+        ctx.fillStyle = '#9ca3af';
         ctx.font = '10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.fillText(
           date.toLocaleDateString('en-US', { weekday: 'short' }),
           x + timeUnit / 2,
-          40
+          55
         );
       }
     }
