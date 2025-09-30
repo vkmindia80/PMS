@@ -450,6 +450,9 @@ const TasksPage: React.FC = () => {
                   showAllOption={true}
                   placeholder="All Projects"
                   label=""
+                  multiSelect={true}
+                  error={projectFilterError}
+                  onError={setProjectFilterError}
                 />
 
                 <div>
