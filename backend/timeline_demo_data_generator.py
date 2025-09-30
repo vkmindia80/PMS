@@ -35,119 +35,160 @@ class TimelineDemoDataGenerator:
     def __init__(self):
         self.db = None
         self.org_id = "demo-org-001"
+        self.start_date = datetime(2025, 1, 8, 9, 0, 0)  # Phase 6.1 start date
         self.generated_data = {
+            "timeline_projects": [],
             "timeline_tasks": [],
             "task_dependencies": [],
-            "timeline_projects": [],
             "timeline_calendars": [],
             "timeline_baselines": []
         }
         
-        # Timeline task templates based on project type
-        self.timeline_task_templates = {
-            "software_development": [
-                {
-                    "name": "Project Initiation & Planning",
-                    "duration": 40,  # hours
-                    "outline_level": 1,
-                    "summary_task": True,
-                    "milestone": False
-                },
-                {
-                    "name": "Requirements Analysis",
-                    "duration": 24,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": False
-                },
-                {
-                    "name": "Technical Specification",
-                    "duration": 16,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": False
-                },
-                {
-                    "name": "Requirements Sign-off",
-                    "duration": 0,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": True
-                },
-                {
-                    "name": "System Design & Architecture",
-                    "duration": 64,
-                    "outline_level": 1,
-                    "summary_task": True,
-                    "milestone": False
-                },
-                {
-                    "name": "Database Schema Design",
-                    "duration": 24,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": False
-                },
-                {
-                    "name": "API Design & Documentation",
-                    "duration": 32,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": False
-                },
-                {
-                    "name": "UI/UX Design & Wireframes",
-                    "duration": 48,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": False
-                },
-                {
-                    "name": "Design Review & Approval",
-                    "duration": 0,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": True
-                },
-                {
-                    "name": "Core Development Phase",
-                    "duration": 320,
-                    "outline_level": 1,
-                    "summary_task": True,
-                    "milestone": False
-                },
-                {
-                    "name": "Backend API Development",
-                    "duration": 120,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": False
-                },
-                {
-                    "name": "Frontend Development",
-                    "duration": 100,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": False
-                },
-                {
-                    "name": "Database Implementation",
-                    "duration": 40,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": False
-                },
-                {
-                    "name": "Integration & Testing",
-                    "duration": 60,
-                    "outline_level": 2,
-                    "summary_task": False,
-                    "milestone": False
-                },
-                {
-                    "name": "Alpha Release",
-                    "duration": 0,
-                    "outline_level": 2,
+        # Realistic project templates with timeline data
+        self.project_templates = [
+            {
+                "name": "E-Commerce Platform Development",
+                "description": "Complete e-commerce platform with payment integration, inventory management, and customer portal",
+                "duration_weeks": 16,
+                "phases": [
+                    {
+                        "name": "Requirements & Planning",
+                        "duration": 40,  # hours
+                        "tasks": [
+                            {"name": "Business Requirements Analysis", "duration": 16, "critical": True},
+                            {"name": "Technical Architecture Design", "duration": 24, "critical": True}
+                        ]
+                    },
+                    {
+                        "name": "Backend Development",
+                        "duration": 320,
+                        "tasks": [
+                            {"name": "API Development", "duration": 80, "critical": True},
+                            {"name": "Database Design & Implementation", "duration": 60, "critical": True},
+                            {"name": "Payment Gateway Integration", "duration": 40, "critical": False},
+                            {"name": "Inventory Management System", "duration": 60, "critical": False},
+                            {"name": "User Authentication & Authorization", "duration": 32, "critical": True},
+                            {"name": "Order Processing System", "duration": 48, "critical": True}
+                        ]
+                    },
+                    {
+                        "name": "Frontend Development",
+                        "duration": 280,
+                        "tasks": [
+                            {"name": "UI Component Library", "duration": 60, "critical": False},
+                            {"name": "Product Catalog Interface", "duration": 48, "critical": True},
+                            {"name": "Shopping Cart & Checkout", "duration": 56, "critical": True},
+                            {"name": "User Dashboard", "duration": 40, "critical": False},
+                            {"name": "Admin Panel", "duration": 48, "critical": False},
+                            {"name": "Mobile Responsive Design", "duration": 28, "critical": False}
+                        ]
+                    },
+                    {
+                        "name": "Testing & Deployment",
+                        "duration": 120,
+                        "tasks": [
+                            {"name": "Unit Testing", "duration": 40, "critical": True},
+                            {"name": "Integration Testing", "duration": 32, "critical": True},
+                            {"name": "Performance Testing", "duration": 24, "critical": False},
+                            {"name": "Security Testing", "duration": 16, "critical": True},
+                            {"name": "Deployment & Configuration", "duration": 8, "critical": True, "milestone": True}
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Mobile App Development",
+                "description": "Cross-platform mobile application with real-time features and offline capabilities",
+                "duration_weeks": 12,
+                "phases": [
+                    {
+                        "name": "Discovery & Design",
+                        "duration": 80,
+                        "tasks": [
+                            {"name": "User Research & Personas", "duration": 24, "critical": False},
+                            {"name": "Wireframing & Prototyping", "duration": 32, "critical": True},
+                            {"name": "UI/UX Design", "duration": 24, "critical": True}
+                        ]
+                    },
+                    {
+                        "name": "Development",
+                        "duration": 320,
+                        "tasks": [
+                            {"name": "Project Setup & Architecture", "duration": 16, "critical": True},
+                            {"name": "Core App Framework", "duration": 48, "critical": True},
+                            {"name": "Authentication System", "duration": 32, "critical": True},
+                            {"name": "Real-time Features", "duration": 56, "critical": True},
+                            {"name": "Offline Data Sync", "duration": 48, "critical": False},
+                            {"name": "Push Notifications", "duration": 24, "critical": False},
+                            {"name": "Camera & Media Integration", "duration": 32, "critical": False},
+                            {"name": "Navigation & Routing", "duration": 24, "critical": True},
+                            {"name": "State Management", "duration": 40, "critical": True}
+                        ]
+                    },
+                    {
+                        "name": "Testing & Launch",
+                        "duration": 120,
+                        "tasks": [
+                            {"name": "Device Testing", "duration": 40, "critical": True},
+                            {"name": "App Store Preparation", "duration": 24, "critical": True},
+                            {"name": "Beta Testing", "duration": 32, "critical": False},
+                            {"name": "Performance Optimization", "duration": 16, "critical": False},
+                            {"name": "App Store Submission", "duration": 8, "critical": True, "milestone": True}
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Data Analytics Platform",
+                "description": "Enterprise data analytics platform with ML capabilities and real-time dashboards",
+                "duration_weeks": 20,
+                "phases": [
+                    {
+                        "name": "Data Architecture",
+                        "duration": 120,
+                        "tasks": [
+                            {"name": "Data Source Analysis", "duration": 32, "critical": True},
+                            {"name": "ETL Pipeline Design", "duration": 48, "critical": True},
+                            {"name": "Data Warehouse Setup", "duration": 40, "critical": True}
+                        ]
+                    },
+                    {
+                        "name": "Analytics Engine",
+                        "duration": 280,
+                        "tasks": [
+                            {"name": "Core Analytics Framework", "duration": 64, "critical": True},
+                            {"name": "Machine Learning Models", "duration": 80, "critical": True},
+                            {"name": "Real-time Processing", "duration": 56, "critical": True},
+                            {"name": "Data Visualization Engine", "duration": 48, "critical": False},
+                            {"name": "Report Generation System", "duration": 32, "critical": False}
+                        ]
+                    },
+                    {
+                        "name": "Dashboard & UI",
+                        "duration": 200,
+                        "tasks": [
+                            {"name": "Dashboard Framework", "duration": 48, "critical": True},
+                            {"name": "Interactive Charts", "duration": 56, "critical": True},
+                            {"name": "Custom Widgets", "duration": 40, "critical": False},
+                            {"name": "User Management", "duration": 32, "critical": False},
+                            {"name": "Export & Sharing Features", "duration": 24, "critical": False}
+                        ]
+                    }
+                ]
+            }
+        ]
+        
+        # User assignments for realistic resource allocation
+        self.user_assignments = [
+            "demo-user-001",  # Admin
+            "sarah-johnson-001",  # Team Lead
+            "marcus-chen-001",  # Backend Dev
+            "emily-rodriguez-001",  # Frontend Dev
+            "james-wilson-001",  # Mobile Dev
+            "alex-kumar-001",  # DevOps
+            "maria-gonzalez-001",  # Design Lead
+            "david-thompson-001"  # Designer
+        ]
                     "summary_task": False,
                     "milestone": True
                 },
