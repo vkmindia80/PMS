@@ -757,7 +757,7 @@
    - Timeline comparison views (baseline vs actual vs forecast)
    - Timeline rollback and recovery capabilities
 
-### **📋 6.4: Microsoft Project Integration & Mobile - PLANNED (10 credits)**
+### **📋 6.5: Microsoft Project Integration & Mobile - PLANNED (10 credits)**
 **Enterprise Integration & Accessibility:**
 
 1. **Microsoft Project Compatibility**
