@@ -96,7 +96,7 @@ const RoleManagementPage: React.FC = () => {
 
   const fetchTemplates = async () => {
     try {
-      const response = await fetch(`${getApiUrl()}/api/roles/templates`, {
+      const response = await fetch(`${API_URL}/api/roles/templates`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
