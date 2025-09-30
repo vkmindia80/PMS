@@ -62,11 +62,11 @@ def test_tasks_api_multiple_projects(token, project_ids):
     """Test tasks API with multiple project filtering"""
     headers = {"Authorization": f"Bearer {token}"}
     
-    # Build query string for multiple project IDs
-    query_params = "&".join([f"project_id={pid}" for pid in project_ids])
+    # Build query string with comma-separated project IDs
+    project_ids_str = ",".join(project_ids)
     
     response = requests.get(
-        f"{BASE_URL}/api/tasks/?{query_params}",
+        f"{BASE_URL}/api/tasks/?project_id={project_ids_str}",
         headers=headers
     )
     
