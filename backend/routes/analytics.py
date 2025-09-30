@@ -22,6 +22,7 @@ router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
 @router.get("/portfolio/overview", response_model=Dict[str, Any])
 async def get_portfolio_overview(
+    project_id: Optional[str] = Query(None, description="Filter by project IDs (comma-separated for multiple)"),
     current_user: User = Depends(get_current_active_user)
 ):
     """Get comprehensive portfolio overview with key metrics and KPIs"""
@@ -29,9 +30,24 @@ async def get_portfolio_overview(
         db = await get_database()
         org_id = current_user.organization_id
         
-        # Get all data for the organization
+        # Build project filter
+        project_filter = {"organization_id": org_id}
+        selected_project_ids = []
+        
+        if project_id:
+            if ',' in project_id:
+                selected_project_ids = [pid.strip() for pid in project_id.split(',') if pid.strip()]
+                if len(selected_project_ids) > 1:
+                    project_filter["id"] = {"$in": selected_project_ids}
+                elif len(selected_project_ids) == 1:
+                    project_filter["id"] = selected_project_ids[0]
+            else:
+                project_filter["id"] = project_id
+                selected_project_ids = [project_id]
+        
+        # Get all data for the organization (filtered by project if specified)
         organizations = await db.organizations.find({"id": org_id}).to_list(length=None)
-        projects = await db.projects.find({"organization_id": org_id}).to_list(length=None)
+        projects = await db.projects.find(project_filter).to_list(length=None)
         tasks = await db.tasks.find({}).to_list(length=None)
         teams = await db.teams.find({"organization_id": org_id}).to_list(length=None)
         users = await db.users.find({"organization_id": org_id}).to_list(length=None)
