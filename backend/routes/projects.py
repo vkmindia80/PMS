@@ -37,7 +37,7 @@ def serialize_project(project_data: Dict) -> Dict:
                         milestone["completed_at"] = milestone["completed_at"].isoformat()
     return project_data
 
-@router.post("/", response_model=Project, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=Project, status_code=status.HTTP_201_CREATED)
 async def create_project(
     project_data: ProjectCreate,
     current_user: User = Depends(get_current_user)
