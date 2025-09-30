@@ -174,6 +174,78 @@ async def get_dashboard_summary(
             detail=f"Failed to get dashboard summary: {str(e)}"
         )
 
+@router.get("/dashboard/metrics", response_model=Dict[str, Any])
+async def get_dashboard_metrics(
+    project_id: Optional[str] = Query(None, description="Filter by project IDs (comma-separated for multiple)"),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get basic dashboard metrics - optimized for simple dashboard number display like the current frontend"""
+    try:
+        db = await get_database()
+        org_id = current_user.organization_id
+        
+        # Build project filter
+        project_filter = {"organization_id": org_id}
+        selected_project_ids = []
+        
+        if project_id:
+            if ',' in project_id:
+                selected_project_ids = [pid.strip() for pid in project_id.split(',') if pid.strip()]
+                if len(selected_project_ids) > 1:
+                    project_filter["id"] = {"$in": selected_project_ids}
+                elif len(selected_project_ids) == 1:
+                    project_filter["id"] = selected_project_ids[0]
+            else:
+                project_filter["id"] = project_id
+                selected_project_ids = [project_id]
+        
+        # Efficient parallel queries
+        projects_query = db.projects.find(project_filter, {"id": 1, "status": 1})
+        teams_query = db.teams.find({"organization_id": org_id}, {"member_count": 1, "members": 1})
+        
+        projects = await projects_query.to_list(length=None)
+        teams = await teams_query.to_list(length=None)
+        
+        # Get tasks filtered by projects
+        task_filter = {}
+        if selected_project_ids:
+            task_filter["project_id"] = {"$in": selected_project_ids}
+        else:
+            project_ids = [p["id"] for p in projects]
+            if project_ids:
+                task_filter["project_id"] = {"$in": project_ids}
+        
+        tasks_query = db.tasks.find(task_filter, {"status": 1})
+        tasks = await tasks_query.to_list(length=None)
+        
+        # Calculate basic metrics
+        active_projects = len([p for p in projects if p.get("status") == "active"])
+        
+        # Team members count (consistent with current frontend logic)
+        total_team_members = sum(team.get("member_count", len(team.get("members", []))) for team in teams)
+        
+        # Pending tasks (consistent with current frontend: todo + in_progress)
+        pending_tasks = len([t for t in tasks if t.get("status") in ["todo", "in_progress"]])
+        
+        return {
+            "projects": active_projects,
+            "teams": total_team_members,
+            "tasks": pending_tasks,
+            "metadata": {
+                "total_projects": len(projects),
+                "total_teams": len(teams),
+                "total_tasks": len(tasks),
+                "project_filter_applied": bool(selected_project_ids),
+                "filtered_project_ids": selected_project_ids
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get dashboard metrics: {str(e)}"
+        )
+
 @router.get("/portfolio/overview", response_model=Dict[str, Any])
 async def get_portfolio_overview(
     project_id: Optional[str] = Query(None, description="Filter by project IDs (comma-separated for multiple)"),
