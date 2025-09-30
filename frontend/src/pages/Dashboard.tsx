@@ -80,6 +80,8 @@ const Dashboard: React.FC = () => {
       if (tasksResponse.ok) {
         const tasksData = await tasksResponse.json()
         tasksCount = Array.isArray(tasksData) ? tasksData.filter(t => t.status === 'todo' || t.status === 'in_progress').length : 0
+      } else {
+        console.error('Failed to fetch tasks:', tasksResponse.status, tasksResponse.statusText)
       }
 
       setDashboardData({
