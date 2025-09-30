@@ -9,6 +9,7 @@ import { API_URL as API_URL_CONFIG } from '../utils/config'
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate()
+  const { selectedProject, getSelectedProjectIds } = useProjectFilterContext()
   const [apiStatus, setApiStatus] = useState<'loading' | 'connected' | 'error'>('loading')
   const [apiData, setApiData] = useState<any>(null)
   const [dbStatus, setDbStatus] = useState<any>(null)
@@ -37,12 +38,25 @@ const Dashboard: React.FC = () => {
         }
       }
 
+      // Build query parameters for project filtering
+      const selectedProjectIds = getSelectedProjectIds()
+      const projectParam = selectedProjectIds.length > 0 
+        ? `project_id=${selectedProjectIds.join(',')}` 
+        : ''
+
       // Fetch projects count
       const projectsResponse = await fetch(`${API_URL}/api/projects`, { headers })
       let projectsCount = 0
       if (projectsResponse.ok) {
         const projectsData = await projectsResponse.json()
-        projectsCount = Array.isArray(projectsData) ? projectsData.filter(p => p.status === 'active').length : 0
+        // If specific projects are selected, count only those
+        if (selectedProjectIds.length > 0) {
+          projectsCount = projectsData.filter(p => 
+            selectedProjectIds.includes(p.id) && p.status === 'active'
+          ).length
+        } else {
+          projectsCount = Array.isArray(projectsData) ? projectsData.filter(p => p.status === 'active').length : 0
+        }
       }
 
       // Fetch teams count  
@@ -53,8 +67,11 @@ const Dashboard: React.FC = () => {
         teamsCount = Array.isArray(teamsData) ? teamsData.reduce((sum, team) => sum + team.member_count, 0) : 0
       }
 
-      // Fetch tasks count
-      const tasksResponse = await fetch(`${API_URL}/api/tasks`, { headers })
+      // Fetch tasks count with project filtering
+      const tasksUrl = projectParam 
+        ? `${API_URL}/api/tasks?${projectParam}` 
+        : `${API_URL}/api/tasks`
+      const tasksResponse = await fetch(tasksUrl, { headers })
       let tasksCount = 0  
       if (tasksResponse.ok) {
         const tasksData = await tasksResponse.json()
@@ -114,6 +131,13 @@ const Dashboard: React.FC = () => {
 
     checkApiConnection()
   }, [])
+
+  // Re-fetch dashboard data when project filter changes
+  useEffect(() => {
+    if (apiStatus === 'connected') {
+      fetchDashboardData(API_URL_CONFIG)
+    }
+  }, [selectedProject, apiStatus])
 
   return (
     <div className="space-y-8">
