@@ -349,7 +349,7 @@ const TasksPage: React.FC = () => {
     if (viewMode === 'kanban') {
       fetchKanbanData()
     }
-  }, [viewMode, kanbanView, tokens?.access_token])
+  }, [viewMode, kanbanView, tokens?.access_token, selectedProject]) // Added selectedProject as dependency
 
   useEffect(() => {
     applyFilters()
