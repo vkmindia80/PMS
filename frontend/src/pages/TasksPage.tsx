@@ -307,7 +307,7 @@ const TasksPage: React.FC = () => {
     }
   }
 
-  // Filter tasks
+  // Filter tasks - now only handles non-project filters since project filtering is done server-side
   const applyFilters = () => {
     let filtered = tasks
 
@@ -334,11 +334,7 @@ const TasksPage: React.FC = () => {
       )
     }
 
-    // Apply global project filter
-    const selectedProjectIds = getSelectedProjectIds()
-    if (selectedProjectIds.length > 0) {
-      filtered = filtered.filter(task => selectedProjectIds.includes(task.project_id))
-    }
+    // Project filtering is now handled server-side, no need for client-side filtering
 
     setFilteredTasks(filtered)
   }
