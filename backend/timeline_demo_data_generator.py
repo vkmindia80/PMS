@@ -543,21 +543,6 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-                working_day = {
-                    "working": True,
-                    "time_slots": working_slots
-                }
-                
-                non_working_day = {
-                    "working": False,
-                    "time_slots": []
-                }
-                
-                calendar_data = {
-                    "id": str(uuid.uuid4()),
-                    "name": f"Standard Calendar - {project['name'][:20]}",
-                    "description": f"Standard business hours calendar for {project['name']}",
-                    "project_id": project["id"],
                     "monday": working_day,
                     "tuesday": working_day,
                     "wednesday": working_day,
