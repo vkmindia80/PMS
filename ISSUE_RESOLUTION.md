@@ -26,8 +26,8 @@ The issue was caused by **missing `start` script in package.json**. The supervis
 - **Supervisor Compatibility**: `yarn start` command now works
 
 ### 3. **Verification Results**
-- ✅ **External Frontend**: https://fixedtimeline.preview.emergentagent.com ✨
-- ✅ **External Backend**: https://fixedtimeline.preview.emergentagent.com/api/health ✨
+- ✅ **External Frontend**: https://fix-project-filters.preview.emergentagent.com ✨
+- ✅ **External Backend**: https://fix-project-filters.preview.emergentagent.com/api/health ✨
 - ✅ **All Services**: Running via supervisor (persistent across restarts)
 - ✅ **Demo Credentials**: Auto-loading + working
 - ✅ **Login Flow**: Complete authentication functional
@@ -51,15 +51,15 @@ tcp        0      0 0.0.0.0:3000            0.0.0.0:*               LISTEN      
 ## Test Commands
 ```bash
 # Test external frontend
-curl -I https://fixedtimeline.preview.emergentagent.com
+curl -I https://fix-project-filters.preview.emergentagent.com
 # Expected: HTTP/2 200
 
 # Test external backend  
-curl https://fixedtimeline.preview.emergentagent.com/api/health
+curl https://fix-project-filters.preview.emergentagent.com/api/health
 # Expected: {"status":"healthy",...}
 
 # Test demo login
-curl -X POST https://fixedtimeline.preview.emergentagent.com/api/auth/login \
+curl -X POST https://fix-project-filters.preview.emergentagent.com/api/auth/login \
 -H "Content-Type: application/json" \
 -d '{"email": "demo@company.com", "password": "demo123456"}'
 # Expected: {"message":"Login successful",...}
@@ -82,4 +82,4 @@ This fix is permanent because:
 
 **Status**: ✅ **RESOLVED PERMANENTLY**
 **Date**: 2025-09-27
-**External URL**: https://fixedtimeline.preview.emergentagent.com ✨ **WORKING**
+**External URL**: https://fix-project-filters.preview.emergentagent.com ✨ **WORKING**
