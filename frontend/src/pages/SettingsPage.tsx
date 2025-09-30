@@ -495,11 +495,21 @@ const SettingsPage: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center space-x-4">
-        <Settings className="h-8 w-8 text-primary-600" />
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600">Manage your account and system preferences</p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center space-x-4">
+          <Settings className="h-8 w-8 text-primary-600" />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+            <p className="text-gray-600">Manage your account and system preferences</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <GlobalProjectFilter 
+            className="min-w-[200px]" 
+            placeholder="All Projects" 
+            label=""
+            multiSelect={true}
+          />
         </div>
       </div>
 
