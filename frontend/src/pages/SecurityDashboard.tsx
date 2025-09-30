@@ -57,6 +57,7 @@ interface ComplianceReport {
 }
 
 const SecurityDashboard: React.FC = () => {
+  const { selectedProject, getSelectedProjectIds } = useProjectFilterContext();
   const [metrics, setMetrics] = useState<SecurityMetrics | null>(null);
   const [threats, setThreats] = useState<ThreatDetection[]>([]);
   const [reports, setReports] = useState<ComplianceReport[]>([]);
@@ -69,7 +70,7 @@ const SecurityDashboard: React.FC = () => {
     // Refresh every 30 seconds
     const interval = setInterval(fetchSecurityData, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [selectedProject]); // Re-fetch when project filter changes
 
   const fetchSecurityData = async () => {
     try {
@@ -85,8 +86,14 @@ const SecurityDashboard: React.FC = () => {
 
       console.log('Fetching security data using relative URLs...');
 
+      // Build query parameters for project filtering
+      const selectedProjectIds = getSelectedProjectIds();
+      const projectParam = selectedProjectIds.length > 0 
+        ? `?project_id=${selectedProjectIds.join(',')}` 
+        : '';
+
       // Use relative URLs - let proxy or ingress handle routing
-      const metricsResponse = await fetch('/api/security/dashboard/metrics', { headers });
+      const metricsResponse = await fetch(`/api/security/dashboard/metrics${projectParam}`, { headers });
       if (metricsResponse.ok) {
         const metricsData = await metricsResponse.json();
         setMetrics(metricsData);
@@ -96,7 +103,7 @@ const SecurityDashboard: React.FC = () => {
       }
 
       // Fetch active threats
-      const threatsResponse = await fetch('/api/security/threats/active', { headers });
+      const threatsResponse = await fetch(`/api/security/threats/active${projectParam}`, { headers });
       if (threatsResponse.ok) {
         const threatsData = await threatsResponse.json();
         setThreats(threatsData);
@@ -106,7 +113,7 @@ const SecurityDashboard: React.FC = () => {
       }
 
       // Fetch compliance reports
-      const complianceResponse = await fetch('/api/security/compliance/reports', { headers });
+      const complianceResponse = await fetch(`/api/security/compliance/reports${projectParam}`, { headers });
       if (complianceResponse.ok) {
         const complianceData = await complianceResponse.json();
         setReports(complianceData.slice(0, 5)); // Latest 5 reports
