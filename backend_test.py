@@ -1,348 +1,419 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Project Management Features
-Tests all project-related endpoints with authentication
+Backend API Testing for Phase 6.1 Core Gantt Chart Engine
+Tests timeline functionality, Gantt chart data, and WebSocket integration
 """
 
 import requests
 import json
 import sys
-from datetime import datetime, date
-from typing import Dict, Any, Optional
+from datetime import datetime
+import time
 
-class ProjectAPITester:
-    def __init__(self, base_url: str = "https://github-connection-2.preview.emergentagent.com"):
+class TimelineAPITester:
+    def __init__(self, base_url="https://github-connection-2.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
-        self.user_id = None
-        self.organization_id = None
         self.tests_run = 0
         self.tests_passed = 0
-        self.test_results = []
+        self.project_id = None
+        self.timeline_task_id = None
+        self.dependency_id = None
 
-    def log_test(self, name: str, success: bool, details: str = "", response_data: Any = None):
-        """Log test result"""
-        self.tests_run += 1
-        if success:
-            self.tests_passed += 1
-            print(f"✅ {name}: PASSED")
-        else:
-            print(f"❌ {name}: FAILED - {details}")
-        
-        self.test_results.append({
-            "test_name": name,
-            "success": success,
-            "details": details,
-            "response_data": response_data
-        })
-
-    def make_request(self, method: str, endpoint: str, data: Optional[Dict] = None, params: Optional[Dict] = None) -> tuple[bool, Dict, int]:
-        """Make HTTP request with authentication"""
-        url = f"{self.base_url}/api/{endpoint}"
-        headers = {'Content-Type': 'application/json'}
+    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
+        """Run a single API test"""
+        url = f"{self.base_url}/{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
         
         if self.token:
-            headers['Authorization'] = f'Bearer {self.token}'
+            test_headers['Authorization'] = f'Bearer {self.token}'
+        
+        if headers:
+            test_headers.update(headers)
 
+        self.tests_run += 1
+        print(f"\n🔍 Testing {name}...")
+        print(f"   URL: {url}")
+        
         try:
             if method == 'GET':
-                response = requests.get(url, headers=headers, params=params)
+                response = requests.get(url, headers=test_headers, timeout=10)
             elif method == 'POST':
-                response = requests.post(url, headers=headers, json=data)
+                response = requests.post(url, json=data, headers=test_headers, timeout=10)
             elif method == 'PUT':
-                response = requests.put(url, headers=headers, json=data)
+                response = requests.put(url, json=data, headers=test_headers, timeout=10)
             elif method == 'DELETE':
-                response = requests.delete(url, headers=headers)
+                response = requests.delete(url, headers=test_headers, timeout=10)
+
+            print(f"   Status: {response.status_code}")
+            
+            success = response.status_code == expected_status
+            if success:
+                self.tests_passed += 1
+                print(f"✅ Passed - Status: {response.status_code}")
+                try:
+                    response_data = response.json()
+                    if isinstance(response_data, dict) and len(str(response_data)) < 500:
+                        print(f"   Response: {json.dumps(response_data, indent=2, default=str)[:200]}...")
+                    elif isinstance(response_data, list):
+                        print(f"   Response: List with {len(response_data)} items")
+                    return True, response_data
+                except:
+                    return True, {}
             else:
-                return False, {"error": "Invalid method"}, 400
+                print(f"❌ Failed - Expected {expected_status}, got {response.status_code}")
+                try:
+                    error_data = response.json()
+                    print(f"   Error: {error_data}")
+                except:
+                    print(f"   Error: {response.text[:200]}")
+                return False, {}
 
-            try:
-                response_data = response.json()
-            except:
-                response_data = {"raw_response": response.text}
-
-            return response.status_code < 400, response_data, response.status_code
-
+        except requests.exceptions.Timeout:
+            print(f"❌ Failed - Request timeout")
+            return False, {}
         except Exception as e:
-            return False, {"error": str(e)}, 500
+            print(f"❌ Failed - Error: {str(e)}")
+            return False, {}
 
     def test_authentication(self):
-        """Test login with demo credentials"""
-        print("\n🔐 Testing Authentication...")
+        """Test authentication with demo credentials"""
+        print("\n" + "="*60)
+        print("🔐 TESTING AUTHENTICATION")
+        print("="*60)
         
-        login_data = {
-            "email": "demo@company.com",
-            "password": "demo123456"
-        }
+        success, response = self.run_test(
+            "Demo User Login",
+            "POST",
+            "api/auth/login",
+            200,
+            data={
+                "email": "demo@company.com",
+                "password": "demo123456"
+            }
+        )
         
-        success, response, status_code = self.make_request('POST', 'auth/login', login_data)
-        
-        if success and 'tokens' in response and 'access_token' in response['tokens']:
-            self.token = response['tokens']['access_token']
-            self.user_id = response.get('user', {}).get('id')
-            self.organization_id = response.get('user', {}).get('organization_id')
-            self.log_test("Authentication", True, f"Token obtained, User ID: {self.user_id}")
+        if success and 'access_token' in response:
+            self.token = response['access_token']
+            print(f"✅ Authentication successful - Token obtained")
             return True
         else:
-            self.log_test("Authentication", False, f"Status: {status_code}, Response: {response}")
+            print(f"❌ Authentication failed")
             return False
 
-    def test_project_templates(self):
-        """Test project templates endpoint"""
-        print("\n📋 Testing Project Templates...")
+    def test_projects_api(self):
+        """Test projects API to get project IDs for timeline testing"""
+        print("\n" + "="*60)
+        print("📁 TESTING PROJECTS API")
+        print("="*60)
         
-        success, response, status_code = self.make_request('GET', 'projects/templates/')
+        success, response = self.run_test(
+            "Get Projects List",
+            "GET",
+            "api/projects",
+            200
+        )
         
         if success and isinstance(response, list) and len(response) > 0:
-            template_count = len(response)
-            template_names = [t.get('name', 'Unknown') for t in response]
-            self.log_test("Project Templates", True, f"Found {template_count} templates: {', '.join(template_names)}")
-            return response
+            self.project_id = response[0]['id']
+            print(f"✅ Found {len(response)} projects - Using project ID: {self.project_id}")
+            return True
         else:
-            self.log_test("Project Templates", False, f"Status: {status_code}, Response: {response}")
-            return []
+            print(f"❌ No projects found or API failed")
+            return False
 
-    def test_create_project(self) -> Optional[str]:
-        """Test project creation"""
-        print("\n➕ Testing Project Creation...")
+    def test_timeline_project_config(self):
+        """Test timeline project configuration endpoints"""
+        print("\n" + "="*60)
+        print("⚙️ TESTING TIMELINE PROJECT CONFIGURATION")
+        print("="*60)
         
-        project_data = {
-            "name": f"Test Project {datetime.now().strftime('%H%M%S')}",
-            "description": "Automated test project for Phase 2.2 testing",
-            "status": "planning",
-            "priority": "medium",
-            "visibility": "team",
-            "organization_id": self.organization_id,
-            "owner_id": self.user_id,
-            "team_members": [],
-            "category": "Testing",
-            "tags": ["test", "automation", "phase2.2"],
-            "budget": {
-                "total_budget": 50000.0,
-                "spent_amount": 0.0,
-                "currency": "USD"
-            },
-            "milestones": []
+        # Test get timeline project config (might not exist yet)
+        success, response = self.run_test(
+            "Get Timeline Project Config",
+            "GET",
+            f"api/timeline/project/{self.project_id}",
+            404  # Expected to not exist initially
+        )
+        
+        if not success and response == {}:
+            # Create timeline project configuration
+            config_data = {
+                "project_id": self.project_id,
+                "default_view_mode": "week",
+                "show_critical_path": True,
+                "work_hours_per_day": 8,
+                "work_days_per_week": 5,
+                "default_start_time": "09:00",
+                "default_end_time": "17:00"
+            }
+            
+            success, response = self.run_test(
+                "Create Timeline Project Config",
+                "POST",
+                "api/timeline/project",
+                200,
+                data=config_data
+            )
+            
+            if success:
+                print(f"✅ Timeline project configuration created")
+                return True
+        
+        return success
+
+    def test_timeline_tasks_api(self):
+        """Test timeline tasks API endpoints"""
+        print("\n" + "="*60)
+        print("⏰ TESTING TIMELINE TASKS API")
+        print("="*60)
+        
+        # Get existing timeline tasks
+        success, response = self.run_test(
+            "Get Timeline Tasks",
+            "GET",
+            f"api/timeline/tasks/{self.project_id}",
+            200
+        )
+        
+        if success:
+            print(f"✅ Found {len(response)} timeline tasks")
+            if len(response) > 0:
+                self.timeline_task_id = response[0]['id']
+                print(f"   Using task ID for testing: {self.timeline_task_id}")
+        
+        # Test create timeline task
+        task_data = {
+            "name": "Test Timeline Task",
+            "description": "Test task for timeline API testing",
+            "project_id": self.project_id,
+            "duration": 16,
+            "start_date": datetime.utcnow().isoformat(),
+            "assignee_ids": [],
+            "outline_level": 1,
+            "summary_task": False,
+            "milestone": False
         }
         
-        success, response, status_code = self.make_request('POST', 'projects/', project_data)
+        success, response = self.run_test(
+            "Create Timeline Task",
+            "POST",
+            "api/timeline/tasks",
+            200,
+            data=task_data
+        )
         
         if success and 'id' in response:
-            project_id = response['id']
-            self.log_test("Project Creation", True, f"Created project with ID: {project_id}")
-            return project_id
-        else:
-            self.log_test("Project Creation", False, f"Status: {status_code}, Response: {response}")
-            return None
+            created_task_id = response['id']
+            print(f"✅ Timeline task created with ID: {created_task_id}")
+            
+            # Test update timeline task
+            update_data = {
+                "percent_complete": 50.0,
+                "duration": 20
+            }
+            
+            success, response = self.run_test(
+                "Update Timeline Task",
+                "PUT",
+                f"api/timeline/tasks/{created_task_id}",
+                200,
+                data=update_data
+            )
+            
+            if success:
+                print(f"✅ Timeline task updated successfully")
+        
+        return success
 
-    def test_list_projects(self):
-        """Test project listing"""
-        print("\n📋 Testing Project List...")
+    def test_task_dependencies_api(self):
+        """Test task dependencies API endpoints"""
+        print("\n" + "="*60)
+        print("🔗 TESTING TASK DEPENDENCIES API")
+        print("="*60)
         
-        success, response, status_code = self.make_request('GET', 'projects/')
-        
-        if success and isinstance(response, list):
-            project_count = len(response)
-            self.log_test("Project List", True, f"Retrieved {project_count} projects")
-            return response
-        else:
-            self.log_test("Project List", False, f"Status: {status_code}, Response: {response}")
-            return []
-
-    def test_get_project(self, project_id: str):
-        """Test getting specific project"""
-        print(f"\n🔍 Testing Get Project {project_id}...")
-        
-        success, response, status_code = self.make_request('GET', f'projects/{project_id}')
-        
-        if success and 'id' in response:
-            self.log_test("Get Project", True, f"Retrieved project: {response.get('name', 'Unknown')}")
-            return response
-        else:
-            self.log_test("Get Project", False, f"Status: {status_code}, Response: {response}")
-            return None
-
-    def test_update_project(self, project_id: str):
-        """Test project update"""
-        print(f"\n✏️ Testing Update Project {project_id}...")
-        
-        update_data = {
-            "status": "active",
-            "progress_percentage": 25.0,
-            "description": "Updated project description for testing"
-        }
-        
-        success, response, status_code = self.make_request('PUT', f'projects/{project_id}', update_data)
-        
-        if success and response.get('status') == 'active':
-            self.log_test("Update Project", True, f"Updated project status to active")
-            return True
-        else:
-            self.log_test("Update Project", False, f"Status: {status_code}, Response: {response}")
-            return False
-
-    def test_project_dashboard(self, project_id: str):
-        """Test project dashboard metrics"""
-        print(f"\n📊 Testing Project Dashboard {project_id}...")
-        
-        success, response, status_code = self.make_request('GET', f'projects/{project_id}/dashboard')
-        
-        if success and 'project_id' in response:
-            metrics = response.get('progress', {})
-            budget = response.get('budget', {})
-            timeline = response.get('timeline', {})
-            self.log_test("Project Dashboard", True, f"Retrieved dashboard metrics - Progress: {metrics.get('overall_percentage', 0)}%, Budget: ${budget.get('total', 0)}")
-            return response
-        else:
-            self.log_test("Project Dashboard", False, f"Status: {status_code}, Response: {response}")
-            return None
-
-    def test_add_milestone(self, project_id: str):
-        """Test adding milestone to project"""
-        print(f"\n🎯 Testing Add Milestone to {project_id}...")
-        
-        milestone_data = {
-            "title": "Testing Milestone",
-            "description": "Milestone added during automated testing",
-            "due_date": "2024-03-15"
-        }
-        
-        success, response, status_code = self.make_request('POST', f'projects/{project_id}/milestones', milestone_data)
-        
-        if success and 'milestone' in response:
-            milestone_id = response['milestone'].get('id')
-            self.log_test("Add Milestone", True, f"Added milestone with ID: {milestone_id}")
-            return milestone_id
-        else:
-            self.log_test("Add Milestone", False, f"Status: {status_code}, Response: {response}")
-            return None
-
-    def test_update_milestone(self, project_id: str, milestone_id: str):
-        """Test updating milestone"""
-        print(f"\n🎯 Testing Update Milestone {milestone_id}...")
-        
-        update_data = {
-            "completed": True,
-            "description": "Updated milestone description"
-        }
-        
-        success, response, status_code = self.make_request('PUT', f'projects/{project_id}/milestones/{milestone_id}', update_data)
+        # Get existing dependencies
+        success, response = self.run_test(
+            "Get Task Dependencies",
+            "GET",
+            f"api/timeline/dependencies/{self.project_id}",
+            200
+        )
         
         if success:
-            self.log_test("Update Milestone", True, "Milestone updated successfully")
-            return True
-        else:
-            self.log_test("Update Milestone", False, f"Status: {status_code}, Response: {response}")
-            return False
-
-    def test_project_filters(self):
-        """Test project filtering"""
-        print("\n🔍 Testing Project Filters...")
+            print(f"✅ Found {len(response)} task dependencies")
+            if len(response) > 0:
+                self.dependency_id = response[0]['id']
         
-        # Test status filter
-        success, response, status_code = self.make_request('GET', 'projects/', params={'status_filter': 'active'})
+        return success
+
+    def test_gantt_chart_data_api(self):
+        """Test the main Gantt chart data API endpoint"""
+        print("\n" + "="*60)
+        print("📊 TESTING GANTT CHART DATA API")
+        print("="*60)
+        
+        success, response = self.run_test(
+            "Get Gantt Chart Data",
+            "GET",
+            f"api/timeline/gantt/{self.project_id}",
+            200
+        )
+        
         if success:
-            active_count = len(response) if isinstance(response, list) else 0
-            self.log_test("Status Filter", True, f"Found {active_count} active projects")
-        else:
-            self.log_test("Status Filter", False, f"Status: {status_code}")
-
-        # Test priority filter
-        success, response, status_code = self.make_request('GET', 'projects/', params={'priority_filter': 'high'})
-        if success:
-            high_priority_count = len(response) if isinstance(response, list) else 0
-            self.log_test("Priority Filter", True, f"Found {high_priority_count} high priority projects")
-        else:
-            self.log_test("Priority Filter", False, f"Status: {status_code}")
-
-    def test_archive_project(self, project_id: str):
-        """Test project archival (soft delete)"""
-        print(f"\n🗄️ Testing Archive Project {project_id}...")
-        
-        success, response, status_code = self.make_request('DELETE', f'projects/{project_id}')
-        
-        if success or status_code == 204:
-            self.log_test("Archive Project", True, "Project archived successfully")
+            print(f"✅ Gantt chart data retrieved successfully")
+            print(f"   Project ID: {response.get('project_id', 'N/A')}")
+            print(f"   Tasks: {len(response.get('tasks', []))}")
+            print(f"   Dependencies: {len(response.get('dependencies', []))}")
+            print(f"   Critical Path: {len(response.get('critical_path', []))}")
+            
+            # Validate data structure
+            required_fields = ['project_id', 'tasks', 'dependencies', 'critical_path']
+            missing_fields = [field for field in required_fields if field not in response]
+            
+            if missing_fields:
+                print(f"⚠️ Missing required fields: {missing_fields}")
+                return False
+            
             return True
-        else:
-            self.log_test("Archive Project", False, f"Status: {status_code}, Response: {response}")
-            return False
+        
+        return False
 
-    def run_all_tests(self):
-        """Run all project management tests"""
-        print("🚀 Starting Project Management API Tests")
-        print("=" * 50)
+    def test_timeline_stats_api(self):
+        """Test timeline statistics API endpoint"""
+        print("\n" + "="*60)
+        print("📈 TESTING TIMELINE STATISTICS API")
+        print("="*60)
         
-        # Test authentication first
-        if not self.test_authentication():
-            print("❌ Authentication failed - stopping tests")
-            return self.generate_report()
+        success, response = self.run_test(
+            "Get Timeline Statistics",
+            "GET",
+            f"api/timeline/stats/{self.project_id}",
+            200
+        )
         
-        # Test project templates
-        templates = self.test_project_templates()
-        
-        # Test project creation
-        project_id = self.test_create_project()
-        
-        # Test project listing
-        projects = self.test_list_projects()
-        
-        if project_id:
-            # Test getting specific project
-            project = self.test_get_project(project_id)
+        if success:
+            print(f"✅ Timeline statistics retrieved successfully")
+            stats_fields = ['total_tasks', 'completed_tasks', 'in_progress_tasks', 
+                          'project_duration_days', 'total_work_hours', 'project_health_score']
             
-            # Test project update
-            self.test_update_project(project_id)
+            for field in stats_fields:
+                if field in response:
+                    print(f"   {field}: {response[field]}")
             
-            # Test project dashboard
-            self.test_project_dashboard(project_id)
-            
-            # Test milestone operations
-            milestone_id = self.test_add_milestone(project_id)
-            if milestone_id:
-                self.test_update_milestone(project_id, milestone_id)
-            
-            # Test project filters
-            self.test_project_filters()
-            
-            # Test project archival (last test)
-            self.test_archive_project(project_id)
+            return True
         
-        return self.generate_report()
+        return False
 
-    def generate_report(self):
-        """Generate test report"""
-        print("\n" + "=" * 50)
-        print("📊 TEST SUMMARY")
-        print("=" * 50)
-        print(f"Total Tests: {self.tests_run}")
-        print(f"Passed: {self.tests_passed}")
-        print(f"Failed: {self.tests_run - self.tests_passed}")
-        print(f"Success Rate: {(self.tests_passed / self.tests_run * 100):.1f}%" if self.tests_run > 0 else "0%")
+    def test_timeline_calendars_api(self):
+        """Test timeline calendars API endpoints"""
+        print("\n" + "="*60)
+        print("📅 TESTING TIMELINE CALENDARS API")
+        print("="*60)
         
-        # Show failed tests
-        failed_tests = [test for test in self.test_results if not test['success']]
+        success, response = self.run_test(
+            "Get Timeline Calendars",
+            "GET",
+            f"api/timeline/calendars/{self.project_id}",
+            200
+        )
+        
+        if success:
+            print(f"✅ Found {len(response)} timeline calendars")
+            return True
+        
+        return False
+
+    def test_timeline_baselines_api(self):
+        """Test timeline baselines API endpoints"""
+        print("\n" + "="*60)
+        print("📊 TESTING TIMELINE BASELINES API")
+        print("="*60)
+        
+        success, response = self.run_test(
+            "Get Timeline Baselines",
+            "GET",
+            f"api/timeline/baselines/{self.project_id}",
+            200
+        )
+        
+        if success:
+            print(f"✅ Found {len(response)} timeline baselines")
+            return True
+        
+        return False
+
+    def run_comprehensive_timeline_tests(self):
+        """Run all timeline API tests"""
+        print("🚀 STARTING COMPREHENSIVE TIMELINE API TESTING")
+        print("="*80)
+        
+        start_time = datetime.utcnow()
+        
+        # Test sequence
+        test_sequence = [
+            ("Authentication", self.test_authentication),
+            ("Projects API", self.test_projects_api),
+            ("Timeline Project Configuration", self.test_timeline_project_config),
+            ("Timeline Tasks API", self.test_timeline_tasks_api),
+            ("Task Dependencies API", self.test_task_dependencies_api),
+            ("Gantt Chart Data API", self.test_gantt_chart_data_api),
+            ("Timeline Statistics API", self.test_timeline_stats_api),
+            ("Timeline Calendars API", self.test_timeline_calendars_api),
+            ("Timeline Baselines API", self.test_timeline_baselines_api)
+        ]
+        
+        passed_tests = []
+        failed_tests = []
+        
+        for test_name, test_function in test_sequence:
+            print(f"\n🔄 Running {test_name}...")
+            try:
+                if test_function():
+                    passed_tests.append(test_name)
+                    print(f"✅ {test_name} - PASSED")
+                else:
+                    failed_tests.append(test_name)
+                    print(f"❌ {test_name} - FAILED")
+            except Exception as e:
+                failed_tests.append(test_name)
+                print(f"❌ {test_name} - ERROR: {str(e)}")
+        
+        # Final results
+        end_time = datetime.utcnow()
+        duration = (end_time - start_time).total_seconds()
+        
+        print("\n" + "="*80)
+        print("📊 TIMELINE API TESTING RESULTS")
+        print("="*80)
+        print(f"⏱️ Total time: {duration:.2f} seconds")
+        print(f"🧪 Tests run: {self.tests_run}")
+        print(f"✅ Tests passed: {self.tests_passed}")
+        print(f"❌ Tests failed: {self.tests_run - self.tests_passed}")
+        print(f"📈 Success rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        print(f"\n✅ Passed test categories ({len(passed_tests)}):")
+        for test in passed_tests:
+            print(f"   • {test}")
+        
         if failed_tests:
-            print("\n❌ FAILED TESTS:")
+            print(f"\n❌ Failed test categories ({len(failed_tests)}):")
             for test in failed_tests:
-                print(f"  - {test['test_name']}: {test['details']}")
+                print(f"   • {test}")
         
-        return {
-            "total_tests": self.tests_run,
-            "passed_tests": self.tests_passed,
-            "failed_tests": self.tests_run - self.tests_passed,
-            "success_rate": (self.tests_passed / self.tests_run * 100) if self.tests_run > 0 else 0,
-            "test_results": self.test_results,
-            "failed_tests_details": failed_tests
-        }
+        print("="*80)
+        
+        return len(failed_tests) == 0
 
 def main():
-    """Main test execution"""
-    tester = ProjectAPITester()
-    report = tester.run_all_tests()
+    """Main testing function"""
+    print("🎯 Phase 6.1 Core Gantt Chart Engine - Backend API Testing")
+    print("="*80)
     
-    # Return appropriate exit code
-    return 0 if report['failed_tests'] == 0 else 1
+    tester = TimelineAPITester()
+    success = tester.run_comprehensive_timeline_tests()
+    
+    return 0 if success else 1
 
 if __name__ == "__main__":
     sys.exit(main())
