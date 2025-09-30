@@ -36,27 +36,27 @@ export const API_ENDPOINTS = {
     logout: `${API_URL}/api/auth/logout`,
   },
   organizations: {
-    list: `${API_URL}/api/organizations/`,
-    create: `${API_URL}/api/organizations/`,
+    list: `${API_URL}/api/organizations`,
+    create: `${API_URL}/api/organizations`,
     details: (id: string) => `${API_URL}/api/organizations/${id}`,
   },
   teams: {
-    list: `${API_URL}/api/teams/`,
-    create: `${API_URL}/api/teams/`,
+    list: `${API_URL}/api/teams`,
+    create: `${API_URL}/api/teams`,
     details: (id: string) => `${API_URL}/api/teams/${id}`,
   },
   users: {
-    list: `${API_URL}/api/users/`,
+    list: `${API_URL}/api/users`,
     details: (id: string) => `${API_URL}/api/users/${id}`,
   },
   projects: {
-    list: `${API_URL}/api/projects/`,
-    create: `${API_URL}/api/projects/`,
+    list: `${API_URL}/api/projects`,
+    create: `${API_URL}/api/projects`,
     details: (id: string) => `${API_URL}/api/projects/${id}`,
   },
   tasks: {
-    list: `${API_URL}/api/tasks/`,
-    create: `${API_URL}/api/tasks/`,
+    list: `${API_URL}/api/tasks`,
+    create: `${API_URL}/api/tasks`,
     details: (id: string) => `${API_URL}/api/tasks/${id}`,
   },
   analytics: {
