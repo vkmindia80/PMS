@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Calendar, Clock, Users, Layers, Settings, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { API_ENDPOINTS } from '../utils/config';
 
 // Timeline interfaces
 interface TimelineTask {
