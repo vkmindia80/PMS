@@ -164,7 +164,48 @@ const GanttChart: React.FC<{
     }
   };
 
-  const drawTaskBar = (ctx: CanvasRenderingContext2D, task: TimelineTask, index: number, viewMode: string) => {
+  const drawGridLines = (ctx: CanvasRenderingContext2D, viewMode: string) => {
+    const taskNameWidth = 250;
+    const taskHeight = 50;
+    const headerHeight = 80;
+    
+    ctx.strokeStyle = '#f3f4f6';
+    ctx.lineWidth = 1;
+    
+    // Horizontal lines for task rows
+    for (let i = 0; i <= data.tasks.length; i++) {
+      const y = headerHeight + i * taskHeight;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(ctx.canvas.width, y);
+      ctx.stroke();
+    }
+  };
+
+  const drawCurrentDateLine = (ctx: CanvasRenderingContext2D, viewMode: string) => {
+    const taskNameWidth = 250;
+    const headerHeight = 80;
+    const currentDate = new Date();
+    
+    // Calculate position of current date line
+    const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
+    const x = taskNameWidth + (currentDate.getDate() - 1) * (timeUnit / 30); // Simplified positioning
+    
+    if (x > taskNameWidth && x < ctx.canvas.width) {
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      
+      ctx.beginPath();
+      ctx.moveTo(x, headerHeight);
+      ctx.lineTo(x, ctx.canvas.height);
+      ctx.stroke();
+      
+      // Current date indicator
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(x - 1, headerHeight - 10, 2, 10);
+    }
+  };
     const y = 80 + index * 40;
     const taskNameWidth = 180;
     
