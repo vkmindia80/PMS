@@ -43,7 +43,8 @@ from models import (
     File, FileCreate, FileUpdate, FileInDB,
     Notification, NotificationCreate, NotificationUpdate, NotificationInDB,
     CustomRole, CustomRoleCreate, CustomRoleUpdate, CustomRoleInDB,
-    Permission, PermissionCategory, RoleType
+    Permission, PermissionCategory, RoleType,
+    TimelineTask, TimelineProject, TaskDependency
 )
 
 # Load environment variables
