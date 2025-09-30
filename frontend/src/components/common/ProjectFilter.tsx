@@ -283,7 +283,7 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+        <div className="absolute z-50 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
           {/* Search */}
           <div className="sticky top-0 z-10 bg-white px-3 py-2 border-b border-gray-200">
             <div className="relative">
@@ -291,17 +291,18 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
               <input
                 type="text"
                 placeholder="Search projects..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => debouncedSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500 text-sm"
                 data-testid="project-search-input"
+                autoFocus
               />
             </div>
           </div>
 
           {/* Loading */}
           {loading && (
-            <div className="px-3 py-2 text-sm text-gray-500 text-center">
+            <div className="px-3 py-2 text-sm text-gray-500 text-center flex items-center justify-center">
+              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
               Loading projects...
             </div>
           )}
@@ -311,13 +312,31 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
             <button
               type="button"
               onClick={() => handleProjectSelect('all')}
-              className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
-                selectedProject === 'all' || selectedProject === '' ? 'bg-primary-50 text-primary-600' : 'text-gray-900'
+              className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition-colors ${
+                ((!Array.isArray(selectedProject) && (selectedProject === 'all' || selectedProject === '')) ||
+                 (Array.isArray(selectedProject) && (selectedProject.length === 0 || selectedProject[0] === 'all')))
+                  ? 'bg-primary-50 text-primary-600' 
+                  : 'text-gray-900'
               }`}
               data-testid="project-all-option"
             >
               <div className="flex items-center">
-                <div className="flex-shrink-0 w-2 h-2 rounded-full bg-gray-400 mr-3"></div>
+                <div className="flex items-center justify-center w-4 h-4 mr-3">
+                  {multiSelect && (
+                    <div className={`w-3 h-3 border rounded ${
+                      (Array.isArray(selectedProject) && (selectedProject.length === 0 || selectedProject[0] === 'all'))
+                        ? 'bg-primary-600 border-primary-600'
+                        : 'border-gray-300'
+                    }`}>
+                      {(Array.isArray(selectedProject) && (selectedProject.length === 0 || selectedProject[0] === 'all')) && (
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </div>
+                  )}
+                  {!multiSelect && <div className="flex-shrink-0 w-2 h-2 rounded-full bg-gray-400"></div>}
+                </div>
                 <div>
                   <div className="font-medium">All Projects</div>
                   <div className="text-xs text-gray-500">Show items from all projects</div>
@@ -333,58 +352,103 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
                 key={project.id}
                 type="button"
                 onClick={() => handleProjectSelect(project.id)}
-                className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none ${
-                  selectedProject === project.id ? 'bg-primary-50 text-primary-600' : 'text-gray-900'
+                className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition-colors ${
+                  isProjectSelected(project.id) ? 'bg-primary-50 text-primary-600' : 'text-gray-900'
                 }`}
                 data-testid={`project-option-${project.id}`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center flex-1 min-w-0">
-                    <div className={`flex-shrink-0 w-2 h-2 rounded-full mr-3 ${getPriorityColor(project.priority).replace('text-', 'bg-')}`}></div>
+                    {multiSelect && (
+                      <div className={`w-3 h-3 border rounded mr-3 flex-shrink-0 ${
+                        isProjectSelected(project.id)
+                          ? 'bg-primary-600 border-primary-600'
+                          : 'border-gray-300'
+                      }`}>
+                        {isProjectSelected(project.id) && (
+                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        )}
+                      </div>
+                    )}
+                    {!multiSelect && (
+                      <div className={`flex-shrink-0 w-2 h-2 rounded-full mr-3 ${
+                        getPriorityColor(project.priority).replace('text-', 'bg-').replace('-600', '-500')
+                      }`}></div>
+                    )}
                     <div className="flex-1 min-w-0">
                       <div className="font-medium truncate">{project.name}</div>
                       {project.description && (
                         <div className="text-xs text-gray-500 truncate">{project.description}</div>
                       )}
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className={`inline-flex px-1.5 py-0.5 text-xs font-semibold rounded ${getStatusColor(project.status)}`}>
+                          {project.status.replace('_', ' ')}
+                        </span>
+                        <span className={`text-xs font-medium ${getPriorityColor(project.priority)}`}>
+                          {project.priority.toUpperCase()}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {project.progress_percentage}% • {project.team_member_count} members
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-shrink-0 ml-2">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(project.status)}`}>
-                      {project.status.replace('_', ' ')}
-                    </span>
                   </div>
                 </div>
               </button>
             ))
           ) : !loading && searchTerm ? (
             <div className="px-3 py-2 text-sm text-gray-500 text-center">
-              No projects found matching "{searchTerm}"
+              <Search className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <p>No projects found matching "{searchTerm}"</p>
+              <button
+                onClick={() => debouncedSearch('')}
+                className="mt-1 text-primary-600 hover:text-primary-700 text-xs"
+              >
+                Clear search
+              </button>
             </div>
           ) : !loading ? (
             <div className="px-3 py-2 text-sm text-gray-500 text-center">
-              No projects available
+              <Filter className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <p>No projects available</p>
+              <button
+                onClick={fetchProjects}
+                className="mt-1 text-primary-600 hover:text-primary-700 text-xs flex items-center justify-center mx-auto"
+              >
+                <RefreshCw className="w-3 h-3 mr-1" />
+                Refresh
+              </button>
             </div>
           ) : null}
+
+          {/* Multi-select summary */}
+          {multiSelect && Array.isArray(selectedProject) && selectedProject.length > 1 && (
+            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-3 py-2">
+              <div className="text-xs text-gray-600 text-center">
+                {selectedProject.length} projects selected
+                <button
+                  onClick={handleClearSelection}
+                  className="ml-2 text-primary-600 hover:text-primary-700"
+                >
+                  Clear all
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Close button for mobile */}
           <div className="sticky bottom-0 bg-white border-t border-gray-200 px-3 py-2 sm:hidden">
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="w-full px-3 py-2 text-sm text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+              className="w-full px-3 py-2 text-sm text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
             >
               Close
             </button>
           </div>
         </div>
-      )}
-
-      {/* Overlay for mobile */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-0 bg-transparent"
-          onClick={() => setIsOpen(false)}
-        />
       )}
     </div>
   )
