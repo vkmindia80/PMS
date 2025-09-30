@@ -79,6 +79,7 @@ const TasksPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [priorityFilter, setPriorityFilter] = useState<string>('all')
   const [assigneeFilter, setAssigneeFilter] = useState<string>('all')
+  const [projectFilter, setProjectFilter] = useState<string>('all')
   const [showFilters, setShowFilters] = useState(false)
 
   // Modal states
