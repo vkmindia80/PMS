@@ -422,6 +422,20 @@ async def get_gantt_chart_data(
         baselines_cursor = db.timeline_baselines.find({"project_id": project_id})
         baselines = await baselines_cursor.to_list(length=None)
         
+        # Convert MongoDB documents to proper format by removing _id fields
+        def clean_mongo_doc(doc):
+            if doc and "_id" in doc:
+                doc.pop("_id")
+            return doc
+        
+        # Clean all documents
+        tasks = [clean_mongo_doc(task) for task in tasks]
+        dependencies = [clean_mongo_doc(dep) for dep in dependencies]
+        calendars = [clean_mongo_doc(cal) for cal in calendars]
+        baselines = [clean_mongo_doc(baseline) for baseline in baselines]
+        if timeline_config:
+            timeline_config = clean_mongo_doc(timeline_config)
+        
         # TODO: Calculate critical path (placeholder for now)
         critical_path = []
         
