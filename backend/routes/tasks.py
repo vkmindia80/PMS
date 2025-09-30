@@ -682,9 +682,16 @@ async def get_task_analytics(
                 completed_tasks += 1
             
             if task.get("due_date"):
-                due_date = datetime.fromisoformat(task["due_date"].replace("Z", "+00:00"))
-                if due_date < datetime.utcnow() and task.get("status") not in ["completed", "cancelled"]:
-                    overdue_tasks += 1
+                try:
+                    due_date_str = task["due_date"]
+                    if isinstance(due_date_str, str):
+                        due_date = datetime.fromisoformat(due_date_str.replace("Z", "+00:00"))
+                        if due_date < datetime.utcnow() and task.get("status") not in ["completed", "cancelled"]:
+                            overdue_tasks += 1
+                except Exception as e:
+                    # Skip this task's due date processing if there's an error
+                    print(f"Error processing due_date for task {task.get('id', 'unknown')}: {e}")
+                    continue
         
         # Calculate rates
         completion_rate = (completed_tasks / total_tasks * 100) if total_tasks > 0 else 0
