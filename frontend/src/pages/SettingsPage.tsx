@@ -143,7 +143,7 @@ const SettingsPage: React.FC = () => {
 
     setLoading(true)
     try {
-      const response = await fetch(`${getApiUrl()}/api/auth/change-password`, {
+      const response = await fetch(`${API_URL}/api/auth/change-password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
