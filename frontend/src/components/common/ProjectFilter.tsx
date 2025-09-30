@@ -1,23 +1,33 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
-import { Search, Filter, X, ChevronDown } from 'lucide-react'
-import { API_URL } from '../../utils/config'
+import { Search, Filter, X, ChevronDown, AlertCircle, RefreshCw } from 'lucide-react'
+import { API_ENDPOINTS } from '../../utils/config'
+import { debounce } from 'lodash-es'
 
 interface Project {
   id: string
   name: string
-  status: string
-  priority: string
+  status: 'planning' | 'active' | 'on_hold' | 'completed' | 'cancelled' | 'archived'
+  priority: 'low' | 'medium' | 'high' | 'critical'
   description?: string
+  progress_percentage: number
+  due_date?: string | null
+  owner_id: string
+  task_count: number
+  team_member_count: number
 }
 
 interface ProjectFilterProps {
-  selectedProject?: string
-  onProjectChange: (projectId: string) => void
+  selectedProject?: string | string[]
+  onProjectChange: (projectId: string | string[]) => void
   showAllOption?: boolean
   placeholder?: string
   className?: string
   label?: string
+  multiSelect?: boolean
+  disabled?: boolean
+  error?: string | null
+  onError?: (error: string | null) => void
 }
 
 const ProjectFilter: React.FC<ProjectFilterProps> = ({
@@ -26,18 +36,36 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
   showAllOption = true,
   placeholder = 'Select project...',
   className = '',
-  label = 'Filter by Project'
+  label = 'Filter by Project',
+  multiSelect = false,
+  disabled = false,
+  error: externalError = null,
+  onError
 }) => {
   const { tokens } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(externalError)
+
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce((term: string) => {
+      setSearchTerm(term)
+    }, 300),
+    []
+  )
 
   useEffect(() => {
-    fetchProjects()
-  }, [])
+    if (tokens?.access_token) {
+      fetchProjects()
+    }
+  }, [tokens?.access_token])
+
+  useEffect(() => {
+    setError(externalError)
+  }, [externalError])
 
   const fetchProjects = async () => {
     if (!tokens?.access_token) return
@@ -45,8 +73,9 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
     try {
       setLoading(true)
       setError(null)
+      onError?.(null)
       
-      const response = await fetch(`${API_URL}/api/projects`, {
+      const response = await fetch(API_ENDPOINTS.projects.list, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json',
@@ -57,25 +86,71 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
         const data = await response.json()
         setProjects(data)
       } else {
-        throw new Error('Failed to fetch projects')
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || `HTTP ${response.status}: Failed to fetch projects`)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load projects')
+      const errorMsg = err instanceof Error ? err.message : 'Failed to load projects'
+      setError(errorMsg)
+      onError?.(errorMsg)
       console.error('Error fetching projects:', err)
     } finally {
       setLoading(false)
     }
   }
 
-  const filteredProjects = projects.filter(project =>
-    project.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Memoized filtered projects for performance
+  const filteredProjects = useMemo(() => {
+    return projects.filter(project =>
+      project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [projects, searchTerm])
 
-  const selectedProjectName = projects.find(p => p.id === selectedProject)?.name || placeholder
+  // Memoized selected project display
+  const selectedProjectDisplay = useMemo(() => {
+    if (multiSelect && Array.isArray(selectedProject)) {
+      if (selectedProject.length === 0 || (selectedProject.length === 1 && selectedProject[0] === 'all')) {
+        return placeholder
+      }
+      if (selectedProject.length === 1) {
+        const project = projects.find(p => p.id === selectedProject[0])
+        return project?.name || placeholder
+      }
+      return `${selectedProject.length} projects selected`
+    } else {
+      const projectId = Array.isArray(selectedProject) ? selectedProject[0] : selectedProject
+      if (!projectId || projectId === 'all') return placeholder
+      const project = projects.find(p => p.id === projectId)
+      return project?.name || placeholder
+    }
+  }, [selectedProject, projects, placeholder, multiSelect])
 
   const handleProjectSelect = (projectId: string) => {
-    onProjectChange(projectId)
-    setIsOpen(false)
+    if (multiSelect && Array.isArray(selectedProject)) {
+      if (projectId === 'all') {
+        onProjectChange(['all'])
+      } else {
+        const currentSelection = selectedProject.filter(id => id !== 'all')
+        const isSelected = currentSelection.includes(projectId)
+        
+        if (isSelected) {
+          const newSelection = currentSelection.filter(id => id !== projectId)
+          onProjectChange(newSelection.length === 0 ? ['all'] : newSelection)
+        } else {
+          onProjectChange([...currentSelection, projectId])
+        }
+      }
+    } else {
+      onProjectChange(projectId)
+      setIsOpen(false)
+      setSearchTerm('')
+    }
+  }
+
+  const handleClearSelection = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onProjectChange(multiSelect ? ['all'] : 'all')
     setSearchTerm('')
   }
 
@@ -99,6 +174,13 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({
       critical: 'text-red-600'
     }
     return colors[priority as keyof typeof colors] || 'text-gray-600'
+  }
+
+  const isProjectSelected = (projectId: string) => {
+    if (multiSelect && Array.isArray(selectedProject)) {
+      return selectedProject.includes(projectId)
+    }
+    return selectedProject === projectId
   }
 
   if (error) {
