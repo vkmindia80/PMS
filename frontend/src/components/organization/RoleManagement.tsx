@@ -56,19 +56,6 @@ const RoleManagement: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
 
-  const getApiUrl = () => {
-    const isPreview = window.location.hostname.includes('emergentagent.com')
-    const isProd = import.meta.env.PROD || isPreview
-    
-    if (isProd || isPreview) {
-      return import.meta.env.VITE_PROD_API_URL || 'https://enterprise-guide-5.preview.emergentagent.com'
-    }
-    
-    return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
-  }
-
-  const API_URL = getApiUrl()
-
   useEffect(() => {
     fetchUsers()
     fetchRoleDistribution()
