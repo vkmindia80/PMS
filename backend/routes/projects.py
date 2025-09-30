@@ -599,7 +599,7 @@ async def update_milestone(
             detail=f"Failed to update milestone: {str(e)}"
         )
 
-@router.get("/templates/", response_model=List[Dict[str, Any]])
+@router.get("/templates", response_model=List[Dict[str, Any]])
 async def get_project_templates(
     current_user: User = Depends(get_current_user)
 ):
