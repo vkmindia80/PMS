@@ -54,7 +54,7 @@
 - **Advanced Dashboards**: ✅ AI/ML Dashboard, Advanced AI Dashboard, Resource Management with live data
 - **Backend AI/ML APIs**: ✅ 25+ endpoints for models, predictions, training, and integrations
 - **Client-Side ML**: ✅ Browser-based neural networks with GPU acceleration ready
-- **External Access**: ✅ Production URL with modern sidebar UI at https://naughty-wright.preview.emergentagent.com
+- **External Access**: ✅ Production URL with modern sidebar UI at https://server-filters.preview.emergentagent.com
 - **Enterprise Readiness**: ✅ Complete enterprise platform with modern UI/UX ready for immediate deployment
 - **🆕 Timeline Engine**: 🚧 Core Gantt Chart Engine development starting with professional visualization
 
