@@ -65,18 +65,6 @@ const RoleManagementPage: React.FC = () => {
 
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
-  // Get API base URL - use proxy for local development
-  const getApiUrl = () => {
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-      if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return '';  // Use Vite proxy for relative URLs
-      }
-      return `${window.location.protocol}//${hostname}`;
-    }
-    return 'http://localhost:8001';
-  };
-
   // Fetch data
   const fetchRoles = async () => {
     try {
