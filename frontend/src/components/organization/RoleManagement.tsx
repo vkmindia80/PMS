@@ -5,6 +5,7 @@ import {
   ChevronDown, Check, X, AlertTriangle
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { API_URL } from '../../utils/config'
 
 interface User {
   id: string
