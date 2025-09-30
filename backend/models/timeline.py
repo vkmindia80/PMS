@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from enum import Enum
-from .base import BaseMongoModel
+from .base import BaseDBModel
 
 
 class DependencyType(str, Enum):
