@@ -5,6 +5,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Shield, Eye, Lock, Users, FileCheck, Activity, TrendingUp, RefreshCw } from 'lucide-react';
+import GlobalProjectFilter from '../components/common/GlobalProjectFilter';
+import { useProjectFilterContext } from '../contexts/ProjectFilterContext';
 
 interface SecurityMetrics {
   security_events: {
