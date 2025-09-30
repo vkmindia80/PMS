@@ -887,7 +887,7 @@ The Enterprise Portfolio Management system is now a **comprehensive, production-
    - Timeline permission system with role-based access
    - Performance optimization for 1000+ tasks
 
-### **Phase 6.2: Advanced Scheduling - NEXT**
+### **Phase 6.3: Advanced Scheduling Algorithms - NEXT**
 **Planned Development** (12 credits, 4-6 weeks):
 
 1. **Critical Path Analysis Implementation**
