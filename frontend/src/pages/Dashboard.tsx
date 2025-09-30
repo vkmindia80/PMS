@@ -41,6 +41,45 @@ const Dashboard: React.FC = () => {
       // Build query parameters for project filtering
       const selectedProjectIds = getSelectedProjectIds()
       const projectParam = selectedProjectIds.length > 0 
+        ? `?project_id=${selectedProjectIds.join(',')}` 
+        : ''
+
+      // Use the new enhanced dashboard metrics endpoint
+      const metricsResponse = await fetch(`${API_URL}/api/analytics/dashboard/metrics${projectParam}`, { headers })
+      
+      if (metricsResponse.ok) {
+        const metricsData = await metricsResponse.json()
+        setDashboardData({
+          projects: metricsData.projects,
+          teams: metricsData.teams,
+          tasks: metricsData.tasks
+        })
+      } else {
+        console.error('Failed to fetch dashboard metrics:', metricsResponse.status, metricsResponse.statusText)
+        // Fallback to individual API calls if needed
+        await fetchDashboardDataFallback(API_URL, headers, selectedProjectIds)
+      }
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error)
+      // Fallback to individual API calls
+      const authTokensStr = localStorage.getItem('auth_tokens')
+      const headers: HeadersInit = { 'Content-Type': 'application/json' }
+      if (authTokensStr) {
+        try {
+          const authTokens = JSON.parse(authTokensStr)
+          headers['Authorization'] = `Bearer ${authTokens.access_token}`
+        } catch (e) {
+          console.error('Failed to parse auth tokens:', e)
+        }
+      }
+      const selectedProjectIds = getSelectedProjectIds()
+      await fetchDashboardDataFallback(API_URL, headers, selectedProjectIds)
+    }
+  }
+
+  const fetchDashboardDataFallback = async (API_URL: string, headers: HeadersInit, selectedProjectIds: string[]) => {
+    try {
+      const projectParam = selectedProjectIds.length > 0 
         ? `project_id=${selectedProjectIds.join(',')}` 
         : ''
 
@@ -90,7 +129,7 @@ const Dashboard: React.FC = () => {
         tasks: tasksCount
       })
     } catch (error) {
-      console.error('Failed to fetch dashboard data:', error)
+      console.error('Failed to fetch dashboard data (fallback):', error)
     }
   }
 
