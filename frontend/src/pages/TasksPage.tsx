@@ -120,7 +120,22 @@ const TasksPage: React.FC = () => {
     setError(null)
     
     try {
-      const response = await fetch(`${API_BASE}/api/tasks/`, {
+      // Build query parameters including project filtering
+      const params = new URLSearchParams()
+      
+      // Add project filtering from global context
+      const selectedProjectIds = getSelectedProjectIds()
+      if (selectedProjectIds.length > 0) {
+        // Backend expects project_id parameter for filtering
+        selectedProjectIds.forEach(projectId => {
+          params.append('project_id', projectId)
+        })
+      }
+      
+      const queryString = params.toString()
+      const url = `${API_BASE}/api/tasks/${queryString ? `?${queryString}` : ''}`
+      
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json'
