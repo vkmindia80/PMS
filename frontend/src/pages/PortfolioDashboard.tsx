@@ -378,7 +378,7 @@ const PortfolioDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchAnalyticsData()
-  }, [tokens?.access_token])
+  }, [tokens?.access_token, selectedProject])
 
   if (loading) {
     return (
