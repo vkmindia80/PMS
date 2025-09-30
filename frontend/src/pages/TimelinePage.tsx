@@ -440,6 +440,12 @@ export const TimelinePage: React.FC = () => {
     }
   }, [fetchGanttData]);
 
+  // Fetch projects on component mount
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
+  // Fetch gantt data when selectedProjectId changes
   useEffect(() => {
     fetchGanttData();
   }, [fetchGanttData]);
