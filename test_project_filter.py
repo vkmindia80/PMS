@@ -161,7 +161,7 @@ def main():
         kanban_tasks = test_kanban_api(token, project_ids[:2])
         analytics_tasks = test_analytics_api(token, project_ids[:2])
         
-        print(f"\n📊 Filter Validation:")
+        print("\n📊 Filter Validation:")
         print(f"   Total tasks (no filter): {total_tasks}")
         print(f"   Single project tasks: {single_project_tasks}")
         print(f"   Multi-project tasks: {multi_project_tasks}")
