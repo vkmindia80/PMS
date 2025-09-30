@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
       }
 
       // Fetch projects count
-      const projectsResponse = await fetch(`${API_URL}/api/projects/`, { headers })
+      const projectsResponse = await fetch(`${API_URL}/api/projects`, { headers })
       let projectsCount = 0
       if (projectsResponse.ok) {
         const projectsData = await projectsResponse.json()
