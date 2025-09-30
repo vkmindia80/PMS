@@ -162,7 +162,19 @@ const TasksPage: React.FC = () => {
     if (!tokens?.access_token) return
     
     try {
-      const response = await fetch(`${API_BASE}/api/tasks/kanban/board?view_by=${kanbanView}`, {
+      // Build query parameters including project filtering
+      const params = new URLSearchParams()
+      params.append('view_by', kanbanView)
+      
+      // Add project filtering from global context
+      const selectedProjectIds = getSelectedProjectIds()
+      if (selectedProjectIds.length > 0) {
+        selectedProjectIds.forEach(projectId => {
+          params.append('project_id', projectId)
+        })
+      }
+      
+      const response = await fetch(`${API_BASE}/api/tasks/kanban/board?${params.toString()}`, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json'
