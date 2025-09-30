@@ -49,4 +49,13 @@ __all__ = [
     "Permission", "PermissionCategory", "CustomRole", "CustomRoleCreate", "CustomRoleUpdate", "CustomRoleInDB",
     "RoleTemplate", "RoleAssignment", "RoleAssignmentCreate", "BulkRoleAssignment",
     "UserPermissions", "PermissionValidation", "RoleType",
+    # Timeline models
+    "DependencyType", "LagFormat", "ConstraintType", "TimelineViewMode",
+    "TaskDependency", "TaskDependencyCreate", "TaskDependencyUpdate", "TaskDependencyInDB",
+    "TimelineTask", "TimelineTaskCreate", "TimelineTaskUpdate", "TimelineTaskInDB",
+    "TimelineProject", "TimelineProjectCreate", "TimelineProjectUpdate", "TimelineProjectInDB",
+    "WorkingTimeSlot", "DayWorkingTime", "TimelineCalendar", "TimelineCalendarCreate",
+    "TimelineCalendarUpdate", "TimelineCalendarInDB",
+    "TimelineBaseline", "TimelineBaselineCreate", "TimelineBaselineUpdate", "TimelineBaselineInDB",
+    "GanttChartData", "TimelineStats",
 ]
