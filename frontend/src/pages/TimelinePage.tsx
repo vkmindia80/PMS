@@ -570,7 +570,7 @@ export const TimelinePage: React.FC = () => {
         return;
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/timeline/gantt/${selectedProjectId}`, {
+      const response = await fetch(API_ENDPOINTS.timeline.gantt(selectedProjectId), {
         headers: {
           'Authorization': `Bearer ${authData.access_token}`,
           'Content-Type': 'application/json'
