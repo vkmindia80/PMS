@@ -93,12 +93,12 @@ class TimelineAPITester:
             }
         )
         
-        if success and 'access_token' in response:
-            self.token = response['access_token']
+        if success and 'tokens' in response and 'access_token' in response['tokens']:
+            self.token = response['tokens']['access_token']
             print(f"✅ Authentication successful - Token obtained")
             return True
         else:
-            print(f"❌ Authentication failed")
+            print(f"❌ Authentication failed - Response: {response}")
             return False
 
     def test_projects_api(self):
