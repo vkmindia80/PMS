@@ -353,7 +353,7 @@ const TasksPage: React.FC = () => {
 
   useEffect(() => {
     applyFilters()
-  }, [tasks, searchTerm, statusFilter, priorityFilter, assigneeFilter, selectedProject])
+  }, [tasks, searchTerm, statusFilter, priorityFilter, assigneeFilter]) // Removed selectedProject since filtering is now server-side
 
   if (loading) {
     return (
