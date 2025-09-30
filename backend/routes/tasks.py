@@ -89,7 +89,7 @@ async def create_task(
 
 @router.get("/", response_model=List[TaskSummary])
 async def get_tasks(
-    project_id: Optional[List[str]] = Query(None, description="Filter by project IDs (supports multiple)"),
+    project_id: Optional[str] = Query(None, description="Filter by project IDs (comma-separated for multiple)"),
     assignee_id: Optional[str] = Query(None, description="Filter by assignee ID"),
     task_status: Optional[TaskStatus] = Query(None, description="Filter by status"),
     priority: Optional[TaskPriority] = Query(None, description="Filter by priority"),
@@ -106,12 +106,16 @@ async def get_tasks(
         # Build filter query - always filter by organization
         filter_query = {"organization_id": current_user.organization_id}
         
-        # Handle multiple project IDs
-        if project_id and len(project_id) > 0:
-            if len(project_id) == 1:
-                filter_query["project_id"] = project_id[0]
+        # Handle project IDs (both single and comma-separated multiple)
+        if project_id:
+            if ',' in project_id:
+                project_ids = [pid.strip() for pid in project_id.split(',') if pid.strip()]
+                if len(project_ids) > 1:
+                    filter_query["project_id"] = {"$in": project_ids}
+                elif len(project_ids) == 1:
+                    filter_query["project_id"] = project_ids[0]
             else:
-                filter_query["project_id"] = {"$in": project_id}
+                filter_query["project_id"] = project_id
         
         if assignee_id:
             filter_query["assignee_id"] = assignee_id
