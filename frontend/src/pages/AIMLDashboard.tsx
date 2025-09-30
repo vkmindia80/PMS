@@ -519,10 +519,22 @@ const AIMLDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">AI/ML Dashboard</h1>
-          <p className="text-gray-600">
-            Advanced AI integration with multi-model support and client-side machine learning
-          </p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">AI/ML Dashboard</h1>
+              <p className="text-gray-600">
+                Advanced AI integration with multi-model support and client-side machine learning
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <GlobalProjectFilter 
+                className="min-w-[200px]" 
+                placeholder="All Projects" 
+                label=""
+                multiSelect={true}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Stats Cards */}
