@@ -120,10 +120,22 @@ const Dashboard: React.FC = () => {
       {/* Welcome Section */}
       <div className="card">
         <div className="card-header">
-          <h2 className="card-title">Welcome to Enterprise Portfolio Management</h2>
-          <p className="card-description">
-            Your comprehensive SaaS platform for portfolio and project management
-          </p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h2 className="card-title">Welcome to Enterprise Portfolio Management</h2>
+              <p className="card-description">
+                Your comprehensive SaaS platform for portfolio and project management
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <GlobalProjectFilter 
+                className="min-w-[200px]" 
+                placeholder="All Projects" 
+                label=""
+                multiSelect={true}
+              />
+            </div>
+          </div>
         </div>
         <div className="card-content">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
