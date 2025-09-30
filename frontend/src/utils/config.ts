@@ -5,9 +5,11 @@
 
 import { getApiUrl, getEnvironmentInfo, isLocalEnvironment } from './environment';
 
-// Configuration object
+// Configuration object with dynamic API URL getter
 export const config = {
-  apiUrl: getApiUrl(),
+  get apiUrl() {
+    return getApiUrl();
+  },
   appName: import.meta.env.REACT_APP_NAME || 'Enterprise Portfolio Management',
   appVersion: import.meta.env.REACT_APP_VERSION || '1.0.0',
   isDevelopment: import.meta.env.NODE_ENV === 'development',
@@ -15,9 +17,9 @@ export const config = {
   isLocal: isLocalEnvironment(),
 };
 
-// Export individual values for convenience
-export const API_URL = config.apiUrl;
-export const BACKEND_URL = config.apiUrl; // Alias for compatibility
+// Export individual values for convenience - use getters for dynamic evaluation
+export const API_URL = getApiUrl();
+export const BACKEND_URL = getApiUrl(); // Alias for compatibility
 export const APP_NAME = config.appName;
 export const APP_VERSION = config.appVersion;
 
