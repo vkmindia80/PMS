@@ -136,7 +136,7 @@ async def create_project(
             detail=f"Failed to create project: {str(e)}"
         )
 
-@router.get("/", response_model=List[ProjectSummary])
+@router.get("", response_model=List[ProjectSummary])
 async def list_projects(
     status_filter: Optional[ProjectStatus] = Query(None, description="Filter by project status"),
     priority_filter: Optional[ProjectPriority] = Query(None, description="Filter by project priority"),
