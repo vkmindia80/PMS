@@ -57,7 +57,17 @@ const ProjectsPage: React.FC = () => {
       const params = new URLSearchParams()
       if (statusFilter !== 'all') params.append('status_filter', statusFilter)
       if (priorityFilter !== 'all') params.append('priority_filter', priorityFilter)
-      if (selectedProject !== 'all' && selectedProject) params.append('project_id', selectedProject)
+      
+      // Handle both single and multi-select project filters
+      if (selectedProject !== 'all' && selectedProject) {
+        if (Array.isArray(selectedProject)) {
+          selectedProject.filter(id => id !== 'all').forEach(id => {
+            params.append('project_id', id)
+          })
+        } else {
+          params.append('project_id', selectedProject)
+        }
+      }
       
       const response = await fetch(`${API_ENDPOINTS.projects.list}?${params}`, {
         headers: {
