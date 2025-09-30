@@ -5,7 +5,6 @@ import ProjectCreateModal from '../components/project/ProjectCreateModal'
 import ProjectCard from '../components/project/ProjectCard'
 import ProjectList from '../components/project/ProjectList'
 import ProjectDashboard from '../components/project/ProjectDashboard'
-import ProjectFilter from '../components/common/ProjectFilter'
 import { BACKEND_URL, API_ENDPOINTS } from '../utils/config'
 
 interface ProjectSummary {
