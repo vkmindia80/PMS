@@ -435,6 +435,9 @@ const TeamsPage: React.FC = () => {
                   placeholder="All Projects"
                   className="sm:w-48"
                   label=""
+                  multiSelect={false}
+                  error={projectFilterError}
+                  onError={setProjectFilterError}
                 />
                 
                 <div className="sm:w-48">
