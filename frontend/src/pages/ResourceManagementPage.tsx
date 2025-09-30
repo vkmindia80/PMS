@@ -119,7 +119,7 @@ const ResourceManagementPage: React.FC = () => {
   const [skillsGapAnalysis, setSkillsGapAnalysis] = useState<SkillsGapAnalysis | null>(null);
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
 
-  const backendUrl = getApiUrl();
+  const backendUrl = API_URL;
 
   const fetchData = async (endpoint: string, setter: Function, key: string) => {
     setLoading(prev => ({ ...prev, [key]: true }));
