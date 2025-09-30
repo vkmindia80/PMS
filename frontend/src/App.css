@@ -47,16 +47,54 @@
   .mobile-hidden {
     display: none;
   }
-  
-  .sidebar {
-    position: fixed;
-    left: -100%;
-    top: 0;
-    z-index: 50;
-    transition: left 0.3s ease-in-out;
+}
+
+/* Sidebar layout adjustments */
+.sidebar-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar-content {
+  flex: 1;
+  min-width: 0; /* Prevents flex item from overflowing */
+}
+
+/* Smooth transitions for sidebar */
+.sidebar-transition {
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* Ensure proper spacing on mobile */
+@media (max-width: 1024px) {
+  .main-content-mobile {
+    margin-left: 0 !important;
+    padding-top: 4rem; /* Account for mobile menu button */
   }
-  
-  .sidebar.open {
-    left: 0;
-  }
+}
+
+/* Sidebar overlay styling */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 40;
+}
+
+/* Hide scrollbar on sidebar for cleaner look */
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 2px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
 }
