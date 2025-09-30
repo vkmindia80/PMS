@@ -343,7 +343,7 @@ const TasksPage: React.FC = () => {
   useEffect(() => {
     fetchTasks()
     fetchAnalytics()
-  }, [tokens?.access_token])
+  }, [tokens?.access_token, selectedProject]) // Added selectedProject as dependency
 
   useEffect(() => {
     if (viewMode === 'kanban') {
