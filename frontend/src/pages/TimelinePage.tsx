@@ -526,7 +526,7 @@ export const TimelinePage: React.FC = () => {
         return;
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/projects`, {
+      const response = await fetch(API_ENDPOINTS.projects.list, {
         headers: {
           'Authorization': `Bearer ${authData.access_token}`,
           'Content-Type': 'application/json'
