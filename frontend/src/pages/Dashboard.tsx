@@ -67,6 +67,8 @@ const Dashboard: React.FC = () => {
       if (teamsResponse.ok) {
         const teamsData = await teamsResponse.json()
         teamsCount = Array.isArray(teamsData) ? teamsData.reduce((sum, team) => sum + team.member_count, 0) : 0
+      } else {
+        console.error('Failed to fetch teams:', teamsResponse.status, teamsResponse.statusText)
       }
 
       // Fetch tasks count with project filtering
