@@ -263,6 +263,12 @@ const OrganizationPage: React.FC = () => {
               
               {organization && (
                 <div className="flex space-x-3">
+                  <GlobalProjectFilter 
+                    className="min-w-[200px]" 
+                    placeholder="All Projects" 
+                    label=""
+                    multiSelect={true}
+                  />
                   <button
                     onClick={() => setShowEditForm(true)}
                     className="btn-outline"
