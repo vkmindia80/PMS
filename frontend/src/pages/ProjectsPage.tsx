@@ -101,7 +101,7 @@ const ProjectsPage: React.FC = () => {
     if (tokens?.access_token && user) {
       fetchProjects()
     }
-  }, [tokens?.access_token, user, statusFilter, priorityFilter, selectedProject])
+  }, [tokens?.access_token, user, statusFilter, priorityFilter])
 
   const handleProjectCreated = () => {
     setShowCreateModal(false)
