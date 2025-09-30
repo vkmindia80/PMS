@@ -290,6 +290,10 @@ const TasksPage: React.FC = () => {
       )
     }
 
+    if (projectFilter !== 'all') {
+      filtered = filtered.filter(task => task.project_id === projectFilter)
+    }
+
     setFilteredTasks(filtered)
   }
 
