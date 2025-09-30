@@ -50,7 +50,6 @@ const Sidebar: React.FC = () => {
     { name: 'AI/ML', path: '/ai-ml', icon: Cpu },
     { name: 'Advanced AI', path: '/advanced-ai', icon: Brain },
     { name: 'Security', path: '/security', icon: Shield },
-    { name: 'Roles', path: '/roles', icon: Shield },
     { name: 'Integrations', path: '/integrations', icon: Zap },
   ]
 
