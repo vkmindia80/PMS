@@ -277,7 +277,7 @@ async def delete_task(
 
 @router.get("/kanban/board", response_model=Dict[str, List[TaskSummary]])
 async def get_kanban_board(
-    project_id: Optional[List[str]] = Query(None, description="Filter by project IDs (supports multiple)"),
+    project_id: Optional[str] = Query(None, description="Filter by project IDs (comma-separated for multiple)"),
     view_by: str = Query("status", description="Group by: status, assignee, project"),
     current_user: User = Depends(get_current_active_user)
 ):
@@ -288,12 +288,16 @@ async def get_kanban_board(
         # Build filter query - always filter by organization
         filter_query = {"organization_id": current_user.organization_id}
         
-        # Handle multiple project IDs
-        if project_id and len(project_id) > 0:
-            if len(project_id) == 1:
-                filter_query["project_id"] = project_id[0]
+        # Handle project IDs (both single and comma-separated multiple)
+        if project_id:
+            if ',' in project_id:
+                project_ids = [pid.strip() for pid in project_id.split(',') if pid.strip()]
+                if len(project_ids) > 1:
+                    filter_query["project_id"] = {"$in": project_ids}
+                elif len(project_ids) == 1:
+                    filter_query["project_id"] = project_ids[0]
             else:
-                filter_query["project_id"] = {"$in": project_id}
+                filter_query["project_id"] = project_id
         
         # Get all tasks
         tasks = await db.tasks.find(filter_query).to_list(length=None)
