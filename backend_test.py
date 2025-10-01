@@ -107,45 +107,22 @@ class IntegrationAPITester:
             self.log_result("Available Integrations", False, f"Exception: {str(e)}")
             return False
 
-    def test_timeline_project_config(self):
-        """Test timeline project configuration endpoints"""
-        print("\n" + "="*60)
-        print("⚙️ TESTING TIMELINE PROJECT CONFIGURATION")
-        print("="*60)
-        
-        # Test get timeline project config (might not exist yet)
-        success, response = self.run_test(
-            "Get Timeline Project Config",
-            "GET",
-            f"api/timeline/project/{self.project_id}",
-            404  # Expected to not exist initially
-        )
-        
-        if not success and response == {}:
-            # Create timeline project configuration
-            config_data = {
-                "project_id": self.project_id,
-                "default_view_mode": "week",
-                "show_critical_path": True,
-                "work_hours_per_day": 8,
-                "work_days_per_week": 5,
-                "default_start_time": "09:00",
-                "default_end_time": "17:00"
-            }
+    def test_integration_status(self) -> bool:
+        """Test integration status endpoint"""
+        try:
+            response = self.session.get(f"{self.base_url}/api/integrations/status")
             
-            success, response = self.run_test(
-                "Create Timeline Project Config",
-                "POST",
-                "api/timeline/project",
-                200,
-                data=config_data
-            )
-            
-            if success:
-                print(f"✅ Timeline project configuration created")
+            if response.status_code == 200:
+                data = response.json()
+                self.log_result("Integration Status", True, f"Total: {data.get('total_integrations', 0)}, Active: {data.get('active_integrations', 0)}")
                 return True
-        
-        return success
+            else:
+                self.log_result("Integration Status", False, f"Status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Integration Status", False, f"Exception: {str(e)}")
+            return False
 
     def test_timeline_tasks_api(self):
         """Test timeline tasks API endpoints"""
