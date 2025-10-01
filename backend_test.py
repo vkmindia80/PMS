@@ -82,34 +82,30 @@ class IntegrationAPITester:
             self.log_result("Integration Health Check", False, f"Exception: {str(e)}")
             return False
 
-    def test_projects_api(self):
-        """Test projects API to get project IDs for timeline testing"""
-        print("\n" + "="*60)
-        print("📁 TESTING PROJECTS API")
-        print("="*60)
-        
-        success, response = self.run_test(
-            "Get Projects List",
-            "GET",
-            "api/projects",
-            200
-        )
-        
-        if success and isinstance(response, list) and len(response) > 0:
-            self.project_id = response[0]['id']
-            print(f"✅ Found {len(response)} projects - Using project ID: {self.project_id}")
-            return True
-        else:
-            # Fallback to demo project ID since projects API might have auth issues
-            print(f"⚠️ Projects API failed, using demo project ID")
-            # Use a demo project ID from the generated data
-            demo_project_ids = [
-                "demo-project-001", "demo-project-002", "demo-project-003",
-                "demo-project-004", "demo-project-005", "demo-project-006"
-            ]
-            self.project_id = demo_project_ids[0]
-            print(f"✅ Using demo project ID: {self.project_id}")
-            return True
+    def test_available_integrations(self) -> bool:
+        """Test available integrations endpoint"""
+        try:
+            response = self.session.get(f"{self.base_url}/api/integrations/available")
+            
+            if response.status_code == 200:
+                data = response.json()
+                integrations = data.get('available_integrations', {})
+                expected_types = ['slack', 'teams', 'github', 'google_workspace']
+                
+                if all(integration_type in integrations for integration_type in expected_types):
+                    self.log_result("Available Integrations", True, f"Found all 4 integration types")
+                    return True
+                else:
+                    missing = [t for t in expected_types if t not in integrations]
+                    self.log_result("Available Integrations", False, f"Missing: {missing}")
+                    return False
+            else:
+                self.log_result("Available Integrations", False, f"Status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Available Integrations", False, f"Exception: {str(e)}")
+            return False
 
     def test_timeline_project_config(self):
         """Test timeline project configuration endpoints"""
