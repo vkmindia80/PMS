@@ -16,9 +16,8 @@ class IntegrationAPITester:
         self.token = None
         self.tests_run = 0
         self.tests_passed = 0
-        self.project_id = None
-        self.timeline_task_id = None
-        self.dependency_id = None
+        self.failed_tests = []
+        self.session = requests.Session()
 
     def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
         """Run a single API test"""
