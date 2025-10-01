@@ -513,7 +513,61 @@ const IntegrationsPage: React.FC = () => {
           </div>
         )
 
-      // Add similar cases for teams, github, and google_workspace...
+      // Teams Wizard Steps
+      case 'teams-app':
+        return (
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <div className="flex items-center mb-2">
+                <Users className="w-5 h-5 text-blue-600 mr-2" />
+                <h4 className="font-semibold text-blue-900">Microsoft Teams App Registration</h4>
+              </div>
+              <p className="text-blue-800 text-sm mb-4">
+                Register your application in Azure AD to enable Teams integration.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tenant ID</label>
+                  <input
+                    type="text"
+                    value={teamsConfig.tenant_id}
+                    onChange={(e) => setTeamsConfig({ ...teamsConfig, tenant_id: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="your-tenant-id"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Application ID</label>
+                  <input
+                    type="text"
+                    value={teamsConfig.application_id}
+                    onChange={(e) => setTeamsConfig({ ...teamsConfig, application_id: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="your-application-id"
+                  />
+                </div>
+                <div className="bg-blue-100 p-3 rounded-lg">
+                  <h5 className="font-medium text-blue-900 mb-2">Setup Steps:</h5>
+                  <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                    <li>Go to Azure AD > App registrations</li>
+                    <li>Create new registration for "Portfolio Management Bot"</li>
+                    <li>Add redirect URI: {window.location.origin}/integrations/callback/teams</li>
+                    <li>Copy Tenant ID and Application ID above</li>
+                  </ol>
+                </div>
+                <button
+                  onClick={() => startOAuthFlow('teams')}
+                  disabled={oauthInProgress.teams || !teamsConfig.tenant_id || !teamsConfig.application_id}
+                  className="w-full px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
+                >
+                  {oauthInProgress.teams ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <ExternalLink className="w-4 h-4 mr-2" />}
+                  {oauthInProgress.teams ? 'Connecting...' : 'Authorize Teams Access'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+
       default:
         return (
           <div className="text-center py-8">
