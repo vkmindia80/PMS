@@ -2715,8 +2715,53 @@ const IntegrationsPage: React.FC = () => {
           )}
         </div>
 
-        {/* Enhanced Integration Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Render based on current view */}
+        {currentView === 'overview' && (
+          <>
+            {/* Quick Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Active Integrations</p>
+                    <p className="text-2xl font-semibold text-green-600">
+                      {Object.values(activeIntegrations).filter(i => i.status === 'active').length}
+                    </p>
+                  </div>
+                  <CheckCircle className="w-8 h-8 text-green-500" />
+                </div>
+              </div>
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Available Services</p>
+                    <p className="text-2xl font-semibold text-blue-600">{Object.keys(availableIntegrations).length}</p>
+                  </div>
+                  <Zap className="w-8 h-8 text-blue-500" />
+                </div>
+              </div>
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Success Rate</p>
+                    <p className="text-2xl font-semibold text-purple-600">98.5%</p>
+                  </div>
+                  <Activity className="w-8 h-8 text-purple-500" />
+                </div>
+              </div>
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Health Status</p>
+                    <p className="text-2xl font-semibold text-green-600">Healthy</p>
+                  </div>
+                  <Shield className="w-8 h-8 text-green-500" />
+                </div>
+              </div>
+            </div>
+
+            {/* Integration Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredIntegrations.map(([type, integration]) => {
             const isActive = activeIntegrations[type]?.status === 'active'
             const testResult = testResults[type]
