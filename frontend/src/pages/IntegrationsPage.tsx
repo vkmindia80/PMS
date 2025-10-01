@@ -70,6 +70,22 @@ interface IntegrationConfig {
   timestamp: string
 }
 
+interface WizardStep {
+  id: string
+  title: string
+  description: string
+  completed: boolean
+  optional?: boolean
+}
+
+interface ValidationResult {
+  valid: boolean
+  connection_status?: string
+  errors?: string[]
+  warnings?: string[]
+  timestamp: Date
+}
+
 const IntegrationsPage: React.FC = () => {
   const [availableIntegrations, setAvailableIntegrations] = useState<Record<string, Integration>>({})
   const [activeIntegrations, setActiveIntegrations] = useState<Record<string, any>>({})
