@@ -53,7 +53,7 @@ import axios from 'axios'
 const API_BASE_URL = import.meta.env.VITE_REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
 
 interface Integration {
-  type: string
+  type?: string
   name: string
   description: string
   features: string[]
