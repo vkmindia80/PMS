@@ -26,6 +26,7 @@ class SecurityEventType(str, Enum):
     ACCOUNT_UNLOCKED = "account_unlocked"
     SESSION_TIMEOUT = "session_timeout"
     UNAUTHORIZED_ACCESS = "unauthorized_access"
+    CONFIGURATION_CHANGE = "configuration_change"
 
 class ComplianceStandard(str, Enum):
     """Supported compliance standards"""
