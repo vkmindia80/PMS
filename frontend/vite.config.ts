@@ -17,6 +17,7 @@ export default defineConfig({
       '127.0.0.1',
       '0.0.0.0',
       'enterprise-roadmap.preview.emergentagent.com',
+      'next-dev-steps.preview.emergentagent.com',
       '.preview.emergentagent.com', // Allow all subdomains
       '.emergentagent.com' // Allow all emergentagent.com subdomains
     ],
@@ -25,6 +26,15 @@ export default defineConfig({
         target: process.env.VITE_API_URL || 'http://localhost:8001',
         changeOrigin: true,
         secure: false, // Allow self-signed certificates in development
+        rewrite: (path) => path,
+        configure: (proxy) => {
+          proxy.on('error', (err) => {
+            console.log('Proxy error:', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req) => {
+            console.log(`Proxying ${req.method} ${req.url} to ${proxyReq.getHeader('host')}`);
+          });
+        }
       },
     },
   },
