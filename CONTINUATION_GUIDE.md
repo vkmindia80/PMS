@@ -367,19 +367,19 @@ tail -f /var/log/supervisor/frontend.*.log
 ```
 
 ### **🌐 Access Points (Updated January 2025):**
-- **Main Application**: https://metric-review-hub.preview.emergentagent.com ✅ VERIFIED & OPERATIONAL
-- **Security Dashboard**: https://metric-review-hub.preview.emergentagent.com/security ✅ FULLY OPERATIONAL WITH REAL-TIME MONITORING
-- **Role Management Dashboard**: https://metric-review-hub.preview.emergentagent.com/roles ✅ **ADVANCED ROLE CREATION & PERMISSION MANAGEMENT + TIMELINE ROLES**
-- **🆕 Timeline Dashboard**: https://metric-review-hub.preview.emergentagent.com/timeline ⚠️ **IN DEVELOPMENT - CORE GANTT CHART ENGINE**
-- **Portfolio Analytics**: https://metric-review-hub.preview.emergentagent.com/analytics ✅ PROJECT HEALTH & FINANCIAL TRACKING OPERATIONAL
-- **Projects Management**: https://metric-review-hub.preview.emergentagent.com/projects ✅ AI-ENHANCED (10+ Projects Live) + Timeline Integration Ready
-- **Resource Management**: https://metric-review-hub.preview.emergentagent.com/resource-management ✅ AI-POWERED & ML-OPTIMIZED
-- **Integration Hub**: https://metric-review-hub.preview.emergentagent.com/integrations ✅ MODERN ECOSYSTEM ACTIVE
-- **Advanced AI Dashboard**: https://metric-review-hub.preview.emergentagent.com/advanced-ai ✅ MULTI-MODEL AI OPERATIONAL
-- **Teams Management**: https://metric-review-hub.preview.emergentagent.com/teams ✅ COLLABORATION-ENHANCED
-- **Organization Settings**: https://metric-review-hub.preview.emergentagent.com/organization ✅ ENTERPRISE-GRADE
-- **API Documentation**: https://metric-review-hub.preview.emergentagent.com/docs ✅ INTEGRATION-READY + Timeline APIs Documentation
-- **System Health**: https://metric-review-hub.preview.emergentagent.com/health ✅ AI-MONITORED
+- **Main Application**: https://portfolio-mapper.preview.emergentagent.com ✅ VERIFIED & OPERATIONAL
+- **Security Dashboard**: https://portfolio-mapper.preview.emergentagent.com/security ✅ FULLY OPERATIONAL WITH REAL-TIME MONITORING
+- **Role Management Dashboard**: https://portfolio-mapper.preview.emergentagent.com/roles ✅ **ADVANCED ROLE CREATION & PERMISSION MANAGEMENT + TIMELINE ROLES**
+- **🆕 Timeline Dashboard**: https://portfolio-mapper.preview.emergentagent.com/timeline ⚠️ **IN DEVELOPMENT - CORE GANTT CHART ENGINE**
+- **Portfolio Analytics**: https://portfolio-mapper.preview.emergentagent.com/analytics ✅ PROJECT HEALTH & FINANCIAL TRACKING OPERATIONAL
+- **Projects Management**: https://portfolio-mapper.preview.emergentagent.com/projects ✅ AI-ENHANCED (10+ Projects Live) + Timeline Integration Ready
+- **Resource Management**: https://portfolio-mapper.preview.emergentagent.com/resource-management ✅ AI-POWERED & ML-OPTIMIZED
+- **Integration Hub**: https://portfolio-mapper.preview.emergentagent.com/integrations ✅ MODERN ECOSYSTEM ACTIVE
+- **Advanced AI Dashboard**: https://portfolio-mapper.preview.emergentagent.com/advanced-ai ✅ MULTI-MODEL AI OPERATIONAL
+- **Teams Management**: https://portfolio-mapper.preview.emergentagent.com/teams ✅ COLLABORATION-ENHANCED
+- **Organization Settings**: https://portfolio-mapper.preview.emergentagent.com/organization ✅ ENTERPRISE-GRADE
+- **API Documentation**: https://portfolio-mapper.preview.emergentagent.com/docs ✅ INTEGRATION-READY + Timeline APIs Documentation
+- **System Health**: https://portfolio-mapper.preview.emergentagent.com/health ✅ AI-MONITORED
 - **Local Development**: http://localhost:3000 ✅ HOT-RELOAD OPTIMIZED + Timeline Development Server
 
 ### **🔐 Authentication Options (All Verified Working + Timeline Access):**
@@ -657,7 +657,7 @@ async def timeline_websocket_endpoint(websocket: WebSocket, project_id: str)
 **System Verification**: 🔍 **COMPLETE ENTERPRISE PLATFORM + TIMELINE ENGINE + ENHANCED DASHBOARD ANALYTICS** - All systems operational with timeline development complete and optimized analytics API
 **System Status**: 🟢 **COMMERCIALLY READY + ENHANCED PERFORMANCE** - Complete AI-enhanced enterprise platform with Microsoft Project-level timeline capabilities and optimized dashboard analytics
 **Current Status**: "Production-Ready Enterprise Platform with Advanced Features + Enhanced Analytics" - All features complete, tested, and operational with optimized dashboard API
-**External URL**: ✅ https://metric-review-hub.preview.emergentagent.com **COMPLETE PLATFORM WITH ENHANCED ANALYTICS** 
+**External URL**: ✅ https://portfolio-mapper.preview.emergentagent.com **COMPLETE PLATFORM WITH ENHANCED ANALYTICS** 
 **Demo Credentials**: demo@company.com / demo123456 **ALL FEATURES INCLUDING ENHANCED DASHBOARD** ✅
 **Demo Data Generation**: One-click from login page **AUTOMATED ENTERPRISE DATA CREATION + TIMELINE DATA** ✅
 **Security Dashboard**: Fully operational at /security **REAL-TIME MONITORING ACTIVE + TIMELINE SECURITY** ✅

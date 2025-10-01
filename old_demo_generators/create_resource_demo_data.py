@@ -595,7 +595,7 @@ async def main():
         print("   • Real-time workload balancing suggestions")
         print("   • Comprehensive skills gap analysis")
         
-        print(f"\n🌐 Access at: https://metric-review-hub.preview.emergentagent.com/resource-management")
+        print(f"\n🌐 Access at: https://portfolio-mapper.preview.emergentagent.com/resource-management")
         print("📧 Login: demo@company.com / demo123456")
         
     except Exception as e:
