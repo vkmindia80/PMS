@@ -282,63 +282,44 @@ const IntegrationsPage: React.FC = () => {
       // Slack Wizard Steps
       case 'slack-workspace':
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-6">
-              <Slack className="w-16 h-16 text-green-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900">Connect to Slack Workspace</h3>
-              <p className="text-gray-600">Enter your Slack workspace details to get started</p>
-            </div>
-            
-            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
-              <div className="flex items-start">
-                <Info className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
-                <div className="text-sm text-blue-800">
-                  <p className="font-medium mb-1">Before you start:</p>
-                  <ul className="list-disc list-inside space-y-1 text-blue-700">
-                    <li>Ensure you have admin permissions in your Slack workspace</li>
-                    <li>Have your workspace URL ready (e.g., yourcompany.slack.com)</li>
-                    <li>Be prepared to install a Slack app in your workspace</li>
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <div className="flex items-center mb-2">
+                <Slack className="w-5 h-5 text-blue-600 mr-2" />
+                <h4 className="font-semibold text-blue-900">Connect to Slack Workspace</h4>
+              </div>
+              <p className="text-blue-800 text-sm mb-4">
+                Connect your Slack workspace to enable real-time notifications and team collaboration features.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Workspace URL</label>
+                  <input
+                    type="url"
+                    value={slackConfig.workspace_url}
+                    onChange={(e) => setSlackConfig({ ...slackConfig, workspace_url: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="https://yourcompany.slack.com"
+                  />
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-gray-900 mb-2">What you'll get:</h5>
+                  <ul className="text-sm text-gray-600 space-y-1">
+                    <li>• Real-time project notifications</li>
+                    <li>• Task assignment alerts</li>
+                    <li>• Team collaboration updates</li>
+                    <li>• Integration with project channels</li>
                   </ul>
                 </div>
               </div>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <Globe className="w-4 h-4 inline mr-1" />
-                  Workspace URL
-                </label>
-                <input
-                  type="url"
-                  value={slackConfig.workspace_url}
-                  onChange={(e) => setSlackConfig({ ...slackConfig, workspace_url: e.target.value })}
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-lg"
-                  placeholder="https://yourcompany.slack.com"
-                />
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center">
-                  <Link className="w-5 h-5 text-gray-600 mr-3" />
-                  <div>
-                    <p className="font-medium text-gray-900">OAuth Authentication</p>
-                    <p className="text-sm text-gray-600">Secure authentication via Slack</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => startOAuthFlow('slack')}
-                  disabled={oauthInProgress.slack}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center"
-                >
-                  {oauthInProgress.slack ? (
-                    <Loader className="w-4 h-4 animate-spin mr-2" />
-                  ) : (
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                  )}
-                  {oauthInProgress.slack ? 'Authorizing...' : 'Authorize with Slack'}
-                </button>
-              </div>
+              <button
+                onClick={() => startOAuthFlow('slack')}
+                disabled={oauthInProgress.slack || !slackConfig.workspace_url}
+                className="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center"
+              >
+                {oauthInProgress.slack ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <ExternalLink className="w-4 h-4 mr-2" />}
+                {oauthInProgress.slack ? 'Connecting...' : 'Connect to Slack'}
+              </button>
             </div>
           </div>
         )
