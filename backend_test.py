@@ -61,29 +61,25 @@ class IntegrationAPITester:
             self.log_result("Authentication", False, f"Exception: {str(e)}")
             return False
 
-    def test_authentication(self):
-        """Test authentication with demo credentials"""
-        print("\n" + "="*60)
-        print("🔐 TESTING AUTHENTICATION")
-        print("="*60)
-        
-        success, response = self.run_test(
-            "Demo User Login",
-            "POST",
-            "api/auth/login",
-            200,
-            data={
-                "email": "demo@company.com",
-                "password": "demo123456"
-            }
-        )
-        
-        if success and 'tokens' in response and 'access_token' in response['tokens']:
-            self.token = response['tokens']['access_token']
-            print(f"✅ Authentication successful - Token obtained")
-            return True
-        else:
-            print(f"❌ Authentication failed - Response: {response}")
+    def test_integration_health(self) -> bool:
+        """Test integration health endpoint"""
+        try:
+            response = self.session.get(f"{self.base_url}/api/integrations/health")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('status') == 'healthy':
+                    self.log_result("Integration Health Check", True, f"Status: healthy, Services: {len(data.get('services', {}))}")
+                    return True
+                else:
+                    self.log_result("Integration Health Check", False, f"Status: {data.get('status')}")
+                    return False
+            else:
+                self.log_result("Integration Health Check", False, f"Status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Integration Health Check", False, f"Exception: {str(e)}")
             return False
 
     def test_projects_api(self):
