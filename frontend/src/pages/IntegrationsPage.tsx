@@ -602,6 +602,425 @@ const IntegrationsPage: React.FC = () => {
           </div>
         )
 
+      // GitHub Wizard Steps
+      case 'github-oauth':
+        return (
+          <div className="space-y-4">
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div className="flex items-center mb-2">
+                <Github className="w-5 h-5 text-gray-800 mr-2" />
+                <h4 className="font-semibold text-gray-900">Connect to GitHub</h4>
+              </div>
+              <p className="text-gray-700 text-sm mb-4">
+                Authorize GitHub access to sync repositories, issues, and pull requests with your portfolio projects.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">GitHub Organization</label>
+                  <input
+                    type="text"
+                    value={githubConfig.organization}
+                    onChange={(e) => setGithubConfig({ ...githubConfig, organization: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500"
+                    placeholder="your-organization"
+                  />
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-blue-900 mb-2">GitHub Integration Benefits:</h5>
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>• Repository and branch synchronization</li>
+                    <li>• Automated issue and PR tracking</li>
+                    <li>• Deployment status monitoring</li>
+                    <li>• Code review workflow integration</li>
+                  </ul>
+                </div>
+              </div>
+              <button
+                onClick={() => startOAuthFlow('github')}
+                disabled={oauthInProgress.github || !githubConfig.organization}
+                className="mt-4 w-full px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 disabled:opacity-50 flex items-center justify-center"
+              >
+                {oauthInProgress.github ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <Github className="w-4 h-4 mr-2" />}
+                {oauthInProgress.github ? 'Authorizing...' : 'Authorize GitHub Access'}
+              </button>
+            </div>
+          </div>
+        )
+
+      case 'github-repositories':
+        return (
+          <div className="space-y-4">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="flex items-center mb-2">
+                <Database className="w-5 h-5 text-green-600 mr-2" />
+                <h4 className="font-semibold text-green-900">Select Repositories</h4>
+              </div>
+              <p className="text-green-800 text-sm mb-4">
+                Choose which repositories to integrate with your portfolio management system.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Repository Names</label>
+                  <input
+                    type="text"
+                    onChange={(e) => setGithubConfig({ 
+                      ...githubConfig, 
+                      repositories: e.target.value.split(',').map(r => r.trim()).filter(r => r) 
+                    })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    placeholder="frontend, backend, mobile-app, docs"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Comma-separated list of repository names</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={githubConfig.auto_sync}
+                      onChange={(e) => setGithubConfig({ ...githubConfig, auto_sync: e.target.checked })}
+                      className="mr-2"
+                    />
+                    <div>
+                      <span className="text-sm font-medium">Auto Sync</span>
+                      <p className="text-xs text-gray-500">Automatically sync changes</p>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={githubConfig.issue_sync}
+                      onChange={(e) => setGithubConfig({ ...githubConfig, issue_sync: e.target.checked })}
+                      className="mr-2"
+                    />
+                    <div>
+                      <span className="text-sm font-medium">Issue Sync</span>
+                      <p className="text-xs text-gray-500">Sync GitHub issues as tasks</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'github-webhooks':
+        return (
+          <div className="space-y-4">
+            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+              <div className="flex items-center mb-2">
+                <Zap className="w-5 h-5 text-orange-600 mr-2" />
+                <h4 className="font-semibold text-orange-900">Configure Webhooks</h4>
+              </div>
+              <p className="text-orange-800 text-sm mb-4">
+                Set up webhook notifications for real-time updates from GitHub.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Webhook Secret</label>
+                  <div className="relative">
+                    <input
+                      type={showCredentials.github ? 'text' : 'password'}
+                      value={githubConfig.webhook_secret}
+                      onChange={(e) => setGithubConfig({ ...githubConfig, webhook_secret: e.target.value })}
+                      className="w-full p-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"
+                      placeholder="Your webhook secret key"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCredentials({ ...showCredentials, github: !showCredentials.github })}
+                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    >
+                      {showCredentials.github ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-blue-900 mb-2">Webhook URL:</h5>
+                  <code className="text-sm text-blue-800 bg-blue-100 p-2 rounded block">
+                    {window.location.origin}/api/integrations/github/webhook
+                  </code>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={githubConfig.deployment_tracking}
+                      onChange={(e) => setGithubConfig({ ...githubConfig, deployment_tracking: e.target.checked })}
+                      className="mr-2"
+                    />
+                    <div>
+                      <span className="text-sm font-medium">Deployment Tracking</span>
+                      <p className="text-xs text-gray-500">Track deployment status</p>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={githubConfig.release_notifications}
+                      onChange={(e) => setGithubConfig({ ...githubConfig, release_notifications: e.target.checked })}
+                      className="mr-2"
+                    />
+                    <div>
+                      <span className="text-sm font-medium">Release Notifications</span>
+                      <p className="text-xs text-gray-500">Notify on new releases</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'github-test':
+        return (
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <div className="flex items-center mb-2">
+                <CheckCircle className="w-5 h-5 text-blue-600 mr-2" />
+                <h4 className="font-semibold text-blue-900">Test & Validate</h4>
+              </div>
+              <p className="text-blue-800 text-sm mb-4">
+                Test your GitHub integration to ensure everything is working correctly.
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => testIntegration('github')}
+                  disabled={!githubConfig.access_token || !githubConfig.organization}
+                  className="w-full px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center justify-center"
+                >
+                  <PlayCircle className="w-4 h-4 mr-2" />
+                  Test GitHub Connection
+                </button>
+                {testResults.github && (
+                  <div className={`p-3 rounded-lg ${testResults.github.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    <p className="text-sm font-medium">
+                      {testResults.github.success ? '✅ GitHub integration working!' : '❌ Connection failed'}
+                    </p>
+                    {testResults.github.repositories && (
+                      <p className="text-sm mt-1">
+                        Found {testResults.github.repositories.length} repositories
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )
+
+      // Google Workspace Wizard Steps
+      case 'google_workspace-service-account':
+        return (
+          <div className="space-y-4">
+            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+              <div className="flex items-center mb-2">
+                <Key className="w-5 h-5 text-orange-600 mr-2" />
+                <h4 className="font-semibold text-orange-900">Configure Service Account</h4>
+              </div>
+              <p className="text-orange-800 text-sm mb-4">
+                Set up Google Workspace service account for secure API access to Google services.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Service Account Key (JSON)</label>
+                  <textarea
+                    value={googleConfig.service_account_key}
+                    onChange={(e) => setGoogleConfig({ ...googleConfig, service_account_key: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 font-mono text-sm"
+                    rows={8}
+                    placeholder='{"type": "service_account", "project_id": "...", "private_key_id": "...", ...}'
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Download this JSON file from Google Cloud Console → IAM & Admin → Service Accounts
+                  </p>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-blue-900 mb-2">Required Setup Steps:</h5>
+                  <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                    <li>Create a project in Google Cloud Console</li>
+                    <li>Enable Google Workspace APIs (Calendar, Drive, Gmail)</li>
+                    <li>Create a service account with domain-wide delegation</li>
+                    <li>Download the JSON key file</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'google_workspace-domain':
+        return (
+          <div className="space-y-4">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="flex items-center mb-2">
+                <Globe className="w-5 h-5 text-green-600 mr-2" />
+                <h4 className="font-semibold text-green-900">Domain Setup & Delegated Access</h4>
+              </div>
+              <p className="text-green-800 text-sm mb-4">
+                Configure your Google Workspace domain and delegated user for admin access.
+              </p>
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Domain</label>
+                    <input
+                      type="text"
+                      value={googleConfig.domain}
+                      onChange={(e) => setGoogleConfig({ ...googleConfig, domain: e.target.value })}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      placeholder="your-company.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Delegated Admin User</label>
+                    <input
+                      type="email"
+                      value={googleConfig.delegated_user}
+                      onChange={(e) => setGoogleConfig({ ...googleConfig, delegated_user: e.target.value })}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      placeholder="admin@your-company.com"
+                    />
+                  </div>
+                </div>
+                <div className="bg-yellow-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-yellow-900 mb-2">Domain-wide Delegation Setup:</h5>
+                  <ol className="text-sm text-yellow-800 space-y-1 list-decimal list-inside">
+                    <li>Go to Google Admin Console → Security → API Controls</li>
+                    <li>Add your service account client ID to domain-wide delegation</li>
+                    <li>Add required OAuth scopes for Calendar, Drive, and Gmail</li>
+                    <li>Authorize the service account</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'google_workspace-services':
+        return (
+          <div className="space-y-4">
+            <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+              <div className="flex items-center mb-2">
+                <Calendar className="w-5 h-5 text-purple-600 mr-2" />
+                <h4 className="font-semibold text-purple-900">Enable Google Workspace Services</h4>
+              </div>
+              <p className="text-purple-800 text-sm mb-4">
+                Choose which Google Workspace services to integrate with your portfolio management.
+              </p>
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={googleConfig.calendar_sync}
+                      onChange={(e) => setGoogleConfig({ ...googleConfig, calendar_sync: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <Calendar className="w-4 h-4 mr-2 text-blue-600" />
+                      <div>
+                        <span className="text-sm font-medium">Google Calendar</span>
+                        <p className="text-xs text-gray-500">Sync meetings and schedules</p>
+                      </div>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={googleConfig.drive_sync}
+                      onChange={(e) => setGoogleConfig({ ...googleConfig, drive_sync: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <FileText className="w-4 h-4 mr-2 text-green-600" />
+                      <div>
+                        <span className="text-sm font-medium">Google Drive</span>
+                        <p className="text-xs text-gray-500">File storage and sharing</p>
+                      </div>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={googleConfig.gmail_sync}
+                      onChange={(e) => setGoogleConfig({ ...googleConfig, gmail_sync: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <Mail className="w-4 h-4 mr-2 text-red-600" />
+                      <div>
+                        <span className="text-sm font-medium">Gmail</span>
+                        <p className="text-xs text-gray-500">Email integration</p>
+                      </div>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={googleConfig.meet_integration}
+                      onChange={(e) => setGoogleConfig({ ...googleConfig, meet_integration: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <Video className="w-4 h-4 mr-2 text-orange-600" />
+                      <div>
+                        <span className="text-sm font-medium">Google Meet</span>
+                        <p className="text-xs text-gray-500">Video meetings</p>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-blue-900 mb-2">Integration Features:</h5>
+                  <ul className="text-sm text-blue-800 space-y-1">
+                    <li>• Automatic calendar scheduling for project milestones</li>
+                    <li>• Shared Drive folders for project documents</li>
+                    <li>• Meeting auto-join for remote team collaboration</li>
+                    <li>• Email notifications for task assignments</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'google_workspace-test':
+        return (
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <div className="flex items-center mb-2">
+                <CheckCircle className="w-5 h-5 text-blue-600 mr-2" />
+                <h4 className="font-semibold text-blue-900">Test Google Workspace Connection</h4>
+              </div>
+              <p className="text-blue-800 text-sm mb-4">
+                Validate your Google Workspace integration setup and permissions.
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => testIntegration('google_workspace')}
+                  disabled={!googleConfig.service_account_key || !googleConfig.domain || !googleConfig.delegated_user}
+                  className="w-full px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50 flex items-center justify-center"
+                >
+                  <PlayCircle className="w-4 h-4 mr-2" />
+                  Test Google Workspace Connection
+                </button>
+                {testResults.google_workspace && (
+                  <div className={`p-3 rounded-lg ${testResults.google_workspace.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    <p className="text-sm font-medium">
+                      {testResults.google_workspace.success ? '✅ Google Workspace integration working!' : '❌ Connection failed'}
+                    </p>
+                    {testResults.google_workspace.services && (
+                      <p className="text-sm mt-1">
+                        Services tested: {testResults.google_workspace.services.join(', ')}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )
+
       default:
         return (
           <div className="text-center py-8">
