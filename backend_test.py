@@ -157,194 +157,339 @@ class IntegrationAPITester:
             self.log_result("Slack Setup", False, f"Exception: {str(e)}")
             return False
 
-    def test_task_dependencies_api(self):
-        """Test task dependencies API endpoints"""
-        print("\n" + "="*60)
-        print("🔗 TESTING TASK DEPENDENCIES API")
-        print("="*60)
-        
-        # Get existing dependencies
-        success, response = self.run_test(
-            "Get Task Dependencies",
-            "GET",
-            f"api/timeline/dependencies/{self.project_id}",
-            200
-        )
-        
-        if success:
-            print(f"✅ Found {len(response)} task dependencies")
-            if len(response) > 0:
-                self.dependency_id = response[0]['id']
-        
-        return success
-
-    def test_gantt_chart_data_api(self):
-        """Test the main Gantt chart data API endpoint"""
-        print("\n" + "="*60)
-        print("📊 TESTING GANTT CHART DATA API")
-        print("="*60)
-        
-        success, response = self.run_test(
-            "Get Gantt Chart Data",
-            "GET",
-            f"api/timeline/gantt/{self.project_id}",
-            200
-        )
-        
-        if success:
-            print(f"✅ Gantt chart data retrieved successfully")
-            print(f"   Project ID: {response.get('project_id', 'N/A')}")
-            print(f"   Tasks: {len(response.get('tasks', []))}")
-            print(f"   Dependencies: {len(response.get('dependencies', []))}")
-            print(f"   Critical Path: {len(response.get('critical_path', []))}")
+    def test_slack_validate(self) -> bool:
+        """Test Slack validation endpoint"""
+        try:
+            response = self.session.post(f"{self.base_url}/api/integrations/slack/validate")
             
-            # Validate data structure
-            required_fields = ['project_id', 'tasks', 'dependencies', 'critical_path']
-            missing_fields = [field for field in required_fields if field not in response]
-            
-            if missing_fields:
-                print(f"⚠️ Missing required fields: {missing_fields}")
-                return False
-            
-            return True
-        
-        return False
-
-    def test_timeline_stats_api(self):
-        """Test timeline statistics API endpoint"""
-        print("\n" + "="*60)
-        print("📈 TESTING TIMELINE STATISTICS API")
-        print("="*60)
-        
-        success, response = self.run_test(
-            "Get Timeline Statistics",
-            "GET",
-            f"api/timeline/stats/{self.project_id}",
-            200
-        )
-        
-        if success:
-            print(f"✅ Timeline statistics retrieved successfully")
-            stats_fields = ['total_tasks', 'completed_tasks', 'in_progress_tasks', 
-                          'project_duration_days', 'total_work_hours', 'project_health_score']
-            
-            for field in stats_fields:
-                if field in response:
-                    print(f"   {field}: {response[field]}")
-            
-            return True
-        
-        return False
-
-    def test_timeline_calendars_api(self):
-        """Test timeline calendars API endpoints"""
-        print("\n" + "="*60)
-        print("📅 TESTING TIMELINE CALENDARS API")
-        print("="*60)
-        
-        success, response = self.run_test(
-            "Get Timeline Calendars",
-            "GET",
-            f"api/timeline/calendars/{self.project_id}",
-            200
-        )
-        
-        if success:
-            print(f"✅ Found {len(response)} timeline calendars")
-            return True
-        
-        return False
-
-    def test_timeline_baselines_api(self):
-        """Test timeline baselines API endpoints"""
-        print("\n" + "="*60)
-        print("📊 TESTING TIMELINE BASELINES API")
-        print("="*60)
-        
-        success, response = self.run_test(
-            "Get Timeline Baselines",
-            "GET",
-            f"api/timeline/baselines/{self.project_id}",
-            200
-        )
-        
-        if success:
-            print(f"✅ Found {len(response)} timeline baselines")
-            return True
-        
-        return False
-
-    def run_comprehensive_timeline_tests(self):
-        """Run all timeline API tests"""
-        print("🚀 STARTING COMPREHENSIVE TIMELINE API TESTING")
-        print("="*80)
-        
-        start_time = datetime.utcnow()
-        
-        # Test sequence
-        test_sequence = [
-            ("Authentication", self.test_authentication),
-            ("Projects API", self.test_projects_api),
-            ("Timeline Project Configuration", self.test_timeline_project_config),
-            ("Timeline Tasks API", self.test_timeline_tasks_api),
-            ("Task Dependencies API", self.test_task_dependencies_api),
-            ("Gantt Chart Data API", self.test_gantt_chart_data_api),
-            ("Timeline Statistics API", self.test_timeline_stats_api),
-            ("Timeline Calendars API", self.test_timeline_calendars_api),
-            ("Timeline Baselines API", self.test_timeline_baselines_api)
-        ]
-        
-        passed_tests = []
-        failed_tests = []
-        
-        for test_name, test_function in test_sequence:
-            print(f"\n🔄 Running {test_name}...")
-            try:
-                if test_function():
-                    passed_tests.append(test_name)
-                    print(f"✅ {test_name} - PASSED")
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('valid'):
+                    self.log_result("Slack Validation", True, f"Connection: {data.get('connection_status')}")
+                    return True
                 else:
-                    failed_tests.append(test_name)
-                    print(f"❌ {test_name} - FAILED")
-            except Exception as e:
-                failed_tests.append(test_name)
-                print(f"❌ {test_name} - ERROR: {str(e)}")
+                    self.log_result("Slack Validation", False, f"Errors: {data.get('errors')}")
+                    return False
+            else:
+                self.log_result("Slack Validation", False, f"Status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Slack Validation", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_teams_setup(self) -> bool:
+        """Test Teams integration setup"""
+        try:
+            teams_config = {
+                "tenant_id": "12345678-1234-1234-1234-123456789012",
+                "application_id": "87654321-4321-4321-4321-210987654321",
+                "client_secret": "test-client-secret",
+                "default_team": "General",
+                "webhook_url": "https://outlook.office.com/webhook/test",
+                "settings": {"test": True}
+            }
+            
+            response = self.session.post(
+                f"{self.base_url}/api/integrations/teams/setup",
+                json=teams_config
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and data.get('integration_type') == 'teams':
+                    self.log_result("Teams Setup", True, f"Status: configured")
+                    return True
+                else:
+                    self.log_result("Teams Setup", False, f"Response: {data}")
+                    return False
+            else:
+                self.log_result("Teams Setup", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Teams Setup", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_teams_validate(self) -> bool:
+        """Test Teams validation endpoint"""
+        try:
+            response = self.session.post(f"{self.base_url}/api/integrations/teams/validate")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('valid'):
+                    self.log_result("Teams Validation", True, f"Connection: {data.get('connection_status')}")
+                    return True
+                else:
+                    self.log_result("Teams Validation", False, f"Errors: {data.get('errors')}")
+                    return False
+            else:
+                self.log_result("Teams Validation", False, f"Status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Teams Validation", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_github_setup(self) -> bool:
+        """Test GitHub integration setup"""
+        try:
+            github_config = {
+                "organization": "testorg",
+                "repositories": ["frontend", "backend", "docs"],
+                "access_token": "ghp_test_token_123456789",
+                "webhook_secret": "test-webhook-secret",
+                "auto_sync": True,
+                "settings": {"test": True}
+            }
+            
+            response = self.session.post(
+                f"{self.base_url}/api/integrations/github/setup",
+                json=github_config
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and data.get('integration_type') == 'github':
+                    self.log_result("GitHub Setup", True, f"Status: configured")
+                    return True
+                else:
+                    self.log_result("GitHub Setup", False, f"Response: {data}")
+                    return False
+            else:
+                self.log_result("GitHub Setup", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_result("GitHub Setup", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_github_validate(self) -> bool:
+        """Test GitHub validation endpoint"""
+        try:
+            response = self.session.post(f"{self.base_url}/api/integrations/github/validate")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('valid'):
+                    self.log_result("GitHub Validation", True, f"Connection: {data.get('connection_status')}")
+                    return True
+                else:
+                    self.log_result("GitHub Validation", False, f"Errors: {data.get('errors')}")
+                    return False
+            else:
+                self.log_result("GitHub Validation", False, f"Status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("GitHub Validation", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_google_workspace_setup(self) -> bool:
+        """Test Google Workspace integration setup"""
+        try:
+            google_config = {
+                "domain": "testcompany.com",
+                "service_account_key": '{"type": "service_account", "project_id": "test"}',
+                "delegated_user": "admin@testcompany.com",
+                "calendar_sync": True,
+                "drive_sync": True,
+                "gmail_sync": False,
+                "settings": {"test": True}
+            }
+            
+            response = self.session.post(
+                f"{self.base_url}/api/integrations/google-workspace/setup",
+                json=google_config
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and data.get('integration_type') == 'google_workspace':
+                    self.log_result("Google Workspace Setup", True, f"Status: configured")
+                    return True
+                else:
+                    self.log_result("Google Workspace Setup", False, f"Response: {data}")
+                    return False
+            else:
+                self.log_result("Google Workspace Setup", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Google Workspace Setup", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_google_workspace_validate(self) -> bool:
+        """Test Google Workspace validation endpoint"""
+        try:
+            response = self.session.post(f"{self.base_url}/api/integrations/google-workspace/validate")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('valid'):
+                    self.log_result("Google Workspace Validation", True, f"Connection: {data.get('connection_status')}")
+                    return True
+                else:
+                    self.log_result("Google Workspace Validation", False, f"Errors: {data.get('errors')}")
+                    return False
+            else:
+                self.log_result("Google Workspace Validation", False, f"Status: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Google Workspace Validation", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_integration_functionality(self) -> bool:
+        """Test integration functionality endpoints"""
+        success_count = 0
+        total_tests = 0
         
-        # Final results
-        end_time = datetime.utcnow()
-        duration = (end_time - start_time).total_seconds()
+        # Test Slack notification
+        try:
+            total_tests += 1
+            response = self.session.post(
+                f"{self.base_url}/api/integrations/slack/notify",
+                json={
+                    "channel": "general",
+                    "message": "Test notification from integration testing",
+                    "priority": "normal"
+                }
+            )
+            if response.status_code == 200 and response.json().get('success'):
+                success_count += 1
+                self.log_result("Slack Notification", True, "Message sent successfully")
+            else:
+                self.log_result("Slack Notification", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("Slack Notification", False, f"Exception: {str(e)}")
         
-        print("\n" + "="*80)
-        print("📊 TIMELINE API TESTING RESULTS")
-        print("="*80)
-        print(f"⏱️ Total time: {duration:.2f} seconds")
-        print(f"🧪 Tests run: {self.tests_run}")
-        print(f"✅ Tests passed: {self.tests_passed}")
-        print(f"❌ Tests failed: {self.tests_run - self.tests_passed}")
-        print(f"📈 Success rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        # Test Teams adaptive card
+        try:
+            total_tests += 1
+            response = self.session.post(
+                f"{self.base_url}/api/integrations/teams/adaptive-card",
+                json={
+                    "channel_id": "test-channel",
+                    "message": "Test adaptive card",
+                    "card_data": {"body": [{"type": "TextBlock", "text": "Test"}]}
+                }
+            )
+            if response.status_code == 200 and response.json().get('success'):
+                success_count += 1
+                self.log_result("Teams Adaptive Card", True, "Card sent successfully")
+            else:
+                self.log_result("Teams Adaptive Card", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("Teams Adaptive Card", False, f"Exception: {str(e)}")
         
-        print(f"\n✅ Passed test categories ({len(passed_tests)}):")
-        for test in passed_tests:
-            print(f"   • {test}")
+        # Test GitHub repositories
+        try:
+            total_tests += 1
+            response = self.session.get(f"{self.base_url}/api/integrations/github/repositories")
+            if response.status_code == 200:
+                data = response.json()
+                if 'repositories' in data:
+                    success_count += 1
+                    self.log_result("GitHub Repositories", True, f"Found {len(data['repositories'])} repositories")
+                else:
+                    self.log_result("GitHub Repositories", False, "No repositories in response")
+            else:
+                self.log_result("GitHub Repositories", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("GitHub Repositories", False, f"Exception: {str(e)}")
         
-        if failed_tests:
-            print(f"\n❌ Failed test categories ({len(failed_tests)}):")
-            for test in failed_tests:
-                print(f"   • {test}")
+        # Test Google Workspace meeting scheduling
+        try:
+            total_tests += 1
+            response = self.session.post(
+                f"{self.base_url}/api/integrations/google-workspace/schedule-meeting",
+                json={
+                    "title": "Test Meeting",
+                    "description": "Integration test meeting",
+                    "start_time": "2024-12-01T10:00:00Z",
+                    "end_time": "2024-12-01T11:00:00Z",
+                    "attendees": ["test@example.com"]
+                }
+            )
+            if response.status_code == 200 and response.json().get('success'):
+                success_count += 1
+                self.log_result("Google Workspace Meeting", True, "Meeting scheduled successfully")
+            else:
+                self.log_result("Google Workspace Meeting", False, f"Status: {response.status_code}")
+        except Exception as e:
+            self.log_result("Google Workspace Meeting", False, f"Exception: {str(e)}")
         
-        print("="*80)
+        return success_count == total_tests
+    
+    def run_all_tests(self):
+        """Run all integration tests"""
+        print("🚀 Starting Integration Platform Backend API Tests")
+        print(f"📍 Testing against: {self.base_url}")
+        print("=" * 60)
         
-        return len(failed_tests) == 0
+        # Authentication
+        if not self.authenticate():
+            return self.get_results()
+        
+        # Core integration tests
+        self.test_integration_health()
+        self.test_available_integrations()
+        self.test_integration_status()
+        
+        # Slack integration tests
+        self.test_slack_setup()
+        self.test_slack_validate()
+        
+        # Teams integration tests
+        self.test_teams_setup()
+        self.test_teams_validate()
+        
+        # GitHub integration tests
+        self.test_github_setup()
+        self.test_github_validate()
+        
+        # Google Workspace integration tests
+        self.test_google_workspace_setup()
+        self.test_google_workspace_validate()
+        
+        # Functionality tests
+        self.test_integration_functionality()
+        
+        return self.get_results()
+    
+    def get_results(self):
+        """Get test results summary"""
+        success_rate = (self.tests_passed / self.tests_run * 100) if self.tests_run > 0 else 0
+        
+        print("\n" + "=" * 60)
+        print("📊 TEST RESULTS SUMMARY")
+        print("=" * 60)
+        print(f"✅ Tests Passed: {self.tests_passed}/{self.tests_run}")
+        print(f"📈 Success Rate: {success_rate:.1f}%")
+        
+        if self.failed_tests:
+            print(f"\n❌ Failed Tests ({len(self.failed_tests)}):")
+            for failure in self.failed_tests:
+                print(f"   • {failure}")
+        
+        return {
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "failed_tests": len(self.failed_tests),
+            "success_rate": success_rate,
+            "failures": self.failed_tests,
+            "timestamp": datetime.utcnow().isoformat()
+        }
 
 def main():
-    """Main testing function"""
-    print("🎯 Phase 6.1 Core Gantt Chart Engine - Backend API Testing")
-    print("="*80)
+    """Main test execution"""
+    tester = IntegrationAPITester()
+    results = tester.run_all_tests()
     
-    tester = TimelineAPITester()
-    success = tester.run_comprehensive_timeline_tests()
-    
-    return 0 if success else 1
+    # Return appropriate exit code
+    return 0 if results["failed_tests"] == 0 else 1
 
 if __name__ == "__main__":
     sys.exit(main())
