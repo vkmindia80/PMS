@@ -198,7 +198,6 @@ const IntegrationsPage: React.FC = () => {
 
   useEffect(() => {
     loadIntegrations()
-    loadIntegrationLogs()
   }, [])
 
   // Enhanced wizard steps configuration
