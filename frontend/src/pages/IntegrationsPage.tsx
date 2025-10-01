@@ -2765,166 +2765,77 @@ const IntegrationsPage: React.FC = () => {
           {filteredIntegrations.map(([type, integration]) => {
             const isActive = activeIntegrations[type]?.status === 'active'
             const testResult = testResults[type]
-            const logs = integrationLogs[type] || []
             const connectionState = connectionStatus[type] || 'idle'
-            const validationResult = validationResults[type]
-
+            
             return (
-              <div key={type} className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
+              <div key={type} className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                {/* Header */}
+                <div className="p-4 border-b border-gray-100">
+                  <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
-                      {getIntegrationIcon(type)}
-                      <div className="ml-3">
-                        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                          {integration.name}
-                          {isActive && <Activity className="w-4 h-4 ml-2 text-green-500" />}
-                          {connectionState === 'testing' && <Loader className="w-4 h-4 ml-2 animate-spin text-blue-500" />}
-                        </h3>
-                        <p className="text-sm text-gray-600">{integration.description}</p>
-                        {activeIntegrations[type]?.last_updated && (
-                          <p className="text-xs text-gray-400 mt-1">
-                            Last updated: {new Date(activeIntegrations[type].last_updated).toLocaleDateString()}
-                          </p>
-                        )}
-                      </div>
+                      {type === 'slack' && <Slack className="w-6 h-6 text-green-600" />}
+                      {type === 'teams' && <Users className="w-6 h-6 text-blue-600" />}
+                      {type === 'github' && <Github className="w-6 h-6 text-gray-800" />}
+                      {type === 'google_workspace' && <Calendar className="w-6 h-6 text-orange-600" />}
+                      <h3 className="ml-2 font-semibold text-gray-900">{integration.name}</h3>
                     </div>
-                    <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      getStatusColor(activeIntegrations[type]?.status)
-                    }`}>
-                      {activeIntegrations[type]?.status || 'Not configured'}
-                    </div>
+                    <div className={`w-3 h-3 rounded-full ${isActive ? 'bg-green-500' : 'bg-gray-300'}`}></div>
                   </div>
+                  <p className="text-sm text-gray-600">{integration.description}</p>
+                </div>
 
-                  {/* Connection Status Indicator */}
-                  {connectionState !== 'idle' && (
-                    <div className={`mb-4 p-3 rounded-lg border ${
-                      connectionState === 'success' 
-                        ? 'bg-green-50 border-green-200' 
-                        : connectionState === 'failed' 
-                          ? 'bg-red-50 border-red-200' 
-                          : 'bg-blue-50 border-blue-200'
+                {/* Features */}
+                <div className="p-4">
+                  <h4 className="text-sm font-medium text-gray-900 mb-2">Features:</h4>
+                  <ul className="space-y-1">
+                    {integration.features.slice(0, 3).map((feature, idx) => (
+                      <li key={idx} className="flex items-center text-sm text-gray-600">
+                        <CheckSquare className="w-3 h-3 text-green-500 mr-2 flex-shrink-0" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Status & Actions */}
+                <div className="p-4 border-t border-gray-100">
+                  {testResult && (
+                    <div className={`mb-3 p-2 rounded text-xs ${
+                      testResult.success ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
                     }`}>
-                      <div className="flex items-center">
-                        {connectionState === 'testing' ? (
-                          <Loader className="w-4 h-4 animate-spin text-blue-600 mr-2" />
-                        ) : connectionState === 'success' ? (
-                          <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                        ) : (
-                          <AlertTriangle className="w-4 h-4 text-red-600 mr-2" />
-                        )}
-                        <span className={`text-sm font-medium ${
-                          connectionState === 'success' 
-                            ? 'text-green-800' 
-                            : connectionState === 'failed' 
-                              ? 'text-red-800' 
-                              : 'text-blue-800'
-                        }`}>
-                          {connectionState === 'testing' 
-                            ? 'Testing connection...' 
-                            : connectionState === 'success' 
-                              ? 'Connection verified' 
-                              : 'Connection failed'}
-                        </span>
-                      </div>
-                      {validationResult?.errors?.map((error, index) => (
-                        <p key={index} className="text-xs text-red-700 mt-1">{error}</p>
-                      ))}
-                      {validationResult?.warnings?.map((warning, index) => (
-                        <p key={index} className="text-xs text-yellow-700 mt-1">{warning}</p>
-                      ))}
+                      {testResult.success ? '✅ Test successful' : '❌ Test failed'}
+                      {testResult.message && <span className="block mt-1">{testResult.message}</span>}
                     </div>
                   )}
-
-                  {/* Features */}
-                  <div className="mb-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Features:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {integration.features.map((feature, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Recent Activity Logs */}
-                  {isActive && logs.length > 0 && (
-                    <div className="mb-4 bg-gray-50 p-3 rounded-lg">
-                      <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                        <Activity className="w-4 h-4 mr-1" />
-                        Recent Activity
-                      </h4>
-                      <div className="space-y-1 max-h-20 overflow-y-auto">
-                        {logs.slice(0, 2).map((log, index) => (
-                          <div key={index} className="flex items-center text-xs">
-                            <div className={`w-2 h-2 rounded-full mr-2 ${
-                              log.level === 'info' ? 'bg-blue-400' : 
-                              log.level === 'warning' ? 'bg-yellow-400' : 'bg-red-400'
-                            }`} />
-                            <span className="text-gray-600 flex-1">{log.message}</span>
-                            <span className="text-gray-400 ml-2">
-                              {log.timestamp.toLocaleTimeString()}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Enhanced Actions */}
-                  <div className="flex flex-wrap gap-2">
-                    {!isActive ? (
+                  
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => {
+                        const steps = getWizardSteps(type)
+                        setWizardSteps(steps)
+                        setCurrentWizardStep(0)
+                        setSetupModal({ type, integration, mode: isActive ? 'edit' : 'setup' })
+                      }}
+                      className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        isActive 
+                          ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                          : 'bg-green-600 text-white hover:bg-green-700'
+                      }`}
+                    >
+                      {isActive ? 'Configure' : 'Setup'}
+                    </button>
+                    {isActive && (
                       <button
-                        onClick={() => {
-                          setSetupModal({ type, integration, mode: 'setup' })
-                          setWizardSteps(getWizardSteps(type))
-                          setCurrentWizardStep(0)
-                        }}
-                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        onClick={() => testIntegration(type)}
+                        disabled={connectionState === 'testing'}
+                        className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium disabled:opacity-50"
                       >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Setup Wizard
+                        {connectionState === 'testing' ? (
+                          <Loader className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <PlayCircle className="w-4 h-4" />
+                        )}
                       </button>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => editIntegrationConfig(type)}
-                          className="flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                        >
-                          <Edit className="w-4 h-4 mr-1" />
-                          Configure
-                        </button>
-                        <button
-                          onClick={() => validateConfigurationLive(type)}
-                          disabled={connectionState === 'testing'}
-                          className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-                        >
-                          {connectionState === 'testing' ? (
-                            <Loader className="w-4 h-4 animate-spin mr-1" />
-                          ) : (
-                            <Shield className="w-4 h-4 mr-1" />
-                          )}
-                          {connectionState === 'testing' ? 'Testing...' : 'Test'}
-                        </button>
-                        <button
-                          onClick={() => exportConfiguration(type)}
-                          className="flex items-center px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                        >
-                          <Download className="w-4 h-4 mr-1" />
-                          Export
-                        </button>
-                        <button
-                          onClick={() => removeIntegration(type)}
-                          className="flex items-center px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4 mr-1" />
-                          Remove
-                        </button>
-                      </>
                     )}
                   </div>
                 </div>
