@@ -277,31 +277,6 @@ const IntegrationsPage: React.FC = () => {
     }
   }
 
-  // OAuth flow initiation
-  const initiateOAuthFlow = async (type: string) => {
-    try {
-      setOauthInProgress(prev => ({ ...prev, [type]: true }))
-      
-      // Simulate OAuth flow URLs (in production, these would be real OAuth endpoints)
-      const oauthUrls = {
-        slack: 'https://slack.com/oauth/v2/authorize?client_id=YOUR_CLIENT_ID&scope=channels:read,chat:write&redirect_uri=YOUR_REDIRECT_URI',
-        teams: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=YOUR_CLIENT_ID&response_type=code&scope=https://graph.microsoft.com/Team.ReadBasic.All',
-        github: 'https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID&scope=repo,admin:org',
-        google_workspace: 'https://accounts.google.com/oauth/authorize?client_id=YOUR_CLIENT_ID&scope=https://www.googleapis.com/auth/calendar'
-      }
-      
-      // For demo purposes, we'll simulate successful OAuth
-      setTimeout(() => {
-        setOauthInProgress(prev => ({ ...prev, [type]: false }))
-        alert(`OAuth flow completed for ${type}. In production, this would redirect to the actual OAuth provider.`)
-      }, 2000)
-      
-    } catch (error) {
-      setOauthInProgress(prev => ({ ...prev, [type]: false }))
-      console.error(`OAuth flow error for ${type}:`, error)
-    }
-  }
-
   const renderWizardStep = (type: string, step: WizardStep, stepIndex: number) => {
     switch (`${type}-${step.id}`) {
       // Slack Wizard Steps
