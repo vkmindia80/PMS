@@ -326,59 +326,72 @@ const IntegrationsPage: React.FC = () => {
 
       case 'slack-permissions':
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-6">
-              <Shield className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900">Configure Bot Permissions</h3>
-              <p className="text-gray-600">Set up the permissions for your Slack bot</p>
-            </div>
-
-            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-              <h4 className="text-sm font-medium text-yellow-800 mb-3">Required Bot Token Scopes</h4>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                {['channels:read', 'chat:write', 'users:read', 'groups:read', 'im:read', 'mpim:read'].map(scope => (
-                  <div key={scope} className="flex items-center text-yellow-700">
-                    <CheckSquare className="w-4 h-4 mr-2" />
-                    {scope}
+          <div className="space-y-4">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="flex items-center mb-2">
+                <Shield className="w-5 h-5 text-green-600 mr-2" />
+                <h4 className="font-semibold text-green-900">Configure Permissions & Bot Settings</h4>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Bot Token</label>
+                  <div className="relative">
+                    <input
+                      type={showCredentials.slack ? 'text' : 'password'}
+                      value={slackConfig.bot_token}
+                      onChange={(e) => setSlackConfig({ ...slackConfig, bot_token: e.target.value })}
+                      className="w-full p-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      placeholder="xoxb-your-bot-token"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCredentials({ ...showCredentials, slack: !showCredentials.slack })}
+                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    >
+                      {showCredentials.slack ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Bot Token (xoxb-...)
-                </label>
-                <div className="relative">
-                  <input
-                    type={showCredentials.slack ? 'text' : 'password'}
-                    value={slackConfig.bot_token}
-                    onChange={(e) => setSlackConfig({ ...slackConfig, bot_token: e.target.value })}
-                    className="w-full p-4 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="xoxb-your-bot-token-here"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowCredentials(prev => ({ ...prev, slack: !prev.slack }))}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center"
-                  >
-                    {showCredentials.slack ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Get your bot token from your Slack app's OAuth & Permissions page
+                  </p>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  App Token (xapp-...) <span className="text-gray-500">(optional)</span>
-                </label>
-                <input
-                  type={showCredentials.slack ? 'text' : 'password'}
-                  value={slackConfig.app_token}
-                  onChange={(e) => setSlackConfig({ ...slackConfig, app_token: e.target.value })}
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="xapp-your-app-token-here"
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={slackConfig.notifications_enabled}
+                      onChange={(e) => setSlackConfig({ ...slackConfig, notifications_enabled: e.target.checked })}
+                      className="mr-2"
+                    />
+                    <div>
+                      <span className="text-sm font-medium">Notifications</span>
+                      <p className="text-xs text-gray-500">Enable real-time notifications</p>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={slackConfig.enable_slash_commands}
+                      onChange={(e) => setSlackConfig({ ...slackConfig, enable_slash_commands: e.target.checked })}
+                      className="mr-2"
+                    />
+                    <div>
+                      <span className="text-sm font-medium">Slash Commands</span>
+                      <p className="text-xs text-gray-500">Enable /portfolio commands</p>
+                    </div>
+                  </label>
+                </div>
+
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-blue-900 mb-2">Required Bot Scopes:</h5>
+                  <div className="grid grid-cols-2 gap-2 text-sm text-blue-800">
+                    <span>• channels:read</span>
+                    <span>• chat:write</span>
+                    <span>• users:read</span>
+                    <span>• files:write</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
