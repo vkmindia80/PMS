@@ -1616,12 +1616,14 @@ const IntegrationsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Integration Cards */}
+        {/* Enhanced Integration Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredIntegrations.map(([type, integration]) => {
             const isActive = activeIntegrations[type]?.status === 'active'
             const testResult = testResults[type]
             const logs = integrationLogs[type] || []
+            const connectionState = connectionStatus[type] || 'idle'
+            const validationResult = validationResults[type]
 
             return (
               <div key={type} className="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow">
@@ -1633,6 +1635,7 @@ const IntegrationsPage: React.FC = () => {
                         <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                           {integration.name}
                           {isActive && <Activity className="w-4 h-4 ml-2 text-green-500" />}
+                          {connectionState === 'testing' && <Loader className="w-4 h-4 ml-2 animate-spin text-blue-500" />}
                         </h3>
                         <p className="text-sm text-gray-600">{integration.description}</p>
                         {activeIntegrations[type]?.last_updated && (
@@ -1648,6 +1651,46 @@ const IntegrationsPage: React.FC = () => {
                       {activeIntegrations[type]?.status || 'Not configured'}
                     </div>
                   </div>
+
+                  {/* Connection Status Indicator */}
+                  {connectionState !== 'idle' && (
+                    <div className={`mb-4 p-3 rounded-lg border ${
+                      connectionState === 'success' 
+                        ? 'bg-green-50 border-green-200' 
+                        : connectionState === 'failed' 
+                          ? 'bg-red-50 border-red-200' 
+                          : 'bg-blue-50 border-blue-200'
+                    }`}>
+                      <div className="flex items-center">
+                        {connectionState === 'testing' ? (
+                          <Loader className="w-4 h-4 animate-spin text-blue-600 mr-2" />
+                        ) : connectionState === 'success' ? (
+                          <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                        ) : (
+                          <AlertTriangle className="w-4 h-4 text-red-600 mr-2" />
+                        )}
+                        <span className={`text-sm font-medium ${
+                          connectionState === 'success' 
+                            ? 'text-green-800' 
+                            : connectionState === 'failed' 
+                              ? 'text-red-800' 
+                              : 'text-blue-800'
+                        }`}>
+                          {connectionState === 'testing' 
+                            ? 'Testing connection...' 
+                            : connectionState === 'success' 
+                              ? 'Connection verified' 
+                              : 'Connection failed'}
+                        </span>
+                      </div>
+                      {validationResult?.errors?.map((error, index) => (
+                        <p key={index} className="text-xs text-red-700 mt-1">{error}</p>
+                      ))}
+                      {validationResult?.warnings?.map((warning, index) => (
+                        <p key={index} className="text-xs text-yellow-700 mt-1">{warning}</p>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Features */}
                   <div className="mb-4">
@@ -1688,36 +1731,19 @@ const IntegrationsPage: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Test Results */}
-                  {testResult && (
-                    <div className={`mb-4 p-3 rounded-lg ${
-                      testResult.success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
-                    }`}>
-                      <div className="flex items-center">
-                        {testResult.success ? (
-                          <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                        ) : (
-                          <AlertCircle className="w-4 h-4 text-red-600 mr-2" />
-                        )}
-                        <span className={`text-sm font-medium ${testResult.success ? 'text-green-800' : 'text-red-800'}`}>
-                          {testResult.success ? 'Test successful' : 'Test failed'}
-                        </span>
-                      </div>
-                      {testResult.error && (
-                        <p className="text-xs text-red-700 mt-1">{testResult.error}</p>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Actions */}
+                  {/* Enhanced Actions */}
                   <div className="flex flex-wrap gap-2">
                     {!isActive ? (
                       <button
-                        onClick={() => setSetupModal({ type, integration, mode: 'setup' })}
+                        onClick={() => {
+                          setSetupModal({ type, integration, mode: 'setup' })
+                          setWizardSteps(getWizardSteps(type))
+                          setCurrentWizardStep(0)
+                        }}
                         className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                       >
                         <Plus className="w-4 h-4 mr-2" />
-                        Setup
+                        Setup Wizard
                       </button>
                     ) : (
                       <>
@@ -1726,15 +1752,19 @@ const IntegrationsPage: React.FC = () => {
                           className="flex items-center px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                         >
                           <Edit className="w-4 h-4 mr-1" />
-                          Edit
+                          Configure
                         </button>
                         <button
-                          onClick={() => testIntegration(type)}
-                          disabled={isLoading}
-                          className="flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
+                          onClick={() => validateConfigurationLive(type)}
+                          disabled={connectionState === 'testing'}
+                          className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
                         >
-                          <Zap className="w-4 h-4 mr-1" />
-                          Test
+                          {connectionState === 'testing' ? (
+                            <Loader className="w-4 h-4 animate-spin mr-1" />
+                          ) : (
+                            <Shield className="w-4 h-4 mr-1" />
+                          )}
+                          {connectionState === 'testing' ? 'Testing...' : 'Test'}
                         </button>
                         <button
                           onClick={() => exportConfiguration(type)}
