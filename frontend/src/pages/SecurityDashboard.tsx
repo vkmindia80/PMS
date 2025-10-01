@@ -499,22 +499,167 @@ const SecurityDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Security Events Breakdown */}
-          {metrics?.security_events.by_type && Object.keys(metrics.security_events.by_type).length > 0 && (
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Security Events by Type</h3>
-              <div className="space-y-3">
-                {Object.entries(metrics.security_events.by_type).map(([type, count]) => (
-                  <div key={type} className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700 capitalize">
-                      {type.replace(/_/g, ' ')}
-                    </span>
-                    <span className="text-sm font-bold text-gray-900">{count as number}</span>
-                  </div>
-                ))}
+          {/* Enhanced Security Information Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Security Events Breakdown */}
+            {metrics?.security_events.by_type && Object.keys(metrics.security_events.by_type).length > 0 && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Security Events by Type</h3>
+                <div className="space-y-3">
+                  {Object.entries(metrics.security_events.by_type).map(([type, count]) => (
+                    <div key={type} className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700 capitalize">
+                        {type.replace(/_/g, ' ')}
+                      </span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-16 h-2 bg-gray-200 rounded-full">
+                          <div 
+                            className="h-2 bg-blue-500 rounded-full" 
+                            style={{ 
+                              width: `${Math.min(100, ((count as number) / (metrics.security_events.total_last_30_days || 1)) * 100)}%` 
+                            }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-bold text-gray-900 w-8 text-right">{count as number}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {/* Threat Intelligence */}
+            {metrics?.threat_intelligence && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Threat Intelligence</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Global Threat Level</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      metrics.threat_intelligence.global_threat_level === 'low' ? 'bg-green-100 text-green-800' :
+                      metrics.threat_intelligence.global_threat_level === 'moderate' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {metrics.threat_intelligence.global_threat_level}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <div className="font-medium text-gray-900">{metrics.threat_intelligence.threats_blocked_today}</div>
+                      <div className="text-gray-600">Threats Blocked Today</div>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">{metrics.threat_intelligence.suspicious_ips_detected}</div>
+                      <div className="text-gray-600">Suspicious IPs</div>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">{metrics.threat_intelligence.malware_attempts_blocked}</div>
+                      <div className="text-gray-600">Malware Blocked</div>
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">{metrics.threat_intelligence.phishing_attempts_detected}</div>
+                      <div className="text-gray-600">Phishing Detected</div>
+                    </div>
+                  </div>
+                  {metrics.threat_intelligence.last_threat_detected && (
+                    <div className="text-xs text-gray-500 pt-2 border-t">
+                      Last threat: {new Date(metrics.threat_intelligence.last_threat_detected).toLocaleString()}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Security Trends */}
+            {metrics?.security_trends && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Security Trends (7 days)</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Trend</span>
+                    <span className={`flex items-center space-x-1 ${
+                      metrics.security_trends.week_over_week_change.startsWith('+') ? 'text-red-600' : 'text-green-600'
+                    }`}>
+                      <TrendingUp className="h-4 w-4" />
+                      <span className="text-sm font-medium">{metrics.security_trends.week_over_week_change}</span>
+                    </span>
+                  </div>
+                  <div className="text-sm">
+                    <div className="font-medium text-gray-900">{Math.round(metrics.security_trends.average_daily_events)}</div>
+                    <div className="text-gray-600">Average Daily Events</div>
+                  </div>
+                  <div className="text-sm">
+                    <div className="font-medium text-gray-900">{metrics.security_trends.most_active_day}</div>
+                    <div className="text-gray-600">Most Active Day</div>
+                  </div>
+                  {metrics.security_trends.daily_security_events && (
+                    <div className="pt-2 border-t">
+                      <div className="flex items-end space-x-1 h-12">
+                        {Object.values(metrics.security_trends.daily_security_events).map((count, index) => (
+                          <div
+                            key={index}
+                            className="bg-blue-500 rounded-t flex-1 min-w-0"
+                            style={{ height: `${Math.max(2, ((count as number) / Math.max(...Object.values(metrics.security_trends.daily_security_events) as number[])) * 48)}px` }}
+                            title={`${count} events`}
+                          ></div>
+                        ))}
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">Last 7 days activity</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Vulnerability Status */}
+            {metrics?.vulnerability_status && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Vulnerability Assessment</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Security Score</span>
+                    <span className={`text-lg font-bold ${
+                      metrics.vulnerability_status.security_score >= 90 ? 'text-green-600' :
+                      metrics.vulnerability_status.security_score >= 70 ? 'text-yellow-600' : 'text-red-600'
+                    }`}>
+                      {metrics.vulnerability_status.security_score}/100
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    {Object.entries(metrics.vulnerability_status.vulnerabilities_found).map(([severity, count]) => (
+                      <div key={severity} className="flex justify-between">
+                        <span className="capitalize text-gray-600">{severity}:</span>
+                        <span className={`font-medium ${
+                          severity === 'critical' ? 'text-red-600' :
+                          severity === 'high' ? 'text-orange-600' :
+                          severity === 'medium' ? 'text-yellow-600' : 'text-green-600'
+                        }`}>
+                          {count as number}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="pt-2 border-t">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Fixed:</span>
+                      <span className="text-green-600 font-medium">{metrics.vulnerability_status.remediation_status.fixed}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">In Progress:</span>
+                      <span className="text-yellow-600 font-medium">{metrics.vulnerability_status.remediation_status.in_progress}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Pending:</span>
+                      <span className="text-red-600 font-medium">{metrics.vulnerability_status.remediation_status.pending}</span>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-500 pt-2 border-t">
+                    Last scan: {new Date(metrics.vulnerability_status.last_scan).toLocaleString()}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
