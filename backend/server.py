@@ -59,9 +59,6 @@ jwt_secret_from_env = os.getenv("JWT_SECRET_KEY")
 if not jwt_secret_from_env:
     # Use a fixed fallback for consistency during development
     os.environ["JWT_SECRET_KEY"] = "enterprise-portfolio-jwt-secret-key-2025"
-    logger.info("⚠️  Using fallback JWT secret key")
-else:
-    logger.info("✅ JWT secret key loaded from environment")
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
