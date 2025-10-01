@@ -54,12 +54,14 @@ load_dotenv()
 if not os.getenv("EMERGENT_LLM_KEY"):
     os.environ["EMERGENT_LLM_KEY"] = "sk-emergent-bB53fCe28A1265aCdB"
 
-# Add JWT secret key to environment if not present
-if not os.getenv("JWT_SECRET_KEY"):
-    import secrets
-    jwt_secret = secrets.token_urlsafe(32)
-    # In production, this should be set in environment variables
-    os.environ["JWT_SECRET_KEY"] = jwt_secret
+# Ensure JWT secret key is available
+jwt_secret_from_env = os.getenv("JWT_SECRET_KEY")
+if not jwt_secret_from_env:
+    # Use a fixed fallback for consistency during development
+    os.environ["JWT_SECRET_KEY"] = "enterprise-portfolio-jwt-secret-key-2025"
+    logger.info("⚠️  Using fallback JWT secret key")
+else:
+    logger.info("✅ JWT secret key loaded from environment")
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
