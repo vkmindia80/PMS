@@ -1791,33 +1791,112 @@ const IntegrationsPage: React.FC = () => {
           })}
         </div>
 
-        {/* Integration Statistics */}
-        <div className="mt-8 bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Integration Overview</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="text-center">
+        {/* Enhanced Integration Statistics Dashboard */}
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Integration Overview */}
+          <div className="lg:col-span-2 bg-white rounded-lg shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Activity className="w-5 h-5 mr-2" />
+              Integration Overview
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {Object.keys(availableIntegrations).length}
+                </div>
+                <div className="text-sm text-gray-600">Available</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  {Object.values(activeIntegrations).filter(i => i.status === 'active').length}
+                </div>
+                <div className="text-sm text-gray-600">Active</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {Object.values(connectionStatus).filter(status => status === 'success').length}
+                </div>
+                <div className="text-sm text-gray-600">Validated</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-600">
+                  {Object.values(connectionStatus).filter(status => status === 'testing').length}
+                </div>
+                <div className="text-sm text-gray-600">Testing</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Real-time Status Monitor */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Shield className="w-5 h-5 mr-2" />
+              System Health
+            </h3>
+            <div className="space-y-3">
+              {Object.entries(availableIntegrations).map(([type, integration]) => {
+                const status = activeIntegrations[type]?.status
+                const connectionState = connectionStatus[type]
+                const validation = validationResults[type]
+                
+                return (
+                  <div key={type} className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+                    <div className="flex items-center">
+                      {getIntegrationIcon(type)}
+                      <span className="ml-2 text-sm font-medium text-gray-900">{integration.name}</span>
+                    </div>
+                    <div className="flex items-center">
+                      {connectionState === 'testing' ? (
+                        <Loader className="w-4 h-4 animate-spin text-blue-500" />
+                      ) : connectionState === 'success' ? (
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                      ) : connectionState === 'failed' ? (
+                        <AlertTriangle className="w-4 h-4 text-red-500" />
+                      ) : status === 'active' ? (
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full bg-gray-300" />
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Integration Health Summary */}
+        <div className="mt-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Settings className="w-6 h-6 text-blue-600" />
+              </div>
+              <div className="ml-4">
+                <h3 className="text-lg font-semibold text-gray-900">Enterprise Integration Platform</h3>
+                <p className="text-gray-600">
+                  {Object.values(activeIntegrations).filter(i => i.status === 'active').length} of {Object.keys(availableIntegrations).length} integrations active
+                  {Object.values(connectionStatus).some(s => s === 'testing') && ' • Testing in progress'}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
               <div className="text-2xl font-bold text-blue-600">
-                {Object.keys(availableIntegrations).length}
+                {Math.round((Object.values(activeIntegrations).filter(i => i.status === 'active').length / Math.max(Object.keys(availableIntegrations).length, 1)) * 100)}%
               </div>
-              <div className="text-sm text-gray-600">Available</div>
+              <div className="text-sm text-gray-600">Integration Coverage</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
-                {Object.values(activeIntegrations).filter(i => i.status === 'active').length}
-              </div>
-              <div className="text-sm text-gray-600">Active</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600">
-                {Object.values(testResults).filter(r => r?.success).length}
-              </div>
-              <div className="text-sm text-gray-600">Tested</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
-                {Object.values(testResults).filter(r => r?.success === false).length}
-              </div>
-              <div className="text-sm text-gray-600">Failed Tests</div>
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="mt-4">
+            <div className="bg-blue-200 rounded-full h-2">
+              <div 
+                className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                style={{ 
+                  width: `${(Object.values(activeIntegrations).filter(i => i.status === 'active').length / Math.max(Object.keys(availableIntegrations).length, 1)) * 100}%` 
+                }}
+              />
             </div>
           </div>
         </div>
