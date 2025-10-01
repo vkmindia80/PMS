@@ -1,0 +1,27 @@
+{
+  "generation_timestamp": "2025-10-01T17:15:28.673830",
+  "status": "completed",
+  "summary": {
+    "users_created": 15,
+    "teams_created": 6,
+    "projects_created": 6,
+    "tasks_created": 69,
+    "comments_created": 16,
+    "files_created": 29,
+    "notifications_created": 170,
+    "total_data_points": 311
+  },
+  "statistics": {
+    "active_projects": 4,
+    "completed_projects": 1,
+    "active_tasks": 33,
+    "completed_tasks": 24,
+    "team_members_total": 16
+  },
+  "access_information": {
+    "demo_login": "demo@company.com / demo123456",
+    "frontend_url": "http://localhost:3000",
+    "backend_api": "http://localhost:8001",
+    "api_docs": "http://localhost:8001/docs"
+  }
+}
