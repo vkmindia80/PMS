@@ -625,7 +625,7 @@ async def trigger_data_cleanup(
 async def get_security_dashboard_metrics(
     current_user: User = Depends(get_current_active_user)
 ):
-    """Get security dashboard metrics"""
+    """Get security dashboard metrics with enhanced real-time data"""
     if current_user.role not in [UserRole.ADMIN, UserRole.SUPER_ADMIN]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -636,13 +636,100 @@ async def get_security_dashboard_metrics(
     
     try:
         metrics = await security_service.get_dashboard_metrics(db, current_user.organization_id)
-        return metrics
+        
+        # Enhance metrics with real-time data
+        enhanced_metrics = await security_service.enhance_dashboard_metrics(db, metrics, current_user.organization_id)
+        
+        return enhanced_metrics
         
     except Exception as e:
         logger.error(f"Failed to get security dashboard metrics: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve security dashboard metrics"
+        )
+
+@router.get("/dashboard/realtime-events", response_model=List[Dict[str, Any]])
+async def get_realtime_security_events(
+    limit: int = 50,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get recent security events for real-time timeline"""
+    if current_user.role not in [UserRole.ADMIN, UserRole.SUPER_ADMIN]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient permissions to view security events"
+        )
+    
+    db = await get_database()
+    
+    try:
+        events = await security_service.get_recent_security_events(db, current_user.organization_id, limit)
+        return [event.model_dump() for event in events]
+        
+    except Exception as e:
+        logger.error(f"Failed to get real-time security events: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve real-time security events"
+        )
+
+@router.post("/dashboard/generate-demo-events", response_model=dict)
+async def generate_demo_security_events(
+    current_user: User = Depends(get_current_active_user)
+):
+    """Generate realistic demo security events for demonstration"""
+    if current_user.role not in [UserRole.ADMIN, UserRole.SUPER_ADMIN]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient permissions to generate demo events"
+        )
+    
+    db = await get_database()
+    
+    try:
+        events_generated = await security_service.generate_demo_security_events(
+            db, current_user.organization_id, current_user.id
+        )
+        
+        return {
+            "success": True,
+            "events_generated": events_generated,
+            "message": "Demo security events generated successfully"
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to generate demo security events: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to generate demo security events"
+        )
+
+@router.get("/compliance/status", response_model=Dict[str, Any])
+async def get_compliance_status(
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get real-time compliance status for SOC2, GDPR, HIPAA"""
+    if current_user.role not in [UserRole.ADMIN, UserRole.SUPER_ADMIN]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Insufficient permissions to view compliance status"
+        )
+    
+    db = await get_database()
+    
+    try:
+        compliance_status = await compliance_service.get_realtime_compliance_status(
+            db, current_user.organization_id
+        )
+        
+        return compliance_status
+        
+    except Exception as e:
+        logger.error(f"Failed to get compliance status: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve compliance status"
         )
 
 @router.get("/health", response_model=dict)
