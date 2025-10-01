@@ -380,8 +380,9 @@ const SecurityDashboard: React.FC = () => {
           <nav className="-mb-px flex space-x-8">
             {[
               { id: 'overview', name: 'Overview', icon: Activity },
+              { id: 'realtime', name: 'Real-Time Events', icon: Zap },
+              { id: 'compliance', name: 'Compliance Status', icon: FileCheck },
               { id: 'threats', name: 'Threats', icon: AlertTriangle },
-              { id: 'compliance', name: 'Compliance', icon: FileCheck },
               { id: 'mfa', name: 'MFA Status', icon: Lock }
             ].map(tab => {
               const Icon = tab.icon;
@@ -397,6 +398,9 @@ const SecurityDashboard: React.FC = () => {
                 >
                   <Icon className="h-4 w-4" />
                   <span>{tab.name}</span>
+                  {tab.id === 'realtime' && autoRefresh && (
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  )}
                 </button>
               );
             })}
