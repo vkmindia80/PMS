@@ -41,7 +41,8 @@ interface ProjectFilterProviderProps {
 }
 
 export const ProjectFilterProvider: React.FC<ProjectFilterProviderProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth()
+  const auth = useAuth()
+  const isAuthenticated = auth?.isAuthenticated || false
   const [selectedProject, setSelectedProject] = useState<string | string[]>('all')
   
   const {
@@ -54,7 +55,9 @@ export const ProjectFilterProvider: React.FC<ProjectFilterProviderProps> = ({ ch
   } = useProjectFilter({
     autoFetch: isAuthenticated,
     onError: (error) => {
-      console.error('Project filter error:', error)
+      if (error) {
+        console.error('Project filter error:', error)
+      }
     }
   })
 
