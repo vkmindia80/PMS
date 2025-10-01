@@ -2931,9 +2931,15 @@ const IntegrationsPage: React.FC = () => {
               </div>
             )
           })}
-        </div>
+            </div>
+          </>
+        )}
+        
+        {currentView === 'management' && renderManagementDashboard()}
+        {currentView === 'monitoring' && renderMonitoringDashboard()}
 
-        {/* Enhanced Integration Statistics Dashboard */}
+        {/* Enhanced Integration Statistics Dashboard - Only show in overview */}
+        {currentView === 'overview' && (
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Integration Overview */}
           <div className="lg:col-span-2 bg-white rounded-lg shadow p-6">
