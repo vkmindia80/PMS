@@ -683,65 +683,180 @@ const SecurityDashboard: React.FC = () => {
 
       {activeTab === 'compliance' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Compliance Reports</h3>
+          {/* Overall Compliance Status */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold text-gray-900">Compliance Status Overview</h3>
+              {complianceStatus?.overall && (
+                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  complianceStatus.overall.status === 'compliant' 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-yellow-100 text-yellow-800'
+                }`}>
+                  {complianceStatus.overall.status}
+                </div>
+              )}
             </div>
-            <div className="p-6">
-              {reports.length === 0 ? (
-                <div className="text-center py-12">
-                  <FileCheck className="h-16 w-16 text-blue-400 mx-auto mb-4" />
-                  <h4 className="text-lg font-semibold text-gray-800 mb-2">No Compliance Reports</h4>
-                  <p className="text-gray-600 mb-6">No compliance assessments have been performed yet</p>
-                  <div className="space-y-4">
-                    <button
-                      onClick={() => window.open('/api/docs#/Enterprise%20Security/assess_compliance_api_security_compliance_assess_post', '_blank')}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      Start Compliance Assessment
-                    </button>
-                    <div className="text-sm text-gray-500">
-                      Supported standards: SOC2, GDPR, HIPAA, ISO 27001
+
+            {complianceStatus?.overall && (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">{complianceStatus.overall.score}</div>
+                  <div className="text-sm text-gray-600">Overall Score</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">{complianceStatus.overall.compliant_standards}</div>
+                  <div className="text-sm text-gray-600">Compliant Standards</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-red-600">{complianceStatus.overall.critical_issues}</div>
+                  <div className="text-sm text-gray-600">Critical Issues</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">{complianceStatus.overall.total_standards}</div>
+                  <div className="text-sm text-gray-600">Total Standards</div>
+                </div>
+              </div>
+            )}
+
+            {/* Compliance Standards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {complianceStatus && Object.entries(complianceStatus).map(([key, standard]) => {
+                if (key === 'overall' || key === 'recent_activities' || key === 'recommendations') return null;
+                
+                const standardData = standard as ComplianceStandardStatus;
+                return (
+                  <div key={key} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-gray-900 uppercase">{key.replace('_', ' ')}</h4>
+                      <div className="flex items-center space-x-2">
+                        {standardData.certification_valid ? (
+                          <CheckCircle className="h-5 w-5 text-green-500" />
+                        ) : (
+                          <XCircle className="h-5 w-5 text-red-500" />
+                        )}
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          standardData.status === 'compliant' ? 'bg-green-100 text-green-800' :
+                          standardData.status === 'needs_attention' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-red-100 text-red-800'
+                        }`}>
+                          {standardData.status.replace('_', ' ')}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Score:</span>
+                        <span className={`font-medium ${
+                          standardData.score >= 80 ? 'text-green-600' :
+                          standardData.score >= 60 ? 'text-yellow-600' : 'text-red-600'
+                        }`}>
+                          {standardData.score}/100
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Compliance:</span>
+                        <span>{standardData.compliance_percentage}%</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Issues:</span>
+                        <span className="text-red-600">
+                          {standardData.critical_issues + standardData.high_issues}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Next Assessment:</span>
+                        <span className="text-gray-600">
+                          {new Date(standardData.next_assessment).toLocaleDateString()}
+                        </span>
+                      </div>
+                      {standardData.requires_assessment && (
+                        <div className="mt-2">
+                          <AlertCircle className="h-4 w-4 text-yellow-500 inline mr-1" />
+                          <span className="text-xs text-yellow-600">Assessment Required</span>
+                        </div>
+                      )}
                     </div>
                   </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Recent Activities */}
+          {complianceStatus?.recent_activities && complianceStatus.recent_activities.length > 0 && (
+            <div className="bg-white rounded-lg shadow">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">Recent Compliance Activities</h3>
+              </div>
+              <div className="p-6">
+                <div className="space-y-3">
+                  {complianceStatus.recent_activities.slice(0, 5).map((activity, index) => (
+                    <div key={index} className="flex items-center space-x-3 py-2">
+                      <div className={`p-2 rounded-full ${
+                        activity.icon === 'file-check' ? 'bg-blue-100' : 'bg-green-100'
+                      }`}>
+                        {activity.icon === 'file-check' ? (
+                          <FileCheck className="h-4 w-4 text-blue-600" />
+                        ) : (
+                          <Shield className="h-4 w-4 text-green-600" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900">{activity.description}</p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(activity.timestamp).toLocaleDateString()} at {new Date(activity.timestamp).toLocaleTimeString()}
+                        </p>
+                      </div>
+                      {activity.score && (
+                        <div className="text-sm font-medium text-gray-600">
+                          Score: {activity.score}
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ) : (
+              </div>
+            </div>
+          )}
+
+          {/* Recommendations */}
+          {complianceStatus?.recommendations && complianceStatus.recommendations.length > 0 && (
+            <div className="bg-white rounded-lg shadow">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">Priority Recommendations</h3>
+              </div>
+              <div className="p-6">
                 <div className="space-y-4">
-                  {reports.map(report => (
-                    <div key={report.id} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-3">
-                          <h4 className="font-semibold text-gray-900">
-                            {report.compliance_standard.replace(/_/g, ' ').toUpperCase()}
-                          </h4>
+                  {complianceStatus.recommendations.slice(0, 5).map((rec, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center space-x-2">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            report.overall_score >= 80 
-                              ? 'bg-green-100 text-green-800'
-                              : report.overall_score >= 60
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-red-100 text-red-800'
+                            rec.priority === 'critical' ? 'bg-red-100 text-red-800' :
+                            rec.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                            'bg-yellow-100 text-yellow-800'
                           }`}>
-                            Score: {report.overall_score}/100
+                            {rec.priority}
+                          </span>
+                          <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                            {rec.category}
                           </span>
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {new Date(report.created_at).toLocaleDateString()}
-                        </div>
+                        <span className="text-xs text-gray-500">{rec.timeline.replace('_', ' ')}</span>
                       </div>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
-                        <span>Compliance: {report.compliance_percentage}%</span>
-                        <span>Critical Findings: {report.critical_findings.length}</span>
-                        <span>High Findings: {report.high_findings.length}</span>
-                        <span className={`capitalize ${getStatusColor(report.status)}`}>
-                          {report.status}
-                        </span>
+                      <h4 className="font-medium text-gray-900 mb-1">{rec.title}</h4>
+                      <p className="text-sm text-gray-600 mb-2">{rec.description}</p>
+                      <div className="flex items-center space-x-4 text-xs text-gray-500">
+                        <span>Effort: {rec.effort}</span>
+                        {rec.impact && <span>Impact: {rec.impact}</span>}
                       </div>
                     </div>
                   ))}
                 </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
