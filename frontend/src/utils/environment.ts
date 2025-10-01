@@ -44,6 +44,7 @@ export const getApiUrl = (): string => {
   }
   
   const hostname = window.location.hostname;
+  const protocol = window.location.protocol;
   
   // For localhost development, use the configured backend URL directly
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
@@ -54,10 +55,11 @@ export const getApiUrl = (): string => {
     return backendUrl;
   }
   
-  // If on emergentagent.com domain, use the same subdomain for API with correct protocol
+  // If on emergentagent.com domain, use relative URLs to let proxy handle it
   if (isEmergentagentDomain()) {
-    // Always use HTTPS for emergentagent.com domains to match frontend protocol
-    return `https://${hostname}`;
+    // For preview domains, use the same origin (protocol + hostname)
+    // This will be handled by the proxy configuration
+    return `${protocol}//${hostname}`;
   }
   
   // Default fallback
