@@ -243,7 +243,7 @@ const IntegrationsPage: React.FC = () => {
       setConnectionStatus(prev => ({ ...prev, [type]: 'testing' }))
       
       const response = await axios.post(
-        `${API_BASE_URL}/api/integrations/${type}/validate`,
+        `${getApiBaseUrl()}/api/integrations/${type}/validate`,
         {},
         { headers: getAuthHeaders() }
       )
@@ -1076,7 +1076,7 @@ const IntegrationsPage: React.FC = () => {
       setIsLoading(true)
       
       const response = await axios.get(
-        `${API_BASE_URL}/api/integrations/available`,
+        `${getApiBaseUrl()}/api/integrations/available`,
         { headers: getAuthHeaders() }
       )
       
@@ -1085,7 +1085,7 @@ const IntegrationsPage: React.FC = () => {
       // Load active integrations
       try {
         const activeResponse = await axios.get(
-          `${API_BASE_URL}/api/integrations/status`,
+          `${getApiBaseUrl()}/api/integrations/status`,
           { headers: getAuthHeaders() }
         )
         
@@ -1253,7 +1253,7 @@ const IntegrationsPage: React.FC = () => {
     try {
       // Simulate configuration validation
       const response = await axios.post(
-        `${API_BASE_URL}/api/integrations/${type}/validate`,
+        `${getApiBaseUrl()}/api/integrations/${type}/validate`,
         {},
         { headers: getAuthHeaders() }
       )
@@ -1291,7 +1291,7 @@ const IntegrationsPage: React.FC = () => {
       }
 
       const response = await axios.post(
-        `${API_BASE_URL}/api/integrations/${endpoint}`,
+        `${getApiBaseUrl()}/api/integrations/${endpoint}`,
         config,
         { headers: getAuthHeaders() }
       )
@@ -1348,7 +1348,7 @@ const IntegrationsPage: React.FC = () => {
       switch (type) {
         case 'slack':
           const slackResult = await axios.post(
-            `${API_BASE_URL}/api/integrations/slack/notify`,
+            `${getApiBaseUrl()}/api/integrations/slack/notify`,
             {
               channel: 'general',
               message: 'Test notification from Enterprise Portfolio Management',
@@ -1361,7 +1361,7 @@ const IntegrationsPage: React.FC = () => {
 
         case 'teams':
           const teamsResult = await axios.post(
-            `${API_BASE_URL}/api/integrations/teams/adaptive-card`,
+            `${getApiBaseUrl()}/api/integrations/teams/adaptive-card`,
             {
               channel_id: 'test-channel',
               message: 'Test adaptive card from Enterprise Portfolio Management',
@@ -1383,7 +1383,7 @@ const IntegrationsPage: React.FC = () => {
 
         case 'github':
           const githubResult = await axios.get(
-            `${API_BASE_URL}/api/integrations/github/repositories`,
+            `${getApiBaseUrl()}/api/integrations/github/repositories`,
             { headers: getAuthHeaders() }
           )
           result = { success: true, repositories: githubResult.data.repositories }
@@ -1391,7 +1391,7 @@ const IntegrationsPage: React.FC = () => {
 
         case 'google_workspace':
           const googleResult = await axios.post(
-            `${API_BASE_URL}/api/integrations/google-workspace/schedule-meeting`,
+            `${getApiBaseUrl()}/api/integrations/google-workspace/schedule-meeting`,
             {
               title: 'Test Meeting',
               description: 'Integration test meeting',
@@ -1944,7 +1944,7 @@ const IntegrationsPage: React.FC = () => {
 
     try {
       await axios.delete(
-        `${API_BASE_URL}/api/integrations/${type}`,
+        `${getApiBaseUrl()}/api/integrations/${type}`,
         { headers: getAuthHeaders() }
       )
       
