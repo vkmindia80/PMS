@@ -19,61 +19,47 @@ class IntegrationAPITester:
         self.failed_tests = []
         self.session = requests.Session()
 
-    def run_test(self, name, method, endpoint, expected_status, data=None, headers=None):
-        """Run a single API test"""
-        url = f"{self.base_url}/{endpoint}"
-        test_headers = {'Content-Type': 'application/json'}
-        
-        if self.token:
-            test_headers['Authorization'] = f'Bearer {self.token}'
-        
-        if headers:
-            test_headers.update(headers)
-
+    def log_result(self, test_name: str, success: bool, details: str = ""):
+        """Log test result"""
         self.tests_run += 1
-        print(f"\n🔍 Testing {name}...")
-        print(f"   URL: {url}")
-        
+        if success:
+            self.tests_passed += 1
+            print(f"✅ {test_name}: PASSED {details}")
+        else:
+            self.failed_tests.append(f"{test_name}: {details}")
+            print(f"❌ {test_name}: FAILED {details}")
+    
+    def authenticate(self) -> bool:
+        """Authenticate with demo credentials"""
         try:
-            if method == 'GET':
-                response = requests.get(url, headers=test_headers, timeout=10)
-            elif method == 'POST':
-                response = requests.post(url, json=data, headers=test_headers, timeout=10)
-            elif method == 'PUT':
-                response = requests.put(url, json=data, headers=test_headers, timeout=10)
-            elif method == 'DELETE':
-                response = requests.delete(url, headers=test_headers, timeout=10)
-
-            print(f"   Status: {response.status_code}")
+            auth_data = {
+                "email": "demo@company.com",
+                "password": "demo123456"
+            }
             
-            success = response.status_code == expected_status
-            if success:
-                self.tests_passed += 1
-                print(f"✅ Passed - Status: {response.status_code}")
-                try:
-                    response_data = response.json()
-                    if isinstance(response_data, dict) and len(str(response_data)) < 500:
-                        print(f"   Response: {json.dumps(response_data, indent=2, default=str)[:200]}...")
-                    elif isinstance(response_data, list):
-                        print(f"   Response: List with {len(response_data)} items")
-                    return True, response_data
-                except:
-                    return True, {}
+            response = self.session.post(
+                f"{self.base_url}/api/auth/login",
+                json=auth_data,
+                headers={'Content-Type': 'application/json'}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.token = data.get('access_token')
+                if self.token:
+                    self.session.headers.update({'Authorization': f'Bearer {self.token}'})
+                    self.log_result("Authentication", True, f"Status: {response.status_code}")
+                    return True
+                else:
+                    self.log_result("Authentication", False, "No access token in response")
+                    return False
             else:
-                print(f"❌ Failed - Expected {expected_status}, got {response.status_code}")
-                try:
-                    error_data = response.json()
-                    print(f"   Error: {error_data}")
-                except:
-                    print(f"   Error: {response.text[:200]}")
-                return False, {}
-
-        except requests.exceptions.Timeout:
-            print(f"❌ Failed - Request timeout")
-            return False, {}
+                self.log_result("Authentication", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
         except Exception as e:
-            print(f"❌ Failed - Error: {str(e)}")
-            return False, {}
+            self.log_result("Authentication", False, f"Exception: {str(e)}")
+            return False
 
     def test_authentication(self):
         """Test authentication with demo credentials"""
