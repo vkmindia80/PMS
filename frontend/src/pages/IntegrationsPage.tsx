@@ -2923,6 +2923,7 @@ const IntegrationsPage: React.FC = () => {
             </div>
           </div>
         </div>
+        )}
 
         {/* Integration Health Summary */}
         <div className="mt-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6 border border-blue-200">
