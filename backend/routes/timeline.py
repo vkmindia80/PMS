@@ -157,7 +157,7 @@ async def update_timeline_project(
 @router.get("/tasks/{project_id}", response_model=List[TimelineTaskInDB])
 async def get_timeline_tasks(
     project_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Get all timeline tasks for a project"""
