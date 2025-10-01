@@ -584,7 +584,7 @@ const IntegrationsPage: React.FC = () => {
                 <div className="bg-blue-100 p-3 rounded-lg">
                   <h5 className="font-medium text-blue-900 mb-2">Setup Steps:</h5>
                   <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-                    <li>Go to Azure AD &gt; App registrations</li>
+                    <li>Go to Azure AD > App registrations</li>
                     <li>Create new registration for "Portfolio Management Bot"</li>
                     <li>Add redirect URI: {window.location.origin}/integrations/callback/teams</li>
                     <li>Copy Tenant ID and Application ID above</li>
@@ -598,6 +598,277 @@ const IntegrationsPage: React.FC = () => {
                   {oauthInProgress.teams ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <ExternalLink className="w-4 h-4 mr-2" />}
                   {oauthInProgress.teams ? 'Connecting...' : 'Authorize Teams Access'}
                 </button>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'teams-permissions':
+        return (
+          <div className="space-y-4">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="flex items-center mb-2">
+                <Shield className="w-5 h-5 text-green-600 mr-2" />
+                <h4 className="font-semibold text-green-900">Configure Permissions & Scopes</h4>
+              </div>
+              <p className="text-green-800 text-sm mb-4">
+                Set up Microsoft Teams permissions and bot framework capabilities.
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Client Secret</label>
+                  <div className="relative">
+                    <input
+                      type={showCredentials.teams ? 'text' : 'password'}
+                      value={teamsConfig.client_secret}
+                      onChange={(e) => setTeamsConfig({ ...teamsConfig, client_secret: e.target.value })}
+                      className="w-full p-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                      placeholder="your-client-secret"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCredentials({ ...showCredentials, teams: !showCredentials.teams })}
+                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    >
+                      {showCredentials.teams ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Default Team</label>
+                  <input
+                    type="text"
+                    value={teamsConfig.default_team}
+                    onChange={(e) => setTeamsConfig({ ...teamsConfig, default_team: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    placeholder="General"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={teamsConfig.bot_framework_enabled}
+                      onChange={(e) => setTeamsConfig({ ...teamsConfig, bot_framework_enabled: e.target.checked })}
+                      className="mr-2"
+                    />
+                    <div>
+                      <span className="text-sm font-medium">Bot Framework</span>
+                      <p className="text-xs text-gray-500">Enable bot interactions</p>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={teamsConfig.enable_adaptive_cards}
+                      onChange={(e) => setTeamsConfig({ ...teamsConfig, enable_adaptive_cards: e.target.checked })}
+                      className="mr-2"
+                    />
+                    <div>
+                      <span className="text-sm font-medium">Adaptive Cards</span>
+                      <p className="text-xs text-gray-500">Rich interactive cards</p>
+                    </div>
+                  </label>
+                </div>
+
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-blue-900 mb-2">Required Microsoft Graph Permissions:</h5>
+                  <div className="grid grid-cols-2 gap-2 text-sm text-blue-800">
+                    <span>• TeamsActivity.Send</span>
+                    <span>• Chat.ReadWrite</span>
+                    <span>• Team.ReadBasic.All</span>
+                    <span>• TeamsAppInstallation.ReadWrite</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'teams-features':
+        return (
+          <div className="space-y-4">
+            <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+              <div className="flex items-center mb-2">
+                <Settings className="w-5 h-5 text-purple-600 mr-2" />
+                <h4 className="font-semibold text-purple-900">Enable Integration Features</h4>
+              </div>
+              <p className="text-purple-800 text-sm mb-4">
+                Configure advanced Teams features and collaboration tools.
+              </p>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={teamsConfig.meeting_integration}
+                      onChange={(e) => setTeamsConfig({ ...teamsConfig, meeting_integration: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <Video className="w-4 h-4 mr-2 text-blue-600" />
+                      <div>
+                        <span className="text-sm font-medium">Meeting Integration</span>
+                        <p className="text-xs text-gray-500">Auto-join project meetings</p>
+                      </div>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={teamsConfig.file_sharing}
+                      onChange={(e) => setTeamsConfig({ ...teamsConfig, file_sharing: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <FileText className="w-4 h-4 mr-2 text-green-600" />
+                      <div>
+                        <span className="text-sm font-medium">File Sharing</span>
+                        <p className="text-xs text-gray-500">Share project files</p>
+                      </div>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={teamsConfig.calendar_sync}
+                      onChange={(e) => setTeamsConfig({ ...teamsConfig, calendar_sync: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <Calendar className="w-4 h-4 mr-2 text-orange-600" />
+                      <div>
+                        <span className="text-sm font-medium">Calendar Sync</span>
+                        <p className="text-xs text-gray-500">Sync project deadlines</p>
+                      </div>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={teamsConfig.presence_sync}
+                      onChange={(e) => setTeamsConfig({ ...teamsConfig, presence_sync: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <Activity className="w-4 h-4 mr-2 text-purple-600" />
+                      <div>
+                        <span className="text-sm font-medium">Presence Sync</span>
+                        <p className="text-xs text-gray-500">Show team availability</p>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Tab Apps</label>
+                  <div className="space-y-2">
+                    {['tasks', 'projects', 'analytics', 'timeline'].map(app => (
+                      <label key={app} className="flex items-center p-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input
+                          type="checkbox"
+                          checked={teamsConfig.tab_apps.includes(app)}
+                          onChange={(e) => {
+                            const apps = e.target.checked 
+                              ? [...teamsConfig.tab_apps, app]
+                              : teamsConfig.tab_apps.filter(a => a !== app)
+                            setTeamsConfig({ ...teamsConfig, tab_apps: apps })
+                          }}
+                          className="mr-2"
+                        />
+                        <span className="text-sm capitalize">{app} Tab</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-green-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-green-900 mb-2">Teams Integration Benefits:</h5>
+                  <ul className="text-sm text-green-800 space-y-1">
+                    <li>• Rich adaptive cards for project updates</li>
+                    <li>• Meeting transcription and action items</li>
+                    <li>• Collaborative document editing</li>
+                    <li>• Automated workflow notifications</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'teams-test':
+        return (
+          <div className="space-y-4">
+            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+              <div className="flex items-center mb-2">
+                <PlayCircle className="w-5 h-5 text-yellow-600 mr-2" />
+                <h4 className="font-semibold text-yellow-900">Test Teams Integration</h4>
+              </div>
+              <p className="text-yellow-800 text-sm mb-4">
+                Test your Microsoft Teams integration to ensure everything is working correctly.
+              </p>
+              
+              <div className="space-y-3">
+                <button
+                  onClick={() => testIntegration('teams')}
+                  disabled={isLoading || !teamsConfig.client_secret}
+                  className="w-full px-4 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 flex items-center justify-center"
+                >
+                  {isLoading ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
+                  {isLoading ? 'Testing...' : 'Send Test Adaptive Card'}
+                </button>
+
+                {testResults.teams && (
+                  <div className={`p-3 rounded-lg border ${
+                    testResults.teams.success 
+                      ? 'bg-green-50 border-green-200 text-green-800' 
+                      : 'bg-red-50 border-red-200 text-red-800'
+                  }`}>
+                    <div className="flex items-center">
+                      {testResults.teams.success ? 
+                        <CheckCircle className="w-4 h-4 mr-2" /> : 
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                      }
+                      <span className="font-medium">
+                        {testResults.teams.success ? 'Teams Integration Successful!' : 'Connection Failed'}
+                      </span>
+                    </div>
+                    {testResults.teams.message && (
+                      <p className="text-sm mt-1">{testResults.teams.message}</p>
+                    )}
+                    {testResults.teams.error && (
+                      <p className="text-sm mt-1">{testResults.teams.error}</p>
+                    )}
+                  </div>
+                )}
+
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-gray-900 mb-2">Connection Summary:</h5>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <div className="flex justify-between">
+                      <span>Tenant ID:</span>
+                      <span className="font-medium">{teamsConfig.tenant_id || 'Not configured'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Application ID:</span>
+                      <span className="font-medium">{teamsConfig.application_id || 'Not configured'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Default Team:</span>
+                      <span className="font-medium">{teamsConfig.default_team || 'General'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Bot Framework:</span>
+                      <span className="font-medium">{teamsConfig.bot_framework_enabled ? 'Enabled' : 'Disabled'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Adaptive Cards:</span>
+                      <span className="font-medium">{teamsConfig.enable_adaptive_cards ? 'Enabled' : 'Disabled'}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
