@@ -477,62 +477,72 @@ const IntegrationsPage: React.FC = () => {
 
       case 'slack-test':
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-6">
-              <PlayCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900">Test & Validate</h3>
-              <p className="text-gray-600">Test your Slack integration to ensure everything works</p>
-            </div>
-
-            {validationResults.slack && (
-              <div className={`p-4 rounded-lg border ${
-                validationResults.slack.valid 
-                  ? 'bg-green-50 border-green-200' 
-                  : 'bg-red-50 border-red-200'
-              }`}>
-                <div className="flex items-center mb-2">
-                  {validationResults.slack.valid ? (
-                    <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
-                  )}
-                  <span className={`font-medium ${
-                    validationResults.slack.valid ? 'text-green-800' : 'text-red-800'
-                  }`}>
-                    {validationResults.slack.valid ? 'Connection Successful' : 'Connection Failed'}
-                  </span>
-                </div>
-                {validationResults.slack.errors?.map((error, index) => (
-                  <p key={index} className="text-sm text-red-700">{error}</p>
-                ))}
-                {validationResults.slack.warnings?.map((warning, index) => (
-                  <p key={index} className="text-sm text-yellow-700">{warning}</p>
-                ))}
+          <div className="space-y-4">
+            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+              <div className="flex items-center mb-2">
+                <PlayCircle className="w-5 h-5 text-yellow-600 mr-2" />
+                <h4 className="font-semibold text-yellow-900">Test & Validate Connection</h4>
               </div>
-            )}
+              <p className="text-yellow-800 text-sm mb-4">
+                Test your Slack integration to ensure everything is working correctly.
+              </p>
+              
+              <div className="space-y-3">
+                <button
+                  onClick={() => testIntegration('slack')}
+                  disabled={isLoading || !slackConfig.bot_token}
+                  className="w-full px-4 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 flex items-center justify-center"
+                >
+                  {isLoading ? <Loader className="w-4 h-4 mr-2 animate-spin" /> : <Zap className="w-4 h-4 mr-2" />}
+                  {isLoading ? 'Testing...' : 'Send Test Message'}
+                </button>
 
-            <div className="space-y-3">
-              <button
-                onClick={() => validateConfigurationLive('slack')}
-                disabled={connectionStatus.slack === 'testing'}
-                className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-              >
-                {connectionStatus.slack === 'testing' ? (
-                  <Loader className="w-5 h-5 animate-spin mr-2" />
-                ) : (
-                  <Shield className="w-5 h-5 mr-2" />
+                {testResults.slack && (
+                  <div className={`p-3 rounded-lg border ${
+                    testResults.slack.success 
+                      ? 'bg-green-50 border-green-200 text-green-800' 
+                      : 'bg-red-50 border-red-200 text-red-800'
+                  }`}>
+                    <div className="flex items-center">
+                      {testResults.slack.success ? 
+                        <CheckCircle className="w-4 h-4 mr-2" /> : 
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                      }
+                      <span className="font-medium">
+                        {testResults.slack.success ? 'Connection Successful!' : 'Connection Failed'}
+                      </span>
+                    </div>
+                    {testResults.slack.message && (
+                      <p className="text-sm mt-1">{testResults.slack.message}</p>
+                    )}
+                    {testResults.slack.error && (
+                      <p className="text-sm mt-1">{testResults.slack.error}</p>
+                    )}
+                  </div>
                 )}
-                {connectionStatus.slack === 'testing' ? 'Testing Connection...' : 'Test Connection'}
-              </button>
 
-              <button
-                onClick={() => testIntegration('slack')}
-                disabled={isLoading || connectionStatus.slack !== 'success'}
-                className="w-full flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-              >
-                <Bell className="w-5 h-5 mr-2" />
-                Send Test Notification
-              </button>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-gray-900 mb-2">Connection Summary:</h5>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <div className="flex justify-between">
+                      <span>Workspace:</span>
+                      <span className="font-medium">{slackConfig.workspace_url || 'Not configured'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Default Channel:</span>
+                      <span className="font-medium">#{slackConfig.default_channel}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Notifications:</span>
+                      <span className="font-medium">{slackConfig.notifications_enabled ? 'Enabled' : 'Disabled'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Bot Token:</span>
+                      <span className="font-medium">{slackConfig.bot_token ? 'Configured' : 'Missing'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )
