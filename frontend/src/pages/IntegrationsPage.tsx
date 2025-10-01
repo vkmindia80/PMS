@@ -585,7 +585,7 @@ const IntegrationsPage: React.FC = () => {
                 <div className="bg-blue-100 p-3 rounded-lg">
                   <h5 className="font-medium text-blue-900 mb-2">Setup Steps:</h5>
                   <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-                    <li>Go to Azure AD > App registrations</li>
+                    <li>Go to Azure AD &gt; App registrations</li>
                     <li>Create new registration for "Portfolio Management Bot"</li>
                     <li>Add redirect URI: {window.location.origin}/integrations/callback/teams</li>
                     <li>Copy Tenant ID and Application ID above</li>
