@@ -156,8 +156,13 @@ const SecurityDashboard: React.FC = () => {
     };
   }, [selectedProject, autoRefresh]); // Re-fetch when project filter or auto-refresh changes
 
-  const fetchSecurityData = async () => {
+  const fetchSecurityData = async (silentRefresh = false) => {
     try {
+      if (!silentRefresh) {
+        setLoading(true);
+        setError(null);
+      }
+
       // Get auth token from localStorage - use the correct key
       const authTokensStr = localStorage.getItem('auth_tokens');
       if (!authTokensStr) throw new Error('No authentication token');
@@ -176,7 +181,7 @@ const SecurityDashboard: React.FC = () => {
         ? `?project_id=${selectedProjectIds.join(',')}` 
         : '';
 
-      // Use relative URLs - let proxy or ingress handle routing
+      // Fetch security dashboard metrics
       const metricsResponse = await fetch(`/api/security/dashboard/metrics${projectParam}`, { headers });
       if (metricsResponse.ok) {
         const metricsData = await metricsResponse.json();
@@ -186,31 +191,71 @@ const SecurityDashboard: React.FC = () => {
         console.error('Failed to fetch metrics:', metricsResponse.status, metricsResponse.statusText);
       }
 
-      // Fetch active threats
-      const threatsResponse = await fetch(`/api/security/threats/active${projectParam}`, { headers });
-      if (threatsResponse.ok) {
-        const threatsData = await threatsResponse.json();
-        setThreats(threatsData);
-        console.log('Active threats loaded:', threatsData);
+      // Fetch compliance status
+      const complianceStatusResponse = await fetch(`/api/security/compliance/status`, { headers });
+      if (complianceStatusResponse.ok) {
+        const complianceStatusData = await complianceStatusResponse.json();
+        setComplianceStatus(complianceStatusData);
+        console.log('Compliance status loaded:', complianceStatusData);
       } else {
-        console.error('Failed to fetch threats:', threatsResponse.status, threatsResponse.statusText);
+        console.error('Failed to fetch compliance status:', complianceStatusResponse.status, complianceStatusResponse.statusText);
       }
 
-      // Fetch compliance reports
-      const complianceResponse = await fetch(`/api/security/compliance/reports${projectParam}`, { headers });
-      if (complianceResponse.ok) {
-        const complianceData = await complianceResponse.json();
-        setReports(complianceData.slice(0, 5)); // Latest 5 reports
-        console.log('Compliance reports loaded:', complianceData);
-      } else {
-        console.error('Failed to fetch compliance reports:', complianceResponse.status, complianceResponse.statusText);
+      // Fetch active threats (fallback to empty array on error)
+      try {
+        const threatsResponse = await fetch(`/api/security/threats/active${projectParam}`, { headers });
+        if (threatsResponse.ok) {
+          const threatsData = await threatsResponse.json();
+          setThreats(threatsData);
+          console.log('Active threats loaded:', threatsData);
+        } else {
+          setThreats([]);
+        }
+      } catch (err) {
+        console.log('Threats endpoint not available, using empty array');
+        setThreats([]);
       }
 
-      setLoading(false);
+      // Fetch compliance reports (fallback to empty array on error)
+      try {
+        const complianceResponse = await fetch(`/api/security/compliance/reports${projectParam}`, { headers });
+        if (complianceResponse.ok) {
+          const complianceData = await complianceResponse.json();
+          setReports(complianceData.slice(0, 5)); // Latest 5 reports
+          console.log('Compliance reports loaded:', complianceData);
+        } else {
+          setReports([]);
+        }
+      } catch (err) {
+        console.log('Compliance reports endpoint not available, using empty array');
+        setReports([]);
+      }
+
+      // Fetch recent security events (fallback gracefully)
+      try {
+        const eventsResponse = await fetch(`/api/security/dashboard/realtime-events?limit=20`, { headers });
+        if (eventsResponse.ok) {
+          const eventsData = await eventsResponse.json();
+          setSecurityEvents(eventsData);
+          console.log('Security events loaded:', eventsData.length);
+        } else {
+          setSecurityEvents([]);
+        }
+      } catch (err) {
+        console.log('Security events endpoint not available, using empty array');
+        setSecurityEvents([]);
+      }
+
+      setLastUpdate(new Date());
+      if (!silentRefresh) {
+        setLoading(false);
+      }
     } catch (err) {
       console.error('Error fetching security data:', err);
       setError('Failed to load security data. Please try refreshing the page or check your network connection.');
-      setLoading(false);
+      if (!silentRefresh) {
+        setLoading(false);
+      }
     }
   };
 
