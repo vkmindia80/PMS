@@ -99,6 +99,7 @@ const IntegrationsPage: React.FC = () => {
   const [showAdvancedConfig, setShowAdvancedConfig] = useState<Record<string, boolean>>({})
   const [showCredentials, setShowCredentials] = useState<Record<string, boolean>>({})
   const [integrationLogs, setIntegrationLogs] = useState<Record<string, any[]>>({})
+  const [currentView, setCurrentView] = useState<'overview' | 'setup' | 'management' | 'monitoring'>('overview')
 
   // Enhanced wizard state
   const [currentWizardStep, setCurrentWizardStep] = useState(0)
