@@ -1,6 +1,6 @@
 /**
- * Enhanced Advanced Integrations Page - Phase 4.2
- * Comprehensive frontend configurations for Slack, Teams, GitHub, Google Workspace
+ * Enterprise Integration Platform - Phase 4.2 Enhancement
+ * Step-by-step setup wizards for Slack, Teams, GitHub, Google Workspace
  */
 import React, { useState, useEffect, useMemo } from 'react'
 import { 
@@ -36,7 +36,17 @@ import {
   Upload,
   Activity,
   Filter,
-  Search
+  Search,
+  ArrowRight,
+  ArrowLeft,
+  CheckSquare,
+  PlayCircle,
+  PauseCircle,
+  AlertTriangle,
+  Info,
+  Link,
+  Copy,
+  Loader
 } from 'lucide-react'
 import axios from 'axios'
 
