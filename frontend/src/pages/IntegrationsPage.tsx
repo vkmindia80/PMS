@@ -99,6 +99,14 @@ const IntegrationsPage: React.FC = () => {
   const [showCredentials, setShowCredentials] = useState<Record<string, boolean>>({})
   const [integrationLogs, setIntegrationLogs] = useState<Record<string, any[]>>({})
 
+  // Enhanced wizard state
+  const [currentWizardStep, setCurrentWizardStep] = useState(0)
+  const [wizardSteps, setWizardSteps] = useState<WizardStep[]>([])
+  const [validationResults, setValidationResults] = useState<Record<string, ValidationResult>>({})
+  const [oauthInProgress, setOauthInProgress] = useState<Record<string, boolean>>({})
+  const [connectionStatus, setConnectionStatus] = useState<Record<string, 'idle' | 'testing' | 'success' | 'failed'>>({})
+  const [setupProgress, setSetupProgress] = useState<Record<string, number>>({})
+
   // Enhanced form states for different integrations with advanced options
   const [slackConfig, setSlackConfig] = useState({
     workspace_url: '',
