@@ -112,7 +112,7 @@ class TaskToTimelineConverter:
             outline_level = 1  # Default level
             
             # Check if it's a summary task (has subtasks or is a major milestone)
-            task_name = task.get('name', task.get('title', 'Untitled Task'))
+            task_name = task.get('title', task.get('name', 'Untitled Task'))
             summary_task = any(keyword in task_name.lower() for keyword in ['milestone', 'phase', 'release', 'sprint'])
             
             # Check if it's a milestone
