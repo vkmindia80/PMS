@@ -503,6 +503,18 @@ const EnhancedRoleManagement: React.FC = () => {
             </div>
           </div>
         </div>
+
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="flex items-center">
+            <div className="p-3 bg-indigo-100 rounded-lg">
+              <Award className="h-6 w-6 text-indigo-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-500">Templates</p>
+              <p className="text-2xl font-semibold text-gray-900">{templates.length}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Tab Navigation */}
