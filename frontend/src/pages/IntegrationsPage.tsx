@@ -2651,13 +2651,46 @@ const IntegrationsPage: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header with Enhanced Controls */}
         <div className="mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Advanced Integrations</h1>
-              <p className="text-gray-600">
-                Connect your enterprise tools for seamless workflow automation
-              </p>
+          <div className="bg-gradient-to-r from-blue-600 to-purple-700 text-white p-6 rounded-lg">
+            <h1 className="text-2xl font-bold mb-2">Enterprise Integration Platform</h1>
+            <p className="text-blue-100">Connect your favorite tools and automate workflows across your organization</p>
+            
+            {/* Navigation Tabs */}
+            <div className="flex space-x-4 mt-4">
+              <button
+                onClick={() => setCurrentView('overview')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  currentView === 'overview' ? 'bg-white text-blue-600' : 'text-blue-100 hover:text-white'
+                }`}
+              >
+                <Settings className="w-4 h-4 inline mr-1" />
+                Overview
+              </button>
+              <button
+                onClick={() => setCurrentView('management')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  currentView === 'management' ? 'bg-white text-blue-600' : 'text-blue-100 hover:text-white'
+                }`}
+              >
+                <Database className="w-4 h-4 inline mr-1" />
+                Management
+              </button>
+              <button
+                onClick={() => setCurrentView('monitoring')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  currentView === 'monitoring' ? 'bg-white text-blue-600' : 'text-blue-100 hover:text-white'
+                }`}
+              >
+                <Activity className="w-4 h-4 inline mr-1" />
+                Monitoring
+              </button>
             </div>
+          </div>
+
+          {/* Search and Filters - Only show in overview */}
+          {currentView === 'overview' && (
+            <div className="mt-6 bg-white p-4 rounded-lg border border-gray-200">
+              <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex items-center mt-4 md:mt-0 space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
