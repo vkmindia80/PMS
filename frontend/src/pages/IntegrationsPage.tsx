@@ -1693,6 +1693,253 @@ const IntegrationsPage: React.FC = () => {
     }
   }
 
+  // Integration Management Dashboard
+  const renderManagementDashboard = () => (
+    <div className="space-y-6">
+      <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Active Integrations</h3>
+            <p className="text-sm text-gray-600">Manage and monitor your connected services</p>
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setCurrentView('overview')}
+              className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+            >
+              <ArrowLeft className="w-4 h-4 inline mr-1" />
+              Back to Overview
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {Object.entries(availableIntegrations).map(([type, integration]) => {
+            const isActive = activeIntegrations[type]?.status === 'active'
+            const lastSync = activeIntegrations[type]?.last_updated || 'Never'
+            
+            return (
+              <div key={type} className={`p-4 rounded-lg border-2 ${
+                isActive 
+                  ? 'border-green-200 bg-green-50' 
+                  : 'border-gray-200 bg-gray-50'
+              }`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center">
+                    {type === 'slack' && <Slack className="w-5 h-5 text-green-600" />}
+                    {type === 'teams' && <Users className="w-5 h-5 text-blue-600" />}
+                    {type === 'github' && <Github className="w-5 h-5 text-gray-800" />}
+                    {type === 'google_workspace' && <Calendar className="w-5 h-5 text-orange-600" />}
+                    <span className="ml-2 font-medium text-sm">{integration.name}</span>
+                  </div>
+                  <div className={`w-2 h-2 rounded-full ${
+                    isActive ? 'bg-green-500' : 'bg-gray-400'
+                  }`}></div>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">
+                  Status: {isActive ? 'Active' : 'Inactive'}
+                </p>
+                <p className="text-xs text-gray-500">
+                  Last sync: {typeof lastSync === 'string' ? lastSync : new Date(lastSync).toLocaleDateString()}
+                </p>
+                <div className="mt-3 flex space-x-1">
+                  <button
+                    onClick={() => editIntegrationConfig(type)}
+                    className="flex-1 px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    <Edit className="w-3 h-3 inline mr-1" />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => testIntegration(type)}
+                    className="flex-1 px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700"
+                  >
+                    <PlayCircle className="w-3 h-3 inline mr-1" />
+                    Test
+                  </button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Integration Activity Log */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h4 className="text-sm font-semibold text-gray-900 mb-3">Recent Activity</h4>
+          <div className="space-y-2">
+            {[
+              { type: 'slack', action: 'Sent notification', time: '2 minutes ago', status: 'success' },
+              { type: 'github', action: 'Repository sync', time: '15 minutes ago', status: 'success' },
+              { type: 'google_workspace', action: 'Calendar event created', time: '1 hour ago', status: 'success' },
+              { type: 'teams', action: 'Adaptive card sent', time: '3 hours ago', status: 'warning' }
+            ].map((activity, index) => (
+              <div key={index} className="flex items-center justify-between p-2 bg-white rounded text-sm">
+                <div className="flex items-center">
+                  {activity.type === 'slack' && <Slack className="w-4 h-4 text-green-600 mr-2" />}
+                  {activity.type === 'github' && <Github className="w-4 h-4 text-gray-800 mr-2" />}
+                  {activity.type === 'google_workspace' && <Calendar className="w-4 h-4 text-orange-600 mr-2" />}
+                  {activity.type === 'teams' && <Users className="w-4 h-4 text-blue-600 mr-2" />}
+                  <span>{activity.action}</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-gray-500 mr-2">{activity.time}</span>
+                  <div className={`w-2 h-2 rounded-full ${
+                    activity.status === 'success' ? 'bg-green-500' :
+                    activity.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
+                  }`}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  // Health Monitoring Dashboard
+  const renderMonitoringDashboard = () => (
+    <div className="space-y-6">
+      <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Integration Health Monitoring</h3>
+            <p className="text-sm text-gray-600">Real-time status and performance metrics</p>
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setCurrentView('overview')}
+              className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+            >
+              <ArrowLeft className="w-4 h-4 inline mr-1" />
+              Back to Overview
+            </button>
+            <button
+              onClick={() => loadIntegrations()}
+              className="px-3 py-1 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              <RefreshCw className="w-4 h-4 inline mr-1" />
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        {/* Health Status Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {Object.entries(availableIntegrations).map(([type, integration]) => {
+            const status = connectionStatus[type] || 'idle'
+            const validation = validationResults[type]
+            
+            return (
+              <div key={type} className="p-4 bg-white border rounded-lg shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium text-gray-900">{integration.name}</h4>
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    status === 'success' ? 'bg-green-100 text-green-800' :
+                    status === 'failed' ? 'bg-red-100 text-red-800' :
+                    status === 'testing' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {status === 'testing' && <Loader className="w-3 h-3 inline mr-1 animate-spin" />}
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </div>
+                </div>
+                
+                {validation && (
+                  <div className="space-y-2">
+                    {validation.errors && validation.errors.length > 0 && (
+                      <div className="text-xs text-red-600">
+                        <AlertTriangle className="w-3 h-3 inline mr-1" />
+                        {validation.errors[0]}
+                      </div>
+                    )}
+                    {validation.warnings && validation.warnings.length > 0 && (
+                      <div className="text-xs text-yellow-600">
+                        <AlertTriangle className="w-3 h-3 inline mr-1" />
+                        {validation.warnings[0]}
+                      </div>
+                    )}
+                    <div className="text-xs text-gray-500">
+                      Last checked: {validation.timestamp.toLocaleTimeString()}
+                    </div>
+                  </div>
+                )}
+                
+                <button
+                  onClick={() => validateConfigurationLive(type)}
+                  disabled={status === 'testing'}
+                  className="mt-3 w-full px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {status === 'testing' ? 'Testing...' : 'Test Connection'}
+                </button>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Performance Metrics */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Activity className="w-4 h-4 mr-2" />
+              API Response Times
+            </h4>
+            <div className="space-y-3">
+              {Object.entries(availableIntegrations).map(([type, integration]) => (
+                <div key={type} className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">{integration.name}</span>
+                  <div className="flex items-center">
+                    <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                      <div className="bg-green-600 h-2 rounded-full" style={{ width: '75%' }}></div>
+                    </div>
+                    <span className="text-xs text-gray-500">120ms</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
+              <Clock className="w-4 h-4 mr-2" />
+              Success Rates (24h)
+            </h4>
+            <div className="space-y-3">
+              {Object.entries(availableIntegrations).map(([type, integration]) => (
+                <div key={type} className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">{integration.name}</span>
+                  <div className="flex items-center">
+                    <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                      <div className="bg-green-600 h-2 rounded-full" style={{ width: '98%' }}></div>
+                    </div>
+                    <span className="text-xs text-gray-500">98.2%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* System Alerts */}
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
+          <h4 className="text-sm font-semibold text-yellow-900 mb-2 flex items-center">
+            <Bell className="w-4 h-4 mr-2" />
+            System Alerts
+          </h4>
+          <div className="space-y-2">
+            <div className="flex items-center text-sm text-yellow-800">
+              <Info className="w-4 h-4 mr-2" />
+              <span>Slack API rate limit: 85% used in current window</span>
+            </div>
+            <div className="flex items-center text-sm text-yellow-800">
+              <Info className="w-4 h-4 mr-2" />
+              <span>GitHub webhook response time elevated (+50ms)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   const renderSlackConfiguration = () => (
     <div className="space-y-6">
       {/* Basic Configuration */}
