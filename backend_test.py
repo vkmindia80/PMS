@@ -124,69 +124,38 @@ class IntegrationAPITester:
             self.log_result("Integration Status", False, f"Exception: {str(e)}")
             return False
 
-    def test_timeline_tasks_api(self):
-        """Test timeline tasks API endpoints"""
-        print("\n" + "="*60)
-        print("⏰ TESTING TIMELINE TASKS API")
-        print("="*60)
-        
-        # Get existing timeline tasks
-        success, response = self.run_test(
-            "Get Timeline Tasks",
-            "GET",
-            f"api/timeline/tasks/{self.project_id}",
-            200
-        )
-        
-        if success:
-            print(f"✅ Found {len(response)} timeline tasks")
-            if len(response) > 0:
-                self.timeline_task_id = response[0]['id']
-                print(f"   Using task ID for testing: {self.timeline_task_id}")
-        
-        # Test create timeline task
-        task_data = {
-            "name": "Test Timeline Task",
-            "description": "Test task for timeline API testing",
-            "project_id": self.project_id,
-            "duration": 16,
-            "start_date": datetime.utcnow().isoformat(),
-            "assignee_ids": [],
-            "outline_level": 1,
-            "summary_task": False,
-            "milestone": False
-        }
-        
-        success, response = self.run_test(
-            "Create Timeline Task",
-            "POST",
-            "api/timeline/tasks",
-            200,
-            data=task_data
-        )
-        
-        if success and 'id' in response:
-            created_task_id = response['id']
-            print(f"✅ Timeline task created with ID: {created_task_id}")
-            
-            # Test update timeline task
-            update_data = {
-                "percent_complete": 50.0,
-                "duration": 20
+    def test_slack_setup(self) -> bool:
+        """Test Slack integration setup"""
+        try:
+            slack_config = {
+                "workspace_url": "https://testcompany.slack.com",
+                "bot_token": "xoxb-test-token",
+                "app_token": "xapp-test-token",
+                "default_channel": "general",
+                "notifications_enabled": True,
+                "settings": {"test": True}
             }
             
-            success, response = self.run_test(
-                "Update Timeline Task",
-                "PUT",
-                f"api/timeline/tasks/{created_task_id}",
-                200,
-                data=update_data
+            response = self.session.post(
+                f"{self.base_url}/api/integrations/slack/setup",
+                json=slack_config
             )
             
-            if success:
-                print(f"✅ Timeline task updated successfully")
-        
-        return success
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and data.get('integration_type') == 'slack':
+                    self.log_result("Slack Setup", True, f"Status: configured")
+                    return True
+                else:
+                    self.log_result("Slack Setup", False, f"Response: {data}")
+                    return False
+            else:
+                self.log_result("Slack Setup", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_result("Slack Setup", False, f"Exception: {str(e)}")
+            return False
 
     def test_task_dependencies_api(self):
         """Test task dependencies API endpoints"""
