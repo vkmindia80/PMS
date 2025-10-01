@@ -399,46 +399,76 @@ const IntegrationsPage: React.FC = () => {
 
       case 'slack-channels':
         return (
-          <div className="space-y-6">
-            <div className="text-center mb-6">
-              <MessageSquare className="w-16 h-16 text-purple-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900">Channel Configuration</h3>
-              <p className="text-gray-600">Configure channels and notification preferences</p>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Default Channel
-                </label>
-                <input
-                  type="text"
-                  value={slackConfig.default_channel}
-                  onChange={(e) => setSlackConfig({ ...slackConfig, default_channel: e.target.value })}
-                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="general"
-                />
+          <div className="space-y-4">
+            <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+              <div className="flex items-center mb-2">
+                <MessageSquare className="w-5 h-5 text-purple-600 mr-2" />
+                <h4 className="font-semibold text-purple-900">Channel Configuration</h4>
               </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Default Notification Channel</label>
+                  <input
+                    type="text"
+                    value={slackConfig.default_channel}
+                    onChange={(e) => setSlackConfig({ ...slackConfig, default_channel: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                    placeholder="general"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Notification Types</label>
+                  <div className="space-y-2">
+                    {[
+                      { key: 'task_assigned', label: 'Task Assignments' },
+                      { key: 'project_update', label: 'Project Updates' },
+                      { key: 'deadline_approaching', label: 'Deadline Alerts' },
+                      { key: 'team_mentions', label: 'Team Mentions' }
+                    ].map(notif => (
+                      <label key={notif.key} className="flex items-center p-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                        <input
+                          type="checkbox"
+                          checked={slackConfig.notification_types.includes(notif.key)}
+                          onChange={(e) => {
+                            const types = e.target.checked 
+                              ? [...slackConfig.notification_types, notif.key]
+                              : slackConfig.notification_types.filter(t => t !== notif.key)
+                            setSlackConfig({ ...slackConfig, notification_types: types })
+                          }}
+                          className="mr-2"
+                        />
+                        <span className="text-sm">{notif.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
 
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">Notification Settings</h4>
-                <div className="space-y-3">
-                  {[
-                    { key: 'notifications_enabled', label: 'Enable Notifications' },
-                    { key: 'auto_create_channels', label: 'Auto-create Project Channels' },
-                    { key: 'sync_user_status', label: 'Sync User Status' },
-                    { key: 'enable_slash_commands', label: 'Enable Slash Commands' }
-                  ].map(({ key, label }) => (
-                    <label key={key} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={slackConfig[key as keyof typeof slackConfig] as boolean}
-                        onChange={(e) => setSlackConfig({ ...slackConfig, [key]: e.target.checked })}
-                        className="mr-3 w-4 h-4 text-blue-600"
-                      />
-                      <span className="text-sm text-gray-700">{label}</span>
-                    </label>
-                  ))}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Working Hours Start</label>
+                    <input
+                      type="time"
+                      value={slackConfig.working_hours.start}
+                      onChange={(e) => setSlackConfig({ 
+                        ...slackConfig, 
+                        working_hours: { ...slackConfig.working_hours, start: e.target.value }
+                      })}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Working Hours End</label>
+                    <input
+                      type="time"
+                      value={slackConfig.working_hours.end}
+                      onChange={(e) => setSlackConfig({ 
+                        ...slackConfig, 
+                        working_hours: { ...slackConfig.working_hours, end: e.target.value }
+                      })}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
