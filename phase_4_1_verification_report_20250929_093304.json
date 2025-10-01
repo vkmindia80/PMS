@@ -344,6 +344,6 @@
     "frontend": "http://localhost:3000",
     "backend_api": "http://localhost:8001",
     "api_docs": "http://localhost:8001/docs",
-    "external_url": "https://enterprise-docs.preview.emergentagent.com"
+    "external_url": "https://code-bridge-5.preview.emergentagent.com"
   }
 }
