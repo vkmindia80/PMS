@@ -141,10 +141,20 @@ const SecurityDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchSecurityData();
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchSecurityData, 30000);
-    return () => clearInterval(interval);
-  }, [selectedProject]); // Re-fetch when project filter changes
+    
+    // Setup auto-refresh interval if enabled
+    if (autoRefresh) {
+      intervalRef.current = setInterval(() => {
+        fetchSecurityData(true); // Silent refresh
+      }, 30000); // Refresh every 30 seconds
+    }
+    
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [selectedProject, autoRefresh]); // Re-fetch when project filter or auto-refresh changes
 
   const fetchSecurityData = async () => {
     try {
