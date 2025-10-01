@@ -648,3 +648,74 @@ async def create_timeline_baseline(
     except Exception as e:
         logger.error(f"Error creating timeline baseline: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
+
+# Test endpoint without authentication for debugging
+@router.get("/test-gantt/{project_id}")
+async def test_gantt_chart_data(
+    project_id: str,
+    db = Depends(get_database)
+):
+    """Test Gantt chart data endpoint without authentication"""
+    try:
+        # Get timeline configuration
+        timeline_config = await db.timeline_projects.find_one({"project_id": project_id})
+        
+        # Get all tasks
+        tasks_cursor = db.timeline_tasks.find({"project_id": project_id})
+        tasks = await tasks_cursor.to_list(length=None)
+        
+        # Get all dependencies
+        dependencies_cursor = db.task_dependencies.find({"project_id": project_id})
+        dependencies = await dependencies_cursor.to_list(length=None)
+        
+        # Get calendars
+        calendars_cursor = db.timeline_calendars.find({"project_id": project_id})
+        calendars = await calendars_cursor.to_list(length=None)
+        
+        # Get baselines
+        baselines_cursor = db.timeline_baselines.find({"project_id": project_id})
+        baselines = await baselines_cursor.to_list(length=None)
+        
+        # Convert MongoDB documents to proper format by removing _id fields recursively
+        def clean_mongo_doc(doc):
+            if doc is None:
+                return doc
+            if isinstance(doc, dict):
+                # Remove _id field
+                if "_id" in doc:
+                    doc.pop("_id")
+                # Recursively clean nested dictionaries and lists
+                for key, value in doc.items():
+                    if isinstance(value, dict):
+                        doc[key] = clean_mongo_doc(value)
+                    elif isinstance(value, list):
+                        doc[key] = [clean_mongo_doc(item) if isinstance(item, dict) else item for item in value]
+            return doc
+        
+        # Clean all documents
+        tasks = [clean_mongo_doc(task) for task in tasks]
+        dependencies = [clean_mongo_doc(dep) for dep in dependencies]
+        calendars = [clean_mongo_doc(cal) for cal in calendars]
+        baselines = [clean_mongo_doc(baseline) for baseline in baselines]
+        if timeline_config:
+            timeline_config = clean_mongo_doc(timeline_config)
+        
+        # Critical path placeholder
+        critical_path = []
+        
+        gantt_data = {
+            "project_id": project_id,
+            "tasks": tasks,
+            "dependencies": dependencies,
+            "timeline_config": timeline_config,
+            "calendars": calendars,
+            "baselines": baselines,
+            "critical_path": critical_path
+        }
+        
+        return gantt_data
+        
+    except Exception as e:
+        logger.error(f"Error retrieving test Gantt chart data: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
