@@ -3,8 +3,8 @@
  * Phase 4.3: Enterprise Security & Compliance Interface
  */
 
-import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Shield, Eye, Lock, Users, FileCheck, Activity, TrendingUp, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { AlertTriangle, Shield, Eye, Lock, Users, FileCheck, Activity, TrendingUp, RefreshCw, Clock, Zap, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import GlobalProjectFilter from '../components/common/GlobalProjectFilter';
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext';
 
