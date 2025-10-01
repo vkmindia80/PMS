@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug API Connection</title>
+</head>
+<body>
+    <h1>Debug API Connection</h1>
+    <div id="results"></div>
+    <script>
+        const results = document.getElementById('results');
+        
+        // Test API connection
+        async function testAPI() {
+            try {
+                results.innerHTML += '<p>Testing API connection...</p>';
+                
+                // Get environment info
+                const env = {
+                    hostname: window.location.hostname,
+                    protocol: window.location.protocol,
+                    isLocal: window.location.hostname === 'localhost',
+                    isPreview: window.location.hostname.includes('.preview.emergentagent.com')
+                };
+                
+                results.innerHTML += `<p>Environment: ${JSON.stringify(env)}</p>`;
+                
+                // Test API URL generation (same logic as in environment.ts)
+                let apiUrl = '';
+                if (env.isLocal) {
+                    apiUrl = 'http://localhost:8001';
+                } else if (env.isPreview) {
+                    apiUrl = window.location.origin; // Use same origin for preview
+                }
+                
+                results.innerHTML += `<p>API URL: ${apiUrl}</p>`;
+                
+                // Test health endpoint
+                const healthResponse = await fetch(`${apiUrl}/api/health`);
+                const healthData = await healthResponse.json();
+                results.innerHTML += `<p>Health check: ${JSON.stringify(healthData)}</p>`;
+                
+                // Test login endpoint
+                const loginResponse = await fetch(`${apiUrl}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'demo@company.com',
+                        password: 'demo123456'
+                    })
+                });
+                
+                const loginData = await loginResponse.json();
+                results.innerHTML += `<p>Login test: ${loginResponse.ok ? 'SUCCESS' : 'FAILED'}</p>`;
+                if (loginData.message) {
+                    results.innerHTML += `<p>Login message: ${loginData.message}</p>`;
+                }
+                
+            } catch (error) {
+                results.innerHTML += `<p style="color: red;">Error: ${error.message}</p>`;
+                console.error('API test error:', error);
+            }
+        }
+        
+        testAPI();
+    </script>
+</body>
+</html>
