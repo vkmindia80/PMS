@@ -30,61 +30,61 @@ export const DEMO_CREDENTIALS = {
   password: 'demo123456'
 };
 
-// API endpoints
+// API endpoints - now using dynamic API URL generation
 export const API_ENDPOINTS = {
   auth: {
-    login: `${API_URL}/api/auth/login`,
-    register: `${API_URL}/api/auth/register`,
-    me: `${API_URL}/api/auth/me`,
-    logout: `${API_URL}/api/auth/logout`,
+    get login() { return `${getApiUrl()}/api/auth/login`; },
+    get register() { return `${getApiUrl()}/api/auth/register`; },
+    get me() { return `${getApiUrl()}/api/auth/me`; },
+    get logout() { return `${getApiUrl()}/api/auth/logout`; },
   },
   organizations: {
-    list: `${API_URL}/api/organizations`,
-    create: `${API_URL}/api/organizations`,
-    details: (id: string) => `${API_URL}/api/organizations/${id}`,
+    get list() { return `${getApiUrl()}/api/organizations`; },
+    get create() { return `${getApiUrl()}/api/organizations`; },
+    details: (id: string) => `${getApiUrl()}/api/organizations/${id}`,
   },
   teams: {
-    list: `${API_URL}/api/teams`,
-    create: `${API_URL}/api/teams`,
-    details: (id: string) => `${API_URL}/api/teams/${id}`,
+    get list() { return `${getApiUrl()}/api/teams`; },
+    get create() { return `${getApiUrl()}/api/teams`; },
+    details: (id: string) => `${getApiUrl()}/api/teams/${id}`,
   },
   users: {
-    list: `${API_URL}/api/users`,
-    details: (id: string) => `${API_URL}/api/users/${id}`,
+    get list() { return `${getApiUrl()}/api/users`; },
+    details: (id: string) => `${getApiUrl()}/api/users/${id}`,
   },
   projects: {
-    list: `${API_URL}/api/projects`,
-    create: `${API_URL}/api/projects`,
-    details: (id: string) => `${API_URL}/api/projects/${id}`,
+    get list() { return `${getApiUrl()}/api/projects`; },
+    get create() { return `${getApiUrl()}/api/projects`; },
+    details: (id: string) => `${getApiUrl()}/api/projects/${id}`,
   },
   tasks: {
-    list: `${API_URL}/api/tasks`,
-    create: `${API_URL}/api/tasks`,
-    details: (id: string) => `${API_URL}/api/tasks/${id}`,
+    get list() { return `${getApiUrl()}/api/tasks`; },
+    get create() { return `${getApiUrl()}/api/tasks`; },
+    details: (id: string) => `${getApiUrl()}/api/tasks/${id}`,
   },
   timeline: {
-    gantt: (projectId: string) => `${API_URL}/api/timeline/gantt/${projectId}`,
-    tasks: (projectId: string) => `${API_URL}/api/timeline/tasks/${projectId}`,
-    taskUpdate: (taskId: string) => `${API_URL}/api/timeline/tasks/${taskId}`,
-    dependencies: (projectId: string) => `${API_URL}/api/timeline/dependencies/${projectId}`,
-    project: (projectId: string) => `${API_URL}/api/timeline/project/${projectId}`,
+    gantt: (projectId: string) => `${getApiUrl()}/api/timeline/gantt/${projectId}`,
+    tasks: (projectId: string) => `${getApiUrl()}/api/timeline/tasks/${projectId}`,
+    taskUpdate: (taskId: string) => `${getApiUrl()}/api/timeline/tasks/${taskId}`,
+    dependencies: (projectId: string) => `${getApiUrl()}/api/timeline/dependencies/${projectId}`,
+    project: (projectId: string) => `${getApiUrl()}/api/timeline/project/${projectId}`,
   },
   analytics: {
-    dashboard: `${API_URL}/api/analytics/dashboard`,
-    projects: `${API_URL}/api/analytics/projects`,
-    tasks: `${API_URL}/api/analytics/tasks`,
-    teams: `${API_URL}/api/analytics/teams`,
+    get dashboard() { return `${getApiUrl()}/api/analytics/dashboard`; },
+    get projects() { return `${getApiUrl()}/api/analytics/projects`; },
+    get tasks() { return `${getApiUrl()}/api/analytics/tasks`; },
+    get teams() { return `${getApiUrl()}/api/analytics/teams`; },
   },
   security: {
-    dashboard: `${API_URL}/api/security/dashboard/metrics`,
-    threats: `${API_URL}/api/security/threats/active`,
-    compliance: `${API_URL}/api/security/compliance/reports`,
-    mfa: `${API_URL}/api/security/mfa/status`,
-    health: `${API_URL}/api/security/health`,
+    get dashboard() { return `${getApiUrl()}/api/security/dashboard/metrics`; },
+    get threats() { return `${getApiUrl()}/api/security/threats/active`; },
+    get compliance() { return `${getApiUrl()}/api/security/compliance/reports`; },
+    get mfa() { return `${getApiUrl()}/api/security/mfa/status`; },
+    get health() { return `${getApiUrl()}/api/security/health`; },
   },
   hierarchy: {
-    organization: (orgId: string) => `${API_URL}/api/hierarchy/organization/${orgId}`,
-    teamStructure: (orgId: string) => `${API_URL}/api/hierarchy/team-structure/${orgId}`,
+    organization: (orgId: string) => `${getApiUrl()}/api/hierarchy/organization/${orgId}`,
+    teamStructure: (orgId: string) => `${getApiUrl()}/api/hierarchy/team-structure/${orgId}`,
   }
 };
 
