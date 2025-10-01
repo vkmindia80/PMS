@@ -56,6 +56,75 @@ interface ComplianceReport {
   status: string;
 }
 
+interface ComplianceStatus {
+  soc2: ComplianceStandardStatus;
+  gdpr: ComplianceStandardStatus;
+  hipaa: ComplianceStandardStatus;
+  iso27001: ComplianceStandardStatus;
+  pci_dss: ComplianceStandardStatus;
+  overall: OverallComplianceStatus;
+  recent_activities: ComplianceActivity[];
+  recommendations: ComplianceRecommendation[];
+}
+
+interface ComplianceStandardStatus {
+  score: number;
+  status: string;
+  last_assessment: string | null;
+  next_assessment: string;
+  critical_issues: number;
+  high_issues: number;
+  compliance_percentage: number;
+  trend: string;
+  certification_valid: boolean;
+  requires_assessment?: boolean;
+}
+
+interface OverallComplianceStatus {
+  status: string;
+  score: number;
+  last_assessment: string;
+  next_assessment: string;
+  trend: string;
+  critical_issues: number;
+  total_standards: number;
+  compliant_standards: number;
+}
+
+interface ComplianceActivity {
+  type: string;
+  timestamp: string;
+  description: string;
+  status: string;
+  score?: number;
+  icon: string;
+}
+
+interface ComplianceRecommendation {
+  priority: string;
+  category: string;
+  title: string;
+  description: string;
+  timeline: string;
+  effort: string;
+  impact?: string;
+}
+
+interface SecurityEvent {
+  id: string;
+  organization_id: string;
+  user_id?: string;
+  event_type: string;
+  action: string;
+  outcome: string;
+  description: string;
+  risk_level: string;
+  timestamp: string;
+  ip_address?: string;
+  user_agent?: string;
+  details: any;
+}
+
 const SecurityDashboard: React.FC = () => {
   const { selectedProject, getSelectedProjectIds } = useProjectFilterContext();
   const [metrics, setMetrics] = useState<SecurityMetrics | null>(null);
