@@ -130,9 +130,14 @@ const SecurityDashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<SecurityMetrics | null>(null);
   const [threats, setThreats] = useState<ThreatDetection[]>([]);
   const [reports, setReports] = useState<ComplianceReport[]>([]);
+  const [complianceStatus, setComplianceStatus] = useState<ComplianceStatus | null>(null);
+  const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetchSecurityData();
