@@ -162,7 +162,11 @@ const AppContent: React.FC = () => {
           />
           <Route 
             path="/roles" 
-            element={<Navigate to="/organization" replace />} 
+            element={
+              <ProtectedRoute>
+                <Navigate to="/organization" replace />
+              </ProtectedRoute>
+            } 
           />
           <Route 
             path="/settings" 
