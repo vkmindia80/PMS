@@ -18,6 +18,7 @@ import IntegrationsPage from './pages/IntegrationsPage'
 import SecurityDashboard from './pages/SecurityDashboard'
 import SettingsPage from './pages/SettingsPage'
 import TimelinePage from './pages/TimelinePage'
+import RoleManagementPage from './pages/RoleManagementPage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import './App.css'
 
