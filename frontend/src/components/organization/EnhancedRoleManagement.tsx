@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import {
   Shield, Crown, UserCog, Users, Eye, Settings, Plus, Edit, Trash2,
   ChevronDown, Check, X, AlertTriangle, Search, Filter, Download,
-  Upload, Copy, Info, Lock, Unlock
+  Upload, Copy, Info, Lock, Unlock, Award, BarChart3
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { API_URL } from '../../utils/config'
