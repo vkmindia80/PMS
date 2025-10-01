@@ -403,7 +403,7 @@ async def delete_task_dependency(
 @router.get("/gantt/{project_id}", response_model=GanttChartData)
 async def get_gantt_chart_data(
     project_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Get complete Gantt chart data for a project"""
