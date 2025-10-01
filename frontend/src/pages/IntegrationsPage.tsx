@@ -303,7 +303,252 @@ const IntegrationsPage: React.FC = () => {
     }
   }
 
-  const filteredIntegrations = useMemo(() => {
+  const renderWizardStep = (type: string, step: WizardStep, stepIndex: number) => {
+    switch (`${type}-${step.id}`) {
+      // Slack Wizard Steps
+      case 'slack-workspace':
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <Slack className="w-16 h-16 text-green-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900">Connect to Slack Workspace</h3>
+              <p className="text-gray-600">Enter your Slack workspace details to get started</p>
+            </div>
+            
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
+              <div className="flex items-start">
+                <Info className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                <div className="text-sm text-blue-800">
+                  <p className="font-medium mb-1">Before you start:</p>
+                  <ul className="list-disc list-inside space-y-1 text-blue-700">
+                    <li>Ensure you have admin permissions in your Slack workspace</li>
+                    <li>Have your workspace URL ready (e.g., yourcompany.slack.com)</li>
+                    <li>Be prepared to install a Slack app in your workspace</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Globe className="w-4 h-4 inline mr-1" />
+                  Workspace URL
+                </label>
+                <input
+                  type="url"
+                  value={slackConfig.workspace_url}
+                  onChange={(e) => setSlackConfig({ ...slackConfig, workspace_url: e.target.value })}
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-lg"
+                  placeholder="https://yourcompany.slack.com"
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center">
+                  <Link className="w-5 h-5 text-gray-600 mr-3" />
+                  <div>
+                    <p className="font-medium text-gray-900">OAuth Authentication</p>
+                    <p className="text-sm text-gray-600">Secure authentication via Slack</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => initiateOAuthFlow('slack')}
+                  disabled={oauthInProgress.slack}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center"
+                >
+                  {oauthInProgress.slack ? (
+                    <Loader className="w-4 h-4 animate-spin mr-2" />
+                  ) : (
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                  )}
+                  {oauthInProgress.slack ? 'Authorizing...' : 'Authorize with Slack'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'slack-permissions':
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <Shield className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900">Configure Bot Permissions</h3>
+              <p className="text-gray-600">Set up the permissions for your Slack bot</p>
+            </div>
+
+            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+              <h4 className="text-sm font-medium text-yellow-800 mb-3">Required Bot Token Scopes</h4>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                {['channels:read', 'chat:write', 'users:read', 'groups:read', 'im:read', 'mpim:read'].map(scope => (
+                  <div key={scope} className="flex items-center text-yellow-700">
+                    <CheckSquare className="w-4 h-4 mr-2" />
+                    {scope}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Bot Token (xoxb-...)
+                </label>
+                <div className="relative">
+                  <input
+                    type={showCredentials.slack ? 'text' : 'password'}
+                    value={slackConfig.bot_token}
+                    onChange={(e) => setSlackConfig({ ...slackConfig, bot_token: e.target.value })}
+                    className="w-full p-4 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="xoxb-your-bot-token-here"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCredentials(prev => ({ ...prev, slack: !prev.slack }))}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                  >
+                    {showCredentials.slack ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  App Token (xapp-...) <span className="text-gray-500">(optional)</span>
+                </label>
+                <input
+                  type={showCredentials.slack ? 'text' : 'password'}
+                  value={slackConfig.app_token}
+                  onChange={(e) => setSlackConfig({ ...slackConfig, app_token: e.target.value })}
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder="xapp-your-app-token-here"
+                />
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'slack-channels':
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <MessageSquare className="w-16 h-16 text-purple-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900">Channel Configuration</h3>
+              <p className="text-gray-600">Configure channels and notification preferences</p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Default Channel
+                </label>
+                <input
+                  type="text"
+                  value={slackConfig.default_channel}
+                  onChange={(e) => setSlackConfig({ ...slackConfig, default_channel: e.target.value })}
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  placeholder="general"
+                />
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="text-sm font-medium text-gray-700 mb-3">Notification Settings</h4>
+                <div className="space-y-3">
+                  {[
+                    { key: 'notifications_enabled', label: 'Enable Notifications' },
+                    { key: 'auto_create_channels', label: 'Auto-create Project Channels' },
+                    { key: 'sync_user_status', label: 'Sync User Status' },
+                    { key: 'enable_slash_commands', label: 'Enable Slash Commands' }
+                  ].map(({ key, label }) => (
+                    <label key={key} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={slackConfig[key as keyof typeof slackConfig] as boolean}
+                        onChange={(e) => setSlackConfig({ ...slackConfig, [key]: e.target.checked })}
+                        className="mr-3 w-4 h-4 text-blue-600"
+                      />
+                      <span className="text-sm text-gray-700">{label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'slack-test':
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <PlayCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900">Test & Validate</h3>
+              <p className="text-gray-600">Test your Slack integration to ensure everything works</p>
+            </div>
+
+            {validationResults.slack && (
+              <div className={`p-4 rounded-lg border ${
+                validationResults.slack.valid 
+                  ? 'bg-green-50 border-green-200' 
+                  : 'bg-red-50 border-red-200'
+              }`}>
+                <div className="flex items-center mb-2">
+                  {validationResults.slack.valid ? (
+                    <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5 text-red-600 mr-2" />
+                  )}
+                  <span className={`font-medium ${
+                    validationResults.slack.valid ? 'text-green-800' : 'text-red-800'
+                  }`}>
+                    {validationResults.slack.valid ? 'Connection Successful' : 'Connection Failed'}
+                  </span>
+                </div>
+                {validationResults.slack.errors?.map((error, index) => (
+                  <p key={index} className="text-sm text-red-700">{error}</p>
+                ))}
+                {validationResults.slack.warnings?.map((warning, index) => (
+                  <p key={index} className="text-sm text-yellow-700">{warning}</p>
+                ))}
+              </div>
+            )}
+
+            <div className="space-y-3">
+              <button
+                onClick={() => validateConfigurationLive('slack')}
+                disabled={connectionStatus.slack === 'testing'}
+                className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              >
+                {connectionStatus.slack === 'testing' ? (
+                  <Loader className="w-5 h-5 animate-spin mr-2" />
+                ) : (
+                  <Shield className="w-5 h-5 mr-2" />
+                )}
+                {connectionStatus.slack === 'testing' ? 'Testing Connection...' : 'Test Connection'}
+              </button>
+
+              <button
+                onClick={() => testIntegration('slack')}
+                disabled={isLoading || connectionStatus.slack !== 'success'}
+                className="w-full flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+              >
+                <Bell className="w-5 h-5 mr-2" />
+                Send Test Notification
+              </button>
+            </div>
+          </div>
+        )
+
+      // Add similar cases for teams, github, and google_workspace...
+      default:
+        return (
+          <div className="text-center py-8">
+            <Settings className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">Configuration step: {step.title}</p>
+          </div>
+        )
+    }
+  }
     let filtered = Object.entries(availableIntegrations)
     
     if (searchFilter) {
