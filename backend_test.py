@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Phase 6.1 Core Gantt Chart Engine
-Tests timeline functionality, Gantt chart data, and WebSocket integration
+Integration Platform Backend API Testing
+Tests all 4 integration types: Slack, Teams, GitHub, Google Workspace
 """
 
 import requests
@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 import time
 
-class TimelineAPITester:
+class IntegrationAPITester:
     def __init__(self, base_url="https://dev-continuation-13.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
