@@ -51,6 +51,12 @@ Organizations: 1 multi-tenant organization configured
 ✅ Build Compilation: Frontend now compiles successfully without JSX parsing errors
 ✅ Application Stability: All services running smoothly post-fix
 
+# Preview Domain Deployment Fix (October 1, 2025)
+✅ Static API URL Issue Resolved: Fixed build-time evaluation preventing dynamic URL resolution
+✅ Environment Configuration: Updated dynamic API URL generation for preview domains
+✅ IntegrationsPage Updates: All axios calls now use dynamic API URL resolution
+✅ Preview URL Working: https://next-dev-steps.preview.emergentagent.com/ now displays properly
+
 # Integration Platform Enhancement (October 1, 2025)
 ✅ GitHub Integration Wizard: Complete 4-step setup flow (OAuth → Repositories → Webhooks → Test)
 ✅ Google Workspace Integration Wizard: Complete 4-step setup flow (Service Account → Domain → Services → Test)
