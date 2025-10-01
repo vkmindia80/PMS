@@ -151,8 +151,8 @@ class TaskToTimelineConverter:
                 'assignee_ids': assignee_ids,
                 'color': color,
                 'work': duration,  # Work hours = duration initially
-                'remaining_work': duration * (1 - percent_complete / 100) if percent_complete < 100 else 0,
-                'actual_work': duration * (percent_complete / 100) if percent_complete > 0 else 0,
+                'remaining_work': int(duration * (1 - percent_complete / 100)) if percent_complete < 100 else 0,
+                'actual_work': int(duration * (percent_complete / 100)) if percent_complete > 0 else 0,
                 'calendar_id': None,
                 'constraint_type': 'ASAP',  # As Soon As Possible
                 'constraint_date': None,
