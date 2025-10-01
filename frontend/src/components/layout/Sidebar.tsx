@@ -17,7 +17,8 @@ import {
   Zap,
   Menu,
   X,
-  Calendar
+  Calendar,
+  UserCog
 } from 'lucide-react'
 
 const Sidebar: React.FC = () => {
