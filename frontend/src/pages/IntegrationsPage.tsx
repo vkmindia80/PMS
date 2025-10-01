@@ -669,28 +669,44 @@ const IntegrationsPage: React.FC = () => {
     }
   }
 
-  const loadIntegrationLogs = async () => {
+  // Enhanced OAuth Flow Handler
+  const startOAuthFlow = async (type: string) => {
     try {
-      // Simulate loading integration logs
-      const mockLogs = {
-        slack: [
-          { timestamp: new Date(), level: 'info', message: 'Connected to workspace successfully' },
-          { timestamp: new Date(Date.now() - 3600000), level: 'info', message: 'Notification sent to #general' }
-        ],
-        teams: [
-          { timestamp: new Date(), level: 'info', message: 'Adaptive card sent successfully' }
-        ],
-        github: [
-          { timestamp: new Date(), level: 'info', message: 'Repository sync completed' },
-          { timestamp: new Date(Date.now() - 1800000), level: 'warning', message: 'Rate limit approaching' }
-        ],
-        google_workspace: [
-          { timestamp: new Date(), level: 'info', message: 'Calendar sync completed' }
-        ]
+      setOauthInProgress({ ...oauthInProgress, [type]: true })
+      
+      let oauthUrl = ''
+      
+      switch (type) {
+        case 'slack':
+          oauthUrl = `https://slack.com/oauth/v2/authorize?client_id=YOUR_CLIENT_ID&scope=channels:read,chat:write,users:read&redirect_uri=${encodeURIComponent(window.location.origin + '/integrations/callback/slack')}`
+          break
+        case 'teams':
+          oauthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=YOUR_CLIENT_ID&response_type=code&redirect_uri=${encodeURIComponent(window.location.origin + '/integrations/callback/teams')}&scope=https://graph.microsoft.com/TeamsActivity.Send`
+          break
+        case 'github':
+          oauthUrl = `https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID&scope=repo,read:user&redirect_uri=${encodeURIComponent(window.location.origin + '/integrations/callback/github')}`
+          break
+        case 'google_workspace':
+          oauthUrl = `https://accounts.google.com/oauth2/v2/auth?client_id=YOUR_CLIENT_ID&response_type=code&scope=https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/drive&redirect_uri=${encodeURIComponent(window.location.origin + '/integrations/callback/google')}`
+          break
       }
-      setIntegrationLogs(mockLogs)
+      
+      // Open OAuth in popup window
+      const popup = window.open(oauthUrl, 'oauth', 'width=500,height=600,scrollbars=yes,resizable=yes')
+      
+      // Monitor popup for callback
+      const checkClosed = setInterval(() => {
+        if (popup?.closed) {
+          clearInterval(checkClosed)
+          setOauthInProgress({ ...oauthInProgress, [type]: false })
+          // Refresh integration status
+          loadIntegrations()
+        }
+      }, 1000)
+      
     } catch (error) {
-      console.error('Failed to load integration logs:', error)
+      console.error('OAuth flow error:', error)
+      setOauthInProgress({ ...oauthInProgress, [type]: false })
     }
   }
 
