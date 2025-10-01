@@ -17,9 +17,10 @@ export const config = {
   isLocal: isLocalEnvironment(),
 };
 
-// Export individual values for convenience - use getters for dynamic evaluation
-export const API_URL = getApiUrl();
-export const BACKEND_URL = getApiUrl(); // Alias for compatibility
+// Export dynamic API URL getters instead of static values
+export const getApiUrlDynamic = () => getApiUrl();
+export const API_URL = getApiUrl(); // Keep for backward compatibility but will be replaced
+export const BACKEND_URL = getApiUrl(); // Alias for compatibility  
 export const APP_NAME = config.appName;
 export const APP_VERSION = config.appVersion;
 
