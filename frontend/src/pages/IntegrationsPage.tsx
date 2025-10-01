@@ -549,6 +549,8 @@ const IntegrationsPage: React.FC = () => {
         )
     }
   }
+
+  const filteredIntegrations = useMemo(() => {
     let filtered = Object.entries(availableIntegrations)
     
     if (searchFilter) {
