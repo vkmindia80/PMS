@@ -201,6 +201,108 @@ const IntegrationsPage: React.FC = () => {
     loadIntegrationLogs()
   }, [])
 
+  // Enhanced wizard steps configuration
+  const getWizardSteps = (type: string): WizardStep[] => {
+    switch (type) {
+      case 'slack':
+        return [
+          { id: 'workspace', title: 'Connect Workspace', description: 'Connect to your Slack workspace', completed: false },
+          { id: 'permissions', title: 'Configure Permissions', description: 'Set up bot permissions and scopes', completed: false },
+          { id: 'channels', title: 'Channel Setup', description: 'Configure default channels and notifications', completed: false },
+          { id: 'test', title: 'Test & Validate', description: 'Test the connection and validate setup', completed: false }
+        ]
+      case 'teams':
+        return [
+          { id: 'app', title: 'App Registration', description: 'Register your Teams application', completed: false },
+          { id: 'permissions', title: 'Configure Permissions', description: 'Set up Teams permissions and scopes', completed: false },
+          { id: 'features', title: 'Enable Features', description: 'Configure adaptive cards and bot features', completed: false },
+          { id: 'test', title: 'Test & Validate', description: 'Test Teams integration', completed: false }
+        ]
+      case 'github':
+        return [
+          { id: 'oauth', title: 'GitHub OAuth', description: 'Authorize GitHub access', completed: false },
+          { id: 'repositories', title: 'Select Repositories', description: 'Choose repositories to integrate', completed: false },
+          { id: 'webhooks', title: 'Configure Webhooks', description: 'Set up webhook notifications', completed: false },
+          { id: 'test', title: 'Test & Validate', description: 'Validate GitHub integration', completed: false }
+        ]
+      case 'google_workspace':
+        return [
+          { id: 'service-account', title: 'Service Account', description: 'Configure Google service account', completed: false },
+          { id: 'domain', title: 'Domain Setup', description: 'Configure domain and delegated access', completed: false },
+          { id: 'services', title: 'Enable Services', description: 'Choose Google Workspace services', completed: false },
+          { id: 'test', title: 'Test & Validate', description: 'Test Google Workspace connection', completed: false }
+        ]
+      default:
+        return []
+    }
+  }
+
+  // Enhanced real-time validation
+  const validateConfigurationLive = async (type: string): Promise<ValidationResult> => {
+    try {
+      setConnectionStatus(prev => ({ ...prev, [type]: 'testing' }))
+      
+      const response = await axios.post(
+        `${API_BASE_URL}/api/integrations/${type}/validate`,
+        {},
+        { headers: getAuthHeaders() }
+      )
+      
+      const result: ValidationResult = {
+        valid: response.data.valid,
+        connection_status: response.data.connection_status,
+        errors: response.data.errors || [],
+        warnings: response.data.warnings || [],
+        timestamp: new Date()
+      }
+
+      setConnectionStatus(prev => ({ 
+        ...prev, 
+        [type]: result.valid ? 'success' : 'failed' 
+      }))
+      
+      setValidationResults(prev => ({ ...prev, [type]: result }))
+      return result
+      
+    } catch (error) {
+      const errorResult: ValidationResult = {
+        valid: false,
+        connection_status: 'failed',
+        errors: ['Connection failed'],
+        timestamp: new Date()
+      }
+      
+      setConnectionStatus(prev => ({ ...prev, [type]: 'failed' }))
+      setValidationResults(prev => ({ ...prev, [type]: errorResult }))
+      return errorResult
+    }
+  }
+
+  // OAuth flow initiation
+  const initiateOAuthFlow = async (type: string) => {
+    try {
+      setOauthInProgress(prev => ({ ...prev, [type]: true }))
+      
+      // Simulate OAuth flow URLs (in production, these would be real OAuth endpoints)
+      const oauthUrls = {
+        slack: 'https://slack.com/oauth/v2/authorize?client_id=YOUR_CLIENT_ID&scope=channels:read,chat:write&redirect_uri=YOUR_REDIRECT_URI',
+        teams: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=YOUR_CLIENT_ID&response_type=code&scope=https://graph.microsoft.com/Team.ReadBasic.All',
+        github: 'https://github.com/login/oauth/authorize?client_id=YOUR_CLIENT_ID&scope=repo,admin:org',
+        google_workspace: 'https://accounts.google.com/oauth/authorize?client_id=YOUR_CLIENT_ID&scope=https://www.googleapis.com/auth/calendar'
+      }
+      
+      // For demo purposes, we'll simulate successful OAuth
+      setTimeout(() => {
+        setOauthInProgress(prev => ({ ...prev, [type]: false }))
+        alert(`OAuth flow completed for ${type}. In production, this would redirect to the actual OAuth provider.`)
+      }, 2000)
+      
+    } catch (error) {
+      setOauthInProgress(prev => ({ ...prev, [type]: false }))
+      console.error(`OAuth flow error for ${type}:`, error)
+    }
+  }
+
   const filteredIntegrations = useMemo(() => {
     let filtered = Object.entries(availableIntegrations)
     
