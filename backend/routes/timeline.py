@@ -58,7 +58,7 @@ timeline_manager = TimelineConnectionManager()
 @router.post("/project", response_model=TimelineProjectInDB)
 async def create_timeline_project(
     timeline_project: TimelineProjectCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Create timeline configuration for a project"""
@@ -96,7 +96,7 @@ async def create_timeline_project(
 @router.get("/project/{project_id}", response_model=TimelineProjectInDB)
 async def get_timeline_project(
     project_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Get timeline configuration for a project"""
@@ -118,7 +118,7 @@ async def get_timeline_project(
 async def update_timeline_project(
     project_id: str,
     timeline_update: TimelineProjectUpdate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Update timeline configuration for a project"""
@@ -180,7 +180,7 @@ async def get_timeline_tasks(
 @router.post("/tasks", response_model=TimelineTaskInDB)
 async def create_timeline_task(
     timeline_task: TimelineTaskCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Create a new timeline task"""
@@ -222,7 +222,7 @@ async def create_timeline_task(
 async def update_timeline_task(
     task_id: str,
     task_update: TimelineTaskUpdate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Update a timeline task"""
@@ -268,7 +268,7 @@ async def update_timeline_task(
 @router.delete("/tasks/{task_id}")
 async def delete_timeline_task(
     task_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Delete a timeline task"""
@@ -308,7 +308,7 @@ async def delete_timeline_task(
 @router.get("/dependencies/{project_id}", response_model=List[TaskDependencyInDB])
 async def get_task_dependencies(
     project_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Get all task dependencies for a project"""
@@ -326,7 +326,7 @@ async def get_task_dependencies(
 @router.post("/dependencies", response_model=TaskDependencyInDB)
 async def create_task_dependency(
     dependency: TaskDependencyCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Create a new task dependency"""
@@ -372,7 +372,7 @@ async def create_task_dependency(
 @router.delete("/dependencies/{dependency_id}")
 async def delete_task_dependency(
     dependency_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Delete a task dependency"""
@@ -475,7 +475,7 @@ async def get_gantt_chart_data(
 @router.get("/stats/{project_id}", response_model=TimelineStats)
 async def get_timeline_stats(
     project_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Get timeline statistics for a project"""
@@ -560,7 +560,7 @@ async def timeline_websocket_endpoint(websocket: WebSocket, project_id: str):
 @router.get("/calendars/{project_id}", response_model=List[TimelineCalendarInDB])
 async def get_timeline_calendars(
     project_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Get all calendars for a project"""
@@ -578,7 +578,7 @@ async def get_timeline_calendars(
 @router.post("/calendars", response_model=TimelineCalendarInDB)
 async def create_timeline_calendar(
     calendar: TimelineCalendarCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Create a new timeline calendar"""
@@ -604,7 +604,7 @@ async def create_timeline_calendar(
 @router.get("/baselines/{project_id}", response_model=List[TimelineBaselineInDB])
 async def get_timeline_baselines(
     project_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Get all baselines for a project"""
@@ -622,7 +622,7 @@ async def get_timeline_baselines(
 @router.post("/baselines", response_model=TimelineBaselineInDB)
 async def create_timeline_baseline(
     baseline: TimelineBaselineCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
     """Create a new timeline baseline"""
