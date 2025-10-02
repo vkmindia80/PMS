@@ -266,7 +266,7 @@ const GanttChart: React.FC<{
       
       ctx.beginPath();
       ctx.moveTo(x, headerHeight);
-      ctx.lineTo(x, ctx.canvas.height);
+      ctx.lineTo(x, canvasHeight);
       ctx.stroke();
       
       // Current date indicator
