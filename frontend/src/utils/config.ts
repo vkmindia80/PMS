@@ -66,8 +66,13 @@ export const API_ENDPOINTS = {
     gantt: (projectId: string) => `${getApiUrl()}/api/timeline/gantt/${projectId}`,
     tasks: (projectId: string) => `${getApiUrl()}/api/timeline/tasks/${projectId}`,
     taskUpdate: (taskId: string) => `${getApiUrl()}/api/timeline/tasks/${taskId}`,
+    taskCreate: () => `${getApiUrl()}/api/timeline/tasks`,
     dependencies: (projectId: string) => `${getApiUrl()}/api/timeline/dependencies/${projectId}`,
+    dependencyCreate: () => `${getApiUrl()}/api/timeline/dependencies`,
+    dependencyUpdate: (dependencyId: string) => `${getApiUrl()}/api/timeline/dependencies/${dependencyId}`,
+    dependencyDelete: (dependencyId: string) => `${getApiUrl()}/api/timeline/dependencies/${dependencyId}`,
     project: (projectId: string) => `${getApiUrl()}/api/timeline/project/${projectId}`,
+    stats: (projectId: string) => `${getApiUrl()}/api/timeline/stats/${projectId}`,
   },
   analytics: {
     get dashboard() { return `${getApiUrl()}/api/analytics/dashboard`; },
