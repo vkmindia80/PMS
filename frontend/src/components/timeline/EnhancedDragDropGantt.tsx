@@ -204,13 +204,11 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
           const finishDate = new Date(task.finish_date);
           return [startDate, finishDate];
         } catch (error) {
-          console.log('Error parsing task dates:', task.id, error);
           return [];
         }
       });
       
       if (!allDates.length) {
-        console.log('No valid dates extracted from tasks');
         return null;
       }
       
