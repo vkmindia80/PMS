@@ -902,6 +902,11 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       return;
     }
     
+    // Fix inverted dates during rendering
+    if (taskStartDate > taskEndDate) {
+      [taskStartDate, taskEndDate] = [taskEndDate, taskStartDate];
+    }
+    
     // Apply preview adjustments for dragged task
     if (isDraggedTask && isPreview) {
       const deltaMs = daysDelta * 24 * 60 * 60 * 1000;
