@@ -211,32 +211,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  // Refresh token function
+  // Internal refresh token function
+  const refreshTokenInternal = async (refreshTokenValue: string, currentUser: User) => {
+    const response = await fetch(`${API_URL}/api/auth/refresh`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${refreshTokenValue}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Token refresh failed with status ${response.status}`)
+    }
+
+    const newTokens = await response.json()
+    storeAuthData(newTokens, currentUser)
+    return newTokens
+  }
+
+  // Public refresh token function
   const refreshToken = async () => {
     if (!tokens?.refresh_token) {
       throw new Error('No refresh token available')
     }
 
+    if (!user) {
+      throw new Error('No user data available')
+    }
+
     try {
-      const response = await fetch(`${API_URL}/api/auth/refresh`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${tokens.refresh_token}`,
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error('Token refresh failed')
-      }
-
-      const newTokens = await response.json()
-      const currentUser = user // Keep current user data
-      
-      if (currentUser) {
-        storeAuthData(newTokens, currentUser)
-      }
+      console.log('AuthContext: Refreshing token...')
+      await refreshTokenInternal(tokens.refresh_token, user)
+      console.log('AuthContext: Token refresh successful')
     } catch (error) {
+      console.error('AuthContext: Token refresh failed:', error)
       clearAuthData()
       throw error
     }
