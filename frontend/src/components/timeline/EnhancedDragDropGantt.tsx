@@ -489,13 +489,7 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
 
   // Enhanced drawing function
   const drawGanttChart = useCallback((isPreview = false, daysDelta = 0) => {
-    console.log('=== DrawGanttChart Debug ===');
-    console.log('TimelineMetrics exists:', !!timelineMetrics);
-    console.log('Canvas ref exists:', !!canvasRef.current);
-    console.log('Filtered tasks count:', filteredTasks?.length || 0);
-    
     if (!timelineMetrics || !canvasRef.current) {
-      console.log('Early return: missing timelineMetrics or canvas');
       return;
     }
 
