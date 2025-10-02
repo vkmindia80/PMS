@@ -482,6 +482,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
           {activeTab === 'dependencies' && (
             <TaskDependenciesTab
               task={task}
+              dependentTasks={dependentTasks}
               isEditing={isEditing}
               onUpdate={onUpdate}
             />
