@@ -89,7 +89,8 @@ class TaskCreate(BaseCreateModel):
     
     # Relationships
     project_id: str = Field(..., description="Project the task belongs to")
-    assignee_id: Optional[str] = Field(None, description="User assigned to the task")
+    assignee_id: Optional[str] = Field(None, description="Primary user assigned to the task (for backward compatibility)")
+    assignee_ids: List[str] = Field(default_factory=list, description="List of users assigned to the task")
     parent_task_id: Optional[str] = Field(None, description="Parent task for subtasks")
     
     # Dates and tracking
