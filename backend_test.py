@@ -155,13 +155,20 @@ class DynamicTimelineAPITester:
         )
         
         if success:
-            projects = response.get('projects', [])
+            # Handle both list and dict responses
+            if isinstance(response, list):
+                projects = response
+            else:
+                projects = response.get('projects', [])
+                
             self.log(f"✅ Projects retrieved: {len(projects)} projects found")
             
             # Store first project ID for timeline testing
-            if projects:
-                self.demo_project_id = projects[0].get('id')
-                self.log(f"   Using project for timeline tests: {self.demo_project_id}")
+            if projects and len(projects) > 0:
+                first_project = projects[0]
+                if isinstance(first_project, dict):
+                    self.demo_project_id = first_project.get('id')
+                    self.log(f"   Using project for timeline tests: {self.demo_project_id}")
             
             return True
         else:
