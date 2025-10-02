@@ -588,7 +588,7 @@ const TasksPage: React.FC = () => {
       </div>
 
       {/* Enhanced Task Detail Modal */}
-      <TaskDetailModal
+      <EnhancedTaskDetailModal
         task={selectedTask}
         isOpen={!!selectedTask && !showTimeModal}
         onClose={() => setSelectedTask(null)}
@@ -637,6 +637,46 @@ const TasksPage: React.FC = () => {
             }
           } catch (error) {
             console.error('Error deleting task:', error)
+            throw error
+          }
+        }}
+        onDuplicate={async (task: Task) => {
+          try {
+            const duplicateData = {
+              title: `Copy of ${task.title}`,
+              description: task.description,
+              status: 'todo',
+              priority: task.priority,
+              type: task.type,
+              project_id: task.project_id,
+              assignee_ids: task.assignee_ids,
+              tags: task.tags,
+              labels: task.labels,
+              time_tracking: {
+                estimated_hours: task.time_tracking.estimated_hours,
+                actual_hours: 0,
+                logged_time: []
+              }
+            }
+
+            const response = await fetch(`${API_BASE}/api/tasks/`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${tokens?.access_token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(duplicateData)
+            })
+
+            if (response.ok) {
+              fetchTasks()
+              if (viewMode === 'kanban') fetchKanbanData()
+              toast.success('Task duplicated successfully!')
+            } else {
+              throw new Error('Failed to duplicate task')
+            }
+          } catch (error) {
+            console.error('Error duplicating task:', error)
             throw error
           }
         }}
