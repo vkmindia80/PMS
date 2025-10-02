@@ -332,8 +332,8 @@ async def update_task_dynamic(
         if not task:
             raise HTTPException(status_code=404, detail="Timeline task not found")
 
-        # Store original values for conflict detection
-        original_task = task.copy()
+        # Store original values for conflict detection (for future use)
+        # original_task = task.copy()
         
         update_data = {k: v for k, v in task_update.dict().items() if v is not None}
         
