@@ -147,10 +147,12 @@ const GanttChart: React.FC<{
   const drawTimelineHeader = (ctx: CanvasRenderingContext2D, viewMode: string) => {
     const headerHeight = 80;
     const taskNameWidth = 250;
+    const canvasWidth = ctx.canvas.width / (window.devicePixelRatio || 1);
+    const canvasHeight = ctx.canvas.height / (window.devicePixelRatio || 1);
     
     // Header background
     ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(0, 0, ctx.canvas.width, headerHeight);
+    ctx.fillRect(0, 0, canvasWidth, headerHeight);
     
     // Task name header
     ctx.fillStyle = '#374151';
@@ -164,16 +166,17 @@ const GanttChart: React.FC<{
     
     // Timeline header
     ctx.fillStyle = '#1f2937';
-    ctx.fillRect(taskNameWidth, 0, ctx.canvas.width - taskNameWidth, 40);
+    ctx.fillRect(taskNameWidth, 0, canvasWidth - taskNameWidth, 40);
     
-    // Draw time scale with enhanced styling
+    // Draw time scale with zoom consideration
     ctx.strokeStyle = '#e5e7eb';
     ctx.lineWidth = 1;
     
     // Use the earliest task start date as timeline start
     const allStartDates = data.tasks.map(t => new Date(t.start_date)).filter(d => !isNaN(d.getTime()));
     const startDate = allStartDates.length > 0 ? new Date(Math.min(...allStartDates.map(d => d.getTime()))) : new Date();
-    const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
+    const baseTimeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
+    const timeUnit = Math.max(20, baseTimeUnit * zoomLevel); // Apply zoom with minimum size
     
     for (let i = 0; i < 30; i++) {
       const x = taskNameWidth + i * timeUnit;
