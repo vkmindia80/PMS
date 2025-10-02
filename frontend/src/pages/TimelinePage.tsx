@@ -374,14 +374,16 @@ const GanttChart: React.FC<{
     ctx.fillStyle = index % 2 === 0 ? '#ffffff' : '#f9fafb';
     ctx.fillRect(0, y, taskNameWidth, taskHeight);
     
-    // Task name with better formatting
+    // Task name with better formatting and responsive text
     ctx.fillStyle = task.summary_task ? '#111827' : '#374151';
-    ctx.font = task.summary_task ? 'bold 14px -apple-system' : '13px -apple-system';
+    const fontSize = isMobile ? (task.summary_task ? 12 : 11) : (task.summary_task ? 14 : 13);
+    ctx.font = task.summary_task ? `bold ${fontSize}px -apple-system` : `${fontSize}px -apple-system`;
     ctx.textAlign = 'left';
     
-    const indent = (task.outline_level - 1) * 20;
-    const maxWidth = taskNameWidth - indent - 20;
-    const taskName = task.name.length > 25 ? task.name.substring(0, 22) + '...' : task.name;
+    const indent = (task.outline_level - 1) * (isMobile ? 15 : 20);
+    const maxWidth = taskNameWidth - indent - (isMobile ? 15 : 20);
+    const maxChars = isMobile ? 15 : 25;
+    const taskName = task.name.length > maxChars ? task.name.substring(0, maxChars - 3) + '...' : task.name;
     
     // Draw outline level indicator
     if (task.outline_level > 1) {
