@@ -285,7 +285,10 @@ const GanttChart: React.FC<{
     
     // Calculate task bar position based on actual dates
     const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
-    const projectStartDate = new Date(); // Use current date as project start
+    
+    // Use the earliest task start date as project start to ensure all tasks are visible
+    const allStartDates = data.tasks.map(t => new Date(t.start_date)).filter(d => !isNaN(d.getTime()));
+    const projectStartDate = allStartDates.length > 0 ? new Date(Math.min(...allStartDates.map(d => d.getTime()))) : new Date();
     
     let taskStartDate = projectStartDate;
     if (task.start_date) {
@@ -298,7 +301,7 @@ const GanttChart: React.FC<{
     
     // Calculate days from project start
     const daysDiff = Math.floor((taskStartDate.getTime() - projectStartDate.getTime()) / (1000 * 60 * 60 * 24));
-    const startX = taskNameWidth + Math.max(0, daysDiff * (timeUnit / (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30)));
+    const startX = taskNameWidth + (daysDiff * (timeUnit / (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30)));
     
     // Calculate bar width based on task duration
     const durationDays = task.duration / 8; // Convert hours to days (assuming 8-hour workdays)
