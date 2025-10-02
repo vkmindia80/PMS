@@ -30,7 +30,6 @@ from routes.realtime_ai import router as realtime_ai_router
 from routes.system import router as system_router
 from routes.security import router as security_router
 from routes.roles import router as roles_router
-from routes.timeline import router as timeline_router
 from routes.enhanced_timeline import router as enhanced_timeline_router
 from routes.timeline_enhancements import router as timeline_enhancements_router
 from routes.dynamic_timeline import router as dynamic_timeline_router
