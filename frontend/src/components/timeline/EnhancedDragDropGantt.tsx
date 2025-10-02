@@ -148,6 +148,18 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     return filtered;
   }, [tasks, searchQuery, filter, viewConfig.sort_by, viewConfig.sort_order]);
 
+  // Helper function for timeline calculations
+  const getDaysPerUnit = (mode: string) => {
+    switch (mode) {
+      case 'day': return 1;
+      case 'week': return 7;
+      case 'month': return 30;
+      case 'quarter': return 90;
+      case 'year': return 365;
+      default: return 7;
+    }
+  };
+
   // Calculate timeline dimensions with safe error handling
   const timelineMetrics = useMemo(() => {
     try {
