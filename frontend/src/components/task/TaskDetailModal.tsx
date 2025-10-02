@@ -469,6 +469,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
               newComment={newComment}
               setNewComment={setNewComment}
               onAddComment={handleAddComment}
+              availableUsers={availableUsers}
             />
           )}
           
@@ -476,6 +477,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
             <TaskActivityTab
               activities={activities}
               loading={loading}
+              availableUsers={availableUsers}
             />
           )}
           
