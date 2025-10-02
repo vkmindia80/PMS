@@ -774,16 +774,28 @@ const KanbanBoard: React.FC<{
                     <div className="text-xs text-gray-500">
                       Progress: {task.progress_percentage || 0}%
                     </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onTaskClick(task)
-                      }}
-                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                      data-testid={`kanban-view-task-${task.id}`}
-                    >
-                      👁️ View
-                    </button>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onTaskClick(task)
+                        }}
+                        className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                        data-testid={`kanban-view-task-${task.id}`}
+                      >
+                        👁️ View
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onTaskClick(task)
+                        }}
+                        className="text-xs text-green-600 hover:text-green-800 font-medium"
+                        data-testid={`kanban-edit-task-${task.id}`}
+                      >
+                        ✏️ Edit
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
