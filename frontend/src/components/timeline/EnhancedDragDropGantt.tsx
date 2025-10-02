@@ -511,42 +511,27 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     // Clear canvas with background color for visibility
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-    
-    console.log('Canvas cleared, drawing components...');
 
     try {
-      // Draw components with error handling
-      console.log('Drawing header...');
+      // Draw components
       drawHeader(ctx);
-      
-      console.log('Drawing grid lines...');
       drawGridLines(ctx);
-      
-      console.log('Drawing tasks...');
       drawTasks(ctx, isPreview, daysDelta);
       
       if (viewConfig.show_dependencies) {
-        console.log('Drawing dependencies...');
         drawDependencies(ctx);
       }
       
       if (viewConfig.show_critical_path) {
-        console.log('Drawing critical path...');
         drawCriticalPath(ctx);
       }
       
       if (viewConfig.show_resource_conflicts) {
-        console.log('Drawing conflicts...');
         drawConflicts(ctx);
       }
       
-      console.log('Drawing current date line...');
       drawCurrentDateLine(ctx);
-      
-      console.log('Updating task positions...');
       updateTaskPositions();
-      
-      console.log('DrawGanttChart completed successfully');
       
     } catch (error) {
       console.error('Error during canvas drawing:', error);
