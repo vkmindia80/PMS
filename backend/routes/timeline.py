@@ -329,7 +329,7 @@ async def create_task_dependency(
     current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
-    """Create a new task dependency"""
+    """Create a new task dependency with enhanced validation"""
     try:
         # Validate that both tasks exist
         predecessor = await db.timeline_tasks.find_one({"id": dependency.predecessor_id})
@@ -342,15 +342,51 @@ async def create_task_dependency(
         if dependency.predecessor_id == dependency.successor_id:
             raise HTTPException(status_code=400, detail="Cannot create dependency from task to itself")
         
+        # Enhanced dependency type validation and mapping
+        dependency_type = dependency.dependency_type
+        
+        # Handle legacy string format mapping to enum values
+        if isinstance(dependency_type, str):
+            type_mapping = {
+                "finish_to_start": DependencyType.FINISH_TO_START,
+                "start_to_start": DependencyType.START_TO_START,
+                "finish_to_finish": DependencyType.FINISH_TO_FINISH,
+                "start_to_finish": DependencyType.START_TO_FINISH,
+                "FS": DependencyType.FINISH_TO_START,
+                "SS": DependencyType.START_TO_START,
+                "FF": DependencyType.FINISH_TO_FINISH,
+                "SF": DependencyType.START_TO_FINISH
+            }
+            
+            if dependency_type in type_mapping:
+                dependency_type = type_mapping[dependency_type]
+            else:
+                # Default to finish_to_start if unknown type
+                dependency_type = DependencyType.FINISH_TO_START
+                logger.warning(f"Unknown dependency type '{dependency_type}', defaulting to FS")
+        
+        # Ensure created_by is always set
+        if not current_user or not current_user.id:
+            raise HTTPException(status_code=401, detail="Valid user required for creating dependencies")
+        
         dependency_data = TaskDependency(
-            **dependency.dict(),
-            created_by=current_user.id,
+            predecessor_id=dependency.predecessor_id,
+            successor_id=dependency.successor_id,
+            dependency_type=dependency_type,
+            lag_duration=dependency.lag_duration,
+            lag_format=dependency.lag_format,
+            project_id=dependency.project_id,
+            created_by=current_user.id,  # Explicitly ensure created_by is set
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow()
         )
         
         result = await db.task_dependencies.insert_one(dependency_data.dict())
         created_dependency = await db.task_dependencies.find_one({"_id": result.inserted_id})
+        
+        # Clean MongoDB _id field
+        if "_id" in created_dependency:
+            created_dependency.pop("_id")
         
         # Broadcast creation to connected clients
         dep_response = TaskDependencyInDB(**created_dependency)
@@ -359,7 +395,7 @@ async def create_task_dependency(
             "data": dep_response.dict()
         })
         
-        logger.info(f"Task dependency created: {created_dependency['id']}")
+        logger.info(f"Task dependency created: {created_dependency['id']} by user: {current_user.id}")
         return dep_response
         
     except HTTPException:
