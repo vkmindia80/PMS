@@ -1581,7 +1581,9 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       <div 
         ref={containerRef}
         className="flex-1 overflow-auto"
-        style={{ height: 'calc(100% - 160px)' }}
+        style={{ 
+          height: isMobile ? 'calc(100% - 200px)' : 'calc(100% - 180px)'
+        }}
       >
         <canvas
           ref={canvasRef}
@@ -1590,6 +1592,9 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
           onMouseUp={handleMouseUp}
           className="block cursor-crosshair"
           data-testid="enhanced-gantt-canvas"
+          style={{
+            maxWidth: isMobile ? '100vw' : 'none'
+          }}
         />
       </div>
 
