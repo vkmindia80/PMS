@@ -71,7 +71,7 @@ async def create_task(
         })
         
         # Insert task
-        result = await db.tasks.insert_one(task_dict)
+        await db.tasks.insert_one(task_dict)
         
         # Log activity
         await log_task_activity(
