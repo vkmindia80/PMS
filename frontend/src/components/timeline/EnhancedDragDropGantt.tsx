@@ -45,9 +45,9 @@ interface TaskPosition {
 
 export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
   projectId,
-  tasks,
-  dependencies,
-  conflicts,
+  tasks = [],
+  dependencies = [],
+  conflicts = [],
   onTaskUpdate,
   onTaskCreate,
   onDependencyCreate,
