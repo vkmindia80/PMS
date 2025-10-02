@@ -1,0 +1,94 @@
+{
+  "summary": {
+    "total_tests": 9,
+    "passed_tests": 7,
+    "failed_tests": 2,
+    "success_rate": 77.77777777777779,
+    "test_timestamp": "2025-10-02T10:06:25.763809"
+  },
+  "detailed_results": [
+    {
+      "test_name": "Health Check",
+      "success": true,
+      "details": "Status: healthy, Services: 0",
+      "response_data": {
+        "status": "healthy",
+        "service": "Enterprise Portfolio Management API",
+        "version": "1.0.0",
+        "database": "connected",
+        "features": [
+          "Multi-tenant Architecture",
+          "Real-time Collaboration",
+          "Advanced Analytics",
+          "AI-Powered Insights",
+          "Enterprise Security"
+        ]
+      },
+      "timestamp": "2025-10-02T10:06:25.302424"
+    },
+    {
+      "test_name": "Authentication Login",
+      "success": true,
+      "details": "User: demo@company.com, Role: admin",
+      "response_data": null,
+      "timestamp": "2025-10-02T10:06:25.383722"
+    },
+    {
+      "test_name": "User Profile",
+      "success": true,
+      "details": "User ID: demo-user-001, Email: demo@company.com",
+      "response_data": null,
+      "timestamp": "2025-10-02T10:06:25.460687"
+    },
+    {
+      "test_name": "Projects List",
+      "success": true,
+      "details": "No projects found (empty list)",
+      "response_data": {
+        "project_count": 0
+      },
+      "timestamp": "2025-10-02T10:06:25.500799"
+    },
+    {
+      "test_name": "Specific Project",
+      "success": false,
+      "details": "No project ID available for testing",
+      "response_data": null,
+      "timestamp": "2025-10-02T10:06:25.558261"
+    },
+    {
+      "test_name": "Timeline Gantt",
+      "success": false,
+      "details": "No project ID available for testing",
+      "response_data": null,
+      "timestamp": "2025-10-02T10:06:25.637222"
+    },
+    {
+      "test_name": "Token Refresh",
+      "success": true,
+      "details": "Token refreshed successfully. Old: eyJhbGciOi..., New: eyJhbGciOi...",
+      "response_data": null,
+      "timestamp": "2025-10-02T10:06:25.676738"
+    },
+    {
+      "test_name": "Invalid Token Handling",
+      "success": true,
+      "details": "Correctly rejected invalid token",
+      "response_data": null,
+      "timestamp": "2025-10-02T10:06:25.716974"
+    },
+    {
+      "test_name": "No Token Handling",
+      "success": true,
+      "details": "Correctly rejected request without token",
+      "response_data": null,
+      "timestamp": "2025-10-02T10:06:25.763506"
+    }
+  ],
+  "authentication_data": {
+    "has_access_token": true,
+    "has_refresh_token": true,
+    "user_email": "demo@company.com",
+    "user_role": "admin"
+  }
+}
