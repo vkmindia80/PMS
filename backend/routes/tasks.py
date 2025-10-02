@@ -734,3 +734,230 @@ async def log_task_activity(db, task_id: str, user_id: str, action: str, details
         {"id": task_id},
         {"$push": {"activity_log": activity_entry}}
     )
+
+# Task Dependencies Endpoints
+
+@router.post("/{task_id}/dependencies", response_model=Task)
+async def add_task_dependency(
+    task_id: str,
+    dependency_task_id: str = Query(..., description="Task ID this task depends on"),
+    dependency_type: str = Query(default="blocks", description="Type of dependency"),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Add a dependency to a task"""
+    try:
+        db = await get_database()
+        
+        # Check if both tasks exist
+        task = await db.tasks.find_one({"id": task_id})
+        dependency_task = await db.tasks.find_one({"id": dependency_task_id})
+        
+        if not task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        if not dependency_task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Dependency task not found"
+            )
+        
+        # Prevent self-dependency
+        if task_id == dependency_task_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Task cannot depend on itself"
+            )
+        
+        # Check if dependency already exists
+        existing_dependencies = task.get("dependencies", [])
+        if any(dep["task_id"] == dependency_task_id for dep in existing_dependencies):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Dependency already exists"
+            )
+        
+        # Add dependency
+        new_dependency = {
+            "task_id": dependency_task_id,
+            "dependency_type": dependency_type
+        }
+        
+        await db.tasks.update_one(
+            {"id": task_id},
+            {
+                "$push": {"dependencies": new_dependency},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        # Log activity
+        await log_task_activity(
+            db, task_id, current_user.id, "dependency_added",
+            {"dependency_task_id": dependency_task_id, "type": dependency_type}
+        )
+        
+        # Get updated task
+        updated_task = await db.tasks.find_one({"id": task_id})
+        return Task(**updated_task)
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to add dependency: {str(e)}"
+        )
+
+@router.delete("/{task_id}/dependencies/{dependency_task_id}", response_model=Task)
+async def remove_task_dependency(
+    task_id: str,
+    dependency_task_id: str,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Remove a dependency from a task"""
+    try:
+        db = await get_database()
+        
+        # Check if task exists
+        task = await db.tasks.find_one({"id": task_id})
+        if not task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        # Remove dependency
+        await db.tasks.update_one(
+            {"id": task_id},
+            {
+                "$pull": {"dependencies": {"task_id": dependency_task_id}},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        # Log activity
+        await log_task_activity(
+            db, task_id, current_user.id, "dependency_removed",
+            {"dependency_task_id": dependency_task_id}
+        )
+        
+        # Get updated task
+        updated_task = await db.tasks.find_one({"id": task_id})
+        return Task(**updated_task)
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to remove dependency: {str(e)}"
+        )
+
+@router.get("/{task_id}/dependents", response_model=List[TaskSummary])
+async def get_task_dependents(
+    task_id: str,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get tasks that depend on this task"""
+    try:
+        db = await get_database()
+        
+        # Check if task exists
+        task = await db.tasks.find_one({"id": task_id})
+        if not task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        # Find tasks that have this task as a dependency
+        dependent_tasks = await db.tasks.find({
+            "dependencies.task_id": task_id
+        }).to_list(length=None)
+        
+        # Convert to TaskSummary format
+        task_summaries = []
+        for dep_task in dependent_tasks:
+            task_summaries.append(TaskSummary(
+                id=dep_task["id"],
+                title=dep_task["title"],
+                status=TaskStatus(dep_task["status"]),
+                priority=TaskPriority(dep_task["priority"]),
+                type=TaskType(dep_task["type"]),
+                project_id=dep_task["project_id"],
+                assignee_id=dep_task.get("assignee_id"),
+                due_date=dep_task.get("due_date"),
+                progress_percentage=dep_task.get("progress_percentage", 0.0),
+                subtask_count=dep_task.get("subtask_count", 0)
+            ))
+        
+        return task_summaries
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get task dependents: {str(e)}"
+        )
+
+@router.get("/dependencies/graph", response_model=Dict[str, Any])
+async def get_dependency_graph(
+    project_id: Optional[str] = Query(None, description="Filter by project ID"),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get task dependency graph for visualization"""
+    try:
+        db = await get_database()
+        
+        # Build filter query
+        filter_query = {"organization_id": current_user.organization_id}
+        if project_id:
+            filter_query["project_id"] = project_id
+        
+        # Get all tasks with dependencies
+        tasks = await db.tasks.find(filter_query).to_list(length=None)
+        
+        # Build dependency graph
+        nodes = []
+        edges = []
+        
+        for task in tasks:
+            # Add task as node
+            nodes.append({
+                "id": task["id"],
+                "title": task["title"],
+                "status": task["status"],
+                "priority": task["priority"],
+                "progress_percentage": task.get("progress_percentage", 0),
+                "assignee_id": task.get("assignee_id"),
+                "due_date": task.get("due_date")
+            })
+            
+            # Add dependencies as edges
+            dependencies = task.get("dependencies", [])
+            for dep in dependencies:
+                edges.append({
+                    "source": dep["task_id"],
+                    "target": task["id"],
+                    "type": dep["dependency_type"]
+                })
+        
+        return {
+            "nodes": nodes,
+            "edges": edges,
+            "metadata": {
+                "total_tasks": len(nodes),
+                "total_dependencies": len(edges),
+                "project_id": project_id
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get dependency graph: {str(e)}"
+        )
