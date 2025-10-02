@@ -189,7 +189,7 @@ const GanttChart: React.FC<{
       // Vertical grid line
       ctx.beginPath();
       ctx.moveTo(x, 40);
-      ctx.lineTo(x, ctx.canvas.height);
+      ctx.lineTo(x, canvasHeight);
       ctx.stroke();
       
       // Date label - calculate based on project start and view mode
