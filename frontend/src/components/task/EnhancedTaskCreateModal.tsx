@@ -569,19 +569,19 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
               </div>
             </div>
 
-            {/* Dependencies */}
+            {/* Pre-Tasks (Dependencies) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Link className="h-4 w-4 inline mr-1" />
-                Task Dependencies (Pre-tasks & Post-tasks)
+                <ArrowLeft className="h-4 w-4 inline mr-1" />
+                Pre-Tasks (Tasks this depends on)
               </label>
               
-              {/* Existing Dependencies */}
+              {/* Existing Pre-Tasks */}
               <div className="space-y-2 mb-4">
-                {formData.dependencies.map((dep) => {
+                {formData.pre_tasks.map((dep) => {
                   const task = availableTasks.find(t => t.id === dep.task_id)
                   return (
-                    <div key={dep.task_id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
+                    <div key={dep.task_id} className="flex items-center justify-between p-3 bg-orange-50 rounded-lg border-l-4 border-orange-400">
                       <div>
                         <div className="font-medium text-gray-900">
                           {task?.title || `Task ${dep.task_id.substring(0, 8)}`}
@@ -592,7 +592,7 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
                       </div>
                       <button
                         type="button"
-                        onClick={() => handleRemoveDependency(dep.task_id)}
+                        onClick={() => handleRemovePreTask(dep.task_id)}
                         className="text-red-600 hover:text-red-800"
                       >
                         <Minus className="h-4 w-4" />
@@ -602,15 +602,15 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
                 })}
               </div>
 
-              {/* Add Dependencies */}
-              <div className="border border-gray-300 rounded-lg p-4">
+              {/* Add Pre-Tasks */}
+              <div className="border border-gray-300 rounded-lg p-4 mb-6">
                 <div className="mb-3">
                   <input
                     type="text"
                     value={searchDependency}
                     onChange={(e) => setSearchDependency(e.target.value)}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Search for tasks to add as dependencies..."
+                    placeholder="Search for tasks this task depends on..."
                   />
                 </div>
                 
@@ -626,8 +626,86 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
                           <button
                             key={depType.value}
                             type="button"
-                            onClick={() => handleAddDependency(task.id, depType.value)}
-                            disabled={formData.dependencies.find(dep => dep.task_id === task.id) !== undefined}
+                            onClick={() => handleAddPreTask(task.id, depType.value)}
+                            disabled={formData.pre_tasks.find(dep => dep.task_id === task.id) !== undefined}
+                            className="px-2 py-1 text-xs bg-orange-100 text-orange-700 rounded hover:bg-orange-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            title={depType.description}
+                          >
+                            {depType.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {filteredTasks.length === 0 && searchDependency && (
+                    <p className="text-gray-500 text-sm text-center py-4">
+                      No tasks found matching "{searchDependency}"
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Post-Tasks (Dependents) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <ArrowRight className="h-4 w-4 inline mr-1" />
+                Post-Tasks (Tasks that depend on this)
+              </label>
+              
+              {/* Existing Post-Tasks */}
+              <div className="space-y-2 mb-4">
+                {formData.post_tasks.map((dep) => {
+                  const task = availableTasks.find(t => t.id === dep.task_id)
+                  return (
+                    <div key={dep.task_id} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+                      <div>
+                        <div className="font-medium text-gray-900">
+                          {task?.title || `Task ${dep.task_id.substring(0, 8)}`}
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          Type: {dependencyTypes.find(dt => dt.value === dep.dependency_type)?.label}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePostTask(dep.task_id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Add Post-Tasks */}
+              <div className="border border-gray-300 rounded-lg p-4">
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={searchDependency}
+                    onChange={(e) => setSearchDependency(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Search for tasks that depend on this task..."
+                  />
+                </div>
+                
+                <div className="max-h-32 overflow-y-auto space-y-2">
+                  {filteredTasks.slice(0, 10).map((task) => (
+                    <div key={task.id} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+                      <div>
+                        <div className="font-medium text-sm text-gray-900">{task.title}</div>
+                        <div className="text-xs text-gray-500">ID: {task.id.substring(0, 8)}</div>
+                      </div>
+                      <div className="flex space-x-1">
+                        {dependencyTypes.map((depType) => (
+                          <button
+                            key={depType.value}
+                            type="button"
+                            onClick={() => handleAddPostTask(task.id, depType.value)}
+                            disabled={formData.post_tasks.find(dep => dep.task_id === task.id) !== undefined}
                             className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             title={depType.description}
                           >
