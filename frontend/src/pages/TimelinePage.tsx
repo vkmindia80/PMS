@@ -516,6 +516,7 @@ export const TimelinePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [projectsLoading, setProjectsLoading] = useState(false);
+  const [useEnhancedView, setUseEnhancedView] = useState(false);
 
   // Fetch available projects
   const fetchProjects = useCallback(async () => {
