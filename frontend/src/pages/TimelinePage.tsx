@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { Calendar, Clock, Users, Layers, Settings, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { Calendar, Clock, Users, Layers, Settings, ZoomIn, ZoomOut, RotateCcw, Zap } from 'lucide-react';
 import GlobalProjectFilter from '../components/common/GlobalProjectFilter';
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext';
 import { API_ENDPOINTS } from '../utils/config';
+import EnhancedTimelineView from '../components/timeline/EnhancedTimelineView';
 
 // Timeline interfaces
 interface TimelineTask {
