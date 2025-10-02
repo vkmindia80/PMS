@@ -259,10 +259,12 @@ export const DynamicTimelinePage: React.FC = () => {
 
   // Fetch real-time statistics
   const fetchRealtimeStats = useCallback(async () => {
-    if (!selectedProjectId || !tokens?.access_token) return;
-
+    if (!tokens?.access_token) return;
+    
     try {
-      const stats = await dynamicService.getRealtimeStats(selectedProjectId, tokens.access_token);
+      // Use "all" as project ID when no specific project is selected
+      const projectIdForStats = selectedProjectId || "all";
+      const stats = await dynamicService.getRealtimeStats(projectIdForStats, tokens.access_token);
       setRealtimeStats(stats);
     } catch (error) {
       console.error('Failed to fetch real-time stats:', error);
