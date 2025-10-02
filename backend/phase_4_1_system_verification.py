@@ -439,7 +439,7 @@ class Phase41SystemVerifier:
                     "frontend": "http://localhost:3000",
                     "backend_api": "http://localhost:8001",
                     "api_docs": "http://localhost:8001/docs",
-                    "external_url": "https://timeline-advance.preview.emergentagent.com"
+                    "external_url": "https://blank-timeline-fix.preview.emergentagent.com"
                 }
             }
             
