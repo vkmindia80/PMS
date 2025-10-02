@@ -152,18 +152,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Fetch user profile
   const fetchUserProfile = async (accessToken: string): Promise<User> => {
-    const response = await fetch(API_ENDPOINTS.auth.me, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    })
+    try {
+      console.log('👤 Fetching user profile...')
+      
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+      
+      const response = await fetch(API_ENDPOINTS.auth.me, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal
+      })
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch user profile')
+      clearTimeout(timeoutId)
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user profile: HTTP ${response.status}`)
+      }
+
+      const user = await response.json()
+      
+      // Validate user data
+      if (!user || !user.id) {
+        throw new Error('Invalid user profile data received')
+      }
+      
+      console.log('✅ User profile fetched successfully:', user.email)
+      return user
+    } catch (error) {
+      console.error('❌ Failed to fetch user profile:', error)
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Profile fetch timed out')
+      }
+      throw error
     }
-
-    return response.json()
   }
 
   // Login function
