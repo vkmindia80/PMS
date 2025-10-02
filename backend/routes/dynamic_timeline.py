@@ -289,9 +289,13 @@ async def _calculate_project_stats(
     current_user: User,
     db
 ) -> RealtimeStats:
-    """Get real-time timeline statistics with fallback to regular tasks"""
+    """Calculate project statistics with fallback to regular tasks"""
     try:
-        # First try to get timeline tasks
+        # Handle special case where project_id is "all" or empty - show overall stats
+        if project_id == "all" or not project_id:
+            return await _calculate_overall_stats(current_user, db)
+            
+        # First try to get timeline tasks for specific project
         tasks_cursor = db.timeline_tasks.find({"project_id": project_id})
         tasks = await tasks_cursor.to_list(length=None)
         
@@ -329,81 +333,205 @@ async def _calculate_project_stats(
                 timeline_task = convert_task_to_timeline_format(task)
                 tasks.append(timeline_task)
 
-        # Calculate statistics with proper validation
+        return await _calculate_stats_from_tasks(tasks, project_id, current_user, db)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error calculating project statistics: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+async def _calculate_overall_stats(current_user: User, db) -> RealtimeStats:
+    """Calculate overall statistics across all projects"""
+    try:
+        # Get all projects for the organization
+        projects_cursor = db.projects.find({"organization_id": current_user.organization_id})
+        projects = await projects_cursor.to_list(length=None)
+        project_ids = [p["id"] for p in projects]
+        
+        if not project_ids:
+            return RealtimeStats(
+                total_tasks=0,
+                completed_tasks=0,
+                in_progress_tasks=0,
+                overdue_tasks=0,
+                critical_path_length=0,
+                resource_utilization=0.0,
+                timeline_health_score=100.0,
+                estimated_completion="No projects available",
+                conflicts_count=0,
+                last_updated=datetime.utcnow()
+            )
+        
+        # Get all tasks for organization projects
+        all_tasks = []
+        
+        # Try timeline tasks first
+        timeline_tasks_cursor = db.timeline_tasks.find({"project_id": {"$in": project_ids}})
+        timeline_tasks = await timeline_tasks_cursor.to_list(length=None)
+        
+        if timeline_tasks:
+            all_tasks.extend(timeline_tasks)
+        else:
+            # Fallback to regular tasks
+            regular_tasks_cursor = db.tasks.find({"project_id": {"$in": project_ids}})
+            regular_tasks = await regular_tasks_cursor.to_list(length=None)
+            
+            for task in regular_tasks:
+                timeline_task = convert_task_to_timeline_format(task)
+                all_tasks.append(timeline_task)
+        
+        return await _calculate_stats_from_tasks(all_tasks, "all", current_user, db)
+        
+    except Exception as e:
+        logger.error(f"Error calculating overall statistics: {e}")
+        # Return safe defaults
+        return RealtimeStats(
+            total_tasks=0,
+            completed_tasks=0,
+            in_progress_tasks=0,
+            overdue_tasks=0,
+            critical_path_length=0,
+            resource_utilization=0.0,
+            timeline_health_score=75.0,
+            estimated_completion="Unable to estimate",
+            conflicts_count=0,
+            last_updated=datetime.utcnow()
+        )
+
+async def _calculate_stats_from_tasks(tasks: List[Dict], project_id: str, current_user: User, db) -> RealtimeStats:
+    """Calculate statistics from a list of tasks"""
+    try:
+        # Calculate basic task statistics
         total_tasks = len(tasks)
-        completed_tasks = len([t for t in tasks if t.get("percent_complete", 0) >= 100])
-        in_progress_tasks = len([t for t in tasks if 0 < t.get("percent_complete", 0) < 100])
+        
+        # Calculate completed tasks (100% complete or completed status)
+        completed_tasks = 0
+        in_progress_tasks = 0
+        
+        for task in tasks:
+            progress = task.get("percent_complete", 0)
+            status = task.get("status", "")
+            
+            if progress >= 100 or status == "completed":
+                completed_tasks += 1
+            elif progress > 0 or status == "in_progress":
+                in_progress_tasks += 1
         
         # Calculate overdue tasks with better date handling
         current_date = datetime.utcnow()
         overdue_tasks = 0
-        for task in tasks:
-            if task.get("finish_date") or task.get("due_date"):
-                finish_date = task.get("finish_date") or task.get("due_date")
-                if isinstance(finish_date, str):
-                    try:
-                        finish_date = datetime.fromisoformat(finish_date.replace('Z', '+00:00'))
-                    except ValueError:
-                        continue
-                elif isinstance(finish_date, datetime):
-                    pass  # Already a datetime object
-                else:
-                    continue
-                    
-                if finish_date < current_date and task.get("percent_complete", 0) < 100:
-                    overdue_tasks += 1
-
-        # Count critical tasks directly
-        critical_tasks = len([t for t in tasks if t.get("critical", False) or t.get("priority") == "critical"])
-
-        # Get dependencies and conflicts
-        dependencies_cursor = db.task_dependencies.find({"project_id": project_id})
-        dependencies = await dependencies_cursor.to_list(length=None)
         
-        try:
-            conflicts = await detect_timeline_conflicts(tasks, dependencies, db)
-            conflicts_count = len(conflicts)
-        except Exception as e:
-            logger.warning(f"Error detecting conflicts: {e}")
-            conflicts_count = 0
+        for task in tasks:
+            # Check if task is not completed
+            if task.get("percent_complete", 0) >= 100 or task.get("status") == "completed":
+                continue
+                
+            # Check due/finish date
+            finish_date = task.get("finish_date") or task.get("due_date")
+            if not finish_date:
+                continue
+                
+            try:
+                if isinstance(finish_date, str):
+                    finish_date = datetime.fromisoformat(finish_date.replace('Z', '+00:00'))
+                
+                if finish_date < current_date:
+                    overdue_tasks += 1
+            except (ValueError, AttributeError):
+                continue
 
-        # Calculate resource utilization (simplified but safe)
+        # Calculate critical path tasks (tasks marked as critical OR high priority)
+        critical_tasks = 0
+        for task in tasks:
+            if (task.get("critical", False) or 
+                task.get("priority") == "critical" or 
+                task.get("priority") == "high"):
+                critical_tasks += 1
+
+        # Get dependencies and calculate conflicts
+        conflicts_count = 0
+        if project_id != "all":
+            try:
+                dependencies_cursor = db.task_dependencies.find({"project_id": project_id})
+                dependencies = await dependencies_cursor.to_list(length=None)
+                conflicts = await detect_timeline_conflicts(tasks, dependencies, db)
+                conflicts_count = len(conflicts)
+            except Exception as e:
+                logger.warning(f"Error detecting conflicts: {e}")
+                conflicts_count = 0
+
+        # Calculate resource utilization
+        resource_utilization = 0.0
         try:
-            resource_utilization = calculate_resource_utilization(tasks)
+            if total_tasks > 0:
+                # Simple utilization based on progress
+                total_progress = sum(task.get("percent_complete", 0) for task in tasks)
+                resource_utilization = (total_progress / total_tasks) if total_tasks > 0 else 0.0
         except Exception as e:
             logger.warning(f"Error calculating resource utilization: {e}")
-            resource_utilization = 0.0
 
-        # Calculate timeline health score with safe division
-        timeline_health_score = calculate_timeline_health_score(
-            completed_tasks, total_tasks, overdue_tasks, conflicts_count
-        )
+        # Calculate timeline health score
+        health_score = 100.0
+        if total_tasks > 0:
+            completion_rate = (completed_tasks / total_tasks) * 100
+            overdue_penalty = min((overdue_tasks / total_tasks) * 50, 40)  # Max 40% penalty
+            conflict_penalty = min(conflicts_count * 5, 20)  # Max 20% penalty
+            
+            health_score = max(0, completion_rate - overdue_penalty - conflict_penalty)
 
         # Estimate completion date
+        estimated_completion = "Unable to estimate"
         try:
-            estimated_completion = estimate_project_completion(tasks)
+            if tasks:
+                future_tasks = [t for t in tasks if t.get("percent_complete", 0) < 100]
+                if future_tasks:
+                    finish_dates = []
+                    for task in future_tasks:
+                        finish_date = task.get("finish_date") or task.get("due_date")
+                        if finish_date:
+                            if isinstance(finish_date, str):
+                                finish_date = datetime.fromisoformat(finish_date.replace('Z', '+00:00'))
+                            finish_dates.append(finish_date)
+                    
+                    if finish_dates:
+                        latest_finish = max(finish_dates)
+                        estimated_completion = latest_finish.strftime("%Y-%m-%d")
+                    else:
+                        estimated_completion = "All tasks completed"
+                else:
+                    estimated_completion = "All tasks completed"
         except Exception as e:
             logger.warning(f"Error estimating completion: {e}")
-            estimated_completion = "Unable to estimate"
 
         return RealtimeStats(
             total_tasks=total_tasks,
             completed_tasks=completed_tasks,
             in_progress_tasks=in_progress_tasks,
             overdue_tasks=overdue_tasks,
-            critical_path_length=critical_tasks,  # Use direct critical task count instead of critical path calculation
-            resource_utilization=float(resource_utilization) if resource_utilization else 0.0,
-            timeline_health_score=float(timeline_health_score) if timeline_health_score else 75.0,
+            critical_path_length=critical_tasks,
+            resource_utilization=float(resource_utilization),
+            timeline_health_score=float(health_score),
             estimated_completion=estimated_completion,
             conflicts_count=conflicts_count,
             last_updated=datetime.utcnow()
         )
         
-    except HTTPException:
-        raise
     except Exception as e:
-        logger.error(f"Error retrieving realtime timeline statistics: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+        logger.error(f"Error calculating stats from tasks: {e}")
+        # Return safe defaults
+        return RealtimeStats(
+            total_tasks=0,
+            completed_tasks=0,
+            in_progress_tasks=0,
+            overdue_tasks=0,
+            critical_path_length=0,
+            resource_utilization=0.0,
+            timeline_health_score=75.0,
+            estimated_completion="Unable to estimate",
+            conflicts_count=0,
+            last_updated=datetime.utcnow()
+        )
 
 
 # Enhanced Task Update with Optimistic Updates
