@@ -737,8 +737,14 @@ const GanttChart: React.FC<{
   return (
     <div 
       ref={containerRef}
-      className="timeline-canvas-container w-full h-full overflow-auto border border-gray-200 rounded-lg bg-white"
-      style={{ minHeight: '400px', maxHeight: '80vh' }}
+      className={`timeline-canvas-container w-full h-full overflow-auto border border-gray-200 rounded-lg bg-white ${
+        isMobile ? 'overflow-x-scroll' : ''
+      }`}
+      style={{ 
+        minHeight: isMobile ? '300px' : '400px', 
+        maxHeight: isMobile ? '60vh' : '80vh',
+        touchAction: 'manipulation' // Improve touch performance
+      }}
     >
       <canvas
         ref={canvasRef}
@@ -747,10 +753,14 @@ const GanttChart: React.FC<{
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onWheel={handleWheel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{ 
           cursor: isDragging ? 'grabbing' : 'default',
           width: `${canvasSize.width}px`,
-          height: `${canvasSize.height}px`
+          height: `${canvasSize.height}px`,
+          touchAction: 'none' // Prevent default touch behaviors
         }}
       />
     </div>
