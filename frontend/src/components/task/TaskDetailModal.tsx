@@ -374,8 +374,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
                 </div>
               </div>
             </div>
-          
-          <div className="flex items-center space-x-2">
+            
+            <div className="flex items-center space-x-2">
             {!isEditing ? (
               <button
                 onClick={() => setIsEditing(true)}
