@@ -306,8 +306,8 @@ const GanttChart: React.FC<{
   };
 
   const drawCurrentDateLine = (ctx: CanvasRenderingContext2D, viewMode: string) => {
-    const taskNameWidth = 250;
-    const headerHeight = 80;
+    const taskNameWidth = isMobile ? 150 : 250;
+    const headerHeight = isMobile ? 60 : 80;
     const currentDate = new Date();
     const canvasWidth = ctx.canvas.width / (window.devicePixelRatio || 1);
     const canvasHeight = ctx.canvas.height / (window.devicePixelRatio || 1);
@@ -317,8 +317,10 @@ const GanttChart: React.FC<{
     const projectStartDate = allStartDates.length > 0 ? new Date(Math.min(...allStartDates.map(d => d.getTime()))) : new Date();
     
     // Calculate position of current date line with zoom
-    const baseTimeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
-    const timeUnit = Math.max(20, baseTimeUnit * zoomLevel);
+    const baseTimeUnit = viewMode === 'day' ? (isMobile ? 60 : 80) : 
+                        viewMode === 'week' ? (isMobile ? 80 : 120) : 
+                        (isMobile ? 120 : 200);
+    const timeUnit = Math.max(isMobile ? 15 : 20, baseTimeUnit * zoomLevel);
     const daysDiff = Math.floor((currentDate.getTime() - projectStartDate.getTime()) / (1000 * 60 * 60 * 24));
     const x = taskNameWidth + (daysDiff * (timeUnit / (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30)));
     
