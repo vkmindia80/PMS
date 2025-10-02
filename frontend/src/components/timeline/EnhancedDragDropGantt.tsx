@@ -230,9 +230,11 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       const minDate = new Date(Math.min(...allDates.map(d => d.getTime())));
       const maxDate = new Date(Math.max(...allDates.map(d => d.getTime())));
       
-      // Add padding
-      minDate.setDate(minDate.getDate() - 3);
-      maxDate.setDate(maxDate.getDate() + 7);
+      // Add minimal padding to reduce empty space at start
+      const paddingDays = viewConfig?.mode === 'day' ? 1 : 
+                         viewConfig?.mode === 'week' ? 3 : 5;
+      minDate.setDate(minDate.getDate() - paddingDays);
+      maxDate.setDate(maxDate.getDate() + paddingDays);
       
       const totalDays = Math.ceil((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
       
