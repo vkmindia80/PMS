@@ -195,6 +195,81 @@ async def get_task(
             detail=f"Failed to get task: {str(e)}"
         )
 
+@router.get("/{task_id}/detailed", response_model=Dict[str, Any])
+async def get_task_with_details(
+    task_id: str,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get a specific task by ID with enriched user details"""
+    try:
+        db = await get_database()
+        
+        task = await db.tasks.find_one({"id": task_id})
+        if not task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        # Get assignee details
+        assignees = []
+        assignee_ids = task.get("assignee_ids", [])
+        
+        # Include single assignee_id for backward compatibility
+        if task.get("assignee_id") and task.get("assignee_id") not in assignee_ids:
+            assignee_ids.append(task.get("assignee_id"))
+        
+        for assignee_id in assignee_ids:
+            assignee = await db.users.find_one({"id": assignee_id})
+            if assignee:
+                assignees.append({
+                    "id": assignee["id"],
+                    "first_name": assignee["first_name"],
+                    "last_name": assignee["last_name"],
+                    "email": assignee["email"],
+                    "avatar_url": assignee.get("avatar_url")
+                })
+        
+        # Get reporter details
+        reporter = await db.users.find_one({"id": task["reporter_id"]})
+        reporter_details = None
+        if reporter:
+            reporter_details = {
+                "id": reporter["id"],
+                "first_name": reporter["first_name"],
+                "last_name": reporter["last_name"],
+                "email": reporter["email"],
+                "avatar_url": reporter.get("avatar_url")
+            }
+        
+        # Get project details
+        project = await db.projects.find_one({"id": task["project_id"]})
+        project_details = None
+        if project:
+            project_details = {
+                "id": project["id"],
+                "name": project["name"],
+                "description": project.get("description")
+            }
+        
+        # Prepare detailed task response
+        task_with_details = Task(**task).dict()
+        task_with_details.update({
+            "assignees": assignees,
+            "reporter": reporter_details,
+            "project": project_details
+        })
+        
+        return task_with_details
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get task details: {str(e)}"
+        )
+
 @router.put("/{task_id}", response_model=Task)
 async def update_task(
     task_id: str,
