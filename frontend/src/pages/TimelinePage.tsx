@@ -315,6 +315,8 @@ const GanttChart: React.FC<{
     const durationDays = task.duration / 8; // Convert hours to days (assuming 8-hour workdays)
     const barWidth = Math.max(durationDays * (timeUnit / (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30)), 20);
     
+    console.log(`Task ${task.name}: startX=${startX}, barWidth=${barWidth}, y=${y}`);
+    
     // Task bar with enhanced styling
     if (task.milestone) {
       // Enhanced diamond for milestone
