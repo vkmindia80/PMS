@@ -291,6 +291,31 @@ async def update_task(
         # Prepare update data
         update_data = task_update.dict(exclude_unset=True)
         if update_data:
+            # Validate assignees if provided
+            if "assignee_ids" in update_data:
+                for assignee_id in update_data["assignee_ids"]:
+                    assignee = await db.users.find_one({"id": assignee_id})
+                    if not assignee:
+                        raise HTTPException(
+                            status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Assignee with ID {assignee_id} not found"
+                        )
+            
+            # Handle backward compatibility for single assignee_id
+            if "assignee_id" in update_data and "assignee_ids" not in update_data:
+                if update_data["assignee_id"]:
+                    # Verify single assignee exists
+                    assignee = await db.users.find_one({"id": update_data["assignee_id"]})
+                    if not assignee:
+                        raise HTTPException(
+                            status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Assignee not found"
+                        )
+                    # Set assignee_ids for consistency
+                    update_data["assignee_ids"] = [update_data["assignee_id"]]
+                else:
+                    update_data["assignee_ids"] = []
+            
             update_data["updated_at"] = datetime.utcnow()
             
             # Log status changes
@@ -302,6 +327,19 @@ async def update_task(
                         "to": update_data["status"].value if hasattr(update_data["status"], 'value') else update_data["status"]
                     }
                 )
+            
+            # Log assignee changes
+            if "assignee_ids" in update_data:
+                old_assignees = set(existing_task.get("assignee_ids", []))
+                new_assignees = set(update_data["assignee_ids"])
+                if old_assignees != new_assignees:
+                    await log_task_activity(
+                        db, task_id, current_user.id, "assignees_changed",
+                        {
+                            "old_assignees": list(old_assignees),
+                            "new_assignees": list(new_assignees)
+                        }
+                    )
             
             # Update task
             await db.tasks.update_one({"id": task_id}, {"$set": update_data})
