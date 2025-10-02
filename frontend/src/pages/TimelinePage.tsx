@@ -798,15 +798,15 @@ export const TimelinePage: React.FC = () => {
           </div>
 
           {/* Project Selector and View Controls */}
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap items-center gap-4">
             {/* Project Selector - Using ProjectFilterContext */}
             {projects.length > 0 && (
-              <div className="flex items-center space-x-2">
-                <label className="text-sm font-medium text-gray-700">Project:</label>
+              <div className="flex items-center space-x-2 min-w-0">
+                <label className="text-sm font-medium text-gray-700 whitespace-nowrap">Project:</label>
                 <select
                   value={selectedProjectId || ''}
                   onChange={(e) => setSelectedProject(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[250px]"
+                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[200px] max-w-[250px]"
                 >
                   <option value="">Select a project...</option>
                   {projects.map((project) => (
@@ -819,7 +819,7 @@ export const TimelinePage: React.FC = () => {
             )}
             
             <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700">View:</label>
+              <label className="text-sm font-medium text-gray-700 whitespace-nowrap">View:</label>
               <select
                 value={viewMode}
                 onChange={(e) => setViewMode(e.target.value)}
