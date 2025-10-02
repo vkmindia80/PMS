@@ -273,8 +273,8 @@ const GanttChart: React.FC<{
       
       ctx.fillText(dateText, x + timeUnit / 2, isMobile ? 20 : 25);
       
-      // Sub-header for weekdays
-      if (viewMode === 'day') {
+      // Sub-header for weekdays (skip on mobile for space)
+      if (viewMode === 'day' && !isMobile) {
         ctx.fillStyle = '#9ca3af';
         ctx.font = '10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.fillText(
