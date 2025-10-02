@@ -229,13 +229,33 @@ async def get_enhanced_gantt_data(
         # Calculate critical path (simplified)
         critical_path = calculate_critical_path(tasks, dependencies)
         
+        # Convert TaskConflict objects to dictionaries
+        all_conflicts = conflicts + resource_conflicts
+        conflicts_dict = []
+        for c in all_conflicts:
+            if hasattr(c, 'dict'):
+                # Pydantic model with dict() method
+                conflicts_dict.append(c.dict())
+            elif isinstance(c, dict):
+                # Already a dictionary
+                conflicts_dict.append(c)
+            else:
+                # Convert TaskConflict attributes to dictionary
+                conflicts_dict.append({
+                    "type": c.type,
+                    "severity": c.severity,
+                    "message": c.message,
+                    "suggested_resolution": c.suggested_resolution,
+                    "affected_tasks": c.affected_tasks
+                })
+        
         return {
             "project_id": project_id,
             "tasks": tasks,
             "dependencies": dependencies,
-            "conflicts": conflicts + resource_conflicts,
+            "conflicts": conflicts_dict,
             "critical_path": critical_path,
-            "resource_conflicts": [c for c in conflicts + resource_conflicts if c['type'] == 'resource'],
+            "resource_conflicts": [c for c in conflicts_dict if c.get('type') == 'resource'],
             "last_updated": datetime.utcnow().isoformat()
         }
         
