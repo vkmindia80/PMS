@@ -716,11 +716,14 @@ const KanbanBoard: React.FC<{
                   key={task.id}
                   draggable
                   onDragStart={(e) => handleDragStart(e, task)}
-                  onClick={() => onTaskClick(task)}
-                  className="bg-gray-50 border border-gray-200 rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow"
+                  className="bg-gray-50 border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow"
+                  data-testid={`task-card-${task.id}`}
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <h4 className="text-sm font-medium text-gray-900 line-clamp-2">
+                    <h4 
+                      onClick={() => onTaskClick(task)}
+                      className="text-sm font-medium text-gray-900 line-clamp-2 cursor-pointer hover:text-blue-600 transition-colors"
+                    >
                       {task.title}
                     </h4>
                     <span className={`text-xs px-2 py-1 rounded-full ${priorityConfig[task.priority]?.color}`}>
@@ -734,7 +737,7 @@ const KanbanBoard: React.FC<{
                     </p>
                   )}
                   
-                  <div className="flex items-center justify-between text-xs text-gray-500">
+                  <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                     <div className="flex items-center space-x-2">
                       {task.assignee_id && (
                         <div className="flex items-center space-x-1">
@@ -748,6 +751,12 @@ const KanbanBoard: React.FC<{
                           <span>{new Date(task.due_date).toLocaleDateString()}</span>
                         </div>
                       )}
+                      {task.comment_count > 0 && (
+                        <div className="flex items-center space-x-1">
+                          <span>💬</span>
+                          <span>{task.comment_count}</span>
+                        </div>
+                      )}
                     </div>
                     
                     {task.progress_percentage > 0 && (
@@ -758,6 +767,23 @@ const KanbanBoard: React.FC<{
                         />
                       </div>
                     )}
+                  </div>
+
+                  {/* Task Card Actions */}
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                    <div className="text-xs text-gray-500">
+                      Progress: {task.progress_percentage || 0}%
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onTaskClick(task)
+                      }}
+                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                      data-testid={`kanban-view-task-${task.id}`}
+                    >
+                      👁️ View
+                    </button>
                   </div>
                 </div>
               ))}
