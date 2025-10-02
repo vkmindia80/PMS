@@ -805,6 +805,11 @@ export const TimelinePage: React.FC = () => {
               <p className="text-sm text-gray-500">No projects available. Create a project first.</p>
             )}
           </div>
+        ) : useEnhancedView && selectedProjectId ? (
+          <EnhancedTimelineView 
+            projectId={selectedProjectId}
+            onTaskUpdate={handleTaskUpdate}
+          />
         ) : ganttData ? (
           <div className="bg-white rounded-lg shadow-sm">
             <div className="p-4 border-b border-gray-200">
