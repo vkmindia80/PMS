@@ -604,12 +604,17 @@ export const TimelinePage: React.FC = () => {
         return;
       }
 
+      console.log('Fetching timeline data for project:', selectedProjectId);
+      console.log('API URL:', API_ENDPOINTS.timeline.gantt(selectedProjectId));
+      
       const response = await fetch(API_ENDPOINTS.timeline.gantt(selectedProjectId), {
         headers: {
           'Authorization': `Bearer ${authData.access_token}`,
           'Content-Type': 'application/json'
         }
       });
+      
+      console.log('Timeline API response status:', response.status);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch timeline data: ${response.status}`);
