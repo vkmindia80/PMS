@@ -975,15 +975,15 @@ export const TimelinePage: React.FC = () => {
           </div>
 
           {/* Project Selector and View Controls */}
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-4">
             {/* Project Selector - Using ProjectFilterContext */}
             {projects.length > 0 && (
-              <div className="flex items-center space-x-2 min-w-0">
-                <label className="text-sm font-medium text-gray-700 whitespace-nowrap">Project:</label>
+              <div className="flex items-center space-x-2 min-w-0 w-full sm:w-auto">
+                <label className="text-sm font-medium text-gray-700 whitespace-nowrap hidden sm:inline">Project:</label>
                 <select
                   value={selectedProjectId || ''}
                   onChange={(e) => setSelectedProject(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[200px] max-w-[250px]"
+                  className="border border-gray-300 rounded-md px-2 sm:px-3 py-1 sm:py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:min-w-[200px] sm:max-w-[250px]"
                 >
                   <option value="">Select a project...</option>
                   {projects.map((project) => (
@@ -996,11 +996,11 @@ export const TimelinePage: React.FC = () => {
             )}
             
             <div className="flex items-center space-x-2">
-              <label className="text-sm font-medium text-gray-700 whitespace-nowrap">View:</label>
+              <label className="text-sm font-medium text-gray-700 whitespace-nowrap hidden sm:inline">View:</label>
               <select
                 value={viewMode}
                 onChange={(e) => setViewMode(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 rounded-md px-2 sm:px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {timelineViewModes.map((mode) => (
                   <option key={mode.value} value={mode.value}>
