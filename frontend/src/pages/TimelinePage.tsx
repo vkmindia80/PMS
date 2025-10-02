@@ -703,6 +703,19 @@ export const TimelinePage: React.FC = () => {
     }
   }, [selectedProjectId, tokens?.access_token]);
 
+  // Handle zoom changes
+  const handleZoomIn = useCallback(() => {
+    setZoomLevel(prev => Math.min(5.0, prev * 1.2));
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    setZoomLevel(prev => Math.max(0.1, prev * 0.8));
+  }, []);
+
+  const handleZoomReset = useCallback(() => {
+    setZoomLevel(1.0);
+  }, []);
+
   // Handle task updates
   const handleTaskUpdate = useCallback(async (task: TimelineTask) => {
     try {
