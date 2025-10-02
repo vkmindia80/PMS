@@ -1752,12 +1752,29 @@ const IntegrationsPage: React.FC = () => {
       setTestResults({ ...testResults, [type]: result })
       
     } catch (error: any) {
-      console.error('Integration test error:', error)
+      console.error(`${type} integration test error:`, error)
+      setConnectionStatus(prev => ({ ...prev, [type]: 'failed' }))
+      
+      let errorMessage = 'Connection test failed'
+      if (error.response?.status === 404) {
+        errorMessage = 'Integration endpoint not found - please check your configuration'
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Authentication failed - please verify your credentials'
+      } else if (error.response?.status === 403) {
+        errorMessage = 'Permission denied - please check your integration permissions'
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      
       setTestResults({ 
         ...testResults, 
         [type]: { 
           success: false, 
-          error: error.response?.data?.detail || error.message 
+          error: errorMessage,
+          status_code: error.response?.status,
+          timestamp: new Date().toISOString()
         } 
       })
     } finally {
