@@ -1019,6 +1019,18 @@ export const TimelinePage: React.FC = () => {
                 <Zap className="h-4 w-4 mr-1 inline" />
                 <span className="hidden sm:inline">Enhanced</span>
               </button>
+              
+              {/* Zoom to Fit Button */}
+              <button
+                onClick={handleZoomToFit}
+                className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
+                title="Zoom to Fit All Tasks"
+                disabled={!ganttData || ganttData.tasks.length === 0}
+              >
+                <Settings className="h-4 w-4 mr-1 inline" />
+                <span className="hidden sm:inline">Fit</span>
+              </button>
+              
               <div className="flex items-center space-x-1 border border-gray-300 rounded-md">
                 <button
                   onClick={handleZoomIn}
