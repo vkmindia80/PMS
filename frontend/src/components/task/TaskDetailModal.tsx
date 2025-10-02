@@ -976,9 +976,10 @@ const TaskActivityTab: React.FC<{
 // Dependencies Tab Component  
 const TaskDependenciesTab: React.FC<{
   task: Task
+  dependentTasks?: any[]
   isEditing: boolean
   onUpdate: (taskId: string, updates: Partial<Task>) => Promise<void>
-}> = ({ task, isEditing, onUpdate }) => {
+}> = ({ task, dependentTasks = [], isEditing, onUpdate }) => {
   return (
     <div className="p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
