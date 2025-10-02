@@ -67,6 +67,36 @@ const GanttChart: React.FC<{
   const [draggedTask, setDraggedTask] = useState<string | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 1200, height: 600 });
 
+  // Handle canvas resizing based on container and zoom
+  const updateCanvasSize = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    
+    const containerWidth = container.clientWidth;
+    const containerHeight = Math.max(400, container.clientHeight);
+    
+    // Calculate responsive dimensions
+    const taskCount = data.tasks.length;
+    const baseTimeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
+    const zoomedTimeUnit = Math.max(20, baseTimeUnit * zoomLevel); // Apply zoom with minimum size
+    const timelineWidth = Math.max(containerWidth - 250, 30 * zoomedTimeUnit);
+    
+    const newWidth = Math.max(containerWidth, 250 + timelineWidth);
+    const newHeight = Math.max(containerHeight, taskCount * 50 + 150);
+    
+    setCanvasSize({ width: newWidth, height: newHeight });
+  }, [data.tasks.length, viewMode, zoomLevel]);
+
+  // Update canvas size when dependencies change
+  useEffect(() => {
+    updateCanvasSize();
+    
+    const handleResize = () => updateCanvasSize();
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, [updateCanvasSize]);
+
   const drawGanttChart = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -74,11 +104,18 @@ const GanttChart: React.FC<{
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas size based on data and timeline span
-    const taskCount = data.tasks.length;
-    const timelineWidth = Math.max(1200, 30 * (viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200)); // 30 time units
-    canvas.width = 250 + timelineWidth; // Task names width + timeline width
-    canvas.height = Math.max(400, taskCount * 50 + 150); // Header + tasks + padding
+    // Set canvas size with zoom consideration
+    canvas.width = canvasSize.width;
+    canvas.height = canvasSize.height;
+    
+    // Set DPI scaling for crisp rendering
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
