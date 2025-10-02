@@ -1041,6 +1041,7 @@ export const TimelinePage: React.FC = () => {
                   className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-l-md"
                   title="Zoom In (Ctrl + Mouse Wheel)"
                   disabled={zoomLevel >= 5.0}
+                  data-testid="zoom-in-button"
                 >
                   <ZoomIn className="h-3 sm:h-4 w-3 sm:w-4" />
                 </button>
