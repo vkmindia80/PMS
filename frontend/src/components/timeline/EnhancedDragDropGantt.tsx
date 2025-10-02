@@ -1454,63 +1454,69 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
   return (
     <div className="enhanced-drag-drop-gantt w-full h-full bg-white rounded-lg border border-gray-200 overflow-hidden">
       {/* Enhanced Toolbar with drag indicators */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 bg-gray-50 border-b border-gray-200">
+      <div className="flex flex-col gap-3 p-3 sm:p-4 bg-gray-50 border-b border-gray-200 lg:flex-row lg:items-center lg:justify-between lg:gap-4">
         {/* Left side - Search and controls */}
-        <div className="flex items-center space-x-4">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
+          <div className="relative flex-1 sm:flex-initial sm:min-w-[200px]">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search tasks..."
+              placeholder={isMobile ? "Search..." : "Search tasks..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
-              showFilters ? 'bg-blue-100 text-blue-700' : 'bg-white text-gray-700 hover:bg-gray-50'
-            } border border-gray-300`}
-          >
-            <Filter className="h-4 w-4" />
-            <span>Filters</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center justify-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg transition-colors ${
+                showFilters ? 'bg-blue-100 text-blue-700' : 'bg-white text-gray-700 hover:bg-gray-50'
+              } border border-gray-300 flex-1 sm:flex-initial`}
+            >
+              <Filter className="h-4 w-4" />
+              {!isMobile && <span>Filters</span>}
+            </button>
 
-          {/* Drag mode indicator */}
-          {dragState.isDragging && (
-            <div className="flex items-center space-x-2 px-3 py-2 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
-              <GripVertical className="h-4 w-4 animate-pulse" />
-              <span className="text-sm font-medium">
-                {dragState.dragType === 'move' ? 'Moving' : 
-                 dragState.dragType === 'resize-start' ? 'Resizing Start' : 'Resizing End'} Task
-              </span>
-            </div>
-          )}
+            {/* Drag mode indicator */}
+            {dragState.isDragging && (
+              <div className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
+                <GripVertical className="h-4 w-4 animate-pulse" />
+                <span className="text-xs sm:text-sm font-medium">
+                  {isMobile ? (
+                    dragState.dragType === 'move' ? 'Moving' : 'Resizing'
+                  ) : (
+                    dragState.dragType === 'move' ? 'Moving' : 
+                    dragState.dragType === 'resize-start' ? 'Resizing Start' : 'Resizing End'
+                  )} Task
+                </span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right side - View controls */}
-        <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-2 border border-gray-300 rounded-lg">
+        <div className="flex items-center justify-between sm:justify-end gap-2">
+          <div className="flex items-center space-x-1 sm:space-x-2 border border-gray-300 rounded-lg">
             <button
               onClick={() => onViewConfigChange({ zoom_level: Math.min(5.0, viewConfig.zoom_level * 1.2) })}
-              className="p-2 hover:bg-gray-50 text-gray-600"
+              className="p-1.5 sm:p-2 hover:bg-gray-50 text-gray-600"
               title="Zoom In"
             >
-              <ZoomIn className="h-4 w-4" />
+              <ZoomIn className="h-3 w-3 sm:h-4 sm:w-4" />
             </button>
             
-            <span className="px-2 py-1 text-sm text-gray-600 border-x border-gray-300 min-w-[60px] text-center">
+            <span className="px-1 sm:px-2 py-1 text-xs sm:text-sm text-gray-600 border-x border-gray-300 min-w-[45px] sm:min-w-[60px] text-center">
               {Math.round(viewConfig.zoom_level * 100)}%
             </span>
             
             <button
               onClick={() => onViewConfigChange({ zoom_level: Math.max(0.1, viewConfig.zoom_level * 0.8) })}
-              className="p-2 hover:bg-gray-50 text-gray-600"
+              className="p-1.5 sm:p-2 hover:bg-gray-50 text-gray-600"
               title="Zoom Out"
             >
-              <ZoomOut className="h-4 w-4" />
+              <ZoomOut className="h-3 w-3 sm:h-4 sm:w-4" />
             </button>
           </div>
 
@@ -1527,16 +1533,16 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
                 onViewConfigChange({ zoom_level: fitZoom });
               }
             }}
-            className="p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg border border-green-300"
+            className="p-1.5 sm:p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg border border-green-300"
             title="Fit to Screen"
           >
-            <Maximize2 className="h-4 w-4" />
+            <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
           </button>
 
           <select
             value={viewConfig.mode}
             onChange={(e) => onViewConfigChange({ mode: e.target.value as any })}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="day">Day</option>
             <option value="week">Week</option>
