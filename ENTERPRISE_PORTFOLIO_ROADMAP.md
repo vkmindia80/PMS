@@ -257,7 +257,7 @@ After comprehensive system testing, timeline integration, and demo data verifica
 
 ### **Environment Status: Production Ready** ✅
 - **Local Development**: http://localhost:3000 - Full feature development environment
-- **Preview Deployment**: https://access-repair-6.preview.emergentagent.com/ - Production-ready demonstration
+- **Preview Deployment**: https://portfolio-guide-4.preview.emergentagent.com/ - Production-ready demonstration
 - **API Resolution**: Dynamic URL detection working for both environments
 - **Enterprise Ready**: System ready for client demonstrations and enterprise deployment
 
