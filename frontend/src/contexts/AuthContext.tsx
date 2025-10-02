@@ -83,8 +83,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           // Verify token is still valid
           await fetchUserProfile(parsedTokens.access_token)
         } catch (error) {
-          console.error('Failed to initialize auth:', error)
-          clearAuthData()
+          console.error('Failed to initialize auth, attempting token refresh:', error)
+          
+          // Try to refresh token if we have a refresh token
+          if (parsedTokens?.refresh_token) {
+            try {
+              await refreshTokenInternal(parsedTokens.refresh_token, parsedUser)
+            } catch (refreshError) {
+              console.error('Token refresh during initialization failed:', refreshError)
+              clearAuthData()
+            }
+          } else {
+            clearAuthData()
+          }
         }
       }
       
