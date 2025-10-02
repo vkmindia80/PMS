@@ -143,6 +143,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
 
   useEffect(() => {
     if (task && isOpen) {
+      console.log('TaskDetailModal: Opening modal for task:', task.id, task.title)
       setEditData({})
       setIsEditing(false)
       fetchTaskWithDetails()
