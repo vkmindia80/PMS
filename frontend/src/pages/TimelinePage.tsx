@@ -149,9 +149,10 @@ const GanttChart: React.FC<{
       ctx.lineTo(x, ctx.canvas.height);
       ctx.stroke();
       
-      // Date label
+      // Date label - calculate based on project start and view mode
       const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i * (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30));
+      const daysToAdd = i * (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30);
+      date.setDate(startDate.getDate() + daysToAdd);
       
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
