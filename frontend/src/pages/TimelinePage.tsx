@@ -621,6 +621,8 @@ export const TimelinePage: React.FC = () => {
       }
 
       const data = await response.json();
+      console.log('Timeline data received:', data);
+      console.log('Number of tasks:', data.tasks?.length || 0);
       setGanttData(data);
       setError(null);
     } catch (err) {
