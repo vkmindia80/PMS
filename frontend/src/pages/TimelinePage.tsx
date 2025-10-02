@@ -70,25 +70,82 @@ const GanttChart: React.FC<{
   const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
 
-  // Handle canvas resizing based on container and zoom
+  // Check if mobile device
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
+  // Calculate date range for zoom-to-fit functionality
+  const getDateRange = useCallback(() => {
+    if (!data.tasks || data.tasks.length === 0) {
+      return { start: new Date(), end: new Date() };
+    }
+
+    const startDates = data.tasks.map(t => new Date(t.start_date)).filter(d => !isNaN(d.getTime()));
+    const endDates = data.tasks.map(t => new Date(t.finish_date)).filter(d => !isNaN(d.getTime()));
+    
+    if (startDates.length === 0 || endDates.length === 0) {
+      return { start: new Date(), end: new Date() };
+    }
+
+    const earliestStart = new Date(Math.min(...startDates.map(d => d.getTime())));
+    const latestEnd = new Date(Math.max(...endDates.map(d => d.getTime())));
+    
+    return { start: earliestStart, end: latestEnd };
+  }, [data.tasks]);
+
+  // Zoom to fit all tasks
+  const zoomToFit = useCallback(() => {
+    const container = containerRef.current;
+    if (!container || !data.tasks || data.tasks.length === 0) return;
+
+    const dateRange = getDateRange();
+    const containerWidth = container.clientWidth;
+    const taskNameWidth = isMobile ? 150 : 250;
+    const availableWidth = containerWidth - taskNameWidth - 40; // 40px for padding
+    
+    const totalDays = Math.ceil((dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24));
+    const baseTimeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
+    const daysPerUnit = viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30;
+    
+    const requiredUnits = Math.ceil(totalDays / daysPerUnit);
+    const optimalTimeUnit = availableWidth / requiredUnits;
+    const optimalZoom = Math.max(0.1, Math.min(5.0, optimalTimeUnit / baseTimeUnit));
+    
+    onZoomChange(optimalZoom);
+    setPanOffset({ x: 0, y: 0 });
+  }, [data.tasks, viewMode, onZoomChange, getDateRange, isMobile]);
+
+  // Handle canvas resizing based on container and zoom with responsive design
   const updateCanvasSize = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
     
     const containerWidth = container.clientWidth;
-    const containerHeight = Math.max(400, container.clientHeight);
+    const containerHeight = Math.max(isMobile ? 300 : 400, container.clientHeight);
+    
+    // Responsive task name width
+    const taskNameWidth = isMobile ? 150 : 250;
     
     // Calculate responsive dimensions
     const taskCount = data.tasks.length;
-    const baseTimeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
-    const zoomedTimeUnit = Math.max(20, baseTimeUnit * zoomLevel); // Apply zoom with minimum size
-    const timelineWidth = Math.max(containerWidth - 250, 30 * zoomedTimeUnit);
+    const baseTimeUnit = viewMode === 'day' ? (isMobile ? 60 : 80) : 
+                        viewMode === 'week' ? (isMobile ? 80 : 120) : 
+                        (isMobile ? 120 : 200);
+    const zoomedTimeUnit = Math.max(isMobile ? 15 : 20, baseTimeUnit * zoomLevel);
+    const timelineWidth = Math.max(containerWidth - taskNameWidth, 30 * zoomedTimeUnit);
     
-    const newWidth = Math.max(containerWidth, 250 + timelineWidth);
-    const newHeight = Math.max(containerHeight, taskCount * 50 + 150);
+    const newWidth = Math.max(containerWidth, taskNameWidth + timelineWidth);
+    const newHeight = Math.max(containerHeight, taskCount * (isMobile ? 40 : 50) + 150);
     
     setCanvasSize({ width: newWidth, height: newHeight });
-  }, [data.tasks.length, viewMode, zoomLevel]);
+  }, [data.tasks.length, viewMode, zoomLevel, isMobile]);
 
   // Update canvas size when dependencies change
   useEffect(() => {
