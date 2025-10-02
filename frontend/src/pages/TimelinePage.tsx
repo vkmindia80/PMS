@@ -87,9 +87,13 @@ const GanttChart: React.FC<{
 
     // Draw tasks with enhanced styling
     if (data.tasks && data.tasks.length > 0) {
+      console.log('Drawing tasks:', data.tasks.length);
       data.tasks.forEach((task, index) => {
+        console.log(`Drawing task ${index}:`, task.name, task.start_date);
         drawTaskBar(ctx, task, index, viewMode);
       });
+    } else {
+      console.log('No tasks to draw');
     }
 
     // Draw dependencies with enhanced styling
