@@ -683,24 +683,16 @@ export const TimelinePage: React.FC = () => {
             </div>
           </div>
 
-          {/* View Mode Selector and Project Selector */}
+          {/* Project Selector and View Controls */}
           <div className="flex items-center space-x-4">
-            {/* Global Project Filter */}
-            <GlobalProjectFilter 
-              className="min-w-[200px]" 
-              placeholder="Filter Projects" 
-              label=""
-              multiSelect={true}
-            />
-            
             {/* Project Selector */}
-            {!urlProjectId && projects.length > 0 && (
+            {projects.length > 0 && (
               <div className="flex items-center space-x-2">
                 <label className="text-sm font-medium text-gray-700">Project:</label>
                 <select
                   value={selectedProjectId || ''}
                   onChange={(e) => setSelectedProjectId(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[250px]"
                 >
                   <option value="">Select a project...</option>
                   {projects.map((project) => (
