@@ -404,8 +404,10 @@ const GanttChart: React.FC<{
     }
     
     // Calculate task bar position based on actual dates with zoom
-    const baseTimeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
-    const timeUnit = Math.max(20, baseTimeUnit * zoomLevel);
+    const baseTimeUnit = viewMode === 'day' ? (isMobile ? 60 : 80) : 
+                        viewMode === 'week' ? (isMobile ? 80 : 120) : 
+                        (isMobile ? 120 : 200);
+    const timeUnit = Math.max(isMobile ? 15 : 20, baseTimeUnit * zoomLevel);
     
     // Use the earliest task start date as project start to ensure all tasks are visible
     const allStartDates = data.tasks.map(t => new Date(t.start_date)).filter(d => !isNaN(d.getTime()));
