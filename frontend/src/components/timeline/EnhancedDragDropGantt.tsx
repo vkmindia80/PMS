@@ -1599,15 +1599,15 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       </div>
 
       {/* Status bar */}
-      <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-600">
-        <div className="flex items-center justify-between">
+      <div className="px-2 sm:px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-600">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div>
             {filteredTasks.length} tasks • {conflicts.length} conflicts
           </div>
-          <div className="flex items-center space-x-4">
-            <span>Keyboard: ESC to deselect • DEL to delete</span>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+            {!isMobile && <span>Keyboard: ESC to deselect • DEL to delete</span>}
             {selectedTask && (
-              <span className="text-blue-600 font-medium">
+              <span className="text-blue-600 font-medium truncate max-w-[200px]">
                 Selected: {filteredTasks.find(t => t.id === selectedTask)?.name}
               </span>
             )}
