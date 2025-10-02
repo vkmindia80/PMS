@@ -5,6 +5,8 @@ import { API_ENDPOINTS } from '../utils/config';
 import { useAuth } from '../contexts/AuthContext';
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext';
 import EnhancedTimelineView from '../components/timeline/EnhancedTimelineView';
+import { timelineService, type GanttChartData } from '../services/timelineService';
+import { mapDependencyTypeFromBackend } from '../utils/timelineUtils';
 
 // Timeline interfaces
 interface TimelineTask {
