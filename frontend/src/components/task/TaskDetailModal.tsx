@@ -986,11 +986,11 @@ const TaskCommentsTab: React.FC<{
                   </span>
                 </div>
               </div>
-              <div className="text-gray-900 whitespace-pre-wrap pl-13">
+              <div className="text-gray-900 whitespace-pre-wrap pl-12">
                 {comment.content}
               </div>
               {comment.reply_count > 0 && (
-                <div className="mt-3 pl-13">
+                <div className="mt-3 pl-12">
                   <div className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
                     <MessageSquare className="h-4 w-4" />
                     <span>{comment.reply_count} {comment.reply_count === 1 ? 'reply' : 'replies'}</span>
@@ -998,7 +998,7 @@ const TaskCommentsTab: React.FC<{
                 </div>
               )}
               {comment.reactions && comment.reactions.length > 0 && (
-                <div className="mt-3 pl-13 flex items-center space-x-2">
+                <div className="mt-3 pl-12 flex items-center space-x-2">
                   {comment.reactions.slice(0, 3).map((reaction, idx) => (
                     <span key={idx} className="text-sm bg-gray-100 px-2 py-1 rounded">
                       {reaction.emoji}
