@@ -640,7 +640,7 @@ export const DynamicTimelinePage: React.FC = () => {
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-            <DynamicGanttChart
+            <EnhancedDragDropGantt
               projectId={selectedProjectId}
               tasks={tasks}
               dependencies={dependencies}
