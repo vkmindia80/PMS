@@ -294,7 +294,10 @@ def convert_task_to_timeline(task: Dict) -> Dict:
     """Convert regular task to timeline task format"""
     
     # Calculate timeline dates
-    created_date = datetime.fromisoformat(task["created_at"].replace('Z', '+00:00'))
+    if isinstance(task["created_at"], str):
+        created_date = datetime.fromisoformat(task["created_at"].replace('Z', '+00:00'))
+    else:
+        created_date = task["created_at"]  # Already a datetime object
     
     # Use due date if available, otherwise default to 1 week from creation
     if task.get("due_date"):
