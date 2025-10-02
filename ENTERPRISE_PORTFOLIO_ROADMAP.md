@@ -151,6 +151,22 @@ After comprehensive system testing, timeline integration, and demo data verifica
 ### **PHASE A: COMPLETE FINAL FEATURES** 
 **Priority**: 🔴 **CRITICAL** | **Investment**: 2-5 credits | **Timeline**: 1-2 weeks
 
+#### **A.0: Enhanced Task Management System** (1 credit) - **IN PROGRESS** 🟡
+**Status**: Backend 70% ✅, Frontend 80% ✅, Enhancement Required ⚠️
+- **Current Issue**: Task editing and dependency management needs enhancement
+- **User Request**: Enhanced task create/edit with full dependency flow (pre-tasks, post-tasks)
+- **Requirements**:
+  - Task edit capability with comprehensive form fields
+  - Full dependency management (pre-task, post-task visualization) 
+  - Enhanced task view showing assignee names, status, comments history
+  - Improved task creation with all required fields (start date, due date, estimated hours, team assignment)
+- **Deliverables**:
+  - Enhanced TaskDetailModal with full editing capability
+  - Improved task dependencies visualization and management
+  - Better assignee display and team member assignment
+  - Comprehensive task creation form with all workflow fields
+- **Impact**: Critical for task workflow management and team productivity
+
 #### **A.1: Timeline Integration** ✅ **COMPLETED** (October 1, 2025)
 **Status**: Backend 100% ✅, Frontend 100% ✅
 - **✅ DELIVERED**: Professional Gantt charts displaying 14 real project tasks
