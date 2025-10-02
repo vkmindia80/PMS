@@ -244,8 +244,8 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 #### **Session 3: Advanced AI Dashboard Integration** (1-2 credits) - **OPTIONAL**
 - **Objective**: Connect AI/ML APIs to UI (3 models confirmed operational)
-- **Impact**: Competitive differentiation vs Monday.com and Asana
-- **Deliverable**: AI-powered insights and predictions interface
+- **Impact**: Competitive differentiation vs Monday.com and Asana with AI-powered timeline optimization
+- **Deliverable**: AI-powered insights, predictions interface, and intelligent auto-scheduling enhancements
 
 #### **Session 4: System Testing & Polish** (1 credit) - **FINAL**
 - **Objective**: End-to-end testing with 311 demo data points
