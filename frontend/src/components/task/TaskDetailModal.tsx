@@ -959,7 +959,12 @@ const TaskActivityTab: React.FC<{
               </div>
               <div className="flex-1">
                 <div className="text-sm">
-                  <span className="font-medium text-gray-900">User</span>
+                  <span className="font-medium text-gray-900">
+                    {(() => {
+                      const user = availableUsers.find(u => u.id === activity.user_id);
+                      return user ? `${user.first_name} ${user.last_name}` : 'Unknown User';
+                    })()}
+                  </span>
                   <span className="text-gray-600 ml-1">{getActivityDescription(activity)}</span>
                 </div>
                 <div className="text-xs text-gray-500 mt-1">
