@@ -133,7 +133,9 @@ const GanttChart: React.FC<{
     ctx.strokeStyle = '#e5e7eb';
     ctx.lineWidth = 1;
     
-    const startDate = new Date();
+    // Use the earliest task start date as timeline start
+    const allStartDates = data.tasks.map(t => new Date(t.start_date)).filter(d => !isNaN(d.getTime()));
+    const startDate = allStartDates.length > 0 ? new Date(Math.min(...allStartDates.map(d => d.getTime()))) : new Date();
     const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
     
     for (let i = 0; i < 30; i++) {
