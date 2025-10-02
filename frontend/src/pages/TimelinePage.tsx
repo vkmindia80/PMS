@@ -227,6 +227,7 @@ const GanttChart: React.FC<{
     const taskNameWidth = 250;
     const taskHeight = 50;
     const headerHeight = 80;
+    const canvasWidth = ctx.canvas.width / (window.devicePixelRatio || 1);
     
     ctx.strokeStyle = '#f3f4f6';
     ctx.lineWidth = 1;
@@ -236,7 +237,7 @@ const GanttChart: React.FC<{
       const y = headerHeight + i * taskHeight;
       ctx.beginPath();
       ctx.moveTo(0, y);
-      ctx.lineTo(ctx.canvas.width, y);
+      ctx.lineTo(canvasWidth, y);
       ctx.stroke();
     }
   };
