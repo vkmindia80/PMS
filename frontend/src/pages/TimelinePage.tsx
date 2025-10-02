@@ -68,13 +68,14 @@ const GanttChart: React.FC<{
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Set canvas size based on data and timeline span
+    const taskCount = data.tasks.length;
+    const timelineWidth = Math.max(1200, 30 * (viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200)); // 30 time units
+    canvas.width = 250 + timelineWidth; // Task names width + timeline width
+    canvas.height = Math.max(400, taskCount * 50 + 150); // Header + tasks + padding
+
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Set canvas size based on data
-    const taskCount = data.tasks.length;
-    canvas.width = Math.max(1200, 1000 + taskCount * 20);
-    canvas.height = Math.max(600, taskCount * 50 + 150);
 
     // Enhanced timeline header
     drawTimelineHeader(ctx, viewMode);
@@ -83,14 +84,18 @@ const GanttChart: React.FC<{
     drawGridLines(ctx, viewMode);
 
     // Draw tasks with enhanced styling
-    data.tasks.forEach((task, index) => {
-      drawTaskBar(ctx, task, index, viewMode);
-    });
+    if (data.tasks && data.tasks.length > 0) {
+      data.tasks.forEach((task, index) => {
+        drawTaskBar(ctx, task, index, viewMode);
+      });
+    }
 
     // Draw dependencies with enhanced styling
-    data.dependencies.forEach(dependency => {
-      drawDependencyLine(ctx, dependency, data.tasks);
-    });
+    if (data.dependencies && data.dependencies.length > 0) {
+      data.dependencies.forEach(dependency => {
+        drawDependencyLine(ctx, dependency, data.tasks);
+      });
+    }
 
     // Draw current date indicator
     drawCurrentDateLine(ctx, viewMode);
