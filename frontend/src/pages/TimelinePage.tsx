@@ -35,12 +35,8 @@ interface TaskDependency {
   project_id: string;
 }
 
-interface GanttChartData {
-  project_id: string;
-  tasks: TimelineTask[];
-  dependencies: TaskDependency[];
-  critical_path: string[];
-}
+// Remove local interface since we're importing from service
+// interface GanttChartData is now imported from timelineService
 
 interface TimelineViewMode {
   value: string;
