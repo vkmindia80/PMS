@@ -868,21 +868,13 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     isPreview: boolean,
     daysDelta: number
   ) => {
-    if (!timelineMetrics) {
-      console.log('No timelineMetrics in drawEnhancedTaskBar');
-      return;
-    }
-
-    console.log(`Drawing taskbar for: ${task.name}`);
-    console.log('Task dates:', task.start_date, 'to', task.finish_date);
+    if (!timelineMetrics) return;
 
     let taskStartDate = new Date(task.start_date);
     let taskEndDate = new Date(task.finish_date);
     
     // Validate dates
     if (isNaN(taskStartDate.getTime()) || isNaN(taskEndDate.getTime())) {
-      console.error(`Invalid dates for task ${task.name}:`, task.start_date, task.finish_date);
-      
       // Draw error indicator
       ctx.fillStyle = '#ef4444';
       ctx.fillRect(offsetX, y + taskHeight/2 - 5, 100, 10);
