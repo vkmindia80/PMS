@@ -178,10 +178,13 @@ const GanttChart: React.FC<{
     const baseTimeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
     const timeUnit = Math.max(20, baseTimeUnit * zoomLevel); // Apply zoom with minimum size
     
-    for (let i = 0; i < 30; i++) {
+    // Calculate visible time units based on canvas width and zoom
+    const visibleTimeUnits = Math.ceil((canvasWidth - taskNameWidth) / timeUnit) + 2;
+    
+    for (let i = 0; i < visibleTimeUnits; i++) {
       const x = taskNameWidth + i * timeUnit;
       
-      if (x > ctx.canvas.width) break;
+      if (x > canvasWidth) break;
       
       // Vertical grid line
       ctx.beginPath();
