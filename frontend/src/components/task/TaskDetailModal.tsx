@@ -993,19 +993,45 @@ const TaskDependenciesTab: React.FC<{
             {task.dependencies.length === 0 ? (
               <p className="text-gray-500 text-sm">No dependencies</p>
             ) : (
-              task.dependencies.map((dep, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <div className="font-medium text-gray-900">Task ID: {dep.task_id.substring(0, 8)}</div>
-                    <div className="text-sm text-gray-600">Type: {dep.dependency_type}</div>
+              task.dependencies.map((dep, index) => {
+                const dependentTask = dependentTasks.find(t => t.id === dep.task_id);
+                return (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-l-4 border-orange-400">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
+                          <ArrowLeft className="h-3 w-3 text-orange-600" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-gray-900">
+                            {dependentTask ? dependentTask.title : `Task ${dep.task_id.substring(0, 8)}`}
+                          </div>
+                          <div className="text-sm text-gray-600 flex items-center space-x-2">
+                            <span>Type: {dep.dependency_type}</span>
+                            {dependentTask && (
+                              <>
+                                <span>•</span>
+                                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                  dependentTask.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                  dependentTask.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                                  'bg-gray-100 text-gray-800'
+                                }`}>
+                                  {dependentTask.status.replace('_', ' ').toUpperCase()}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {isEditing && (
+                      <button className="text-red-600 hover:text-red-800">
+                        <Minus className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
-                  {isEditing && (
-                    <button className="text-red-600 hover:text-red-800">
-                      <Minus className="h-4 w-4" />
-                    </button>
-                  )}
-                </div>
-              ))
+                );
+              })
             )}
           </div>
           
