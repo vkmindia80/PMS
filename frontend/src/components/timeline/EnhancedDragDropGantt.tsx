@@ -1271,6 +1271,21 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     }
   }, []);
 
+  // Add error handling for safe rendering
+  if (!projectId) {
+    return (
+      <div className="enhanced-drag-drop-gantt w-full h-full bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Project Selected</h3>
+            <p className="text-gray-600">Please select a project to view the timeline.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="enhanced-drag-drop-gantt w-full h-full bg-white rounded-lg border border-gray-200 overflow-hidden">
       {/* Enhanced Toolbar with drag indicators */}
