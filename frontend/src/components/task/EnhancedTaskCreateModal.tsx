@@ -199,7 +199,7 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
         priority: formData.priority,
         type: formData.type,
         project_id: formData.project_id,
-        assignee_id: formData.assignee_ids.length > 0 ? formData.assignee_ids[0] : undefined,
+        assignee_ids: formData.assignee_ids,
         due_date: formData.due_date ? new Date(formData.due_date).toISOString() : undefined,
         start_date: formData.start_date ? new Date(formData.start_date).toISOString() : undefined,
         time_tracking: {
