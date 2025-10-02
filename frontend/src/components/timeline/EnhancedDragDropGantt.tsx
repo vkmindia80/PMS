@@ -174,28 +174,13 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       
       // Calculate date range with validation and better error handling
       const validTasks = filteredTasks.filter(task => {
-        if (!task) {
-          console.log('Invalid task (null/undefined)');
-          return false;
-        }
-        if (!task.start_date || !task.finish_date) {
-          console.log('Task missing dates:', task.id, task.name);
-          return false;
-        }
+        if (!task || !task.start_date || !task.finish_date) return false;
         
-        // Test date parsing
         const startDate = new Date(task.start_date);
         const finishDate = new Date(task.finish_date);
         
-        if (isNaN(startDate.getTime()) || isNaN(finishDate.getTime())) {
-          console.log('Task with invalid dates:', task.id, task.start_date, task.finish_date);
-          return false;
-        }
-        
-        return true;
+        return !isNaN(startDate.getTime()) && !isNaN(finishDate.getTime());
       });
-      
-      console.log('Valid tasks after date filtering:', validTasks.length);
       
       if (!validTasks.length) {
         console.log('No valid tasks found after date validation');
