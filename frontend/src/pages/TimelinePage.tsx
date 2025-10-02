@@ -507,7 +507,8 @@ const GanttChart: React.FC<{
     const taskNameWidth = 250;
     const taskHeight = 50;
     const headerHeight = 80;
-    const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
+    const baseTimeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
+    const timeUnit = Math.max(20, baseTimeUnit * zoomLevel);
     
     // Calculate positions based on task bars
     const predTask = tasks[predecessorIndex];
