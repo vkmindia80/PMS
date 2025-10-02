@@ -846,24 +846,38 @@ export const TimelinePage: React.FC = () => {
                 <Zap className="h-4 w-4 mr-1 inline" />
                 Enhanced
               </button>
-              <button
-                onClick={() => {/* TODO: Zoom in */}}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
-                title="Zoom In"
-              >
-                <ZoomIn className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => {/* TODO: Zoom out */}}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
-                title="Zoom Out"
-              >
-                <ZoomOut className="h-4 w-4" />
-              </button>
+              <div className="flex items-center space-x-1 border border-gray-300 rounded-md">
+                <button
+                  onClick={handleZoomIn}
+                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-l-md"
+                  title="Zoom In (Ctrl + Mouse Wheel)"
+                  disabled={zoomLevel >= 5.0}
+                >
+                  <ZoomIn className="h-4 w-4" />
+                </button>
+                <div className="px-2 py-1 text-xs text-gray-600 border-x border-gray-300 min-w-[60px] text-center">
+                  {Math.round(zoomLevel * 100)}%
+                </div>
+                <button
+                  onClick={handleZoomOut}
+                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  title="Zoom Out (Ctrl + Mouse Wheel)"
+                  disabled={zoomLevel <= 0.1}
+                >
+                  <ZoomOut className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={handleZoomReset}
+                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-r-md"
+                  title="Reset Zoom (100%)"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </button>
+              </div>
               <button
                 onClick={fetchGanttData}
                 className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
-                title="Refresh"
+                title="Refresh Timeline Data"
               >
                 <RotateCcw className="h-4 w-4" />
               </button>
