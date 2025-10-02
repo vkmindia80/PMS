@@ -622,10 +622,7 @@ export const TimelinePage: React.FC = () => {
   // Handle task updates
   const handleTaskUpdate = useCallback(async (task: TimelineTask) => {
     try {
-      const token = localStorage.getItem('auth_tokens');
-      const authData = token ? JSON.parse(token) : null;
-      
-      if (!authData?.access_token) {
+      if (!tokens?.access_token) {
         setError('Authentication required');
         return;
       }
@@ -633,7 +630,7 @@ export const TimelinePage: React.FC = () => {
       const response = await fetch(API_ENDPOINTS.timeline.taskUpdate(task.id), {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${authData.access_token}`,
+          'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -653,12 +650,7 @@ export const TimelinePage: React.FC = () => {
       console.error('Error updating task:', err);
       setError('Failed to update task');
     }
-  }, [fetchGanttData]);
-
-  // Fetch projects on component mount
-  useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+  }, [fetchGanttData, tokens?.access_token]);
 
   // Fetch gantt data when selectedProjectId changes
   useEffect(() => {
