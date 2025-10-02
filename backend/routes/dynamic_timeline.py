@@ -273,6 +273,23 @@ async def get_realtime_timeline_stats(
     db = Depends(get_database)
 ):
     """Get real-time timeline statistics with fallback to regular tasks"""
+    return await _calculate_project_stats(project_id, current_user, db)
+
+@router.get("/stats/{project_id}", response_model=RealtimeStats)  
+async def get_timeline_stats(
+    project_id: str,
+    current_user: User = Depends(get_current_active_user),
+    db = Depends(get_database)
+):
+    """Get timeline statistics (fallback endpoint)"""
+    return await _calculate_project_stats(project_id, current_user, db)
+
+async def _calculate_project_stats(
+    project_id: str,
+    current_user: User,
+    db
+) -> RealtimeStats:
+    """Get real-time timeline statistics with fallback to regular tasks"""
     try:
         # First try to get timeline tasks
         tasks_cursor = db.timeline_tasks.find({"project_id": project_id})
