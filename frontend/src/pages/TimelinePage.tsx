@@ -58,10 +58,14 @@ const GanttChart: React.FC<{
   data: GanttChartData;
   viewMode: string;
   onTaskUpdate: (task: TimelineTask) => void;
-}> = ({ data, viewMode, onTaskUpdate }) => {
+  zoomLevel: number;
+  onZoomChange: (newZoom: number) => void;
+}> = ({ data, viewMode, onTaskUpdate, zoomLevel, onZoomChange }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [draggedTask, setDraggedTask] = useState<string | null>(null);
+  const [canvasSize, setCanvasSize] = useState({ width: 1200, height: 600 });
 
   const drawGanttChart = useCallback(() => {
     const canvas = canvasRef.current;
