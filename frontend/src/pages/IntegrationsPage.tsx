@@ -1661,25 +1661,68 @@ const IntegrationsPage: React.FC = () => {
           break
 
         case 'teams':
-          const teamsResult = await axios.post(
-            `${getApiBaseUrl()}/api/integrations/teams/adaptive-card`,
+          // First validate Teams configuration
+          const teamsValidation = await axios.post(
+            `${getApiBaseUrl()}/api/integrations/teams/validate`,
             {
-              channel_id: 'test-channel',
-              message: 'Test adaptive card from Enterprise Portfolio Management',
-              card_data: {
-                body: [
-                  {
-                    type: 'TextBlock',
-                    text: 'Integration Test Successful! ✅',
-                    weight: 'Bolder',
-                    color: 'Good'
-                  }
-                ]
-              }
+              tenant_id: teamsConfig.tenant_id,
+              application_id: teamsConfig.application_id,
+              client_secret: teamsConfig.client_secret
             },
             { headers: getAuthHeaders() }
           )
-          result = teamsResult.data
+          
+          if (teamsValidation.data.success) {
+            // If validation passes, send test adaptive card
+            const teamsResult = await axios.post(
+              `${getApiBaseUrl()}/api/integrations/teams/adaptive-card`,
+              {
+                channel_id: teamsConfig.default_team || 'General',
+                message: 'Test adaptive card from Enterprise Portfolio Management',
+                card_data: {
+                  type: 'AdaptiveCard',
+                  version: '1.3',
+                  body: [
+                    {
+                      type: 'TextBlock',
+                      text: '🚀 Enterprise Portfolio Integration',
+                      weight: 'Bolder',
+                      size: 'Medium',
+                      color: 'Accent'
+                    },
+                    {
+                      type: 'TextBlock',
+                      text: 'Integration test successful! Your Teams integration is now configured and ready to use.',
+                      wrap: true
+                    },
+                    {
+                      type: 'FactSet',
+                      facts: [
+                        { title: 'Status:', value: 'Connected ✅' },
+                        { title: 'Team:', value: teamsConfig.default_team || 'General' },
+                        { title: 'Features:', value: 'Notifications, Adaptive Cards, Bot Integration' }
+                      ]
+                    }
+                  ]
+                }
+              },
+              { headers: getAuthHeaders() }
+            )
+            result = {
+              ...teamsResult.data,
+              validation: teamsValidation.data,
+              success: true,
+              message: `Successfully sent test adaptive card to ${teamsConfig.default_team || 'General'} team`
+            }
+            setConnectionStatus(prev => ({ ...prev, [type]: 'success' }))
+          } else {
+            result = {
+              success: false,
+              error: teamsValidation.data.error || 'Teams configuration validation failed',
+              validation_errors: teamsValidation.data.errors
+            }
+            setConnectionStatus(prev => ({ ...prev, [type]: 'failed' }))
+          }
           break
 
         case 'github':
