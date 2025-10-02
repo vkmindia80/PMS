@@ -319,13 +319,14 @@ export const DynamicTimelinePage: React.FC = () => {
   // Handle task creation
   const handleTaskCreate = useCallback(async (task: Partial<DynamicTimelineTask>) => {
     try {
-      await dynamicService.createTask(task, tokens?.access_token || '');
+      const createdTask = await taskTimelineService.createTimelineTask(task, tokens?.access_token || '');
+      setTasks(prev => [...prev, createdTask]);
       toast.success('Task created successfully');
     } catch (error) {
       console.error('Error creating task:', error);
       toast.error('Failed to create task');
     }
-  }, [dynamicService, tokens?.access_token]);
+  }, [tokens?.access_token]);
 
   // Handle dependency creation
   const handleDependencyCreate = useCallback(async (dependency: any) => {
