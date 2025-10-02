@@ -873,7 +873,12 @@ const TaskCommentsTab: React.FC<{
                     <User className="h-4 w-4 text-blue-600" />
                   </div>
                   <div>
-                    <div className="font-medium text-gray-900">User</div>
+                    <div className="font-medium text-gray-900">
+                      {(() => {
+                        const user = availableUsers.find(u => u.id === comment.author_id);
+                        return user ? `${user.first_name} ${user.last_name}` : 'Unknown User';
+                      })()}
+                    </div>
                     <div className="text-sm text-gray-500">
                       {new Date(comment.created_at).toLocaleString()}
                     </div>
