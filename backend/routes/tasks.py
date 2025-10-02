@@ -60,6 +60,7 @@ async def create_task(
         task_dict.update({
             "id": task_id,
             "reporter_id": current_user.id,
+            "assignee_ids": assignee_ids,  # Ensure assignee_ids is properly set
             "created_at": current_time,
             "updated_at": current_time,
             "subtask_count": 0,
