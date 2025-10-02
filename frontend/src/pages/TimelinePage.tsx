@@ -1030,6 +1030,7 @@ export const TimelinePage: React.FC = () => {
                 className="px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
                 title="Zoom to Fit All Tasks"
                 disabled={!ganttData || ganttData.tasks.length === 0}
+                data-testid="zoom-to-fit-button"
               >
                 <Settings className="h-3 sm:h-4 w-3 sm:w-4 mr-1 inline" />
                 <span className="hidden sm:inline">Fit</span>
