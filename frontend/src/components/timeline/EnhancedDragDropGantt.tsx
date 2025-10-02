@@ -163,9 +163,6 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
   // Calculate timeline dimensions with safe error handling
   const timelineMetrics = useMemo(() => {
     try {
-      console.log('=== Timeline Metrics Calculation Debug ===');
-      console.log('FilteredTasks count:', filteredTasks?.length || 0);
-      console.log('ViewConfig:', viewConfig);
       
       if (!filteredTasks || !filteredTasks.length) {
         console.log('No filtered tasks available');
