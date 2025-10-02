@@ -365,9 +365,9 @@ const GanttChart: React.FC<{
   };
 
   const drawTaskBar = (ctx: CanvasRenderingContext2D, task: TimelineTask, index: number, viewMode: string) => {
-    const taskNameWidth = 250;
-    const taskHeight = 50;
-    const headerHeight = 80;
+    const taskNameWidth = isMobile ? 150 : 250;
+    const taskHeight = isMobile ? 40 : 50;
+    const headerHeight = isMobile ? 60 : 80;
     const y = headerHeight + index * taskHeight;
     
     // Task name background with alternating colors
