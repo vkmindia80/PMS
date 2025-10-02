@@ -856,18 +856,22 @@ const TasksList: React.FC<{
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button
-                    onClick={() => onLogTime(task)}
-                    className="text-primary-600 hover:text-primary-900 mr-3"
-                  >
-                    Log Time
-                  </button>
-                  <button
-                    onClick={() => onTaskClick(task)}
-                    className="text-gray-600 hover:text-gray-900"
-                  >
-                    View
-                  </button>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => onLogTime(task)}
+                      className="text-blue-600 hover:text-blue-900 px-2 py-1 rounded border border-blue-300 hover:bg-blue-50 transition-colors text-xs"
+                      data-testid={`log-time-button-${task.id}`}
+                    >
+                      ⏰ Log Time
+                    </button>
+                    <button
+                      onClick={() => onTaskClick(task)}
+                      className="text-gray-600 hover:text-gray-900 px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 transition-colors text-xs font-medium"
+                      data-testid={`view-task-button-${task.id}`}
+                    >
+                      👁️ View Details
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
