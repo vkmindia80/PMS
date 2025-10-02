@@ -339,17 +339,41 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" data-testid="task-detail-modal-overlay">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden" data-testid="task-detail-modal">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2">
-              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusConfig[task.status]?.color}`}>
-                {statusConfig[task.status]?.icon} {statusConfig[task.status]?.label}
-              </span>
-              <span className={`text-sm font-medium ${priorityConfig[task.priority]?.color}`}>
-                {priorityConfig[task.priority]?.icon} {priorityConfig[task.priority]?.label}
-              </span>
+        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
+                <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-full ${statusConfig[task.status]?.color}`}>
+                  {statusConfig[task.status]?.icon} {statusConfig[task.status]?.label}
+                </span>
+                <span className={`text-sm font-medium ${priorityConfig[task.priority]?.color}`}>
+                  {priorityConfig[task.priority]?.icon} {priorityConfig[task.priority]?.label}
+                </span>
+              </div>
+              
+              {/* Quick Info */}
+              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                <div className="flex items-center space-x-1">
+                  <User className="h-4 w-4" />
+                  <span>
+                    {(task.assignee_ids && task.assignee_ids.length > 0) 
+                      ? `${task.assignee_ids.length} assignee${task.assignee_ids.length > 1 ? 's' : ''}`
+                      : task.assignee_id 
+                        ? '1 assignee' 
+                        : 'Unassigned'
+                    }
+                  </span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <MessageSquare className="h-4 w-4" />
+                  <span>{task.comment_count || 0} comments</span>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Calendar className="h-4 w-4" />
+                  <span>{task.due_date ? `Due ${new Date(task.due_date).toLocaleDateString()}` : 'No due date'}</span>
+                </div>
+              </div>
             </div>
-          </div>
           
           <div className="flex items-center space-x-2">
             {!isEditing ? (
