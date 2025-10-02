@@ -243,11 +243,11 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
     })
   }
 
-  const handleAddDependency = (taskId: string, type: string) => {
-    if (!formData.dependencies.find(dep => dep.task_id === taskId)) {
+  const handleAddPreTask = (taskId: string, type: string) => {
+    if (!formData.pre_tasks.find(dep => dep.task_id === taskId)) {
       setFormData({
         ...formData,
-        dependencies: [...formData.dependencies, {
+        pre_tasks: [...formData.pre_tasks, {
           task_id: taskId,
           dependency_type: type as any
         }]
@@ -255,10 +255,29 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
     }
   }
 
-  const handleRemoveDependency = (taskId: string) => {
+  const handleRemovePreTask = (taskId: string) => {
     setFormData({
       ...formData,
-      dependencies: formData.dependencies.filter(dep => dep.task_id !== taskId)
+      pre_tasks: formData.pre_tasks.filter(dep => dep.task_id !== taskId)
+    })
+  }
+
+  const handleAddPostTask = (taskId: string, type: string) => {
+    if (!formData.post_tasks.find(dep => dep.task_id === taskId)) {
+      setFormData({
+        ...formData,
+        post_tasks: [...formData.post_tasks, {
+          task_id: taskId,
+          dependency_type: type as any
+        }]
+      })
+    }
+  }
+
+  const handleRemovePostTask = (taskId: string) => {
+    setFormData({
+      ...formData,
+      post_tasks: formData.post_tasks.filter(dep => dep.task_id !== taskId)
     })
   }
 
