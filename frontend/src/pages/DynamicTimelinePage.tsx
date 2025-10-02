@@ -568,7 +568,9 @@ export const DynamicTimelinePage: React.FC = () => {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">
-                {Math.round((realtimeStats.completed_tasks / realtimeStats.total_tasks) * 100)}%
+                {realtimeStats.total_tasks > 0 
+                  ? Math.round((realtimeStats.completed_tasks / realtimeStats.total_tasks) * 100) 
+                  : 0}%
               </div>
               <div className="text-sm text-gray-600">Progress</div>
               <div className="text-xs text-gray-500">
