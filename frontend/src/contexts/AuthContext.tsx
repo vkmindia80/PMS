@@ -69,19 +69,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Initialize auth state from localStorage
   useEffect(() => {
+    // Prevent multiple initializations
+    if (initStarted) return
+    
     const initAuth = async () => {
+      setInitStarted(true)
+      
       try {
+        console.log('🚀 Starting authentication initialization...')
+        
         const storedTokens = localStorage.getItem('auth_tokens')
         const storedUser = localStorage.getItem('auth_user')
 
         if (storedTokens && storedUser) {
           try {
+            console.log('🔍 Found stored auth data, validating...')
+            
             const parsedTokens = JSON.parse(storedTokens) as AuthTokens
             const parsedUser = JSON.parse(storedUser) as User
             
             // Basic validation of stored data
             if (!parsedTokens.access_token || !parsedUser.id) {
-              throw new Error('Invalid stored auth data')
+              throw new Error('Invalid stored auth data structure')
             }
             
             setTokens(parsedTokens)
@@ -89,23 +98,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             
             // Verify token is still valid with timeout
             const timeoutPromise = new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Auth verification timeout')), 10000)
+              setTimeout(() => reject(new Error('Auth verification timeout')), 8000)
             )
             
-            await Promise.race([
-              fetchUserProfile(parsedTokens.access_token),
-              timeoutPromise
-            ])
-            
-            console.log('✅ Authentication initialized successfully')
-          } catch (error) {
-            console.error('Failed to initialize auth, attempting token refresh:', error)
-            
-            // Try to refresh token if we have a refresh token and user data
             try {
-              const parsedTokens = JSON.parse(storedTokens) as AuthTokens
-              const parsedUser = JSON.parse(storedUser) as User
+              await Promise.race([
+                fetchUserProfile(parsedTokens.access_token),
+                timeoutPromise
+              ])
+              console.log('✅ Authentication initialized successfully')
+            } catch (verifyError) {
+              console.log('⚠️ Token verification failed, attempting refresh...')
               
+              // Try to refresh token if we have a refresh token and user data
               if (parsedTokens?.refresh_token && parsedUser?.id) {
                 console.log('🔄 Attempting token refresh during initialization...')
                 await refreshTokenInternal(parsedTokens.refresh_token, parsedUser)
@@ -113,16 +118,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               } else {
                 throw new Error('No valid refresh token available')
               }
-            } catch (refreshError) {
-              console.error('❌ Token refresh during initialization failed:', refreshError)
-              clearAuthData()
             }
+          } catch (error) {
+            console.error('❌ Failed to initialize auth:', error)
+            clearAuthData()
           }
         } else {
-          console.log('🚫 No stored authentication data found')
+          console.log('🚫 No stored authentication data found - showing login')
         }
       } catch (error) {
-        console.error('❌ Auth initialization error:', error)
+        console.error('❌ Critical auth initialization error:', error)
         clearAuthData()
       } finally {
         setIsLoading(false)
@@ -130,8 +135,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     }
 
-    // Add a small delay to prevent React strict mode double execution issues
-    const timeoutId = setTimeout(initAuth, 100)
+    // Use a longer delay to prevent React strict mode issues
+    const timeoutId = setTimeout(initAuth, 200)
     return () => clearTimeout(timeoutId)
   }, [])
 
