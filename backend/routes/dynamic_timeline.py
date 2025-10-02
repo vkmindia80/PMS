@@ -835,7 +835,7 @@ def calculate_critical_path(tasks: List[Dict], dependencies: List[Dict]) -> List
     # In a real implementation, you'd use proper CPM algorithm
     
     critical_tasks = []
-    task_map = {task['id']: task for task in tasks}
+    # task_map = {task['id']: task for task in tasks}  # Unused for now
     
     # Find tasks with zero slack (simplified)
     for task in tasks:
