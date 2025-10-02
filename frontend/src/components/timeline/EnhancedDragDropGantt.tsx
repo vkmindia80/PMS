@@ -165,7 +165,6 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     try {
       
       if (!filteredTasks || !filteredTasks.length) {
-        console.log('No filtered tasks available');
         return null;
       }
 
