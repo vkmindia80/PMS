@@ -119,8 +119,14 @@ async def get_tasks(
     try:
         db = await get_database()
         
-        # Build filter query - always filter by organization
-        filter_query = {"organization_id": current_user.organization_id}
+        # Build filter query - filter by organization if tasks have organization_id
+        filter_query = {
+            "$or": [
+                {"organization_id": current_user.organization_id},
+                {"organization_id": {"$exists": False}},  # For backward compatibility with tasks without organization_id
+                {"organization_id": None}  # For tasks with null organization_id
+            ]
+        }
         
         # Handle project IDs (both single and comma-separated multiple)
         if project_id:
