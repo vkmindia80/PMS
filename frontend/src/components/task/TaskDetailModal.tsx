@@ -911,11 +911,11 @@ const TaskCommentsTab: React.FC<{
           </div>
         ) : (
           comments.map((comment) => (
-            <div key={comment.id} className="border rounded-lg p-4 bg-gray-50">
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <User className="h-4 w-4 text-blue-600" />
+            <div key={comment.id} className="border border-l-4 border-l-blue-400 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <User className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
                     <div className="font-medium text-gray-900">
@@ -924,23 +924,52 @@ const TaskCommentsTab: React.FC<{
                         return user ? `${user.first_name} ${user.last_name}` : 'Unknown User';
                       })()}
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {new Date(comment.created_at).toLocaleString()}
+                    <div className="text-sm text-gray-500 flex items-center space-x-2">
+                      <Clock className="h-3 w-3" />
+                      <span>{new Date(comment.created_at).toLocaleString()}</span>
+                      {comment.is_edited && (
+                        <span className="text-xs text-gray-400">(edited)</span>
+                      )}
                     </div>
                   </div>
                 </div>
-                {comment.is_pinned && (
-                  <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                    Pinned
+                <div className="flex items-center space-x-2">
+                  {comment.is_pinned && (
+                    <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                      📌 Pinned
+                    </span>
+                  )}
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    comment.type === 'review' ? 'bg-purple-100 text-purple-800' :
+                    comment.type === 'approval' ? 'bg-green-100 text-green-800' :
+                    comment.type === 'note' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {comment.type === 'review' ? '👁️ Review' :
+                     comment.type === 'approval' ? '✅ Approval' :
+                     comment.type === 'note' ? '📝 Note' :
+                     '💬 Comment'}
                   </span>
-                )}
+                </div>
               </div>
-              <div className="text-gray-900 whitespace-pre-wrap">
+              <div className="text-gray-900 whitespace-pre-wrap pl-13">
                 {comment.content}
               </div>
               {comment.reply_count > 0 && (
-                <div className="mt-3 text-sm text-blue-600">
-                  {comment.reply_count} {comment.reply_count === 1 ? 'reply' : 'replies'}
+                <div className="mt-3 pl-13">
+                  <div className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
+                    <MessageSquare className="h-4 w-4" />
+                    <span>{comment.reply_count} {comment.reply_count === 1 ? 'reply' : 'replies'}</span>
+                  </div>
+                </div>
+              )}
+              {comment.reactions && comment.reactions.length > 0 && (
+                <div className="mt-3 pl-13 flex items-center space-x-2">
+                  {comment.reactions.slice(0, 3).map((reaction, idx) => (
+                    <span key={idx} className="text-sm bg-gray-100 px-2 py-1 rounded">
+                      {reaction.emoji}
+                    </span>
+                  ))}
                 </div>
               )}
             </div>
