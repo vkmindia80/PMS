@@ -542,18 +542,28 @@ const GanttChart: React.FC<{
     ctx.fill();
   };
 
+  // Handle zoom via mouse wheel
+  const handleWheel = useCallback((event: React.WheelEvent<HTMLCanvasElement>) => {
+    if (event.ctrlKey || event.metaKey) {
+      event.preventDefault();
+      const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+      const newZoom = Math.max(0.1, Math.min(5.0, zoomLevel * zoomFactor));
+      onZoomChange(newZoom);
+    }
+  }, [zoomLevel, onZoomChange]);
+
   // Handle mouse events for drag and drop
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const x = (event.clientX - rect.left) * (window.devicePixelRatio || 1);
+    const y = (event.clientY - rect.top) * (window.devicePixelRatio || 1);
 
     // Check if click is on a task bar
-    const taskIndex = Math.floor((y - 80) / 40);
-    if (taskIndex >= 0 && taskIndex < data.tasks.length && x > 200) {
+    const taskIndex = Math.floor((y - 80) / 50);
+    if (taskIndex >= 0 && taskIndex < data.tasks.length && x > 250) {
       setIsDragging(true);
       setDraggedTask(data.tasks[taskIndex].id);
     }
