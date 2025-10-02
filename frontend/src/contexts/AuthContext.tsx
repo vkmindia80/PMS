@@ -299,20 +299,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
+      console.log('🚪 Starting logout process...')
+      
       if (tokens) {
-        await fetch(API_ENDPOINTS.auth.logout, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${tokens.access_token}`,
-            'Content-Type': 'application/json',
-          },
-        })
+        try {
+          await fetch(API_ENDPOINTS.auth.logout, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${tokens.access_token}`,
+              'Content-Type': 'application/json',
+            },
+          })
+          console.log('✅ Logout API call successful')
+        } catch (apiError) {
+          console.error('⚠️ Logout API call failed (but continuing):', apiError)
+        }
       }
     } catch (error) {
-      console.error('Logout API call failed:', error)
+      console.error('❌ Logout process error:', error)
     } finally {
+      // Always clear auth data regardless of API call success
       clearAuthData()
+      console.log('✅ Logout completed - auth data cleared')
       toast.success('Logged out successfully')
+      
+      // Force reload to ensure clean state
+      window.location.reload()
     }
   }
 
