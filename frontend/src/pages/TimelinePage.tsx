@@ -812,7 +812,7 @@ export const TimelinePage: React.FC = () => {
     }
   }, [urlProjectId, projects, selectedProject, setSelectedProject]);
 
-  // Fetch Gantt chart data
+  // Fetch Gantt chart data using the new service
   const fetchGanttData = useCallback(async () => {
     if (!selectedProjectId || !tokens?.access_token) {
       setLoading(false);
@@ -824,29 +824,26 @@ export const TimelinePage: React.FC = () => {
       setError(null);
 
       console.log('Fetching timeline data for project:', selectedProjectId);
-      console.log('API URL:', API_ENDPOINTS.timeline.gantt(selectedProjectId));
       
-      const response = await fetch(API_ENDPOINTS.timeline.gantt(selectedProjectId), {
-        headers: {
-          'Authorization': `Bearer ${tokens.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const data = await timelineService.getGanttData(selectedProjectId, tokens.access_token);
       
-      console.log('Timeline API response status:', response.status);
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch timeline data: ${response.status}`);
+      // Process dependency types to ensure proper frontend display
+      if (data.dependencies) {
+        data.dependencies = data.dependencies.map(dep => ({
+          ...dep,
+          dependency_type: mapDependencyTypeFromBackend(dep.dependency_type)
+        }));
       }
-
-      const data = await response.json();
+      
       console.log('Timeline data received:', data);
       console.log('Number of tasks:', data.tasks?.length || 0);
+      console.log('Number of dependencies:', data.dependencies?.length || 0);
+      
       setGanttData(data);
       setError(null);
     } catch (err) {
       console.error('Error fetching Gantt data:', err);
-      setError('Failed to load timeline data');
+      setError(err instanceof Error ? err.message : 'Failed to load timeline data');
     } finally {
       setLoading(false);
     }
