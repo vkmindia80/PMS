@@ -239,11 +239,6 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       const canvasWidth = taskNameWidth + timelineWidth;
       const canvasHeight = headerHeight + (filteredTasks.length * taskHeight) + 100;
       
-      console.log('Timeline metrics calculated:', {
-        taskNameWidth, taskHeight, headerHeight, timeUnit, timelineWidth, 
-        totalDays, canvasWidth, canvasHeight
-      });
-      
       return {
         taskNameWidth,
         taskHeight,
