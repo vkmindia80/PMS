@@ -416,6 +416,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
               <X className="h-5 w-5" />
             </button>
           </div>
+          </div>
         </div>
 
         {/* Task Title */}
