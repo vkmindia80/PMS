@@ -20,9 +20,13 @@ interface TaskFormData {
   start_date: string
   estimated_hours: string
   tags: string[]
-  dependencies: Array<{
+  pre_tasks: Array<{
     task_id: string
-    dependency_type: 'blocks' | 'depends_on' | 'related_to'
+    dependency_type: 'depends_on' | 'blocks'
+  }>
+  post_tasks: Array<{
+    task_id: string
+    dependency_type: 'blocks' | 'depends_on'
   }>
   progress_percentage: number
 }
