@@ -42,11 +42,11 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
   formatTime
 }) => {
   const getTimeVariance = () => {
-    if (!task.time_tracking.estimated_hours || task.time_tracking.estimated_hours === 0) {
+    if (!task.time_tracking?.estimated_hours || task.time_tracking.estimated_hours === 0) {
       return { variance: 0, percentage: 0, status: 'no-estimate' }
     }
     
-    const variance = task.time_tracking.actual_hours - task.time_tracking.estimated_hours
+    const variance = (task.time_tracking?.actual_hours || 0) - (task.time_tracking?.estimated_hours || 0)
     const percentage = (variance / task.time_tracking.estimated_hours) * 100
     
     let status = 'good'
