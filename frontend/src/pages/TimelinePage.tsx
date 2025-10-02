@@ -916,7 +916,7 @@ export const TimelinePage: React.FC = () => {
       )}
 
       {/* Timeline Content */}
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {!selectedProjectId && !urlProjectId ? (
           <div className="bg-white rounded-lg shadow-sm p-8 text-center">
             <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
