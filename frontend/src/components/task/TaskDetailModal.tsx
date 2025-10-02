@@ -821,7 +821,8 @@ const TaskCommentsTab: React.FC<{
   newComment: string
   setNewComment: (value: string) => void
   onAddComment: () => void
-}> = ({ comments, loading, newComment, setNewComment, onAddComment }) => {
+  availableUsers?: any[]
+}> = ({ comments, loading, newComment, setNewComment, onAddComment, availableUsers = [] }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
