@@ -142,7 +142,7 @@ const GanttChart: React.FC<{
 
     // Draw current date indicator
     drawCurrentDateLine(ctx, viewMode);
-  }, [data, viewMode]);
+  }, [data, viewMode, canvasSize, zoomLevel]);
 
   const drawTimelineHeader = (ctx: CanvasRenderingContext2D, viewMode: string) => {
     const headerHeight = 80;
