@@ -904,7 +904,8 @@ const TaskCommentsTab: React.FC<{
 const TaskActivityTab: React.FC<{
   activities: TaskActivity[]
   loading: boolean
-}> = ({ activities, loading }) => {
+  availableUsers?: any[]
+}> = ({ activities, loading, availableUsers = [] }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
