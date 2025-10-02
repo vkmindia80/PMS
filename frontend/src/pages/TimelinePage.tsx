@@ -572,10 +572,12 @@ export const TimelinePage: React.FC = () => {
       }
 
       const projectsData = await response.json();
+      console.log('Projects fetched:', projectsData.length);
       setProjects(projectsData);
       
       // Auto-select first project if no URL projectId and projects available
       if (!urlProjectId && projectsData.length > 0) {
+        console.log('Auto-selecting project:', projectsData[0].id);
         setSelectedProjectId(projectsData[0].id);
       }
       
