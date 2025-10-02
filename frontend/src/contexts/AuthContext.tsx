@@ -137,7 +137,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Use a longer delay to prevent React strict mode issues
     const timeoutId = setTimeout(initAuth, 200)
-    return () => clearTimeout(timeoutId)
+    
+    // Safety timeout - force loading to false after 15 seconds maximum
+    const safetyTimeout = setTimeout(() => {
+      console.warn('⚠️ Auth initialization taking too long, forcing completion')
+      setIsLoading(false)
+    }, 15000)
+    
+    return () => {
+      clearTimeout(timeoutId)
+      clearTimeout(safetyTimeout)
+    }
   }, [])
 
   // Helper function to clear auth data
