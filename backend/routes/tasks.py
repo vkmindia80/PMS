@@ -468,6 +468,7 @@ async def get_kanban_board(
                     type=TaskType(task["type"]),
                     project_id=task["project_id"],
                     assignee_id=task.get("assignee_id"),
+                    assignee_ids=task.get("assignee_ids", []),
                     due_date=task.get("due_date"),
                     progress_percentage=task.get("progress_percentage", 0.0),
                     subtask_count=task.get("subtask_count", 0)
