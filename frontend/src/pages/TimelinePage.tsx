@@ -541,14 +541,29 @@ const GanttChart: React.FC<{
 // Main Timeline Page Component
 export const TimelinePage: React.FC = () => {
   const { projectId: urlProjectId } = useParams<{ projectId: string }>();
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(urlProjectId || null);
-  const [projects, setProjects] = useState<any[]>([]);
+  const { tokens } = useAuth();
+  const { 
+    projects, 
+    loading: projectsLoading, 
+    selectedProject, 
+    setSelectedProject,
+    getSelectedProjectIds 
+  } = useProjectFilterContext();
+  
   const [ganttData, setGanttData] = useState<GanttChartData | null>(null);
   const [viewMode, setViewMode] = useState('week');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [projectsLoading, setProjectsLoading] = useState(false);
   const [useEnhancedView, setUseEnhancedView] = useState(false);
+
+  // Get the actual selected project ID from context or URL
+  const selectedProjectId = urlProjectId || (
+    Array.isArray(selectedProject) 
+      ? selectedProject[0] 
+      : selectedProject === 'all' 
+        ? (projects.length > 0 ? projects[0].id : null)
+        : selectedProject
+  );
 
   // Fetch available projects
   const fetchProjects = useCallback(async () => {
