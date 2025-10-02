@@ -203,6 +203,22 @@ const IntegrationsPage: React.FC = () => {
   }, [])
 
   // Enhanced wizard steps configuration
+  // Helper function for integration icons
+  const getIntegrationIcon = (type: string) => {
+    switch (type) {
+      case 'slack':
+        return <Slack className="w-5 h-5 text-green-600" />
+      case 'teams':
+        return <Users className="w-5 h-5 text-blue-600" />
+      case 'github':
+        return <Github className="w-5 h-5 text-gray-800" />
+      case 'google_workspace':
+        return <Calendar className="w-5 h-5 text-orange-600" />
+      default:
+        return <Settings className="w-5 h-5 text-gray-600" />
+    }
+  }
+
   const getWizardSteps = (type: string): WizardStep[] => {
     switch (type) {
       case 'slack':
