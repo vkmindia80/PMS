@@ -1019,6 +1019,14 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     isDraggedTask: boolean,
     isPreview: boolean
   ) => {
+    console.log(`Drawing task bar rect for ${task.name} at (${x}, ${y}) size ${width}x${height}`);
+    
+    // Ensure valid dimensions
+    if (width <= 0 || height <= 0) {
+      console.log('Invalid dimensions for task bar:', { width, height });
+      return;
+    }
+    
     // Enhanced shadow with depth
     if (!isPreview) {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
