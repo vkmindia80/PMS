@@ -496,6 +496,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
 // Task Details Tab Component
 const TaskDetailsTab: React.FC<{
   task: Task
+  taskWithDetails?: any
+  availableUsers?: any[]
   isEditing: boolean
   editData: Partial<Task>
   setEditData: (data: Partial<Task>) => void
@@ -508,6 +510,8 @@ const TaskDetailsTab: React.FC<{
   setTimeLogDescription: (value: string) => void
 }> = ({ 
   task, 
+  taskWithDetails,
+  availableUsers = [],
   isEditing, 
   editData, 
   setEditData, 
