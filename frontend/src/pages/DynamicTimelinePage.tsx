@@ -9,6 +9,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext';
 import { DynamicGanttChart } from '../components/timeline/DynamicGanttChart';
+import { EnhancedDragDropGantt } from '../components/timeline/EnhancedDragDropGantt';
 import { 
   DynamicTimelineService, 
   DynamicTimelineTask, 
@@ -17,6 +18,7 @@ import {
   TimelineViewConfig,
   WebSocketMessage 
 } from '../services/dynamicTimelineService';
+import { taskTimelineService } from '../services/taskTimelineService';
 import toast from 'react-hot-toast';
 
 interface TimelineStats {
