@@ -1,0 +1,17 @@
+{
+  "migration_timestamp": "2025-10-02T11:52:15.568785",
+  "migration_type": "Timeline Data Fix",
+  "statistics": {
+    "dependencies_checked": 0,
+    "dependencies_fixed": 0,
+    "created_by_fixed": 0,
+    "dependency_type_fixed": 0,
+    "errors": []
+  },
+  "success": true,
+  "fixes_applied": {
+    "dependency_type_format": "Fixed long format dependency types to enum format (finish_to_start \u2192 FS)",
+    "missing_created_by": "Added default created_by field for existing dependencies",
+    "data_validation": "Validated data integrity and identified any remaining issues"
+  }
+}
