@@ -1998,13 +1998,6 @@ const IntegrationsPage: React.FC = () => {
                     <Edit className="w-3 h-3 mr-1" />
                     Configure
                   </button>
-                  <button
-                    onClick={() => testIntegration(type)}
-                    className="flex-1 px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700"
-                  >
-                    <PlayCircle className="w-3 h-3 inline mr-1" />
-                    Test
-                  </button>
                 </div>
               </div>
             )
