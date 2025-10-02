@@ -1873,42 +1873,114 @@ const IntegrationsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {/* Enhanced Integration Cards with Real-time Status */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {Object.entries(availableIntegrations).map(([type, integration]) => {
             const isActive = activeIntegrations[type]?.status === 'active'
             const lastSync = activeIntegrations[type]?.last_updated || 'Never'
+            const connectionState = connectionStatus[type]
+            const testResult = testResults[type]
             
             return (
-              <div key={type} className={`p-4 rounded-lg border-2 ${
-                isActive 
-                  ? 'border-green-200 bg-green-50' 
-                  : 'border-gray-200 bg-gray-50'
+              <div key={type} className={`p-6 rounded-lg border-2 transition-all duration-200 ${
+                connectionState === 'testing' 
+                  ? 'border-blue-300 bg-blue-50 shadow-md' 
+                  : connectionState === 'success' 
+                    ? 'border-green-300 bg-green-50' 
+                    : connectionState === 'failed' 
+                      ? 'border-red-300 bg-red-50' 
+                      : isActive 
+                        ? 'border-green-200 bg-green-50' 
+                        : 'border-gray-200 bg-gray-50'
               }`}>
-                <div className="flex items-center justify-between mb-2">
+                {/* Integration Header */}
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
-                    {type === 'slack' && <Slack className="w-5 h-5 text-green-600" />}
-                    {type === 'teams' && <Users className="w-5 h-5 text-blue-600" />}
-                    {type === 'github' && <Github className="w-5 h-5 text-gray-800" />}
-                    {type === 'google_workspace' && <Calendar className="w-5 h-5 text-orange-600" />}
-                    <span className="ml-2 font-medium text-sm">{integration.name}</span>
+                    {getIntegrationIcon(type)}
+                    <div className="ml-3">
+                      <h4 className="font-semibold text-gray-900">{integration.name}</h4>
+                      <p className="text-xs text-gray-600">{integration.description}</p>
+                    </div>
                   </div>
-                  <div className={`w-2 h-2 rounded-full ${
-                    isActive ? 'bg-green-500' : 'bg-gray-400'
-                  }`}></div>
+                  <div className="flex items-center">
+                    {connectionState === 'testing' ? (
+                      <Loader className="w-4 h-4 animate-spin text-blue-500" />
+                    ) : connectionState === 'success' ? (
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                    ) : connectionState === 'failed' ? (
+                      <AlertTriangle className="w-4 h-4 text-red-500" />
+                    ) : isActive ? (
+                      <CheckCircle className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full bg-gray-300" />
+                    )}
+                  </div>
                 </div>
-                <p className="text-xs text-gray-600 mb-2">
-                  Status: {isActive ? 'Active' : 'Inactive'}
-                </p>
-                <p className="text-xs text-gray-500">
-                  Last sync: {typeof lastSync === 'string' ? lastSync : new Date(lastSync).toLocaleDateString()}
-                </p>
-                <div className="mt-3 flex space-x-1">
+
+                {/* Status Information */}
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Status:</span>
+                    <span className={`font-medium ${
+                      connectionState === 'success' || isActive ? 'text-green-600' : 
+                      connectionState === 'failed' ? 'text-red-600' : 
+                      connectionState === 'testing' ? 'text-blue-600' : 'text-gray-600'
+                    }`}>
+                      {connectionState === 'testing' ? 'Testing...' : 
+                       connectionState === 'success' ? 'Connected' : 
+                       connectionState === 'failed' ? 'Connection Failed' : 
+                       isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Last Test:</span>
+                    <span className="text-gray-800">
+                      {testResult?.timestamp ? new Date(testResult.timestamp).toLocaleString() : 'Never'}
+                    </span>
+                  </div>
+                  {testResult?.error && (
+                    <div className="mt-2 p-2 bg-red-100 rounded-md">
+                      <p className="text-xs text-red-700">
+                        <AlertTriangle className="w-3 h-3 inline mr-1" />
+                        {testResult.error}
+                      </p>
+                    </div>
+                  )}
+                  {testResult?.success && testResult?.message && (
+                    <div className="mt-2 p-2 bg-green-100 rounded-md">
+                      <p className="text-xs text-green-700">
+                        <CheckCircle className="w-3 h-3 inline mr-1" />
+                        {testResult.message}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => testIntegration(type)}
+                    disabled={connectionState === 'testing'}
+                    className="flex-1 px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  >
+                    {connectionState === 'testing' ? (
+                      <>
+                        <Loader className="w-3 h-3 mr-1 animate-spin" />
+                        Testing...
+                      </>
+                    ) : (
+                      <>
+                        <Zap className="w-3 h-3 mr-1" />
+                        Test
+                      </>
+                    )}
+                  </button>
                   <button
                     onClick={() => editIntegrationConfig(type)}
-                    className="flex-1 px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className="flex-1 px-3 py-2 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 flex items-center justify-center"
                   >
-                    <Edit className="w-3 h-3 inline mr-1" />
-                    Edit
+                    <Edit className="w-3 h-3 mr-1" />
+                    Configure
                   </button>
                   <button
                     onClick={() => testIntegration(type)}
