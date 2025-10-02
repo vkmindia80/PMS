@@ -219,7 +219,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     
     // Check progress vs time
     if (task.time_tracking?.estimated_hours && task.time_tracking?.actual_hours) {
-      const timeRatio = task.time_tracking.actual_hours / task.time_tracking.estimated_hours
+      const timeRatio = task.time_tracking?.actual_hours / task.time_tracking?.estimated_hours
       if (timeRatio > 1.5) score -= 20 // Over budget
       else if (timeRatio > 1.2) score -= 10
     }
