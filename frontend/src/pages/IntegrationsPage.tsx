@@ -2717,21 +2717,6 @@ const IntegrationsPage: React.FC = () => {
     }
   }
 
-  const getIntegrationIcon = (type: string) => {
-    switch (type) {
-      case 'slack':
-        return <Slack className="w-8 h-8 text-green-600" />
-      case 'teams':
-        return <MessageSquare className="w-8 h-8 text-blue-600" />
-      case 'github':
-        return <Github className="w-8 h-8 text-gray-800" />
-      case 'google_workspace':
-        return <Calendar className="w-8 h-8 text-orange-600" />
-      default:
-        return <Settings className="w-8 h-8 text-gray-600" />
-    }
-  }
-
   const getStatusColor = (status?: string) => {
     switch (status) {
       case 'active':
