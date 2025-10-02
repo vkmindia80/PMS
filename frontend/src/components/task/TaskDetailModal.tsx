@@ -356,6 +356,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
               <button
                 onClick={() => setIsEditing(true)}
                 className="flex items-center space-x-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                data-testid="task-edit-button"
               >
                 <Edit className="h-4 w-4" />
                 <span>Edit</span>
