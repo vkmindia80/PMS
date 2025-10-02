@@ -52,6 +52,7 @@ class TaskBase(BaseModel):
     
     # Relationships
     project_id: str = Field(..., description="Project the task belongs to")
+    organization_id: str = Field(..., description="Organization the task belongs to")
     assignee_id: Optional[str] = Field(None, description="Primary user assigned to the task (for backward compatibility)")
     assignee_ids: List[str] = Field(default_factory=list, description="List of users assigned to the task")
     reporter_id: str = Field(..., description="User who created the task")
