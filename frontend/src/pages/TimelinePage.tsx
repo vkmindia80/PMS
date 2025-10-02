@@ -833,7 +833,7 @@ export const TimelinePage: React.FC = () => {
               </select>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 flex-shrink-0">
               <button
                 onClick={() => setUseEnhancedView(!useEnhancedView)}
                 className={`px-3 py-2 text-sm font-medium rounded-md ${
@@ -844,7 +844,7 @@ export const TimelinePage: React.FC = () => {
                 title="Toggle Enhanced View"
               >
                 <Zap className="h-4 w-4 mr-1 inline" />
-                Enhanced
+                <span className="hidden sm:inline">Enhanced</span>
               </button>
               <div className="flex items-center space-x-1 border border-gray-300 rounded-md">
                 <button
