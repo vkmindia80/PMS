@@ -862,6 +862,33 @@ export const TimelinePage: React.FC = () => {
     setZoomLevel(1.0);
   }, []);
 
+  const handleZoomToFit = useCallback(() => {
+    // Trigger zoom to fit functionality in GanttChart component
+    if (ganttData && ganttData.tasks && ganttData.tasks.length > 0) {
+      const dateRange = {
+        start: new Date(Math.min(...ganttData.tasks.map(t => new Date(t.start_date).getTime()))),
+        end: new Date(Math.max(...ganttData.tasks.map(t => new Date(t.finish_date).getTime())))
+      };
+      
+      // Calculate optimal zoom level
+      const totalDays = Math.ceil((dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24));
+      const isMobileView = window.innerWidth < 768;
+      const taskNameWidth = isMobileView ? 150 : 250;
+      const availableWidth = window.innerWidth - taskNameWidth - 100; // Account for padding and margins
+      
+      const baseTimeUnit = viewMode === 'day' ? (isMobileView ? 60 : 80) : 
+                          viewMode === 'week' ? (isMobileView ? 80 : 120) : 
+                          (isMobileView ? 120 : 200);
+      const daysPerUnit = viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30;
+      
+      const requiredUnits = Math.ceil(totalDays / daysPerUnit);
+      const optimalTimeUnit = Math.max(availableWidth / requiredUnits, isMobileView ? 15 : 20);
+      const optimalZoom = Math.max(0.1, Math.min(5.0, optimalTimeUnit / baseTimeUnit));
+      
+      setZoomLevel(optimalZoom);
+    }
+  }, [ganttData, viewMode]);
+
   // Handle task updates
   const handleTaskUpdate = useCallback(async (task: TimelineTask) => {
     try {
