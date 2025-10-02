@@ -81,6 +81,7 @@ class TaskDependencyCreate(BaseModel):
     lag_duration: int = 0
     lag_format: LagFormat = LagFormat.DAYS
     project_id: str
+    # Note: created_by will be automatically set from current_user in the API endpoint
 
 
 class TaskDependencyUpdate(BaseModel):
