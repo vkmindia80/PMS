@@ -524,7 +524,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
 }
 
 // Task Details Tab Component
-const TaskDetailsTab: React.FC<{
+interface TaskDetailsTabProps {
   task: Task
   taskWithDetails?: any
   availableUsers?: any[]
@@ -538,7 +538,9 @@ const TaskDetailsTab: React.FC<{
   setTimeLogHours: (value: string) => void
   timeLogDescription: string
   setTimeLogDescription: (value: string) => void
-}> = ({ 
+}
+
+const TaskDetailsTab: React.FC<TaskDetailsTabProps> = ({ 
   task, 
   taskWithDetails,
   availableUsers = [],
