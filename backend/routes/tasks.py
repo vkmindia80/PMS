@@ -36,13 +36,20 @@ async def create_task(
                 detail="Project not found"
             )
         
-        # Verify assignee exists if provided
-        if task_data.assignee_id:
-            assignee = await db.users.find_one({"id": task_data.assignee_id})
+        # Verify assignees exist if provided
+        assignee_ids = task_data.assignee_ids.copy() if task_data.assignee_ids else []
+        
+        # Handle backward compatibility - if assignee_id is provided, add to assignee_ids
+        if task_data.assignee_id and task_data.assignee_id not in assignee_ids:
+            assignee_ids.append(task_data.assignee_id)
+        
+        # Verify all assignees exist
+        for assignee_id in assignee_ids:
+            assignee = await db.users.find_one({"id": assignee_id})
             if not assignee:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Assignee not found"
+                    detail=f"Assignee with ID {assignee_id} not found"
                 )
         
         # Create task with ID and timestamps
