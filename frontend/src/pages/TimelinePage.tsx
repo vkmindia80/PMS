@@ -599,14 +599,23 @@ const GanttChart: React.FC<{
   }, [drawGanttChart]);
 
   return (
-    <div className="timeline-canvas-container">
+    <div 
+      ref={containerRef}
+      className="timeline-canvas-container w-full h-full overflow-auto border border-gray-200 rounded-lg bg-white"
+      style={{ minHeight: '400px', maxHeight: '80vh' }}
+    >
       <canvas
         ref={canvasRef}
-        className="border border-gray-200 rounded-lg"
+        className="block"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        style={{ cursor: isDragging ? 'grabbing' : 'default' }}
+        onWheel={handleWheel}
+        style={{ 
+          cursor: isDragging ? 'grabbing' : 'default',
+          width: `${canvasSize.width}px`,
+          height: `${canvasSize.height}px`
+        }}
       />
     </div>
   );
