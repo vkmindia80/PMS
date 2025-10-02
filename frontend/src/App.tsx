@@ -147,22 +147,6 @@ const AppContent: React.FC = () => {
             } 
           />
           <Route 
-            path="/timeline" 
-            element={
-              <ProtectedRoute>
-                <TimelinePage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/timeline/:projectId" 
-            element={
-              <ProtectedRoute>
-                <TimelinePage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
             path="/dynamic-timeline" 
             element={
               <ProtectedRoute>
