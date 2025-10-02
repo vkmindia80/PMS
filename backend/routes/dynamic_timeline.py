@@ -310,7 +310,7 @@ async def get_realtime_timeline_stats(
             last_updated=datetime.utcnow()
         )
         
-    } except HTTPException:
+    except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error retrieving realtime timeline statistics: {e}")
