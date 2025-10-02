@@ -1050,7 +1050,47 @@ const TaskDependenciesTab: React.FC<{
             Dependents (Post-tasks)
           </h3>
           <div className="space-y-2">
-            <p className="text-gray-500 text-sm">No dependent tasks found</p>
+            {dependentTasks.length === 0 ? (
+              <p className="text-gray-500 text-sm">No dependent tasks found</p>
+            ) : (
+              dependentTasks.map((depTask) => (
+                <div key={depTask.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-l-4 border-blue-400">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                        <ArrowRight className="h-3 w-3 text-blue-600" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900">{depTask.title}</div>
+                        <div className="text-sm text-gray-600 flex items-center space-x-2">
+                          <span>Priority: {depTask.priority}</span>
+                          <span>•</span>
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            depTask.status === 'completed' ? 'bg-green-100 text-green-800' :
+                            depTask.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
+                            depTask.status === 'blocked' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {depTask.status.replace('_', ' ').toUpperCase()}
+                          </span>
+                          {depTask.due_date && (
+                            <>
+                              <span>•</span>
+                              <span>Due: {new Date(depTask.due_date).toLocaleDateString()}</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {isEditing && (
+                    <button className="text-red-600 hover:text-red-800">
+                      <Minus className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              ))
+            )}
           </div>
           
           {isEditing && (
