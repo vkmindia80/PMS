@@ -190,6 +190,7 @@ class TaskSummary(BaseModel):
     type: TaskType
     project_id: str
     assignee_id: Optional[str]
+    assignee_ids: List[str] = Field(default_factory=list)
     due_date: Optional[datetime]
     progress_percentage: float
     subtask_count: int = Field(default=0)
