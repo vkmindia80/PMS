@@ -141,6 +141,7 @@ class TaskUpdate(BaseUpdateModel):
     priority: Optional[TaskPriority] = None
     type: Optional[TaskType] = None
     assignee_id: Optional[str] = None
+    assignee_ids: Optional[List[str]] = None
     due_date: Optional[datetime] = None
     start_date: Optional[datetime] = None
     completed_at: Optional[datetime] = None
