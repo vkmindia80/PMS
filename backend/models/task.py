@@ -190,7 +190,7 @@ class TaskSummary(BaseModel):
     priority: TaskPriority
     type: TaskType
     project_id: str
-    organization_id: str
+    organization_id: Optional[str] = None
     assignee_id: Optional[str]
     assignee_ids: List[str] = Field(default_factory=list)
     due_date: Optional[datetime]
