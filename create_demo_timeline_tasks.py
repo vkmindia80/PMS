@@ -115,7 +115,7 @@ async def create_demo_timeline_tasks():
                     "successor_id": timeline_task["id"],
                     "dependency_type": "FS",  # Finish-to-Start
                     "lag_duration": 0,
-                    "lag_format": "hour",
+                    "lag_format": "hours",  # Changed from "hour" to "hours"
                     "project_id": project_id,
                     "created_by": "demo-user-001",
                     "created_at": datetime.utcnow(),
