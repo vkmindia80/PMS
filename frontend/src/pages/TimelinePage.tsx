@@ -287,9 +287,9 @@ const GanttChart: React.FC<{
   };
 
   const drawGridLines = (ctx: CanvasRenderingContext2D, viewMode: string) => {
-    const taskNameWidth = 250;
-    const taskHeight = 50;
-    const headerHeight = 80;
+    const taskNameWidth = isMobile ? 150 : 250;
+    const taskHeight = isMobile ? 40 : 50;
+    const headerHeight = isMobile ? 60 : 80;
     const canvasWidth = ctx.canvas.width / (window.devicePixelRatio || 1);
     
     ctx.strokeStyle = '#f3f4f6';
