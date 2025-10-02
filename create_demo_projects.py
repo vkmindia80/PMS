@@ -242,49 +242,73 @@ async def create_demo_projects():
                 "id": "dep-001",
                 "predecessor_id": "task-timeline-001",
                 "successor_id": "task-timeline-002",
-                "dependency_type": "finish_to_start",
+                "dependency_type": "FS",  # Fixed: Use enum value
                 "lag_duration": 0,
-                "project_id": "proj-demo-001"
+                "lag_format": "days",
+                "project_id": "proj-demo-001",
+                "created_by": "demo-user-001",  # Added required field
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
             },
             {
                 "id": "dep-002", 
                 "predecessor_id": "task-timeline-002",
                 "successor_id": "task-timeline-003",
-                "dependency_type": "finish_to_start",
+                "dependency_type": "FS",  # Fixed: Use enum value
                 "lag_duration": 0,
-                "project_id": "proj-demo-001"
+                "lag_format": "days",
+                "project_id": "proj-demo-001",
+                "created_by": "demo-user-001",  # Added required field
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
             },
             {
                 "id": "dep-003",
                 "predecessor_id": "task-timeline-002",
                 "successor_id": "task-timeline-004",
-                "dependency_type": "finish_to_start", 
+                "dependency_type": "FS",  # Fixed: Use enum value
                 "lag_duration": 8,  # 1 day lag
-                "project_id": "proj-demo-001"
+                "lag_format": "days",
+                "project_id": "proj-demo-001",
+                "created_by": "demo-user-001",  # Added required field
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
             },
             {
                 "id": "dep-004",
                 "predecessor_id": "task-timeline-003",
                 "successor_id": "task-timeline-005",
-                "dependency_type": "finish_to_start",
+                "dependency_type": "FS",  # Fixed: Use enum value
                 "lag_duration": 0,
-                "project_id": "proj-demo-001"
+                "lag_format": "days",
+                "project_id": "proj-demo-001",
+                "created_by": "demo-user-001",  # Added required field
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
             },
             {
                 "id": "dep-005",
                 "predecessor_id": "task-timeline-004",
                 "successor_id": "task-timeline-005",
-                "dependency_type": "finish_to_start",
+                "dependency_type": "FS",  # Fixed: Use enum value
                 "lag_duration": 0,
-                "project_id": "proj-demo-001"
+                "lag_format": "days",
+                "project_id": "proj-demo-001",
+                "created_by": "demo-user-001",  # Added required field
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
             },
             {
                 "id": "dep-006",
                 "predecessor_id": "task-timeline-005",
                 "successor_id": "task-timeline-006",
-                "dependency_type": "finish_to_start",
+                "dependency_type": "FS",  # Fixed: Use enum value
                 "lag_duration": 0,
-                "project_id": "proj-demo-001"
+                "lag_format": "days",
+                "project_id": "proj-demo-001",
+                "created_by": "demo-user-001",  # Added required field
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
             }
         ]
         
