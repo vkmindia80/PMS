@@ -272,10 +272,26 @@ const GanttChart: React.FC<{
       ctx.fillRect(15 + indent, y + taskHeight - 8, maxWidth * (task.percent_complete / 100), 3);
     }
     
-    // Calculate enhanced task bar position and width
+    // Calculate task bar position based on actual dates
     const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
-    const startX = taskNameWidth + (index * 0.5) * timeUnit; // Better positioning
-    const barWidth = Math.max(task.duration * (timeUnit / (viewMode === 'day' ? 8 : viewMode === 'week' ? 40 : 160)), 30);
+    const projectStartDate = new Date(); // Use current date as project start
+    
+    let taskStartDate = projectStartDate;
+    if (task.start_date) {
+      try {
+        taskStartDate = new Date(task.start_date);
+      } catch (e) {
+        console.warn('Invalid task start date:', task.start_date);
+      }
+    }
+    
+    // Calculate days from project start
+    const daysDiff = Math.floor((taskStartDate.getTime() - projectStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    const startX = taskNameWidth + Math.max(0, daysDiff * (timeUnit / (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30)));
+    
+    // Calculate bar width based on task duration
+    const durationDays = task.duration / 8; // Convert hours to days (assuming 8-hour workdays)
+    const barWidth = Math.max(durationDays * (timeUnit / (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30)), 20);
     
     // Task bar with enhanced styling
     if (task.milestone) {
