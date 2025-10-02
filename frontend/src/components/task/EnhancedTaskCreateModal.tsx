@@ -134,7 +134,8 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
         start_date: '',
         estimated_hours: '',
         tags: [],
-        dependencies: [],
+        pre_tasks: [],
+        post_tasks: [],
         progress_percentage: 0
       })
     }
