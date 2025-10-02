@@ -889,7 +889,7 @@ export const TimelinePage: React.FC = () => {
     }
   }, [ganttData, viewMode]);
 
-  // Handle task updates
+  // Handle task updates using the new service
   const handleTaskUpdate = useCallback(async (task: TimelineTask) => {
     try {
       if (!tokens?.access_token) {
@@ -897,28 +897,17 @@ export const TimelinePage: React.FC = () => {
         return;
       }
 
-      const response = await fetch(API_ENDPOINTS.timeline.taskUpdate(task.id), {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${tokens.access_token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          start_date: task.start_date,
-          duration: task.duration,
-          percent_complete: task.percent_complete
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to update task: ${response.status}`);
-      }
+      await timelineService.updateTask(task.id, {
+        start_date: task.start_date,
+        duration: task.duration,
+        percent_complete: task.percent_complete
+      }, tokens.access_token);
 
       // Refresh data
       await fetchGanttData();
     } catch (err) {
       console.error('Error updating task:', err);
-      setError('Failed to update task');
+      setError(err instanceof Error ? err.message : 'Failed to update task');
     }
   }, [fetchGanttData, tokens?.access_token]);
 
