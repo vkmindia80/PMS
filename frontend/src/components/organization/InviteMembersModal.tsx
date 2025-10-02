@@ -37,7 +37,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
     const isProd = import.meta.env.PROD || isPreview
     
     if (isProd || isPreview) {
-      return import.meta.env.VITE_PROD_API_URL || 'https://portfolio-guide-4.preview.emergentagent.com'
+      return import.meta.env.VITE_PROD_API_URL || 'https://kanban-editor.preview.emergentagent.com'
     }
     
     return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
