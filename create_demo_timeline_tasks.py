@@ -17,7 +17,7 @@ load_dotenv('/app/backend/.env')
 
 # MongoDB connection
 MONGO_URL = os.getenv('MONGO_URL', 'mongodb://localhost:27017/')
-DATABASE_NAME = 'enterprise_portfolio'
+DATABASE_NAME = 'enterprise_portfolio_db'
 
 async def create_demo_timeline_tasks():
     """Create demo timeline tasks and dependencies"""
