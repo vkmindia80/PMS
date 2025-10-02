@@ -376,6 +376,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
                 <button
                   onClick={handleSave}
                   className="flex items-center space-x-1 px-3 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                  data-testid="task-save-button"
                 >
                   <Save className="h-4 w-4" />
                   <span>Save</span>
