@@ -699,11 +699,40 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
   };
 
   const drawTasks = (ctx: CanvasRenderingContext2D, isPreview = false, daysDelta = 0) => {
-    if (!timelineMetrics) return;
+    console.log('=== DrawTasks Debug ===');
+    if (!timelineMetrics) {
+      console.log('No timelineMetrics in drawTasks');
+      return;
+    }
+
+    console.log('Drawing', filteredTasks.length, 'tasks');
+    
+    if (filteredTasks.length === 0) {
+      // Draw "no tasks" message
+      ctx.fillStyle = '#64748b';
+      ctx.font = '16px -apple-system';
+      ctx.textAlign = 'center';
+      ctx.fillText('No tasks to display', timelineMetrics.canvasWidth / 2, timelineMetrics.headerHeight + 50);
+      return;
+    }
 
     filteredTasks.forEach((task, index) => {
-      drawTaskRow(ctx, task, index, isPreview, daysDelta);
+      try {
+        console.log(`Drawing task ${index + 1}/${filteredTasks.length}: ${task.name}`);
+        drawTaskRow(ctx, task, index, isPreview, daysDelta);
+      } catch (error) {
+        console.error(`Error drawing task ${task.id}:`, error);
+        
+        // Draw error indicator for this task
+        const y = timelineMetrics.headerHeight + (index * timelineMetrics.taskHeight);
+        ctx.fillStyle = '#ef4444';
+        ctx.font = '12px -apple-system';
+        ctx.textAlign = 'left';
+        ctx.fillText(`Error: ${task.name}`, 10, y + timelineMetrics.taskHeight / 2);
+      }
     });
+    
+    console.log('DrawTasks completed');
   };
 
   const drawTaskRow = (
