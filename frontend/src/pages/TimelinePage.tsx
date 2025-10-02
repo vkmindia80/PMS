@@ -605,15 +605,84 @@ const GanttChart: React.FC<{
     ctx.fill();
   };
 
-  // Handle zoom via mouse wheel
+  // Enhanced zoom handling with mouse-cursor centered zooming
   const handleWheel = useCallback((event: React.WheelEvent<HTMLCanvasElement>) => {
     if (event.ctrlKey || event.metaKey) {
       event.preventDefault();
+      
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      // Calculate zoom factor
       const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
       const newZoom = Math.max(0.1, Math.min(5.0, zoomLevel * zoomFactor));
-      onZoomChange(newZoom);
+      
+      if (newZoom !== zoomLevel) {
+        // Calculate the point under mouse in canvas coordinates before zoom
+        const beforeZoomX = (mouseX - panOffset.x) / zoomLevel;
+        const beforeZoomY = (mouseY - panOffset.y) / zoomLevel;
+        
+        // Calculate new pan offset to keep the same point under the mouse
+        const newPanX = mouseX - beforeZoomX * newZoom;
+        const newPanY = mouseY - beforeZoomY * newZoom;
+        
+        setPanOffset({ x: newPanX, y: newPanY });
+        onZoomChange(newZoom);
+      }
+    } else if (!isMobile) {
+      // Allow normal scrolling on desktop when not zooming
+      const container = containerRef.current;
+      if (container) {
+        container.scrollLeft += event.deltaX;
+        container.scrollTop += event.deltaY;
+      }
     }
-  }, [zoomLevel, onZoomChange]);
+  }, [zoomLevel, onZoomChange, panOffset, isMobile]);
+
+  // Handle touch events for mobile zoom and pan
+  const [touches, setTouches] = useState<TouchList | null>(null);
+  const [lastTouchDistance, setLastTouchDistance] = useState<number>(0);
+
+  const getTouchDistance = (touches: TouchList) => {
+    if (touches.length < 2) return 0;
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const handleTouchStart = useCallback((event: React.TouchEvent<HTMLCanvasElement>) => {
+    if (event.touches.length === 2) {
+      event.preventDefault();
+      setTouches(event.touches);
+      setLastTouchDistance(getTouchDistance(event.touches));
+    }
+  }, []);
+
+  const handleTouchMove = useCallback((event: React.TouchEvent<HTMLCanvasElement>) => {
+    if (event.touches.length === 2 && touches) {
+      event.preventDefault();
+      const currentDistance = getTouchDistance(event.touches);
+      
+      if (lastTouchDistance > 0 && currentDistance > 0) {
+        const zoomFactor = currentDistance / lastTouchDistance;
+        const newZoom = Math.max(0.1, Math.min(5.0, zoomLevel * zoomFactor));
+        
+        if (Math.abs(newZoom - zoomLevel) > 0.01) { // Threshold to prevent jittery updates
+          onZoomChange(newZoom);
+          setLastTouchDistance(currentDistance);
+        }
+      }
+    }
+  }, [touches, lastTouchDistance, zoomLevel, onZoomChange]);
+
+  const handleTouchEnd = useCallback(() => {
+    setTouches(null);
+    setLastTouchDistance(0);
+  }, []);
 
   // Handle mouse events for drag and drop
   const handleMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
