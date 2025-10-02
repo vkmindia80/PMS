@@ -1,0 +1,39 @@
+{
+  "timestamp": "2025-10-02T11:53:48.681353",
+  "tests_run": 5,
+  "tests_passed": 4,
+  "tests_failed": 1,
+  "test_details": [
+    {
+      "test_name": "Dependency Type Enum Validation",
+      "passed": true,
+      "details": "",
+      "timestamp": "2025-10-02T11:53:48.689154"
+    },
+    {
+      "test_name": "Existing Dependencies Format Check",
+      "passed": true,
+      "details": "All 0 dependencies have valid types",
+      "timestamp": "2025-10-02T11:53:48.689567"
+    },
+    {
+      "test_name": "Created By Field Presence Check",
+      "passed": true,
+      "details": "All 0 dependencies have created_by field",
+      "timestamp": "2025-10-02T11:53:48.689869"
+    },
+    {
+      "test_name": "Create New Dependency Test",
+      "passed": false,
+      "details": "Need at least 2 tasks to test dependency creation",
+      "timestamp": "2025-10-02T11:53:48.690147"
+    },
+    {
+      "test_name": "Dependency Type Mapping Conversion",
+      "passed": true,
+      "details": "All dependency type mappings work correctly",
+      "timestamp": "2025-10-02T11:53:48.690171"
+    }
+  ],
+  "success_rate": 80.0
+}
