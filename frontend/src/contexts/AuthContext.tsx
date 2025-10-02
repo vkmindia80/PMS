@@ -69,40 +69,69 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Initialize auth state from localStorage
   useEffect(() => {
     const initAuth = async () => {
-      const storedTokens = localStorage.getItem('auth_tokens')
-      const storedUser = localStorage.getItem('auth_user')
+      try {
+        const storedTokens = localStorage.getItem('auth_tokens')
+        const storedUser = localStorage.getItem('auth_user')
 
-      if (storedTokens && storedUser) {
-        try {
-          const parsedTokens = JSON.parse(storedTokens) as AuthTokens
-          const parsedUser = JSON.parse(storedUser) as User
-          
-          setTokens(parsedTokens)
-          setUser(parsedUser)
-          
-          // Verify token is still valid
-          await fetchUserProfile(parsedTokens.access_token)
-        } catch (error) {
-          console.error('Failed to initialize auth, attempting token refresh:', error)
-          
-          // Try to refresh token if we have a refresh token
-          if (parsedTokens?.refresh_token) {
+        if (storedTokens && storedUser) {
+          try {
+            const parsedTokens = JSON.parse(storedTokens) as AuthTokens
+            const parsedUser = JSON.parse(storedUser) as User
+            
+            // Basic validation of stored data
+            if (!parsedTokens.access_token || !parsedUser.id) {
+              throw new Error('Invalid stored auth data')
+            }
+            
+            setTokens(parsedTokens)
+            setUser(parsedUser)
+            
+            // Verify token is still valid with timeout
+            const timeoutPromise = new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Auth verification timeout')), 10000)
+            )
+            
+            await Promise.race([
+              fetchUserProfile(parsedTokens.access_token),
+              timeoutPromise
+            ])
+            
+            console.log('✅ Authentication initialized successfully')
+          } catch (error) {
+            console.error('Failed to initialize auth, attempting token refresh:', error)
+            
+            // Try to refresh token if we have a refresh token and user data
             try {
-              await refreshTokenInternal(parsedTokens.refresh_token, parsedUser)
+              const parsedTokens = JSON.parse(storedTokens) as AuthTokens
+              const parsedUser = JSON.parse(storedUser) as User
+              
+              if (parsedTokens?.refresh_token && parsedUser?.id) {
+                console.log('🔄 Attempting token refresh during initialization...')
+                await refreshTokenInternal(parsedTokens.refresh_token, parsedUser)
+                console.log('✅ Token refresh successful during initialization')
+              } else {
+                throw new Error('No valid refresh token available')
+              }
             } catch (refreshError) {
-              console.error('Token refresh during initialization failed:', refreshError)
+              console.error('❌ Token refresh during initialization failed:', refreshError)
               clearAuthData()
             }
-          } else {
-            clearAuthData()
           }
+        } else {
+          console.log('🚫 No stored authentication data found')
         }
+      } catch (error) {
+        console.error('❌ Auth initialization error:', error)
+        clearAuthData()
+      } finally {
+        setIsLoading(false)
+        console.log('🏁 Auth initialization complete')
       }
-      
-      setIsLoading(false)
     }
 
-    initAuth()
+    // Add a small delay to prevent React strict mode double execution issues
+    const timeoutId = setTimeout(initAuth, 100)
+    return () => clearTimeout(timeoutId)
   }, [])
 
   // Helper function to clear auth data
