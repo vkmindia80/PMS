@@ -207,7 +207,7 @@ export const DynamicTimelinePage: React.FC = () => {
     }
   }, [notificationsEnabled]);
 
-  // Fetch enhanced timeline data
+  // Fetch enhanced timeline data from tasks
   const fetchTimelineData = useCallback(async () => {
     if (!selectedProjectId || !tokens?.access_token) {
       setLoading(false);
@@ -218,15 +218,35 @@ export const DynamicTimelinePage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const data = await dynamicService.getEnhancedGanttData(
+      // Try to fetch from timeline-tasks integration first
+      try {
+        const response = await fetch(`/api/timeline-tasks/project/${selectedProjectId}/timeline?include_completed=${filter.show_completed !== false}`, {
+          headers: {
+            'Authorization': `Bearer ${tokens.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setTasks(data.tasks || []);
+          setDependencies(data.dependencies || []);
+          setConflicts(data.conflicts || []);
+          return;
+        }
+      } catch (integrationError) {
+        console.log('Timeline integration not available, using regular tasks');
+      }
+
+      // Fallback to taskTimelineService
+      const data = await taskTimelineService.fetchTasksAsTimeline(
         selectedProjectId, 
-        tokens.access_token, 
-        filter
+        tokens.access_token
       );
       
       setTasks(data.tasks || []);
       setDependencies(data.dependencies || []);
-      setConflicts(data.conflicts || []);
+      setConflicts([]);
       
     } catch (err) {
       console.error('Error fetching timeline data:', err);
