@@ -993,7 +993,7 @@ const TaskDetailsTab: React.FC<TaskDetailsTabProps> = ({
   )
 }
 
-// Comments Tab Component
+// Enhanced Comments Tab Component with Complete History
 const TaskCommentsTab: React.FC<{
   comments: Comment[]
   loading: boolean
@@ -1010,22 +1010,86 @@ const TaskCommentsTab: React.FC<{
     )
   }
 
+  // Sort comments by creation date (newest first)
+  const sortedComments = [...comments].sort((a, b) => 
+    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  )
+
+  // Group comments by type for summary
+  const commentSummary = comments.reduce((acc, comment) => {
+    acc[comment.type] = (acc[comment.type] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+
   return (
     <div className="p-6">
+      {/* Comments Summary Header */}
+      <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg p-4 mb-6 border border-gray-200">
+        <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+          <MessageSquare className="h-5 w-5 mr-2 text-blue-600" />
+          Comments & Discussion History
+        </h3>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-600">{comments.length}</div>
+            <div className="text-sm text-gray-600">Total Comments</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-600">{commentSummary.comment || 0}</div>
+            <div className="text-sm text-gray-600">General Comments</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-600">{commentSummary.review || 0}</div>
+            <div className="text-sm text-gray-600">Reviews</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-yellow-600">{commentSummary.note || 0}</div>
+            <div className="text-sm text-gray-600">Notes</div>
+          </div>
+        </div>
+
+        {comments.length > 0 && (
+          <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
+            <span>Latest activity: {new Date(sortedComments[0]?.created_at).toLocaleDateString()}</span>
+            <span>
+              {comments.filter(c => c.is_pinned).length > 0 && 
+                `${comments.filter(c => c.is_pinned).length} pinned message${comments.filter(c => c.is_pinned).length > 1 ? 's' : ''}`
+              }
+            </span>
+          </div>
+        )}
+      </div>
+
       {/* Add Comment */}
       <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Add New Comment</label>
         <div className="flex space-x-3">
           <div className="flex-1">
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Add a comment..."
+              placeholder="Share your thoughts, ask questions, or provide updates..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               rows={3}
             />
+            <div className="mt-2 text-xs text-gray-500">
+              💡 Tip: Use @username to mention team members
+            </div>
           </div>
         </div>
-        <div className="flex justify-end mt-3">
+        <div className="flex justify-between items-center mt-3">
+          <div className="flex space-x-2">
+            <button className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1 rounded border border-gray-300">
+              📝 Note
+            </button>
+            <button className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1 rounded border border-gray-300">
+              👁️ Review
+            </button>
+            <button className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1 rounded border border-gray-300">
+              📌 Pin
+            </button>
+          </div>
           <button
             onClick={onAddComment}
             disabled={!newComment.trim()}
@@ -1039,77 +1103,177 @@ const TaskCommentsTab: React.FC<{
       {/* Comments List */}
       <div className="space-y-4">
         {comments.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
             <MessageSquare className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-            <p>No comments yet. Be the first to add one!</p>
+            <h4 className="font-medium text-gray-900 mb-2">No comments yet</h4>
+            <p>Start the conversation by adding the first comment!</p>
+            <p className="text-sm mt-2">Comments help track decisions, progress updates, and team collaboration.</p>
           </div>
         ) : (
-          comments.map((comment) => (
-            <div key={comment.id} className="border border-l-4 border-l-blue-400 rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <User className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-gray-900">
-                      {(() => {
-                        const user = availableUsers.find(u => u.id === comment.author_id);
-                        return user ? `${user.first_name} ${user.last_name}` : 'Unknown User';
-                      })()}
-                    </div>
-                    <div className="text-sm text-gray-500 flex items-center space-x-2">
-                      <Clock className="h-3 w-3" />
-                      <span>{new Date(comment.created_at).toLocaleString()}</span>
-                      {comment.is_edited && (
-                        <span className="text-xs text-gray-400">(edited)</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {comment.is_pinned && (
-                    <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                      📌 Pinned
-                    </span>
-                  )}
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    comment.type === 'review' ? 'bg-purple-100 text-purple-800' :
-                    comment.type === 'approval' ? 'bg-green-100 text-green-800' :
-                    comment.type === 'note' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-gray-100 text-gray-800'
-                  }`}>
-                    {comment.type === 'review' ? '👁️ Review' :
-                     comment.type === 'approval' ? '✅ Approval' :
-                     comment.type === 'note' ? '📝 Note' :
-                     '💬 Comment'}
-                  </span>
-                </div>
-              </div>
-              <div className="text-gray-900 whitespace-pre-wrap pl-12">
-                {comment.content}
-              </div>
-              {comment.reply_count > 0 && (
-                <div className="mt-3 pl-12">
-                  <div className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
-                    <MessageSquare className="h-4 w-4" />
-                    <span>{comment.reply_count} {comment.reply_count === 1 ? 'reply' : 'replies'}</span>
-                  </div>
-                </div>
-              )}
-              {comment.reactions && comment.reactions.length > 0 && (
-                <div className="mt-3 pl-12 flex items-center space-x-2">
-                  {comment.reactions.slice(0, 3).map((reaction, idx) => (
-                    <span key={idx} className="text-sm bg-gray-100 px-2 py-1 rounded">
-                      {reaction.emoji}
-                    </span>
+          <>
+            {/* Pinned Comments */}
+            {comments.filter(c => c.is_pinned).length > 0 && (
+              <div className="mb-6">
+                <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                  <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs mr-2">📌 Pinned</span>
+                  Important Messages
+                </h4>
+                <div className="space-y-3">
+                  {comments.filter(c => c.is_pinned).map((comment) => (
+                    <CommentCard key={`pinned-${comment.id}`} comment={comment} availableUsers={availableUsers} isPinned={true} />
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* All Comments */}
+            <div>
+              <h4 className="font-medium text-gray-900 mb-4 flex items-center">
+                <History className="h-4 w-4 mr-2 text-gray-600" />
+                Complete Discussion History ({comments.length})
+              </h4>
+              <div className="space-y-4">
+                {sortedComments.map((comment) => (
+                  <CommentCard key={comment.id} comment={comment} availableUsers={availableUsers} />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Enhanced Comment Card Component
+const CommentCard: React.FC<{
+  comment: Comment
+  availableUsers: any[]
+  isPinned?: boolean
+}> = ({ comment, availableUsers, isPinned = false }) => {
+  const user = availableUsers.find(u => u.id === comment.author_id)
+  const isOldComment = new Date().getTime() - new Date(comment.created_at).getTime() > 7 * 24 * 60 * 60 * 1000 // 7 days
+
+  return (
+    <div className={`border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition-shadow ${
+      isPinned ? 'border-l-4 border-l-yellow-400 bg-yellow-50' : 
+      comment.type === 'review' ? 'border-l-4 border-l-purple-400' :
+      comment.type === 'approval' ? 'border-l-4 border-l-green-400' :
+      'border-l-4 border-l-blue-400'
+    }`}>
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-start space-x-3">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+            comment.type === 'review' ? 'bg-purple-100' :
+            comment.type === 'approval' ? 'bg-green-100' :
+            comment.type === 'note' ? 'bg-yellow-100' :
+            'bg-blue-100'
+          }`}>
+            <User className={`h-5 w-5 ${
+              comment.type === 'review' ? 'text-purple-600' :
+              comment.type === 'approval' ? 'text-green-600' :
+              comment.type === 'note' ? 'text-yellow-600' :
+              'text-blue-600'
+            }`} />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center space-x-2 mb-1">
+              <div className="font-medium text-gray-900">
+                {user ? `${user.first_name} ${user.last_name}` : 'Unknown User'}
+              </div>
+              {user && (
+                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                  {user.email}
                 </div>
               )}
             </div>
-          ))
+            <div className="text-sm text-gray-500 flex items-center space-x-2">
+              <Clock className="h-3 w-3" />
+              <span>{new Date(comment.created_at).toLocaleString()}</span>
+              {comment.is_edited && (
+                <span className="text-xs text-gray-400">(edited)</span>
+              )}
+              {isOldComment && (
+                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                  Archived
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+            comment.type === 'review' ? 'bg-purple-100 text-purple-800' :
+            comment.type === 'approval' ? 'bg-green-100 text-green-800' :
+            comment.type === 'note' ? 'bg-yellow-100 text-yellow-800' :
+            'bg-blue-100 text-blue-800'
+          }`}>
+            {comment.type === 'review' ? '👁️ Review' :
+             comment.type === 'approval' ? '✅ Approval' :
+             comment.type === 'note' ? '📝 Note' :
+             comment.type === 'suggestion' ? '💡 Suggestion' :
+             '💬 Comment'}
+          </span>
+        </div>
+      </div>
+      
+      <div className="text-gray-900 whitespace-pre-wrap pl-13 mb-3">
+        {comment.content}
+      </div>
+
+      {/* Comment Metadata */}
+      <div className="flex items-center justify-between pl-13">
+        <div className="flex items-center space-x-4 text-sm text-gray-500">
+          {comment.reply_count > 0 && (
+            <div className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 cursor-pointer">
+              <MessageSquare className="h-3 w-3" />
+              <span>{comment.reply_count} {comment.reply_count === 1 ? 'reply' : 'replies'}</span>
+            </div>
+          )}
+          
+          {comment.attachments && comment.attachments.length > 0 && (
+            <div className="flex items-center space-x-1">
+              <Paperclip className="h-3 w-3" />
+              <span>{comment.attachments.length} attachment{comment.attachments.length > 1 ? 's' : ''}</span>
+            </div>
+          )}
+
+          {comment.mentions && comment.mentions.length > 0 && (
+            <div className="flex items-center space-x-1">
+              <User className="h-3 w-3" />
+              <span>{comment.mentions.length} mention{comment.mentions.length > 1 ? 's' : ''}</span>
+            </div>
+          )}
+        </div>
+
+        {comment.reactions && comment.reactions.length > 0 && (
+          <div className="flex items-center space-x-1">
+            {comment.reactions.slice(0, 3).map((reaction, idx) => (
+              <span key={idx} className="text-sm bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 cursor-pointer">
+                {reaction.emoji}
+              </span>
+            ))}
+            {comment.reactions.length > 3 && (
+              <span className="text-xs text-gray-500">+{comment.reactions.length - 3}</span>
+            )}
+          </div>
         )}
       </div>
+
+      {comment.is_resolved && (
+        <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded text-sm">
+          <div className="flex items-center text-green-800">
+            <CheckSquare className="h-4 w-4 mr-2" />
+            <span className="font-medium">Resolved</span>
+            {comment.resolved_at && (
+              <span className="ml-2 text-green-600">
+                on {new Date(comment.resolved_at).toLocaleDateString()}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
