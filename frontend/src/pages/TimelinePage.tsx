@@ -66,6 +66,9 @@ const GanttChart: React.FC<{
   const [isDragging, setIsDragging] = useState(false);
   const [draggedTask, setDraggedTask] = useState<string | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 1200, height: 600 });
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [lastMousePos, setLastMousePos] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
 
   // Handle canvas resizing based on container and zoom
   const updateCanvasSize = useCallback(() => {
