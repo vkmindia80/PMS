@@ -447,6 +447,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
           {activeTab === 'details' && (
             <TaskDetailsTab
               task={task}
+              taskWithDetails={taskWithDetails}
+              availableUsers={availableUsers}
               isEditing={isEditing}
               editData={editData}
               setEditData={setEditData}
