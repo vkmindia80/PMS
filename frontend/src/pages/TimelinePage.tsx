@@ -220,9 +220,9 @@ const GanttChart: React.FC<{
     
     // Header text
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.font = `bold ${isMobile ? 12 : 14}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     ctx.textAlign = 'center';
-    ctx.fillText('Task Name', taskNameWidth / 2, 30);
+    ctx.fillText(isMobile ? 'Tasks' : 'Task Name', taskNameWidth / 2, isMobile ? 25 : 30);
     
     // Timeline header
     ctx.fillStyle = '#1f2937';
