@@ -581,27 +581,21 @@ export const TimelinePage: React.FC = () => {
 
   // Fetch Gantt chart data
   const fetchGanttData = useCallback(async () => {
-    if (!selectedProjectId) {
+    if (!selectedProjectId || !tokens?.access_token) {
       setLoading(false);
       return;
     }
 
     try {
       setLoading(true);
-      const token = localStorage.getItem('auth_tokens');
-      const authData = token ? JSON.parse(token) : null;
-      
-      if (!authData?.access_token) {
-        setError('Authentication required');
-        return;
-      }
+      setError(null);
 
       console.log('Fetching timeline data for project:', selectedProjectId);
       console.log('API URL:', API_ENDPOINTS.timeline.gantt(selectedProjectId));
       
       const response = await fetch(API_ENDPOINTS.timeline.gantt(selectedProjectId), {
         headers: {
-          'Authorization': `Bearer ${authData.access_token}`,
+          'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
         }
       });
@@ -623,7 +617,7 @@ export const TimelinePage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedProjectId]);
+  }, [selectedProjectId, tokens?.access_token]);
 
   // Handle task updates
   const handleTaskUpdate = useCallback(async (task: TimelineTask) => {
