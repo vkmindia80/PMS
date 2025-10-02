@@ -211,7 +211,7 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
           estimated_hours: formData.estimated_hours ? parseFloat(formData.estimated_hours) : undefined
         },
         tags: formData.tags,
-        dependencies: formData.dependencies,
+        dependencies: [...formData.pre_tasks, ...formData.post_tasks],
         progress_percentage: formData.progress_percentage
       }
 
