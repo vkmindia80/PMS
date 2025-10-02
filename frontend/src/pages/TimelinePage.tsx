@@ -439,11 +439,21 @@ const GanttChart: React.FC<{
     
     if (predecessorIndex === -1 || successorIndex === -1) return;
     
-    const timeUnit = 50; // Simplified
-    const startY = 80 + predecessorIndex * 40;
-    const endY = 80 + successorIndex * 40;
-    const startX = 200 + (predecessorIndex * 2 + 1) * timeUnit;
-    const endX = 200 + (successorIndex * 2) * timeUnit;
+    const taskNameWidth = 250;
+    const taskHeight = 50;
+    const headerHeight = 80;
+    const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
+    
+    // Calculate positions based on task bars
+    const predTask = tasks[predecessorIndex];
+    const succTask = tasks[successorIndex];
+    
+    const startY = headerHeight + predecessorIndex * taskHeight + taskHeight / 2;
+    const endY = headerHeight + successorIndex * taskHeight + taskHeight / 2;
+    
+    // Simplified positioning for now
+    const startX = taskNameWidth + (predecessorIndex * 20) + 100; // End of predecessor bar
+    const endX = taskNameWidth + (successorIndex * 20); // Start of successor bar
     
     // Dependency line
     ctx.strokeStyle = '#94a3b8';
@@ -457,6 +467,7 @@ const GanttChart: React.FC<{
     
     // Arrow head
     ctx.setLineDash([]);
+    ctx.fillStyle = '#94a3b8';
     ctx.beginPath();
     ctx.moveTo(endX - 10, endY);
     ctx.lineTo(endX - 15, endY - 5);
