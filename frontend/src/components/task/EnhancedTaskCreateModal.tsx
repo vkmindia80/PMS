@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { 
   X, Save, Plus, Minus, Calendar, Clock, Users, Flag, 
-  Tag, FileText, Link, AlertTriangle, CheckSquare, User
+  Tag, FileText, Link, AlertTriangle, CheckSquare, User, ArrowLeft, ArrowRight
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useProjectFilterContext } from '../../contexts/ProjectFilterContext'
