@@ -976,7 +976,7 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     }
     
     const daysDiff = Math.floor((taskStartDate.getTime() - timelineMetrics.minDate.getTime()) / (1000 * 60 * 60 * 24));
-    const durationDays = Math.ceil((taskEndDate.getTime() - taskStartDate.getTime()) / (1000 * 60 * 60 * 1000));
+    const durationDays = Math.ceil((taskEndDate.getTime() - taskStartDate.getTime()) / (1000 * 60 * 60 * 24));
     
     console.log('Date calculations:', {
       daysDiff,
