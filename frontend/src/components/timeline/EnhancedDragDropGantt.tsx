@@ -148,54 +148,76 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     return filtered;
   }, [tasks, searchQuery, filter, viewConfig.sort_by, viewConfig.sort_order]);
 
-  // Calculate timeline dimensions
+  // Calculate timeline dimensions with safe error handling
   const timelineMetrics = useMemo(() => {
-    if (!filteredTasks.length) return null;
+    try {
+      if (!filteredTasks || !filteredTasks.length) return null;
 
-    const taskNameWidth = isMobile ? 200 : 300;
-    const taskHeight = isMobile ? 50 : 60;
-    const headerHeight = isMobile ? 80 : 100;
-    
-    // Calculate date range
-    const allDates = filteredTasks.flatMap(task => [
-      new Date(task.start_date),
-      new Date(task.finish_date)
-    ]);
-    
-    const minDate = new Date(Math.min(...allDates.map(d => d.getTime())));
-    const maxDate = new Date(Math.max(...allDates.map(d => d.getTime())));
-    
-    // Add padding
-    minDate.setDate(minDate.getDate() - 3);
-    maxDate.setDate(maxDate.getDate() + 7);
-    
-    const totalDays = Math.ceil((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
-    
-    // Calculate time unit width
-    const baseTimeUnit = {
-      day: isMobile ? 80 : 120,
-      week: isMobile ? 100 : 140,
-      month: isMobile ? 150 : 200,
-      quarter: isMobile ? 200 : 280,
-      year: isMobile ? 250 : 350
-    }[viewConfig.mode];
-    
-    const timeUnit = Math.max(isMobile ? 30 : 50, baseTimeUnit * viewConfig.zoom_level);
-    const timelineWidth = Math.max(1000, totalDays * (timeUnit / getDaysPerUnit(viewConfig.mode)));
-    
-    return {
-      taskNameWidth,
-      taskHeight,
-      headerHeight,
-      timeUnit,
-      timelineWidth,
-      totalDays,
-      minDate,
-      maxDate,
-      canvasWidth: taskNameWidth + timelineWidth,
-      canvasHeight: headerHeight + (filteredTasks.length * taskHeight) + 100
-    };
-  }, [filteredTasks, viewConfig.mode, viewConfig.zoom_level, isMobile]);
+      const taskNameWidth = isMobile ? 200 : 300;
+      const taskHeight = isMobile ? 50 : 60;
+      const headerHeight = isMobile ? 80 : 100;
+      
+      // Calculate date range with validation
+      const validTasks = filteredTasks.filter(task => 
+        task && task.start_date && task.finish_date
+      );
+      
+      if (!validTasks.length) return null;
+      
+      const allDates = validTasks.flatMap(task => {
+        try {
+          return [
+            new Date(task.start_date),
+            new Date(task.finish_date)
+          ].filter(date => !isNaN(date.getTime()));
+        } catch {
+          return [];
+        }
+      });
+      
+      if (!allDates.length) return null;
+      
+      const minDate = new Date(Math.min(...allDates.map(d => d.getTime())));
+      const maxDate = new Date(Math.max(...allDates.map(d => d.getTime())));
+      
+      // Add padding
+      minDate.setDate(minDate.getDate() - 3);
+      maxDate.setDate(maxDate.getDate() + 7);
+      
+      const totalDays = Math.ceil((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      // Calculate time unit width with safe defaults
+      const mode = viewConfig?.mode || 'week';
+      const zoomLevel = viewConfig?.zoom_level || 1.0;
+      
+      const baseTimeUnit = {
+        day: isMobile ? 80 : 120,
+        week: isMobile ? 100 : 140,
+        month: isMobile ? 150 : 200,
+        quarter: isMobile ? 200 : 280,
+        year: isMobile ? 250 : 350
+      }[mode] || (isMobile ? 100 : 140);
+      
+      const timeUnit = Math.max(isMobile ? 30 : 50, baseTimeUnit * zoomLevel);
+      const timelineWidth = Math.max(1000, totalDays * (timeUnit / getDaysPerUnit(mode)));
+      
+      return {
+        taskNameWidth,
+        taskHeight,
+        headerHeight,
+        timeUnit,
+        timelineWidth,
+        totalDays,
+        minDate,
+        maxDate,
+        canvasWidth: taskNameWidth + timelineWidth,
+        canvasHeight: headerHeight + (filteredTasks.length * taskHeight) + 100
+      };
+    } catch (error) {
+      console.error('Timeline metrics calculation error:', error);
+      return null;
+    }
+  }, [filteredTasks, viewConfig?.mode, viewConfig?.zoom_level, isMobile]);
 
   const getDaysPerUnit = (mode: string) => {
     switch (mode) {
