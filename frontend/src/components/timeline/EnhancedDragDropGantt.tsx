@@ -644,13 +644,7 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
   };
 
   const drawTasks = (ctx: CanvasRenderingContext2D, isPreview = false, daysDelta = 0) => {
-    console.log('=== DrawTasks Debug ===');
-    if (!timelineMetrics) {
-      console.log('No timelineMetrics in drawTasks');
-      return;
-    }
-
-    console.log('Drawing', filteredTasks.length, 'tasks');
+    if (!timelineMetrics) return;
     
     if (filteredTasks.length === 0) {
       // Draw "no tasks" message
@@ -663,7 +657,6 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
 
     filteredTasks.forEach((task, index) => {
       try {
-        console.log(`Drawing task ${index + 1}/${filteredTasks.length}: ${task.name}`);
         drawTaskRow(ctx, task, index, isPreview, daysDelta);
       } catch (error) {
         console.error(`Error drawing task ${task.id}:`, error);
@@ -676,8 +669,6 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
         ctx.fillText(`Error: ${task.name}`, 10, y + timelineMetrics.taskHeight / 2);
       }
     });
-    
-    console.log('DrawTasks completed');
   };
 
   const drawTaskRow = (
