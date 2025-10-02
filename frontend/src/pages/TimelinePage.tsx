@@ -202,9 +202,14 @@ const GanttChart: React.FC<{
     const headerHeight = 80;
     const currentDate = new Date();
     
+    // Use the earliest task start date as project start
+    const allStartDates = data.tasks.map(t => new Date(t.start_date)).filter(d => !isNaN(d.getTime()));
+    const projectStartDate = allStartDates.length > 0 ? new Date(Math.min(...allStartDates.map(d => d.getTime()))) : new Date();
+    
     // Calculate position of current date line
     const timeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
-    const x = taskNameWidth + (currentDate.getDate() - 1) * (timeUnit / 30); // Simplified positioning
+    const daysDiff = Math.floor((currentDate.getTime() - projectStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    const x = taskNameWidth + (daysDiff * (timeUnit / (viewMode === 'day' ? 1 : viewMode === 'week' ? 7 : 30)));
     
     if (x > taskNameWidth && x < ctx.canvas.width) {
       ctx.strokeStyle = '#ef4444';
