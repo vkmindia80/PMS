@@ -1002,6 +1002,7 @@ export const TimelinePage: React.FC = () => {
                 value={viewMode}
                 onChange={(e) => setViewMode(e.target.value)}
                 className="border border-gray-300 rounded-md px-2 sm:px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                data-testid="view-mode-selector"
               >
                 {timelineViewModes.map((mode) => (
                   <option key={mode.value} value={mode.value}>
