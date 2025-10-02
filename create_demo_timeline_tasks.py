@@ -28,6 +28,15 @@ async def create_demo_timeline_tasks():
         
         print("🔗 Connected to MongoDB")
         
+        # Get existing projects and tasks
+        projects = list(db.projects.find({"organization_id": "demo-org-001"}))
+        if not projects:
+            print("❌ No projects found. Please run the main demo data generator first.")
+            return
+        
+        regular_tasks = list(db.tasks.find())
+        print(f"📋 Found {len(regular_tasks)} regular tasks to convert")
+        
         # Check if we already have enough timeline tasks
         existing_tasks = list(db.timeline_tasks.find().limit(20))
         if len(existing_tasks) >= 15:
@@ -46,16 +55,6 @@ async def create_demo_timeline_tasks():
         if overdue_tasks:
             db.timeline_tasks.insert_many(overdue_tasks)
             print(f"✅ Created {len(overdue_tasks)} overdue demo tasks")
-        
-        
-        # Get existing projects and tasks
-        projects = list(db.projects.find({"organization_id": "demo-org-001"}))
-        if not projects:
-            print("❌ No projects found. Please run the main demo data generator first.")
-            return
-        
-        regular_tasks = list(db.tasks.find())
-        print(f"📋 Found {len(regular_tasks)} regular tasks to convert")
         
         timeline_tasks = []
         task_dependencies = []
