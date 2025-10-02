@@ -136,10 +136,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Helper function to clear auth data
   const clearAuthData = () => {
+    console.log('🧹 Clearing authentication data')
     setUser(null)
     setTokens(null)
-    localStorage.removeItem('auth_tokens')
-    localStorage.removeItem('auth_user')
+    
+    // Clear all possible auth-related localStorage keys
+    try {
+      localStorage.removeItem('auth_tokens')
+      localStorage.removeItem('auth_user')
+      // Also clear any other auth-related keys that might exist
+      const keysToRemove = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key && (key.startsWith('auth_') || key.startsWith('token_') || key.includes('session'))) {
+          keysToRemove.push(key)
+        }
+      }
+      keysToRemove.forEach(key => localStorage.removeItem(key))
+    } catch (error) {
+      console.error('Error clearing localStorage:', error)
+    }
   }
 
   // Helper function to store auth data
