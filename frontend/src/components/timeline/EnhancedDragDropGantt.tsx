@@ -183,7 +183,6 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       });
       
       if (!validTasks.length) {
-        console.log('No valid tasks found after date validation');
         // Return a default timeline to show empty state
         return {
           taskNameWidth,
