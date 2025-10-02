@@ -760,6 +760,7 @@ const GanttChart: React.FC<{
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        data-testid="gantt-chart-canvas"
         style={{ 
           cursor: isDragging ? 'grabbing' : 'default',
           width: `${canvasSize.width}px`,
