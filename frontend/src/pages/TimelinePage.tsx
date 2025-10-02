@@ -369,6 +369,8 @@ const GanttChart: React.FC<{
       ctx.fillStyle = gradient;
       ctx.fillRect(startX, barY, barWidth, barHeight);
       
+      console.log(`Drew task bar: ${task.name} at (${startX}, ${barY}) with size (${barWidth}, ${barHeight})`);
+      
       // Progress bar with enhanced styling
       if (task.percent_complete > 0) {
         const progressWidth = (barWidth * task.percent_complete) / 100;
