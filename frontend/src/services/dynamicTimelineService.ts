@@ -407,7 +407,7 @@ export class DynamicTimelineService {
     suggestions: string[];
   }> {
     try {
-      const response = await fetch(`${API_ENDPOINTS.timeline.gantt(projectId)}/auto-schedule`, {
+      const response = await fetch(`/api/dynamic-timeline/projects/${projectId}/auto-schedule`, {
         method: 'POST',
         headers: this.getAuthHeaders(token)
       });
@@ -431,6 +431,103 @@ export class DynamicTimelineService {
     } catch (error) {
       console.error('Error auto-scheduling tasks:', error);
       throw new Error(handleTimelineError(error));
+    }
+  }
+
+  /**
+   * Create a new task
+   */
+  async createTask(
+    task: Partial<DynamicTimelineTask>, 
+    token: string
+  ): Promise<DynamicTimelineTask> {
+    try {
+      const response = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: this.getAuthHeaders(token),
+        body: JSON.stringify({
+          title: task.name || 'New Task',
+          description: task.description || '',
+          project_id: task.project_id!,
+          assignee_id: task.assignee_ids?.[0],
+          status: task.percent_complete === 100 ? 'completed' : 
+                 task.percent_complete > 0 ? 'in_progress' : 'todo',
+          priority: task.critical ? 'critical' : 'medium',
+          type: task.summary_task ? 'epic' : task.milestone ? 'milestone' : 'task',
+          due_date: task.finish_date,
+          progress_percentage: task.percent_complete || 0,
+          time_tracking: {
+            estimated_hours: task.duration || 8
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to create task: ${response.status}`);
+      }
+
+      const createdTask = await response.json();
+      
+      // Convert to timeline format (simplified)
+      return {
+        id: createdTask.id,
+        name: createdTask.title,
+        description: createdTask.description,
+        project_id: createdTask.project_id,
+        duration: createdTask.time_tracking?.estimated_hours || 8,
+        start_date: new Date().toISOString(),
+        finish_date: createdTask.due_date || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        percent_complete: createdTask.progress_percentage,
+        outline_level: 1,
+        summary_task: createdTask.type === 'epic',
+        critical: createdTask.priority === 'critical',
+        assignee_ids: createdTask.assignee_id ? [createdTask.assignee_id] : [],
+        milestone: createdTask.type === 'milestone',
+        color: this.getTaskColor(createdTask.priority, createdTask.status),
+        created_at: createdTask.created_at,
+        updated_at: createdTask.updated_at
+      };
+    } catch (error) {
+      console.error('Error creating task:', error);
+      throw new Error(handleTimelineError(error));
+    }
+  }
+
+  /**
+   * Create a new dependency
+   */
+  async createDependency(
+    dependency: any, 
+    token: string
+  ): Promise<any> {
+    try {
+      const response = await fetch('/api/timeline/dependencies', {
+        method: 'POST',
+        headers: this.getAuthHeaders(token),
+        body: JSON.stringify(dependency)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to create dependency: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating dependency:', error);
+      throw new Error(handleTimelineError(error));
+    }
+  }
+
+  private getTaskColor(priority: string, status: string): string {
+    if (status === 'completed') return '#10b981'; // Green
+    if (status === 'cancelled') return '#6b7280'; // Gray
+    
+    switch (priority) {
+      case 'critical': return '#ef4444'; // Red
+      case 'high': return '#f59e0b'; // Orange
+      case 'medium': return '#3b82f6'; // Blue
+      case 'low': return '#8b5cf6'; // Purple
+      default: return '#3b82f6'; // Default blue
     }
   }
 
