@@ -1013,3 +1013,100 @@ async def perform_auto_scheduling(
                     suggestions.append(f"Rescheduled task '{successor['name']}' to resolve dependency conflict")
     
     return scheduled_tasks, conflicts_resolved, suggestions
+
+
+def convert_task_to_timeline_format(task: Dict) -> Dict:
+    """Convert a regular task to timeline task format"""
+    try:
+        # Handle date conversion
+        start_date = task.get("created_at", datetime.utcnow())
+        if isinstance(start_date, str):
+            start_date = datetime.fromisoformat(start_date.replace('Z', '+00:00'))
+        
+        due_date = task.get("due_date")
+        finish_date = due_date
+        if due_date and isinstance(due_date, str):
+            finish_date = datetime.fromisoformat(due_date.replace('Z', '+00:00'))
+        elif not due_date:
+            # Default to 7 days from start if no due date
+            finish_date = start_date + timedelta(days=7)
+        
+        # Calculate duration in hours
+        duration = 8  # Default 8 hours
+        if finish_date and start_date:
+            duration_delta = finish_date - start_date
+            duration = max(1, duration_delta.total_seconds() / 3600)  # Convert to hours, minimum 1 hour
+        
+        # Handle progress percentage
+        progress = task.get("progress_percentage", 0)
+        if task.get("status") == "completed":
+            progress = 100
+        elif task.get("status") == "in_progress":
+            progress = max(progress, 25)  # At least 25% if in progress
+        
+        # Determine if critical
+        critical = (task.get("priority") == "critical" or 
+                   task.get("type") == "critical" or
+                   task.get("critical", False))
+        
+        # Handle assignee IDs
+        assignee_ids = []
+        if task.get("assignee_id"):
+            assignee_ids = [task["assignee_id"]]
+        
+        return {
+            "id": task.get("id", str(uuid.uuid4())),
+            "name": task.get("title", task.get("name", "Untitled Task")),
+            "description": task.get("description", ""),
+            "project_id": task.get("project_id"),
+            "duration": duration,
+            "start_date": start_date.isoformat() if isinstance(start_date, datetime) else start_date,
+            "finish_date": finish_date.isoformat() if isinstance(finish_date, datetime) else finish_date,
+            "percent_complete": min(100, max(0, progress)),  # Ensure 0-100 range
+            "outline_level": 1,
+            "summary_task": task.get("type") == "epic",
+            "critical": critical,
+            "assignee_ids": assignee_ids,
+            "milestone": task.get("type") == "milestone",
+            "color": get_task_color(task.get("priority", "medium"), task.get("status", "todo")),
+            "created_at": task.get("created_at"),
+            "updated_at": task.get("updated_at", datetime.utcnow())
+        }
+    except Exception as e:
+        logger.error(f"Error converting task to timeline format: {e}")
+        # Return a basic valid timeline task
+        return {
+            "id": task.get("id", str(uuid.uuid4())),
+            "name": task.get("title", task.get("name", "Untitled Task")),
+            "description": task.get("description", ""),
+            "project_id": task.get("project_id"),
+            "duration": 8,
+            "start_date": datetime.utcnow().isoformat(),
+            "finish_date": (datetime.utcnow() + timedelta(days=1)).isoformat(),
+            "percent_complete": task.get("progress_percentage", 0),
+            "outline_level": 1,
+            "summary_task": False,
+            "critical": False,
+            "assignee_ids": [],
+            "milestone": False,
+            "color": "#3b82f6",
+            "created_at": task.get("created_at"),
+            "updated_at": task.get("updated_at", datetime.utcnow())
+        }
+
+
+def get_task_color(priority: str, status: str) -> str:
+    """Get task color based on priority and status"""
+    if status == 'completed':
+        return '#10b981'  # Green
+    if status == 'cancelled':
+        return '#6b7280'  # Gray
+    
+    priority_colors = {
+        'critical': '#ef4444',  # Red
+        'high': '#f59e0b',     # Orange  
+        'medium': '#3b82f6',   # Blue
+        'low': '#8b5cf6'       # Purple
+    }
+    
+    return priority_colors.get(priority, '#3b82f6')  # Default blue
