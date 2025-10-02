@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import json
 import logging
 import asyncio
+import uuid
 from pydantic import BaseModel
 
 from database import get_database
