@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { useAuth } from './AuthContext'
 import { useProjectFilter } from '../hooks/useProjectFilter'
 
@@ -42,9 +42,29 @@ interface ProjectFilterProviderProps {
 
 export const ProjectFilterProvider: React.FC<ProjectFilterProviderProps> = ({ children }) => {
   const auth = useAuth()
-  const isAuthenticated = auth?.isAuthenticated || false
+  const { isAuthenticated, tokens, isLoading: authLoading } = auth || { isAuthenticated: false, tokens: null, isLoading: true }
   const [selectedProject, setSelectedProject] = useState<string | string[]>('all')
   
+  // Enhanced error handler with token refresh capability
+  const handleError = useCallback(async (error: string | null) => {
+    if (error) {
+      console.error('Project filter error:', error)
+      
+      // If it's an authentication error and we have a refresh token, try to refresh
+      if (error.includes('401') || error.includes('Authentication required') || error.includes('Failed to fetch')) {
+        if (auth?.refreshToken && tokens?.refresh_token) {
+          try {
+            console.log('Attempting token refresh due to project filter error...')
+            await auth.refreshToken()
+            // The useProjectFilter hook will automatically retry after token refresh
+          } catch (refreshError) {
+            console.error('Token refresh failed in ProjectFilterContext:', refreshError)
+          }
+        }
+      }
+    }
+  }, [auth, tokens])
+
   const {
     projects,
     loading,
@@ -53,20 +73,25 @@ export const ProjectFilterProvider: React.FC<ProjectFilterProviderProps> = ({ ch
     getProjectName,
     getProject
   } = useProjectFilter({
-    autoFetch: isAuthenticated,
-    onError: (error) => {
-      if (error) {
-        console.error('Project filter error:', error)
-      }
-    }
+    // Only auto-fetch when authentication is complete and we have valid tokens
+    autoFetch: isAuthenticated && !authLoading && !!tokens?.access_token,
+    onError: handleError
   })
 
   // Reset selected project when user logs out/in
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || authLoading) {
       setSelectedProject('all')
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, authLoading])
+
+  // Trigger project fetch when authentication state becomes ready
+  useEffect(() => {
+    if (isAuthenticated && !authLoading && tokens?.access_token && projects.length === 0 && !loading && !error) {
+      console.log('ProjectFilterContext: Triggering projects fetch after auth ready')
+      fetchProjects()
+    }
+  }, [isAuthenticated, authLoading, tokens?.access_token, projects.length, loading, error, fetchProjects])
 
   const isProjectSelected = (projectId: string): boolean => {
     if (Array.isArray(selectedProject)) {
