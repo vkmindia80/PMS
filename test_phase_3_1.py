@@ -165,7 +165,7 @@ async def test_phase_3_1():
             print("🔧 Some features may need attention")
         
         print(f"\
-🌐 External Access: https://integ-error.preview.emergentagent.com/analytics")
+🌐 External Access: https://dev-roadmap-28.preview.emergentagent.com/analytics")
         print(f"🔑 Demo Login: demo@company.com / demo123456")
         
         return success_count == total_count
