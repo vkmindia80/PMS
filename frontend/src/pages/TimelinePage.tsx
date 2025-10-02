@@ -935,11 +935,13 @@ export const TimelinePage: React.FC = () => {
               <p className="text-sm text-gray-600">Drag tasks to reschedule • Right-click for options</p>
             </div>
             
-            <div className="p-4 overflow-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+            <div className="p-4">
               <GanttChart
                 data={ganttData}
                 viewMode={viewMode}
                 onTaskUpdate={handleTaskUpdate}
+                zoomLevel={zoomLevel}
+                onZoomChange={setZoomLevel}
               />
             </div>
             
