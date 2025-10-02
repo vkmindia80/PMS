@@ -93,7 +93,7 @@ const GanttChart: React.FC<{
     // Draw dependencies with enhanced styling
     if (data.dependencies && data.dependencies.length > 0) {
       data.dependencies.forEach(dependency => {
-        drawDependencyLine(ctx, dependency, data.tasks);
+        drawDependencyLine(ctx, dependency, data.tasks, viewMode);
       });
     }
 
