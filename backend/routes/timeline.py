@@ -311,12 +311,36 @@ async def get_task_dependencies(
     current_user: User = Depends(get_current_active_user),
     db = Depends(get_database)
 ):
-    """Get all task dependencies for a project"""
+    """Get all task dependencies for a project with enhanced data formatting"""
     try:
         dependencies_cursor = db.task_dependencies.find({"project_id": project_id})
         dependencies = await dependencies_cursor.to_list(length=None)
         
-        return [TaskDependencyInDB(**dep) for dep in dependencies]
+        # Clean and validate dependency data
+        cleaned_dependencies = []
+        for dep in dependencies:
+            if "_id" in dep:
+                dep.pop("_id")
+            
+            # Ensure dependency_type is in correct format
+            if "dependency_type" in dep:
+                # Map legacy formats to enum values
+                if dep["dependency_type"] == "finish_to_start":
+                    dep["dependency_type"] = "FS"
+                elif dep["dependency_type"] == "start_to_start":
+                    dep["dependency_type"] = "SS"
+                elif dep["dependency_type"] == "finish_to_finish":
+                    dep["dependency_type"] = "FF"
+                elif dep["dependency_type"] == "start_to_finish":
+                    dep["dependency_type"] = "SF"
+            
+            # Ensure created_by field exists
+            if "created_by" not in dep or not dep.get("created_by"):
+                dep["created_by"] = "system"  # Default for missing created_by
+                
+            cleaned_dependencies.append(dep)
+        
+        return [TaskDependencyInDB(**dep) for dep in cleaned_dependencies]
         
     except Exception as e:
         logger.error(f"Error retrieving task dependencies: {e}")
