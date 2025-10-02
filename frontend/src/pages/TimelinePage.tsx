@@ -1064,6 +1064,7 @@ export const TimelinePage: React.FC = () => {
                   onClick={handleZoomReset}
                   className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-r-md"
                   title="Reset Zoom (100%)"
+                  data-testid="zoom-reset-button"
                 >
                   <RotateCcw className="h-3 sm:h-4 w-3 sm:w-4" />
                 </button>
