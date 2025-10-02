@@ -114,8 +114,7 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
 
   const dependencyTypes = [
     { value: 'blocks', label: 'Blocks', description: 'This task blocks the selected task' },
-    { value: 'depends_on', label: 'Depends On', description: 'This task depends on the selected task' },
-    { value: 'related_to', label: 'Related To', description: 'This task is related to the selected task' }
+    { value: 'depends_on', label: 'Depends On', description: 'This task depends on the selected task' }
   ]
 
   useEffect(() => {
