@@ -884,18 +884,29 @@ const TasksList: React.FC<{
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex space-x-2">
                     <button
+                      onClick={() => onTaskClick(task)}
+                      className="text-blue-600 hover:text-blue-900 px-3 py-1 rounded border border-blue-300 hover:bg-blue-50 transition-colors text-xs font-medium"
+                      data-testid={`view-task-button-${task.id}`}
+                    >
+                      👁️ View
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Open task in edit mode
+                        onTaskClick(task)
+                        // The modal will handle edit state internally
+                      }}
+                      className="text-green-600 hover:text-green-900 px-3 py-1 rounded border border-green-300 hover:bg-green-50 transition-colors text-xs font-medium"
+                      data-testid={`edit-task-button-${task.id}`}
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
                       onClick={() => onLogTime(task)}
-                      className="text-blue-600 hover:text-blue-900 px-2 py-1 rounded border border-blue-300 hover:bg-blue-50 transition-colors text-xs"
+                      className="text-orange-600 hover:text-orange-900 px-2 py-1 rounded border border-orange-300 hover:bg-orange-50 transition-colors text-xs"
                       data-testid={`log-time-button-${task.id}`}
                     >
                       ⏰ Log Time
-                    </button>
-                    <button
-                      onClick={() => onTaskClick(task)}
-                      className="text-gray-600 hover:text-gray-900 px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 transition-colors text-xs font-medium"
-                      data-testid={`view-task-button-${task.id}`}
-                    >
-                      👁️ View Details
                     </button>
                   </div>
                 </td>
