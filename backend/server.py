@@ -31,6 +31,7 @@ from routes.system import router as system_router
 from routes.security import router as security_router
 from routes.roles import router as roles_router
 from routes.timeline import router as timeline_router
+from routes.enhanced_timeline import router as enhanced_timeline_router
 
 # Import models
 from models import (
