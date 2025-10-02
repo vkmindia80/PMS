@@ -1045,7 +1045,10 @@ export const TimelinePage: React.FC = () => {
                 >
                   <ZoomIn className="h-3 sm:h-4 w-3 sm:w-4" />
                 </button>
-                <div className="px-1 sm:px-2 py-1 text-xs text-gray-600 border-x border-gray-300 min-w-[45px] sm:min-w-[60px] text-center">
+                <div 
+                  className="px-1 sm:px-2 py-1 text-xs text-gray-600 border-x border-gray-300 min-w-[45px] sm:min-w-[60px] text-center"
+                  data-testid="zoom-level-display"
+                >
                   {Math.round(zoomLevel * 100)}%
                 </div>
                 <button
