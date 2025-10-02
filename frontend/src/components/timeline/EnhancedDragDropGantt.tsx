@@ -495,16 +495,11 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      console.log('Failed to get canvas context');
-      return;
-    }
+    if (!ctx) return;
 
     // Set canvas size with device pixel ratio
     const dpr = window.devicePixelRatio || 1;
     const { canvasWidth, canvasHeight } = timelineMetrics;
-    
-    console.log('Setting canvas size:', { canvasWidth, canvasHeight, dpr });
     
     canvas.width = canvasWidth * dpr;
     canvas.height = canvasHeight * dpr;
