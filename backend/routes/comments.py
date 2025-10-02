@@ -512,7 +512,7 @@ async def resolve_comment(
             detail=f"Failed to resolve comment: {str(e)}"
         )
 
-@router.search("/", response_model=List[CommentSummary])
+@router.get("/search", response_model=List[CommentSummary])
 async def search_comments(
     query: str = Query(..., min_length=2, description="Search query"),
     entity_type: Optional[EntityType] = Query(None, description="Filter by entity type"),
