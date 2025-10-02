@@ -269,16 +269,52 @@ export const DynamicTimelinePage: React.FC = () => {
     }
   }, [selectedProjectId, tokens?.access_token, dynamicService]);
 
-  // Handle task updates
+  // Handle task updates with drag support
   const handleTaskUpdate = useCallback(async (taskId: string, updates: Partial<DynamicTimelineTask>) => {
     try {
-      await dynamicService.updateTaskDynamic(taskId, updates, tokens?.access_token || '');
-      // Optimistic update is handled by the service
+      // Try timeline-tasks integration first for better drag support
+      try {
+        const response = await fetch(`/api/timeline-tasks/task/${taskId}/timeline-sync`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${tokens?.access_token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updates)
+        });
+
+        if (response.ok) {
+          const updatedTask = await response.json();
+          setTasks(prev => prev.map(task => 
+            task.id === taskId ? { ...task, ...updatedTask } : task
+          ));
+          
+          // Broadcast update via WebSocket
+          if (notificationsEnabled) {
+            toast.success(`Task "${updates.name || 'Task'}" updated successfully!`);
+          }
+          return;
+        }
+      } catch (integrationError) {
+        console.log('Using fallback update method');
+      }
+
+      // Fallback to taskTimelineService
+      await taskTimelineService.updateTaskFromTimeline(taskId, updates, tokens?.access_token || '');
+      
+      // Update local state optimistically
+      setTasks(prev => prev.map(task => 
+        task.id === taskId ? { ...task, ...updates } : task
+      ));
+      
+      if (notificationsEnabled) {
+        toast.success(`Task "${updates.name || 'Task'}" updated successfully!`);
+      }
     } catch (error) {
       console.error('Error updating task:', error);
       toast.error('Failed to update task');
     }
-  }, [dynamicService, tokens?.access_token]);
+  }, [tokens?.access_token, notificationsEnabled]);
 
   // Handle task creation
   const handleTaskCreate = useCallback(async (task: Partial<DynamicTimelineTask>) => {
