@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for ProjectFilterContext Authentication Issue
-Testing all authentication and project-related endpoints
+Comprehensive Backend API Testing for Dynamic Timeline Dashboard
+Tests authentication, timeline APIs, and real-time statistics
 """
 
 import requests
@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-class ProjectFilterAPITester:
+class DynamicTimelineAPITester:
     def __init__(self, base_url: str = "https://timeline-auth-fix.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
@@ -19,6 +19,7 @@ class ProjectFilterAPITester:
         self.tests_run = 0
         self.tests_passed = 0
         self.test_results = []
+        self.demo_project_id = None
 
     def log_test(self, name: str, success: bool, details: str = "", response_data: Any = None):
         """Log test result"""
