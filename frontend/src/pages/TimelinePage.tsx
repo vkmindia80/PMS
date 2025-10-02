@@ -260,17 +260,18 @@ const GanttChart: React.FC<{
       date.setDate(startDate.getDate() + daysToAdd);
       
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.font = `bold ${isMobile ? 10 : 12}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText(
+      
+      const dateText = isMobile && viewMode !== 'day' ? 
+        date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' }) :
         date.toLocaleDateString('en-US', { 
           month: 'short', 
           day: 'numeric',
           ...(viewMode === 'month' && { year: '2-digit' })
-        }),
-        x + timeUnit / 2,
-        25
-      );
+        });
+      
+      ctx.fillText(dateText, x + timeUnit / 2, isMobile ? 20 : 25);
       
       // Sub-header for weekdays
       if (viewMode === 'day') {
