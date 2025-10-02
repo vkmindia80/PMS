@@ -638,6 +638,7 @@ export const TimelinePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [useEnhancedView, setUseEnhancedView] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1.0);
 
   // Get the actual selected project ID from context or URL
   const selectedProjectId = urlProjectId || (
