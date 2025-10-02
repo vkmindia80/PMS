@@ -621,18 +621,48 @@ export class DynamicTimelineService {
     conflicts_count: number;
   }> {
     try {
-      const response = await fetch(`${API_ENDPOINTS.timeline.stats(projectId)}/realtime`, {
+      // Try realtime endpoint first
+      let response = await fetch(`${API_ENDPOINTS.timeline.stats(projectId)}/realtime`, {
         headers: this.getAuthHeaders(token)
       });
 
+      // Fallback to regular stats if realtime not available
+      if (!response.ok && response.status === 404) {
+        response = await fetch(`${API_ENDPOINTS.timeline.stats(projectId)}`, {
+          headers: this.getAuthHeaders(token)
+        });
+      }
+
       if (!response.ok) {
-        throw new Error(`Failed to fetch realtime stats: ${response.status}`);
+        // Return default stats if both endpoints fail
+        return {
+          total_tasks: 0,
+          completed_tasks: 0,
+          in_progress_tasks: 0,
+          overdue_tasks: 0,
+          critical_path_length: 0,
+          resource_utilization: 0,
+          timeline_health_score: 75,
+          estimated_completion: new Date().toISOString(),
+          conflicts_count: 0
+        };
       }
 
       return await response.json();
     } catch (error) {
       console.error('Error fetching realtime stats:', error);
-      throw new Error(handleTimelineError(error));
+      // Return default stats on error
+      return {
+        total_tasks: 0,
+        completed_tasks: 0,
+        in_progress_tasks: 0,
+        overdue_tasks: 0,
+        critical_path_length: 0,
+        resource_utilization: 0,
+        timeline_health_score: 75,
+        estimated_completion: new Date().toISOString(),
+        conflicts_count: 0
+      };
     }
   }
 
