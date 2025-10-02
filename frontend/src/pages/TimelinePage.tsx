@@ -1010,65 +1010,65 @@ export const TimelinePage: React.FC = () => {
               </select>
             </div>
 
-            <div className="flex items-center space-x-2 flex-shrink-0">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-2 flex-shrink-0 w-full sm:w-auto justify-start sm:justify-end">
               <button
                 onClick={() => setUseEnhancedView(!useEnhancedView)}
-                className={`px-3 py-2 text-sm font-medium rounded-md ${
+                className={`px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium rounded-md ${
                   useEnhancedView 
                     ? 'bg-blue-600 text-white' 
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
                 title="Toggle Enhanced View"
               >
-                <Zap className="h-4 w-4 mr-1 inline" />
+                <Zap className="h-3 sm:h-4 w-3 sm:w-4 mr-1 inline" />
                 <span className="hidden sm:inline">Enhanced</span>
               </button>
               
               {/* Zoom to Fit Button */}
               <button
                 onClick={handleZoomToFit}
-                className="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
+                className="px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
                 title="Zoom to Fit All Tasks"
                 disabled={!ganttData || ganttData.tasks.length === 0}
               >
-                <Settings className="h-4 w-4 mr-1 inline" />
+                <Settings className="h-3 sm:h-4 w-3 sm:w-4 mr-1 inline" />
                 <span className="hidden sm:inline">Fit</span>
               </button>
               
               <div className="flex items-center space-x-1 border border-gray-300 rounded-md">
                 <button
                   onClick={handleZoomIn}
-                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-l-md"
+                  className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-l-md"
                   title="Zoom In (Ctrl + Mouse Wheel)"
                   disabled={zoomLevel >= 5.0}
                 >
-                  <ZoomIn className="h-4 w-4" />
+                  <ZoomIn className="h-3 sm:h-4 w-3 sm:w-4" />
                 </button>
-                <div className="px-2 py-1 text-xs text-gray-600 border-x border-gray-300 min-w-[60px] text-center">
+                <div className="px-1 sm:px-2 py-1 text-xs text-gray-600 border-x border-gray-300 min-w-[45px] sm:min-w-[60px] text-center">
                   {Math.round(zoomLevel * 100)}%
                 </div>
                 <button
                   onClick={handleZoomOut}
-                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                   title="Zoom Out (Ctrl + Mouse Wheel)"
                   disabled={zoomLevel <= 0.1}
                 >
-                  <ZoomOut className="h-4 w-4" />
+                  <ZoomOut className="h-3 sm:h-4 w-3 sm:w-4" />
                 </button>
                 <button
                   onClick={handleZoomReset}
-                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-r-md"
+                  className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-r-md"
                   title="Reset Zoom (100%)"
                 >
-                  <RotateCcw className="h-4 w-4" />
+                  <RotateCcw className="h-3 sm:h-4 w-3 sm:w-4" />
                 </button>
               </div>
               <button
                 onClick={fetchGanttData}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
+                className="p-1 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
                 title="Refresh Timeline Data"
               >
-                <RotateCcw className="h-4 w-4" />
+                <RotateCcw className="h-3 sm:h-4 w-3 sm:w-4" />
               </button>
             </div>
           </div>
