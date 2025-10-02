@@ -157,7 +157,7 @@ async def create_demo_timeline_tasks():
         import traceback
         traceback.print_exc()
 
-def create_additional_demo_tasks(projects):
+def create_additional_demo_tasks(projects, offset=0):
     """Create additional varied demo tasks for better testing"""
     additional_tasks = []
     
@@ -197,6 +197,27 @@ def create_additional_demo_tasks(projects):
             "critical": False,
             "priority": "low",
             "percent_complete": 10
+        },
+        {
+            "name": "Code Review Process",
+            "duration": 12,
+            "critical": False,
+            "priority": "medium",
+            "percent_complete": 50
+        },
+        {
+            "name": "Security Audit",
+            "duration": 28,
+            "critical": True,
+            "priority": "critical",
+            "percent_complete": 20
+        },
+        {
+            "name": "Client Presentation Prep",
+            "duration": 8,
+            "critical": False,
+            "priority": "medium",
+            "percent_complete": 90
         }
     ]
     
@@ -206,13 +227,9 @@ def create_additional_demo_tasks(projects):
             
         project = projects[i % len(projects)]
         
-        # Calculate dates to create some overdue tasks
-        if i % 3 == 0:  # Some tasks should be overdue
-            start_date = datetime.utcnow() - timedelta(days=10)
-            finish_date = start_date + timedelta(hours=template["duration"])
-        else:
-            start_date = datetime.utcnow() + timedelta(days=i)
-            finish_date = start_date + timedelta(hours=template["duration"])
+        # Calculate dates to create some variety
+        start_date = datetime.utcnow() + timedelta(days=(i + offset) * 2 - 5)
+        finish_date = start_date + timedelta(hours=template["duration"])
         
         # Determine status based on completion
         if template["percent_complete"] >= 100:
@@ -246,6 +263,73 @@ def create_additional_demo_tasks(projects):
         additional_tasks.append(task)
     
     return additional_tasks
+
+def create_overdue_demo_tasks(projects, offset=0):
+    """Create overdue tasks for testing"""
+    overdue_tasks = []
+    
+    overdue_templates = [
+        {
+            "name": "Overdue Bug Fixes",
+            "duration": 16,
+            "critical": True,
+            "priority": "critical",
+            "percent_complete": 25,
+            "days_overdue": 5
+        },
+        {
+            "name": "Client Feedback Integration",
+            "duration": 12,
+            "critical": False,
+            "priority": "high",
+            "percent_complete": 60,
+            "days_overdue": 2
+        },
+        {
+            "name": "Legacy System Updates",
+            "duration": 24,
+            "critical": False,
+            "priority": "medium",
+            "percent_complete": 10,
+            "days_overdue": 8
+        }
+    ]
+    
+    for i, template in enumerate(overdue_templates):
+        if not projects:
+            continue
+            
+        project = projects[i % len(projects)]
+        
+        # Calculate overdue dates
+        days_overdue = template["days_overdue"]
+        finish_date = datetime.utcnow() - timedelta(days=days_overdue)
+        start_date = finish_date - timedelta(hours=template["duration"])
+        
+        task = {
+            "id": str(uuid.uuid4()),
+            "name": template["name"],
+            "description": f"Overdue demo task: {template['name']}",
+            "project_id": project["id"],
+            "duration": template["duration"],
+            "start_date": start_date,
+            "finish_date": finish_date,
+            "percent_complete": template["percent_complete"],
+            "outline_level": 1,
+            "summary_task": False,
+            "critical": template["critical"],
+            "assignee_ids": ["demo-user-001"],
+            "milestone": False,
+            "color": get_task_color(template["priority"], "in_progress"),
+            "created_at": datetime.utcnow() - timedelta(days=10),
+            "updated_at": datetime.utcnow(),
+            "priority": template["priority"],
+            "status": "in_progress"
+        }
+        
+        overdue_tasks.append(task)
+    
+    return overdue_tasks
 
 def get_task_color(priority, status):
     """Get task color based on priority and status"""
