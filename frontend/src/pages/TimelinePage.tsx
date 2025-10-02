@@ -702,13 +702,13 @@ export const TimelinePage: React.FC = () => {
 
           {/* Project Selector and View Controls */}
           <div className="flex items-center space-x-4">
-            {/* Project Selector */}
+            {/* Project Selector - Using ProjectFilterContext */}
             {projects.length > 0 && (
               <div className="flex items-center space-x-2">
                 <label className="text-sm font-medium text-gray-700">Project:</label>
                 <select
                   value={selectedProjectId || ''}
-                  onChange={(e) => setSelectedProjectId(e.target.value)}
+                  onChange={(e) => setSelectedProject(e.target.value)}
                   className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[250px]"
                 >
                   <option value="">Select a project...</option>
