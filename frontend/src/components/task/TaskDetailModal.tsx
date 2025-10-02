@@ -585,6 +585,70 @@ const TaskDetailsTab: React.FC<{
           )}
         </div>
 
+        {/* Assignees */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Assignees</label>
+          {isEditing ? (
+            <select
+              multiple
+              value={editData.assignee_ids !== undefined ? editData.assignee_ids : (task.assignee_ids || [])}
+              onChange={(e) => {
+                const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                setEditData({ ...editData, assignee_ids: selectedOptions });
+              }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              size={Math.min(availableUsers?.length || 1, 4)}
+            >
+              {availableUsers?.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.first_name} {user.last_name} ({user.email})
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div className="space-y-1">
+              {(task.assignee_ids && task.assignee_ids.length > 0) ? (
+                task.assignee_ids.map((assigneeId) => {
+                  const assignee = availableUsers?.find(user => user.id === assigneeId);
+                  return (
+                    <div key={assigneeId} className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                        <User className="h-3 w-3 text-blue-600" />
+                      </div>
+                      <span className="text-sm text-gray-900">
+                        {assignee ? `${assignee.first_name} ${assignee.last_name}` : 'Unknown User'}
+                      </span>
+                      {assignee && (
+                        <span className="text-xs text-gray-500">({assignee.email})</span>
+                      )}
+                    </div>
+                  );
+                })
+              ) : task.assignee_id ? (
+                // Handle backward compatibility with single assignee_id
+                (() => {
+                  const assignee = availableUsers?.find(user => user.id === task.assignee_id);
+                  return (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                        <User className="h-3 w-3 text-blue-600" />
+                      </div>
+                      <span className="text-sm text-gray-900">
+                        {assignee ? `${assignee.first_name} ${assignee.last_name}` : 'Unknown User'}
+                      </span>
+                      {assignee && (
+                        <span className="text-xs text-gray-500">({assignee.email})</span>
+                      )}
+                    </div>
+                  );
+                })()
+              ) : (
+                <span className="text-sm text-gray-500">No assignees</span>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Due Date */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
