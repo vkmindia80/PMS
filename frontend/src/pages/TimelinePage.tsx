@@ -205,8 +205,8 @@ const GanttChart: React.FC<{
   }, [data, viewMode, canvasSize, zoomLevel]);
 
   const drawTimelineHeader = (ctx: CanvasRenderingContext2D, viewMode: string) => {
-    const headerHeight = 80;
-    const taskNameWidth = 250;
+    const headerHeight = isMobile ? 60 : 80;
+    const taskNameWidth = isMobile ? 150 : 250;
     const canvasWidth = ctx.canvas.width / (window.devicePixelRatio || 1);
     const canvasHeight = ctx.canvas.height / (window.devicePixelRatio || 1);
     
