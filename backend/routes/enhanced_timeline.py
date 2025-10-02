@@ -56,11 +56,37 @@ async def get_comprehensive_timeline_data(
         comments_cursor = db.comments.find({"project_id": project_id})
         comments = await comments_cursor.to_list(length=None)
         
-        # Clean MongoDB _id fields
-        for collection in [tasks, regular_tasks, dependencies, teams, users, files, comments]:
-            for item in collection:
-                if "_id" in item:
-                    item.pop("_id")
+        # Clean MongoDB _id fields and convert ObjectId to string
+        def clean_mongo_docs(docs):
+            cleaned = []
+            for doc in docs:
+                if doc and isinstance(doc, dict):
+                    clean_doc = {}
+                    for key, value in doc.items():
+                        if key == "_id":
+                            continue  # Skip _id field
+                        elif hasattr(value, '__dict__'):  # Handle ObjectId and other objects
+                            clean_doc[key] = str(value)
+                        elif isinstance(value, list):
+                            clean_doc[key] = [str(item) if hasattr(item, '__dict__') else item for item in value]
+                        else:
+                            clean_doc[key] = value
+                    cleaned.append(clean_doc)
+                else:
+                    cleaned.append(doc)
+            return cleaned
+        
+        tasks = clean_mongo_docs(tasks)
+        regular_tasks = clean_mongo_docs(regular_tasks)
+        dependencies = clean_mongo_docs(dependencies)
+        teams = clean_mongo_docs(teams)
+        users = clean_mongo_docs(users)
+        files = clean_mongo_docs(files)
+        comments = clean_mongo_docs(comments)
+        
+        # Clean project document
+        if project and "_id" in project:
+            project.pop("_id")
         
         # Create resource allocation map
         resource_allocation = calculate_resource_allocation(tasks, users, regular_tasks)
