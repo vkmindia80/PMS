@@ -433,7 +433,7 @@ const GanttChart: React.FC<{
     }
   };
 
-  const drawDependencyLine = (ctx: CanvasRenderingContext2D, dependency: TaskDependency, tasks: TimelineTask[]) => {
+  const drawDependencyLine = (ctx: CanvasRenderingContext2D, dependency: TaskDependency, tasks: TimelineTask[], viewMode: string) => {
     const predecessorIndex = tasks.findIndex(t => t.id === dependency.predecessor_id);
     const successorIndex = tasks.findIndex(t => t.id === dependency.successor_id);
     
