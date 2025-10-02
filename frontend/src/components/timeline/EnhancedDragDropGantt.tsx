@@ -84,13 +84,18 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Responsive design
+  // Enhanced responsive design with container width detection
+  const [containerWidth, setContainerWidth] = useState(window.innerWidth);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   
   useEffect(() => {
-    const checkIsMobile = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', checkIsMobile);
-    return () => window.removeEventListener('resize', checkIsMobile);
+    const updateDimensions = () => {
+      setIsMobile(window.innerWidth < 768);
+      setContainerWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
   // Filter and sort tasks
