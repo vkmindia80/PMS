@@ -555,6 +555,40 @@ const TaskDetailsTab: React.FC<{
 }) => {
   return (
     <div className="p-6 space-y-6">
+      {/* Task Summary Card */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <CheckSquare className="h-5 w-5 mr-2 text-blue-600" />
+          Task Summary
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-600">
+              {task.progress_percentage || 0}%
+            </div>
+            <div className="text-sm text-gray-600">Progress</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-600">
+              {task.time_tracking?.estimated_hours || 0}h
+            </div>
+            <div className="text-sm text-gray-600">Estimated</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-orange-600">
+              {task.time_tracking?.actual_hours || 0}h
+            </div>
+            <div className="text-sm text-gray-600">Logged</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-purple-600">
+              {task.dependencies?.length || 0}
+            </div>
+            <div className="text-sm text-gray-600">Dependencies</div>
+          </div>
+        </div>
+      </div>
+
       {/* Description */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
