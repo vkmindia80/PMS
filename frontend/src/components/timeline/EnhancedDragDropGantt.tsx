@@ -172,7 +172,7 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       const taskHeight = isMobile ? 50 : 60;
       const headerHeight = isMobile ? 80 : 100;
       
-      // Calculate date range with validation and better error handling
+      // Calculate date range with validation and date correction
       const validTasks = filteredTasks.filter(task => {
         if (!task || !task.start_date || !task.finish_date) return false;
         
@@ -180,6 +180,21 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
         const finishDate = new Date(task.finish_date);
         
         return !isNaN(startDate.getTime()) && !isNaN(finishDate.getTime());
+      }).map(task => {
+        // Fix inverted dates (start > finish)
+        const startDate = new Date(task.start_date);
+        const finishDate = new Date(task.finish_date);
+        
+        if (startDate > finishDate) {
+          // Swap the dates if they're inverted
+          return {
+            ...task,
+            start_date: task.finish_date,
+            finish_date: task.start_date
+          };
+        }
+        
+        return task;
       });
       
       if (!validTasks.length) {
