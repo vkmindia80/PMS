@@ -1615,20 +1615,49 @@ const IntegrationsPage: React.FC = () => {
   const testIntegration = async (type: string) => {
     try {
       setIsLoading(true)
+      setConnectionStatus(prev => ({ ...prev, [type]: 'testing' }))
       let result: any = {}
 
+      // Enhanced connection testing with validation
       switch (type) {
         case 'slack':
-          const slackResult = await axios.post(
-            `${getApiBaseUrl()}/api/integrations/slack/notify`,
+          // First validate the configuration
+          const slackValidation = await axios.post(
+            `${getApiBaseUrl()}/api/integrations/slack/validate`,
             {
-              channel: 'general',
-              message: 'Test notification from Enterprise Portfolio Management',
-              priority: 'normal'
+              workspace_url: slackConfig.workspace_url,
+              bot_token: slackConfig.bot_token,
+              default_channel: slackConfig.default_channel
             },
             { headers: getAuthHeaders() }
           )
-          result = slackResult.data
+          
+          if (slackValidation.data.success) {
+            // If validation passes, send test notification
+            const slackResult = await axios.post(
+              `${getApiBaseUrl()}/api/integrations/slack/notify`,
+              {
+                channel: slackConfig.default_channel || 'general',
+                message: '🚀 Test notification from Enterprise Portfolio Management - Integration successful!',
+                priority: 'normal'
+              },
+              { headers: getAuthHeaders() }
+            )
+            result = {
+              ...slackResult.data,
+              validation: slackValidation.data,
+              success: true,
+              message: `Successfully sent test message to #${slackConfig.default_channel}`
+            }
+            setConnectionStatus(prev => ({ ...prev, [type]: 'success' }))
+          } else {
+            result = {
+              success: false,
+              error: slackValidation.data.error || 'Configuration validation failed',
+              validation_errors: slackValidation.data.errors
+            }
+            setConnectionStatus(prev => ({ ...prev, [type]: 'failed' }))
+          }
           break
 
         case 'teams':
