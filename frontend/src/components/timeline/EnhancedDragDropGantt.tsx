@@ -518,15 +518,28 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
 
   // Enhanced drawing function
   const drawGanttChart = useCallback((isPreview = false, daysDelta = 0) => {
-    if (!timelineMetrics || !canvasRef.current) return;
+    console.log('=== DrawGanttChart Debug ===');
+    console.log('TimelineMetrics exists:', !!timelineMetrics);
+    console.log('Canvas ref exists:', !!canvasRef.current);
+    console.log('Filtered tasks count:', filteredTasks?.length || 0);
+    
+    if (!timelineMetrics || !canvasRef.current) {
+      console.log('Early return: missing timelineMetrics or canvas');
+      return;
+    }
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      console.log('Failed to get canvas context');
+      return;
+    }
 
     // Set canvas size with device pixel ratio
     const dpr = window.devicePixelRatio || 1;
     const { canvasWidth, canvasHeight } = timelineMetrics;
+    
+    console.log('Setting canvas size:', { canvasWidth, canvasHeight, dpr });
     
     canvas.width = canvasWidth * dpr;
     canvas.height = canvasHeight * dpr;
@@ -535,30 +548,56 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     canvas.style.width = `${canvasWidth}px`;
     canvas.style.height = `${canvasHeight}px`;
 
-    // Clear canvas
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    // Clear canvas with background color for visibility
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    
+    console.log('Canvas cleared, drawing components...');
 
-    // Draw components
-    drawHeader(ctx);
-    drawGridLines(ctx);
-    drawTasks(ctx, isPreview, daysDelta);
-    
-    if (viewConfig.show_dependencies) {
-      drawDependencies(ctx);
+    try {
+      // Draw components with error handling
+      console.log('Drawing header...');
+      drawHeader(ctx);
+      
+      console.log('Drawing grid lines...');
+      drawGridLines(ctx);
+      
+      console.log('Drawing tasks...');
+      drawTasks(ctx, isPreview, daysDelta);
+      
+      if (viewConfig.show_dependencies) {
+        console.log('Drawing dependencies...');
+        drawDependencies(ctx);
+      }
+      
+      if (viewConfig.show_critical_path) {
+        console.log('Drawing critical path...');
+        drawCriticalPath(ctx);
+      }
+      
+      if (viewConfig.show_resource_conflicts) {
+        console.log('Drawing conflicts...');
+        drawConflicts(ctx);
+      }
+      
+      console.log('Drawing current date line...');
+      drawCurrentDateLine(ctx);
+      
+      console.log('Updating task positions...');
+      updateTaskPositions();
+      
+      console.log('DrawGanttChart completed successfully');
+      
+    } catch (error) {
+      console.error('Error during canvas drawing:', error);
+      
+      // Draw error message on canvas
+      ctx.fillStyle = '#ef4444';
+      ctx.font = '16px -apple-system';
+      ctx.textAlign = 'center';
+      ctx.fillText('Error rendering timeline', canvasWidth / 2, canvasHeight / 2);
+      ctx.fillText(error.message, canvasWidth / 2, canvasHeight / 2 + 30);
     }
-    
-    if (viewConfig.show_critical_path) {
-      drawCriticalPath(ctx);
-    }
-    
-    if (viewConfig.show_resource_conflicts) {
-      drawConflicts(ctx);
-    }
-    
-    drawCurrentDateLine(ctx);
-    
-    // Update task positions map
-    updateTaskPositions();
     
   }, [timelineMetrics, filteredTasks, selectedTask, hoveredTask, viewConfig, conflicts, dragState]);
 
