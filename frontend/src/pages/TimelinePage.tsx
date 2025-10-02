@@ -731,6 +731,18 @@ export const TimelinePage: React.FC = () => {
 
             <div className="flex items-center space-x-2">
               <button
+                onClick={() => setUseEnhancedView(!useEnhancedView)}
+                className={`px-3 py-2 text-sm font-medium rounded-md ${
+                  useEnhancedView 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+                title="Toggle Enhanced View"
+              >
+                <Zap className="h-4 w-4 mr-1 inline" />
+                Enhanced
+              </button>
+              <button
                 onClick={() => {/* TODO: Zoom in */}}
                 className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md"
                 title="Zoom In"
