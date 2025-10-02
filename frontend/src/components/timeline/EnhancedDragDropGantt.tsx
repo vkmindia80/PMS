@@ -165,17 +165,26 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     }
   };
 
-  // Calculate timeline dimensions with safe error handling
+  // Calculate timeline dimensions with enhanced responsive behavior
   const timelineMetrics = useMemo(() => {
-    try {
-      
+    try {      
       if (!filteredTasks || !filteredTasks.length) {
         return null;
       }
 
-      const taskNameWidth = isMobile ? 200 : 300;
-      const taskHeight = isMobile ? 50 : 60;
-      const headerHeight = isMobile ? 80 : 100;
+      // Enhanced responsive calculations
+      const isTablet = containerWidth >= 768 && containerWidth < 1024;
+      const availableWidth = containerWidth - (isMobile ? 40 : 80); // Account for padding
+      
+      const taskNameWidth = isMobile ? Math.min(200, availableWidth * 0.3) : 
+                           isTablet ? 250 : 
+                           Math.min(300, availableWidth * 0.25);
+      
+      const taskHeight = isMobile ? 45 : isTablet ? 55 : 60;
+      const headerHeight = isMobile ? 70 : isTablet ? 85 : 100;
+      
+      // Calculate available timeline width
+      const availableTimelineWidth = availableWidth - taskNameWidth - 20; // 20px for scrollbar
       
       // Calculate date range with validation and date correction
       const validTasks = filteredTasks.filter(task => {
@@ -203,17 +212,17 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       });
       
       if (!validTasks.length) {
-        // Return a default timeline to show empty state
+        // Return a responsive default timeline
         return {
           taskNameWidth,
           taskHeight,
           headerHeight,
-          timeUnit: 100,
-          timelineWidth: 1000,
+          timeUnit: Math.max(50, availableTimelineWidth / 30),
+          timelineWidth: Math.max(500, availableTimelineWidth),
           totalDays: 30,
           minDate: new Date(),
           maxDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-          canvasWidth: taskNameWidth + 1000,
+          canvasWidth: taskNameWidth + Math.max(500, availableTimelineWidth),
           canvasHeight: headerHeight + 200
         };
       }
@@ -261,20 +270,33 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       
       const totalDays = Math.ceil((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
       
-      // Calculate time unit width with safe defaults
+      // Enhanced responsive time unit calculation
       const mode = viewConfig?.mode || 'week';
       const zoomLevel = Math.max(0.1, Math.min(5.0, viewConfig?.zoom_level || 1.0));
       
-      const baseTimeUnit = {
-        day: isMobile ? 80 : 120,
-        week: isMobile ? 100 : 140,
-        month: isMobile ? 150 : 200,
-        quarter: isMobile ? 200 : 280,
-        year: isMobile ? 250 : 350
-      }[mode] || (isMobile ? 100 : 140);
+      // Calculate optimal time unit for screen fitting
+      const daysPerUnit = getDaysPerUnit(mode);
+      const unitsNeeded = Math.ceil(totalDays / daysPerUnit);
+      const optimalTimeUnit = Math.max(30, availableTimelineWidth / unitsNeeded);
       
-      const timeUnit = Math.max(isMobile ? 30 : 50, baseTimeUnit * zoomLevel);
-      const timelineWidth = Math.max(1000, totalDays * (timeUnit / getDaysPerUnit(mode)));
+      const baseTimeUnit = {
+        day: isMobile ? 60 : isTablet ? 80 : 120,
+        week: isMobile ? 80 : isTablet ? 120 : 140,
+        month: isMobile ? 120 : isTablet ? 180 : 200,
+        quarter: isMobile ? 160 : isTablet ? 240 : 280,
+        year: isMobile ? 200 : isTablet ? 300 : 350
+      }[mode] || (isMobile ? 80 : 140);
+      
+      // Choose between optimal fit and user zoom preference
+      const timeUnit = Math.max(
+        isMobile ? 20 : 30, 
+        Math.min(optimalTimeUnit, baseTimeUnit * zoomLevel)
+      );
+      
+      const timelineWidth = Math.max(
+        availableTimelineWidth, 
+        totalDays * (timeUnit / daysPerUnit)
+      );
       
       const canvasWidth = taskNameWidth + timelineWidth;
       const canvasHeight = headerHeight + (filteredTasks.length * taskHeight) + 100;
@@ -289,13 +311,14 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
         minDate,
         maxDate,
         canvasWidth,
-        canvasHeight
+        canvasHeight,
+        availableWidth: availableTimelineWidth
       };
     } catch (error) {
       console.error('Timeline metrics calculation error:', error);
       return null;
     }
-  }, [filteredTasks, viewConfig?.mode, viewConfig?.zoom_level, isMobile]);
+  }, [filteredTasks, viewConfig?.mode, viewConfig?.zoom_level, isMobile, containerWidth]);
 
   // Enhanced drag and drop handlers
   const handleMouseDown = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
