@@ -169,27 +169,63 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Login function
   const login = async (data: LoginData) => {
     try {
+      console.log('🔑 Attempting login for:', data.email)
+      
+      // Add timeout to login request
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 15000) // 15 second timeout
+      
       const response = await fetch(API_ENDPOINTS.auth.login, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
+        signal: controller.signal
       })
+      
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ detail: `HTTP ${response.status}: ${response.statusText}` }))
-        throw new Error(error.detail || `Login failed with status ${response.status}`)
+        let errorDetail = `HTTP ${response.status}: ${response.statusText}`
+        try {
+          const errorData = await response.json()
+          errorDetail = errorData.detail || errorDetail
+        } catch {
+          // If can't parse error JSON, use default message
+        }
+        throw new Error(errorDetail)
       }
 
       const result = await response.json()
+      
+      // Validate response structure
+      if (!result.tokens || !result.user) {
+        throw new Error('Invalid login response format')
+      }
+      
       const { tokens, user } = result
 
+      // Validate required fields
+      if (!tokens.access_token || !user.id) {
+        throw new Error('Invalid authentication data received')
+      }
+
       storeAuthData(tokens, user)
+      console.log('✅ Login successful for:', user.email)
       toast.success('Login successful!')
     } catch (error) {
-      console.error('Login error:', error)
-      const message = error instanceof Error ? error.message : 'Login failed'
+      console.error('❌ Login error:', error)
+      
+      let message = 'Login failed'
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          message = 'Login request timed out. Please try again.'
+        } else {
+          message = error.message
+        }
+      }
+      
       toast.error(message)
       throw error
     }
