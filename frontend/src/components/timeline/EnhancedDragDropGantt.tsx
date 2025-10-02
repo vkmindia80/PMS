@@ -906,33 +906,16 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     const daysDiff = Math.floor((taskStartDate.getTime() - timelineMetrics.minDate.getTime()) / (1000 * 60 * 60 * 24));
     const durationDays = Math.ceil((taskEndDate.getTime() - taskStartDate.getTime()) / (1000 * 60 * 60 * 24));
     
-    console.log('Date calculations:', {
-      daysDiff,
-      durationDays,
-      taskStart: taskStartDate.toISOString(),
-      taskEnd: taskEndDate.toISOString(),
-      minDate: timelineMetrics.minDate.toISOString()
-    });
-    
     const daysPerUnit = getDaysPerUnit(viewConfig.mode || 'week');
     const barX = offsetX + (daysDiff * timelineMetrics.timeUnit / daysPerUnit);
-    const barWidth = Math.max(40, durationDays * timelineMetrics.timeUnit / daysPerUnit);
+    const barWidth = Math.max(40, Math.abs(durationDays) * timelineMetrics.timeUnit / daysPerUnit);
     
     const barY = y + (taskHeight - 32) / 2;
     const barHeight = 32;
-    
-    console.log('Bar dimensions:', { barX, barY, barWidth, barHeight, offsetX, daysPerUnit });
-
-    // Ensure bar is visible on canvas
-    if (barX < -barWidth || barX > timelineMetrics.canvasWidth) {
-      console.log('Task bar is outside visible area:', barX);
-    }
 
     if (task.milestone) {
-      console.log('Drawing milestone');
       drawEnhancedMilestone(ctx, barX, barY + barHeight / 2, task.critical, isDraggedTask);
     } else {
-      console.log('Drawing task bar rectangle');
       drawEnhancedTaskBarRect(ctx, task, barX, barY, barWidth, barHeight, isDraggedTask, isPreview);
     }
   };
