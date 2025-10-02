@@ -1014,6 +1014,7 @@ async def get_task_dependents(
                 type=TaskType(dep_task["type"]),
                 project_id=dep_task["project_id"],
                 assignee_id=dep_task.get("assignee_id"),
+                assignee_ids=dep_task.get("assignee_ids", []),
                 due_date=dep_task.get("due_date"),
                 progress_percentage=dep_task.get("progress_percentage", 0.0),
                 subtask_count=dep_task.get("subtask_count", 0)
