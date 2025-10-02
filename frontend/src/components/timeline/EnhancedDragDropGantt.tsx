@@ -253,7 +253,6 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       };
     } catch (error) {
       console.error('Timeline metrics calculation error:', error);
-      console.log('Returning null due to error');
       return null;
     }
   }, [filteredTasks, viewConfig?.mode, viewConfig?.zoom_level, isMobile]);
