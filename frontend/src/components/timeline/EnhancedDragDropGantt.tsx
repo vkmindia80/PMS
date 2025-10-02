@@ -287,17 +287,6 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     }
   }, [filteredTasks, viewConfig?.mode, viewConfig?.zoom_level, isMobile]);
 
-  const getDaysPerUnit = (mode: string) => {
-    switch (mode) {
-      case 'day': return 1;
-      case 'week': return 7;
-      case 'month': return 30;
-      case 'quarter': return 90;
-      case 'year': return 365;
-      default: return 7;
-    }
-  };
-
   // Enhanced drag and drop handlers
   const handleMouseDown = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
     if (!timelineMetrics || !canvasRef.current) return;
