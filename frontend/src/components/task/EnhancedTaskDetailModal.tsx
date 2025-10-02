@@ -983,7 +983,7 @@ const TaskOverviewTab: React.FC<{
                     : 'text-green-600'
                 }`}>
                   {task.time_tracking?.estimated_hours 
-                    ? `${((task.time_tracking?.actual_hours || 0) - task.time_tracking.estimated_hours) > 0 ? '+' : ''}${((task.time_tracking?.actual_hours || 0) - task.time_tracking.estimated_hours).toFixed(1)}h`
+                    ? `${((task.time_tracking?.actual_hours || 0) - (task.time_tracking?.estimated_hours || 0)) > 0 ? '+' : ''}${((task.time_tracking?.actual_hours || 0) - (task.time_tracking?.estimated_hours || 0)).toFixed(1)}h`
                     : 'N/A'
                   }
                 </span>
