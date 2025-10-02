@@ -676,7 +676,13 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
           ? date.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
           : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       case 'week':
-        return `Week ${Math.ceil(date.getDate() / 7)}`;
+        // Get the start of the week (Sunday)
+        const weekStart = new Date(date);
+        weekStart.setDate(date.getDate() - date.getDay());
+        
+        return isMobile 
+          ? weekStart.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })
+          : weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       case 'month':
         return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
       case 'quarter':
