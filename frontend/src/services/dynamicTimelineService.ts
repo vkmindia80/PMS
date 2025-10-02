@@ -644,20 +644,67 @@ export class DynamicTimelineService {
     conflicts_count: number;
   }> {
     try {
-      // Try realtime endpoint first
-      let response = await fetch(`${API_ENDPOINTS.timeline.stats(projectId)}/realtime`, {
+      // Use dynamic timeline endpoint for better stats calculation
+      let response = await fetch(`/api/dynamic-timeline/stats/${projectId}/realtime`, {
         headers: this.getAuthHeaders(token)
       });
 
       // Fallback to regular stats if realtime not available
       if (!response.ok && response.status === 404) {
-        response = await fetch(`${API_ENDPOINTS.timeline.stats(projectId)}`, {
+        response = await fetch(`/api/dynamic-timeline/stats/${projectId}`, {
           headers: this.getAuthHeaders(token)
         });
       }
 
+      // If both dynamic timeline endpoints fail, try legacy analytics endpoint
+      if (!response.ok && response.status === 404) {
+        // For project-specific stats using analytics endpoint
+        if (projectId !== "all") {
+          response = await fetch(`/api/analytics/dashboard/summary?project_id=${projectId}`, {
+            headers: this.getAuthHeaders(token)
+          });
+          
+          if (response.ok) {
+            const analyticsData = await response.json();
+            // Convert analytics data to timeline stats format
+            return {
+              total_tasks: analyticsData.tasks?.total || 0,
+              completed_tasks: analyticsData.tasks?.completed || 0,
+              in_progress_tasks: analyticsData.tasks?.pending || 0,
+              overdue_tasks: analyticsData.tasks?.overdue || 0,
+              critical_path_length: analyticsData.alerts?.critical_issues || 0,
+              resource_utilization: analyticsData.performance?.resource_utilization || 0,
+              timeline_health_score: analyticsData.performance?.health_score || 75,
+              estimated_completion: new Date().toISOString(),
+              conflicts_count: 0
+            };
+          }
+        } else {
+          // For overall stats
+          response = await fetch(`/api/analytics/dashboard/summary`, {
+            headers: this.getAuthHeaders(token)
+          });
+          
+          if (response.ok) {
+            const analyticsData = await response.json();
+            return {
+              total_tasks: analyticsData.tasks?.total || 0,
+              completed_tasks: analyticsData.tasks?.completed || 0,
+              in_progress_tasks: analyticsData.tasks?.pending || 0,
+              overdue_tasks: analyticsData.tasks?.overdue || 0,
+              critical_path_length: analyticsData.alerts?.critical_issues || 0,
+              resource_utilization: analyticsData.performance?.resource_utilization || 0,
+              timeline_health_score: analyticsData.performance?.health_score || 75,
+              estimated_completion: new Date().toISOString(),
+              conflicts_count: 0
+            };
+          }
+        }
+      }
+
       if (!response.ok) {
-        // Return default stats if both endpoints fail
+        // Return default stats if all endpoints fail
+        console.warn(`Stats API failed with status ${response.status}, returning defaults`);
         return {
           total_tasks: 0,
           completed_tasks: 0,
@@ -671,7 +718,20 @@ export class DynamicTimelineService {
         };
       }
 
-      return await response.json();
+      const data = await response.json();
+      
+      // Ensure all required fields exist with proper defaults
+      return {
+        total_tasks: data.total_tasks || 0,
+        completed_tasks: data.completed_tasks || 0,
+        in_progress_tasks: data.in_progress_tasks || 0,
+        overdue_tasks: data.overdue_tasks || 0,
+        critical_path_length: data.critical_path_length || 0,
+        resource_utilization: data.resource_utilization || 0,
+        timeline_health_score: data.timeline_health_score || 75,
+        estimated_completion: data.estimated_completion || new Date().toISOString(),
+        conflicts_count: data.conflicts_count || 0
+      };
     } catch (error) {
       console.error('Error fetching realtime stats:', error);
       // Return default stats on error
