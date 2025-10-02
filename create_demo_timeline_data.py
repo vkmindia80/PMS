@@ -335,7 +335,7 @@ async def create_demo_data():
         result = await db.task_dependencies.insert_many(dependencies)
         print(f"✅ Created {len(result.inserted_ids)} task dependencies")
     
-    await client.close()
+    client.close()
     print("🎉 Demo timeline data created successfully!")
     print(f"📋 Project ID: {project_id}")
     print("🔗 You can now test the enhanced drag-and-drop timeline!")
