@@ -11,6 +11,13 @@ import { useAuth } from '../../contexts/AuthContext'
 import { API_URL } from '../../utils/config'
 import toast from 'react-hot-toast'
 
+// Import tab components
+import { TaskDetailsTab } from './TaskDetailsTab'
+import { TimeTrackingTab } from './TimeTrackingTab'
+import { TaskCommentsTab } from './TaskCommentsTab'
+import { TaskActivityTab } from './TaskActivityTab'
+import { TaskDependenciesTab } from './TaskDependenciesTab'
+
 interface Task {
   id: string
   title: string
