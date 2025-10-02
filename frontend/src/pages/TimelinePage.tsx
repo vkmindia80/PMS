@@ -235,8 +235,10 @@ const GanttChart: React.FC<{
     // Use the earliest task start date as timeline start
     const allStartDates = data.tasks.map(t => new Date(t.start_date)).filter(d => !isNaN(d.getTime()));
     const startDate = allStartDates.length > 0 ? new Date(Math.min(...allStartDates.map(d => d.getTime()))) : new Date();
-    const baseTimeUnit = viewMode === 'day' ? 80 : viewMode === 'week' ? 120 : 200;
-    const timeUnit = Math.max(20, baseTimeUnit * zoomLevel); // Apply zoom with minimum size
+    const baseTimeUnit = viewMode === 'day' ? (isMobile ? 60 : 80) : 
+                        viewMode === 'week' ? (isMobile ? 80 : 120) : 
+                        (isMobile ? 120 : 200);
+    const timeUnit = Math.max(isMobile ? 15 : 20, baseTimeUnit * zoomLevel); // Apply zoom with minimum size
     
     // Calculate visible time units based on canvas width and zoom
     const visibleTimeUnits = Math.ceil((canvasWidth - taskNameWidth) / timeUnit) + 2;
