@@ -439,7 +439,7 @@ class Phase41SystemVerifier:
                     "frontend": "http://localhost:3000",
                     "backend_api": "http://localhost:8001",
                     "api_docs": "http://localhost:8001/docs",
-                    "external_url": "https://dev-roadmap-28.preview.emergentagent.com"
+                    "external_url": "https://gantt-task-fix.preview.emergentagent.com"
                 }
             }
             

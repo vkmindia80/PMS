@@ -171,7 +171,7 @@ All core integration platform functionality complete and operational. Remaining 
 # All Services Confirmed Running (October 1, 2025)
 Backend API: http://localhost:8001 ✅ (healthy, database connected)
 Frontend App: http://localhost:3000 ✅ (14 pages, professional UI, JSX errors resolved)
-Preview URL: https://dev-roadmap-28.preview.emergentagent.com/ ✅ (deployment working, dynamic API resolution)
+Preview URL: https://gantt-task-fix.preview.emergentagent.com/ ✅ (deployment working, dynamic API resolution)
 MongoDB: ✅ (connected, 311 data points loaded)
 API Documentation: http://localhost:8001/docs ✅ (168+ endpoints)
 Build System: ✅ (compilation successful, environment configuration fixed)

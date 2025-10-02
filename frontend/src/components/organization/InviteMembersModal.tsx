@@ -37,7 +37,7 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
     const isProd = import.meta.env.PROD || isPreview
     
     if (isProd || isPreview) {
-      return import.meta.env.VITE_PROD_API_URL || 'https://dev-roadmap-28.preview.emergentagent.com'
+      return import.meta.env.VITE_PROD_API_URL || 'https://gantt-task-fix.preview.emergentagent.com'
     }
     
     return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
