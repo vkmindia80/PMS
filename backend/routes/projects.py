@@ -21,19 +21,27 @@ def serialize_project(project_data: Dict) -> Dict:
     if project_data:
         if "_id" in project_data:
             del project_data["_id"]
-        # Ensure all date fields are properly serialized
+        # Ensure all date and datetime fields are properly serialized
         for date_field in ["start_date", "due_date", "created_at", "updated_at", "archived_at"]:
             if date_field in project_data and project_data[date_field]:
-                if hasattr(project_data[date_field], 'isoformat'):
+                if isinstance(project_data[date_field], date):
+                    project_data[date_field] = project_data[date_field].isoformat()
+                elif isinstance(project_data[date_field], datetime):
+                    project_data[date_field] = project_data[date_field].isoformat()
+                elif hasattr(project_data[date_field], 'isoformat'):
                     project_data[date_field] = project_data[date_field].isoformat()
         # Handle milestones dates
         if "milestones" in project_data:
             for milestone in project_data["milestones"]:
                 if "due_date" in milestone and milestone["due_date"]:
-                    if hasattr(milestone["due_date"], 'isoformat'):
+                    if isinstance(milestone["due_date"], date):
+                        milestone["due_date"] = milestone["due_date"].isoformat()
+                    elif hasattr(milestone["due_date"], 'isoformat'):
                         milestone["due_date"] = milestone["due_date"].isoformat()
                 if "completed_at" in milestone and milestone["completed_at"]:
-                    if hasattr(milestone["completed_at"], 'isoformat'):
+                    if isinstance(milestone["completed_at"], datetime):
+                        milestone["completed_at"] = milestone["completed_at"].isoformat()
+                    elif hasattr(milestone["completed_at"], 'isoformat'):
                         milestone["completed_at"] = milestone["completed_at"].isoformat()
     return project_data
 
