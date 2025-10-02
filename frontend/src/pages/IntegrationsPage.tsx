@@ -1782,23 +1782,94 @@ const IntegrationsPage: React.FC = () => {
     }
   }
 
-  // Integration Management Dashboard
+  // Enhanced Integration Management Dashboard with Real-time Monitoring
   const renderManagementDashboard = () => (
     <div className="space-y-6">
+      {/* Management Header with Actions */}
       <div className="bg-white p-6 rounded-lg border border-gray-200">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Active Integrations</h3>
-            <p className="text-sm text-gray-600">Manage and monitor your connected services</p>
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+              <Settings className="w-5 h-5 mr-2" />
+              Integration Management Center
+            </h3>
+            <p className="text-sm text-gray-600">Monitor, configure, and test your enterprise integrations</p>
           </div>
           <div className="flex space-x-2">
             <button
-              onClick={() => setCurrentView('overview')}
-              className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+              onClick={() => {
+                Object.keys(availableIntegrations).forEach(type => {
+                  testIntegration(type)
+                })
+              }}
+              className="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center"
             >
-              <ArrowLeft className="w-4 h-4 inline mr-1" />
+              <RefreshCw className="w-4 h-4 mr-1" />
+              Test All
+            </button>
+            <button
+              onClick={() => setCurrentView('overview')}
+              className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 flex items-center"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
               Back to Overview
             </button>
+          </div>
+        </div>
+
+        {/* Integration Status Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Globe className="w-4 h-4 text-blue-600" />
+              </div>
+              <div className="ml-3">
+                <div className="text-lg font-semibold text-blue-900">
+                  {Object.keys(availableIntegrations).length}
+                </div>
+                <div className="text-xs text-blue-700">Available Integrations</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-green-50 p-4 rounded-lg">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                <CheckCircle className="w-4 h-4 text-green-600" />
+              </div>
+              <div className="ml-3">
+                <div className="text-lg font-semibold text-green-900">
+                  {Object.values(activeIntegrations).filter(i => i.status === 'active').length}
+                </div>
+                <div className="text-xs text-green-700">Active Connections</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-yellow-50 p-4 rounded-lg">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Clock className="w-4 h-4 text-yellow-600" />
+              </div>
+              <div className="ml-3">
+                <div className="text-lg font-semibold text-yellow-900">
+                  {Object.values(connectionStatus).filter(s => s === 'testing').length}
+                </div>
+                <div className="text-xs text-yellow-700">Testing in Progress</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-red-50 p-4 rounded-lg">
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4 text-red-600" />
+              </div>
+              <div className="ml-3">
+                <div className="text-lg font-semibold text-red-900">
+                  {Object.values(connectionStatus).filter(s => s === 'failed').length}
+                </div>
+                <div className="text-xs text-red-700">Failed Tests</div>
+              </div>
+            </div>
           </div>
         </div>
 
