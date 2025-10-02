@@ -23,7 +23,8 @@ import './App.css'
 
 // Main app content component
 const AppContent: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuth()
+  const auth = useAuth()
+  const { isAuthenticated, isLoading, tokens, user } = auth || { isAuthenticated: false, isLoading: true, tokens: null, user: null }
 
   // Show loading spinner while checking authentication
   if (isLoading) {
@@ -32,13 +33,14 @@ const AppContent: React.FC = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading Enterprise Portfolio Management...</p>
+          <p className="text-gray-500 text-sm mt-2">Verifying authentication...</p>
         </div>
       </div>
     )
   }
 
   // Show auth page if not authenticated
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !tokens || !user) {
     return <AuthPage />
   }
 
