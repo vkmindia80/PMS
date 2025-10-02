@@ -144,7 +144,7 @@ async def create_demo_timeline_tasks():
         total_timeline_tasks = db.timeline_tasks.count_documents({})
         total_dependencies = db.task_dependencies.count_documents({})
         
-        print(f"\n📊 Summary:")
+        print("\n📊 Summary:")
         print(f"   • Timeline Tasks: {total_timeline_tasks}")
         print(f"   • Dependencies: {total_dependencies}")
         print(f"   • Projects with tasks: {len(set(t['project_id'] for t in timeline_tasks))}")
