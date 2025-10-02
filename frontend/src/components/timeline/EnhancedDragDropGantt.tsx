@@ -215,8 +215,6 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       const minDate = new Date(Math.min(...allDates.map(d => d.getTime())));
       const maxDate = new Date(Math.max(...allDates.map(d => d.getTime())));
       
-      console.log('Date range:', minDate.toISOString(), 'to', maxDate.toISOString());
-      
       // Add padding
       minDate.setDate(minDate.getDate() - 3);
       maxDate.setDate(maxDate.getDate() + 7);
