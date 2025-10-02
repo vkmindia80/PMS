@@ -14,359 +14,470 @@ class DynamicTimelineAPITester:
     def __init__(self, base_url: str = "https://timeline-auth-fix.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
-        self.refresh_token = None
         self.user_data = None
         self.tests_run = 0
         self.tests_passed = 0
-        self.test_results = []
         self.demo_project_id = None
 
-    def log_test(self, name: str, success: bool, details: str = "", response_data: Any = None):
-        """Log test result"""
-        self.tests_run += 1
-        if success:
-            self.tests_passed += 1
-            
-        result = {
-            "test_name": name,
-            "success": success,
-            "details": details,
-            "response_data": response_data,
-            "timestamp": datetime.now().isoformat()
-        }
-        self.test_results.append(result)
-        
-        status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{status} - {name}")
-        if details:
-            print(f"    Details: {details}")
-        if not success and response_data:
-            print(f"    Response: {response_data}")
-        print()
+    def log(self, message: str, level: str = "INFO"):
+        """Log test messages with timestamp"""
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        print(f"[{timestamp}] {level}: {message}")
 
-    def make_request(self, method: str, endpoint: str, data: Optional[Dict] = None, 
-                    use_auth: bool = False, timeout: int = 10) -> tuple[bool, Dict]:
-        """Make HTTP request with proper error handling"""
-        url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        headers = {'Content-Type': 'application/json'}
+    def run_test(self, name: str, method: str, endpoint: str, expected_status: int, 
+                 data: Optional[Dict] = None, headers: Optional[Dict] = None) -> tuple[bool, Dict]:
+        """Run a single API test"""
+        url = f"{self.base_url}{endpoint}"
+        test_headers = {'Content-Type': 'application/json'}
         
-        if use_auth and self.token:
-            headers['Authorization'] = f'Bearer {self.token}'
+        if self.token:
+            test_headers['Authorization'] = f'Bearer {self.token}'
+        
+        if headers:
+            test_headers.update(headers)
+
+        self.tests_run += 1
+        self.log(f"🔍 Testing {name}...")
+        self.log(f"   URL: {url}")
         
         try:
-            if method.upper() == 'GET':
-                response = requests.get(url, headers=headers, timeout=timeout)
-            elif method.upper() == 'POST':
-                response = requests.post(url, json=data, headers=headers, timeout=timeout)
-            elif method.upper() == 'PUT':
-                response = requests.put(url, json=data, headers=headers, timeout=timeout)
+            if method == 'GET':
+                response = requests.get(url, headers=test_headers, timeout=30)
+            elif method == 'POST':
+                response = requests.post(url, json=data, headers=test_headers, timeout=30)
+            elif method == 'PUT':
+                response = requests.put(url, json=data, headers=test_headers, timeout=30)
+            elif method == 'DELETE':
+                response = requests.delete(url, headers=test_headers, timeout=30)
             else:
-                return False, {"error": f"Unsupported method: {method}"}
+                raise ValueError(f"Unsupported method: {method}")
+
+            success = response.status_code == expected_status
             
-            # Try to parse JSON response
+            if success:
+                self.tests_passed += 1
+                self.log(f"✅ PASSED - Status: {response.status_code}")
+            else:
+                self.log(f"❌ FAILED - Expected {expected_status}, got {response.status_code}")
+                if response.text:
+                    self.log(f"   Response: {response.text[:200]}...")
+
             try:
-                response_data = response.json()
-            except:
-                response_data = {"raw_response": response.text, "status_code": response.status_code}
-            
-            return response.status_code < 400, response_data
-            
+                response_data = response.json() if response.text else {}
+            except json.JSONDecodeError:
+                response_data = {"raw_response": response.text}
+
+            return success, response_data
+
         except requests.exceptions.Timeout:
-            return False, {"error": "Request timeout", "timeout": timeout}
-        except requests.exceptions.ConnectionError:
-            return False, {"error": "Connection error - server may be down"}
-        except requests.exceptions.RequestException as e:
-            return False, {"error": f"Request failed: {str(e)}"}
+            self.log(f"❌ FAILED - Request timeout after 30 seconds")
+            return False, {"error": "timeout"}
+        except requests.exceptions.ConnectionError as e:
+            self.log(f"❌ FAILED - Connection error: {str(e)}")
+            return False, {"error": "connection_error", "details": str(e)}
         except Exception as e:
-            return False, {"error": f"Unexpected error: {str(e)}"}
+            self.log(f"❌ FAILED - Error: {str(e)}")
+            return False, {"error": str(e)}
 
-    def test_health_check(self):
+    def test_health_check(self) -> bool:
         """Test API health endpoint"""
-        success, response = self.make_request('GET', '/api/health')
+        success, response = self.run_test(
+            "API Health Check",
+            "GET",
+            "/api/health",
+            200
+        )
         
-        if success:
-            status = response.get('status', 'unknown')
-            details = f"Status: {status}, Services: {len(response.get('services', {}))}"
-            self.log_test("Health Check", True, details, response)
+        if success and response.get("status") == "healthy":
+            self.log("✅ API is healthy and database is connected")
+            return True
         else:
-            self.log_test("Health Check", False, "Health endpoint failed", response)
-        
-        return success
+            self.log("⚠️ API health check failed or database issues detected")
+            return False
 
-    def test_authentication(self):
-        """Test authentication with demo credentials"""
-        login_data = {
+    def test_demo_login(self) -> bool:
+        """Test login with demo credentials"""
+        demo_credentials = {
             "email": "demo@company.com",
             "password": "demo123456"
         }
         
-        success, response = self.make_request('POST', '/api/auth/login', login_data)
+        success, response = self.run_test(
+            "Demo User Login",
+            "POST",
+            "/api/auth/login",
+            200,
+            data=demo_credentials
+        )
         
-        if success:
-            # Extract tokens and user data
-            tokens = response.get('tokens', {})
-            self.token = tokens.get('access_token')
-            self.refresh_token = tokens.get('refresh_token')
-            self.user_data = response.get('user', {})
+        if success and 'tokens' in response and 'user' in response:
+            self.token = response['tokens']['access_token']
+            self.user_data = response['user']
+            self.log(f"✅ Login successful for user: {self.user_data.get('email')}")
+            self.log(f"   User role: {self.user_data.get('role')}")
+            self.log(f"   Organization: {self.user_data.get('organization_id')}")
+            return True
+        else:
+            self.log("❌ Login failed - no tokens or user data received")
+            return False
+
+    def test_user_profile(self) -> bool:
+        """Test fetching user profile"""
+        if not self.token:
+            self.log("❌ Cannot test user profile - no authentication token")
+            return False
             
-            if self.token:
-                details = f"User: {self.user_data.get('email')}, Role: {self.user_data.get('role')}"
-                self.log_test("Authentication Login", True, details)
-                return True
-            else:
-                self.log_test("Authentication Login", False, "No access token in response", response)
-                return False
+        success, response = self.run_test(
+            "User Profile Fetch",
+            "GET",
+            "/api/auth/me",
+            200
+        )
+        
+        if success and response.get('email'):
+            self.log(f"✅ User profile retrieved: {response.get('email')}")
+            return True
         else:
-            self.log_test("Authentication Login", False, "Login request failed", response)
+            self.log("❌ Failed to retrieve user profile")
             return False
 
-    def test_user_profile(self):
-        """Test getting current user profile"""
+    def test_projects_list(self) -> bool:
+        """Test fetching projects list"""
         if not self.token:
-            self.log_test("User Profile", False, "No authentication token available")
+            self.log("❌ Cannot test projects - no authentication token")
             return False
-        
-        success, response = self.make_request('GET', '/api/auth/me', use_auth=True)
-        
-        if success:
-            user_id = response.get('id')
-            email = response.get('email')
-            details = f"User ID: {user_id}, Email: {email}"
-            self.log_test("User Profile", True, details)
-        else:
-            self.log_test("User Profile", False, "Failed to fetch user profile", response)
-        
-        return success
-
-    def test_projects_list(self):
-        """Test projects list endpoint - the main issue area"""
-        if not self.token:
-            self.log_test("Projects List", False, "No authentication token available")
-            return False
-        
-        success, response = self.make_request('GET', '/api/projects', use_auth=True)
-        
-        if success:
-            projects = response if isinstance(response, list) else []
-            project_count = len(projects)
             
-            if project_count > 0:
-                sample_project = projects[0]
-                project_id = sample_project.get('id', 'unknown')
-                project_name = sample_project.get('name', 'unknown')
-                details = f"Found {project_count} projects. Sample: {project_name} ({project_id})"
-                self.log_test("Projects List", True, details, {"project_count": project_count, "sample_project": sample_project})
-            else:
-                self.log_test("Projects List", True, "No projects found (empty list)", {"project_count": 0})
-        else:
-            self.log_test("Projects List", False, "Failed to fetch projects list", response)
-        
-        return success
-
-    def test_specific_project(self, project_id: str = None):
-        """Test getting a specific project"""
-        if not self.token:
-            self.log_test("Specific Project", False, "No authentication token available")
-            return False
-        
-        # If no project_id provided, try to get one from projects list
-        if not project_id:
-            success, response = self.make_request('GET', '/api/projects', use_auth=True)
-            if success and isinstance(response, list) and len(response) > 0:
-                project_id = response[0].get('id')
-            else:
-                self.log_test("Specific Project", False, "No project ID available for testing")
-                return False
-        
-        success, response = self.make_request('GET', f'/api/projects/{project_id}', use_auth=True)
+        success, response = self.run_test(
+            "Projects List",
+            "GET",
+            "/api/projects",
+            200
+        )
         
         if success:
-            name = response.get('name', 'unknown')
-            status = response.get('status', 'unknown')
-            details = f"Project: {name}, Status: {status}, ID: {project_id}"
-            self.log_test("Specific Project", True, details)
+            projects = response.get('projects', [])
+            self.log(f"✅ Projects retrieved: {len(projects)} projects found")
+            
+            # Store first project ID for timeline testing
+            if projects:
+                self.demo_project_id = projects[0].get('id')
+                self.log(f"   Using project for timeline tests: {self.demo_project_id}")
+            
+            return True
         else:
-            self.log_test("Specific Project", False, f"Failed to fetch project {project_id}", response)
-        
-        return success
-
-    def test_timeline_gantt(self, project_id: str = None):
-        """Test timeline Gantt endpoint"""
-        if not self.token:
-            self.log_test("Timeline Gantt", False, "No authentication token available")
+            self.log("❌ Failed to retrieve projects list")
             return False
+
+    def test_timeline_stats_overall(self) -> bool:
+        """Test overall timeline statistics"""
+        if not self.token:
+            self.log("❌ Cannot test timeline stats - no authentication token")
+            return False
+            
+        success, response = self.run_test(
+            "Overall Timeline Statistics",
+            "GET",
+            "/api/dynamic-timeline/stats/all/realtime",
+            200
+        )
         
-        # Get project ID if not provided
-        if not project_id:
-            success, response = self.make_request('GET', '/api/projects', use_auth=True)
-            if success and isinstance(response, list) and len(response) > 0:
-                project_id = response[0].get('id')
-            else:
-                self.log_test("Timeline Gantt", False, "No project ID available for testing")
-                return False
+        if success:
+            stats = response
+            self.log(f"✅ Overall timeline stats retrieved:")
+            self.log(f"   Total tasks: {stats.get('total_tasks', 0)}")
+            self.log(f"   Completed tasks: {stats.get('completed_tasks', 0)}")
+            self.log(f"   In progress: {stats.get('in_progress_tasks', 0)}")
+            self.log(f"   Overdue: {stats.get('overdue_tasks', 0)}")
+            self.log(f"   Health score: {stats.get('timeline_health_score', 0)}")
+            return True
+        else:
+            self.log("❌ Failed to retrieve overall timeline statistics")
+            return False
+
+    def test_timeline_stats_project(self) -> bool:
+        """Test project-specific timeline statistics"""
+        if not self.token:
+            self.log("❌ Cannot test project timeline stats - no authentication token")
+            return False
+            
+        if not self.demo_project_id:
+            self.log("⚠️ No project ID available, testing with 'all' parameter")
+            project_id = "all"
+        else:
+            project_id = self.demo_project_id
+            
+        success, response = self.run_test(
+            f"Project Timeline Statistics ({project_id})",
+            "GET",
+            f"/api/dynamic-timeline/stats/{project_id}/realtime",
+            200
+        )
         
-        success, response = self.make_request('GET', f'/api/timeline/gantt/{project_id}', use_auth=True)
+        if success:
+            stats = response
+            self.log(f"✅ Project timeline stats retrieved:")
+            self.log(f"   Total tasks: {stats.get('total_tasks', 0)}")
+            self.log(f"   Completed: {stats.get('completed_tasks', 0)}")
+            self.log(f"   Resource utilization: {stats.get('resource_utilization', 0)}%")
+            self.log(f"   Estimated completion: {stats.get('estimated_completion', 'N/A')}")
+            return True
+        else:
+            self.log("❌ Failed to retrieve project timeline statistics")
+            return False
+
+    def test_gantt_data(self) -> bool:
+        """Test Gantt chart data retrieval"""
+        if not self.token:
+            self.log("❌ Cannot test Gantt data - no authentication token")
+            return False
+            
+        if not self.demo_project_id:
+            self.log("⚠️ No project ID available, skipping Gantt data test")
+            return False
+            
+        success, response = self.run_test(
+            f"Gantt Chart Data ({self.demo_project_id})",
+            "GET",
+            f"/api/dynamic-timeline/gantt/{self.demo_project_id}/enhanced",
+            200
+        )
         
         if success:
             tasks = response.get('tasks', [])
             dependencies = response.get('dependencies', [])
-            critical_path = response.get('critical_path', [])
-            details = f"Tasks: {len(tasks)}, Dependencies: {len(dependencies)}, Critical Path: {len(critical_path)}"
-            self.log_test("Timeline Gantt", True, details, {
-                "task_count": len(tasks),
-                "dependency_count": len(dependencies),
-                "critical_path_count": len(critical_path)
-            })
-        else:
-            self.log_test("Timeline Gantt", False, f"Failed to fetch timeline data for {project_id}", response)
-        
-        return success
-
-    def test_token_refresh(self):
-        """Test token refresh functionality"""
-        if not self.refresh_token:
-            self.log_test("Token Refresh", False, "No refresh token available")
-            return False
-        
-        # Use the correct refresh endpoint format
-        headers = {'Authorization': f'Bearer {self.refresh_token}', 'Content-Type': 'application/json'}
-        
-        try:
-            response = requests.post(f"{self.base_url}/api/auth/refresh", headers=headers, timeout=10)
+            conflicts = response.get('conflicts', [])
             
-            if response.status_code < 400:
-                try:
-                    response_data = response.json()
-                except:
-                    response_data = {"raw_response": response.text}
-                
-                new_access_token = response_data.get('access_token')
-                if new_access_token:
-                    old_token = self.token[:10] + "..." if self.token else "None"
-                    new_token = new_access_token[:10] + "..."
-                    self.token = new_access_token  # Update token for subsequent tests
-                    details = f"Token refreshed successfully. Old: {old_token}, New: {new_token}"
-                    self.log_test("Token Refresh", True, details)
-                    return True
-                else:
-                    self.log_test("Token Refresh", False, "No new access token in refresh response", response_data)
-                    return False
+            self.log(f"✅ Gantt chart data retrieved:")
+            self.log(f"   Tasks: {len(tasks)}")
+            self.log(f"   Dependencies: {len(dependencies)}")
+            self.log(f"   Conflicts detected: {len(conflicts)}")
+            
+            return True
+        else:
+            self.log("❌ Failed to retrieve Gantt chart data")
+            return False
+
+    def test_tasks_list(self) -> bool:
+        """Test tasks list retrieval"""
+        if not self.token:
+            self.log("❌ Cannot test tasks - no authentication token")
+            return False
+            
+        success, response = self.run_test(
+            "Tasks List",
+            "GET",
+            "/api/tasks",
+            200
+        )
+        
+        if success:
+            tasks = response.get('tasks', [])
+            self.log(f"✅ Tasks retrieved: {len(tasks)} tasks found")
+            return True
+        else:
+            self.log("❌ Failed to retrieve tasks list")
+            return False
+
+    def test_analytics_dashboard(self) -> bool:
+        """Test analytics dashboard data"""
+        if not self.token:
+            self.log("❌ Cannot test analytics - no authentication token")
+            return False
+            
+        success, response = self.run_test(
+            "Analytics Dashboard Summary",
+            "GET",
+            "/api/analytics/dashboard/summary",
+            200
+        )
+        
+        if success:
+            self.log("✅ Analytics dashboard data retrieved")
+            if 'tasks' in response:
+                tasks_data = response['tasks']
+                self.log(f"   Tasks summary: {tasks_data}")
+            return True
+        else:
+            self.log("❌ Failed to retrieve analytics dashboard data")
+            return False
+
+    def test_cors_preflight(self) -> bool:
+        """Test CORS preflight request"""
+        try:
+            response = requests.options(
+                f"{self.base_url}/api/auth/login",
+                headers={
+                    'Origin': 'https://timeline-auth-fix.preview.emergentagent.com',
+                    'Access-Control-Request-Method': 'POST',
+                    'Access-Control-Request-Headers': 'Content-Type,Authorization'
+                },
+                timeout=10
+            )
+            
+            if response.status_code in [200, 204]:
+                self.log("✅ CORS preflight request successful")
+                cors_headers = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
+                }
+                self.log(f"   CORS headers: {cors_headers}")
+                return True
             else:
-                try:
-                    error_data = response.json()
-                except:
-                    error_data = {"raw_response": response.text, "status_code": response.status_code}
-                self.log_test("Token Refresh", False, "Token refresh failed", error_data)
+                self.log(f"❌ CORS preflight failed with status: {response.status_code}")
                 return False
                 
         except Exception as e:
-            self.log_test("Token Refresh", False, f"Token refresh exception: {str(e)}")
+            self.log(f"❌ CORS preflight test failed: {str(e)}")
             return False
 
-    def test_authentication_edge_cases(self):
-        """Test authentication edge cases"""
-        # Test with invalid token
-        old_token = self.token
-        self.token = "invalid_token_12345"
+    def run_comprehensive_test(self) -> Dict[str, Any]:
+        """Run all tests and return comprehensive results"""
+        self.log("🚀 Starting Comprehensive Dynamic Timeline API Testing")
+        self.log(f"   Base URL: {self.base_url}")
+        self.log(f"   Test time: {datetime.now().isoformat()}")
         
-        success, response = self.make_request('GET', '/api/projects', use_auth=True)
-        
-        if not success:
-            self.log_test("Invalid Token Handling", True, "Correctly rejected invalid token")
-        else:
-            self.log_test("Invalid Token Handling", False, "Invalid token was accepted", response)
-        
-        # Restore valid token
-        self.token = old_token
-        
-        # Test without token
-        success, response = self.make_request('GET', '/api/projects', use_auth=False)
-        
-        if not success:
-            self.log_test("No Token Handling", True, "Correctly rejected request without token")
-        else:
-            self.log_test("No Token Handling", False, "Request without token was accepted", response)
-
-    def run_comprehensive_test(self):
-        """Run all tests in sequence"""
-        print("🔍 Starting Comprehensive Backend API Testing")
-        print("=" * 60)
-        print()
+        test_results = {
+            "test_summary": {
+                "start_time": datetime.now().isoformat(),
+                "base_url": self.base_url
+            },
+            "test_results": {},
+            "critical_issues": [],
+            "authentication": {"status": "unknown"},
+            "api_endpoints": {"working": [], "failing": []},
+            "timeline_functionality": {"status": "unknown"}
+        }
         
         # Test sequence
         tests = [
-            ("Health Check", self.test_health_check),
-            ("Authentication", self.test_authentication),
-            ("User Profile", self.test_user_profile),
-            ("Projects List", self.test_projects_list),
-            ("Specific Project", self.test_specific_project),
-            ("Timeline Gantt", self.test_timeline_gantt),
-            ("Token Refresh", self.test_token_refresh),
-            ("Authentication Edge Cases", self.test_authentication_edge_cases),
+            ("health_check", self.test_health_check),
+            ("cors_preflight", self.test_cors_preflight),
+            ("demo_login", self.test_demo_login),
+            ("user_profile", self.test_user_profile),
+            ("projects_list", self.test_projects_list),
+            ("timeline_stats_overall", self.test_timeline_stats_overall),
+            ("timeline_stats_project", self.test_timeline_stats_project),
+            ("gantt_data", self.test_gantt_data),
+            ("tasks_list", self.test_tasks_list),
+            ("analytics_dashboard", self.test_analytics_dashboard)
         ]
         
         for test_name, test_func in tests:
-            print(f"🧪 Running {test_name}...")
             try:
-                test_func()
+                result = test_func()
+                test_results["test_results"][test_name] = {
+                    "passed": result,
+                    "timestamp": datetime.now().isoformat()
+                }
+                
+                if result:
+                    test_results["api_endpoints"]["working"].append(test_name)
+                else:
+                    test_results["api_endpoints"]["failing"].append(test_name)
+                    
+                    # Mark critical issues
+                    if test_name in ["health_check", "demo_login"]:
+                        test_results["critical_issues"].append({
+                            "test": test_name,
+                            "issue": "Critical functionality not working",
+                            "impact": "High - blocks main functionality"
+                        })
+                        
             except Exception as e:
-                self.log_test(test_name, False, f"Test execution error: {str(e)}")
-            print()
+                self.log(f"❌ Test {test_name} crashed: {str(e)}")
+                test_results["test_results"][test_name] = {
+                    "passed": False,
+                    "error": str(e),
+                    "timestamp": datetime.now().isoformat()
+                }
+                test_results["api_endpoints"]["failing"].append(test_name)
         
-        # Summary
-        print("=" * 60)
-        print("📊 TEST SUMMARY")
-        print("=" * 60)
-        print(f"Total Tests: {self.tests_run}")
-        print(f"Passed: {self.tests_passed}")
-        print(f"Failed: {self.tests_run - self.tests_passed}")
-        print(f"Success Rate: {(self.tests_passed / self.tests_run * 100):.1f}%" if self.tests_run > 0 else "0%")
-        print()
-        
-        # Failed tests details
-        failed_tests = [test for test in self.test_results if not test['success']]
-        if failed_tests:
-            print("❌ FAILED TESTS:")
-            for test in failed_tests:
-                print(f"  - {test['test_name']}: {test['details']}")
+        # Determine authentication status
+        if test_results["test_results"].get("demo_login", {}).get("passed"):
+            test_results["authentication"]["status"] = "working"
+            test_results["authentication"]["credentials"] = "demo@company.com / demo123456"
         else:
-            print("✅ All tests passed!")
+            test_results["authentication"]["status"] = "failing"
+            test_results["critical_issues"].append({
+                "test": "authentication",
+                "issue": "Cannot authenticate with demo credentials",
+                "impact": "Critical - blocks all functionality"
+            })
         
-        print()
-        return self.tests_passed == self.tests_run
+        # Determine timeline functionality status
+        timeline_tests = ["timeline_stats_overall", "timeline_stats_project", "gantt_data"]
+        timeline_working = sum(1 for test in timeline_tests 
+                             if test_results["test_results"].get(test, {}).get("passed", False))
+        
+        if timeline_working >= 2:
+            test_results["timeline_functionality"]["status"] = "working"
+        elif timeline_working >= 1:
+            test_results["timeline_functionality"]["status"] = "partial"
+        else:
+            test_results["timeline_functionality"]["status"] = "failing"
+        
+        # Final summary
+        test_results["test_summary"].update({
+            "end_time": datetime.now().isoformat(),
+            "total_tests": self.tests_run,
+            "passed_tests": self.tests_passed,
+            "success_rate": f"{(self.tests_passed/self.tests_run*100):.1f}%" if self.tests_run > 0 else "0%",
+            "critical_issues_count": len(test_results["critical_issues"])
+        })
+        
+        self.log("📊 Test Summary:")
+        self.log(f"   Total tests: {self.tests_run}")
+        self.log(f"   Passed: {self.tests_passed}")
+        self.log(f"   Success rate: {test_results['test_summary']['success_rate']}")
+        self.log(f"   Critical issues: {len(test_results['critical_issues'])}")
+        
+        if test_results["authentication"]["status"] == "working":
+            self.log("✅ Authentication is working correctly")
+        else:
+            self.log("❌ Authentication is failing")
+            
+        if test_results["timeline_functionality"]["status"] == "working":
+            self.log("✅ Timeline functionality is working correctly")
+        elif test_results["timeline_functionality"]["status"] == "partial":
+            self.log("⚠️ Timeline functionality is partially working")
+        else:
+            self.log("❌ Timeline functionality is failing")
+        
+        return test_results
 
 def main():
     """Main test execution"""
-    print("🚀 Backend API Testing for ProjectFilterContext Authentication Issue")
-    print(f"⏰ Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print()
+    print("=" * 80)
+    print("Dynamic Timeline Dashboard - Backend API Testing")
+    print("=" * 80)
     
-    tester = ProjectFilterAPITester()
-    success = tester.run_comprehensive_test()
+    # Initialize tester with the public endpoint
+    tester = DynamicTimelineAPITester()
     
-    # Save detailed results
+    # Run comprehensive tests
+    results = tester.run_comprehensive_test()
+    
+    # Save results to file
     results_file = f"/app/backend_test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-    with open(results_file, 'w') as f:
-        json.dump({
-            "summary": {
-                "total_tests": tester.tests_run,
-                "passed_tests": tester.tests_passed,
-                "failed_tests": tester.tests_run - tester.tests_passed,
-                "success_rate": (tester.tests_passed / tester.tests_run * 100) if tester.tests_run > 0 else 0,
-                "test_timestamp": datetime.now().isoformat()
-            },
-            "detailed_results": tester.test_results,
-            "authentication_data": {
-                "has_access_token": bool(tester.token),
-                "has_refresh_token": bool(tester.refresh_token),
-                "user_email": tester.user_data.get('email') if tester.user_data else None,
-                "user_role": tester.user_data.get('role') if tester.user_data else None
-            }
-        }, f, indent=2)
+    try:
+        with open(results_file, 'w') as f:
+            json.dump(results, f, indent=2)
+        print(f"\n📄 Detailed results saved to: {results_file}")
+    except Exception as e:
+        print(f"⚠️ Could not save results file: {e}")
     
-    print(f"📄 Detailed results saved to: {results_file}")
-    
-    return 0 if success else 1
+    # Return appropriate exit code
+    if results["authentication"]["status"] == "working" and \
+       results["timeline_functionality"]["status"] in ["working", "partial"] and \
+       len(results["critical_issues"]) == 0:
+        print("\n🎉 Backend testing completed successfully!")
+        return 0
+    else:
+        print(f"\n⚠️ Backend testing completed with issues:")
+        for issue in results["critical_issues"]:
+            print(f"   - {issue['test']}: {issue['issue']}")
+        return 1
 
 if __name__ == "__main__":
     sys.exit(main())
