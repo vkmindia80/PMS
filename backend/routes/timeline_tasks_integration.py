@@ -132,8 +132,16 @@ async def update_task_from_drag(
         else:
             # Calculate existing duration from task
             if task.get("due_date"):
-                existing_due = datetime.fromisoformat(task["due_date"].replace('Z', '+00:00'))
-                existing_created = datetime.fromisoformat(task["created_at"].replace('Z', '+00:00'))
+                if isinstance(task["due_date"], str):
+                    existing_due = datetime.fromisoformat(task["due_date"].replace('Z', '+00:00'))
+                else:
+                    existing_due = task["due_date"]
+                    
+                if isinstance(task["created_at"], str):
+                    existing_created = datetime.fromisoformat(task["created_at"].replace('Z', '+00:00'))
+                else:
+                    existing_created = task["created_at"]
+                    
                 duration_hours = (existing_due - existing_created).total_seconds() / 3600
             else:
                 duration_hours = task.get("time_tracking", {}).get("estimated_hours", 8)
