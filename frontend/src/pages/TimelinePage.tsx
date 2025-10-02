@@ -889,7 +889,7 @@ export const TimelinePage: React.FC = () => {
       {/* Timeline Stats */}
       {ganttData && (
         <div className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center space-x-8">
+          <div className="flex flex-wrap items-center gap-4 md:gap-8">
             <div className="flex items-center space-x-2">
               <Layers className="h-4 w-4 text-gray-500" />
               <span className="text-sm text-gray-600">
@@ -907,6 +907,9 @@ export const TimelinePage: React.FC = () => {
               <span className="text-sm text-gray-600">
                 {ganttData.critical_path.length} critical tasks
               </span>
+            </div>
+            <div className="hidden md:flex items-center space-x-2 text-xs text-gray-500">
+              <span>💡 Tip: Hold Ctrl/Cmd + scroll to zoom, drag tasks to reschedule</span>
             </div>
           </div>
         </div>
