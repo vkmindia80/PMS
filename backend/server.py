@@ -33,6 +33,7 @@ from routes.roles import router as roles_router
 from routes.timeline import router as timeline_router
 from routes.enhanced_timeline import router as enhanced_timeline_router
 from routes.timeline_enhancements import router as timeline_enhancements_router
+from routes.dynamic_timeline import router as dynamic_timeline_router
 
 # Import models
 from models import (
