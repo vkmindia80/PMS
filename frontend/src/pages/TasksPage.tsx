@@ -3,6 +3,8 @@ import { useAuth } from '../contexts/AuthContext'
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext'
 import { API_URL } from '../utils/config'
 import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
+import { TaskDetailModal } from '../components/task/TaskDetailModal'
+import { EnhancedTaskCreateModal } from '../components/task/EnhancedTaskCreateModal'
 import toast from 'react-hot-toast'
 
 // Task-related interfaces
