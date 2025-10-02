@@ -298,7 +298,10 @@ def convert_task_to_timeline(task: Dict) -> Dict:
     
     # Use due date if available, otherwise default to 1 week from creation
     if task.get("due_date"):
-        due_date = datetime.fromisoformat(task["due_date"].replace('Z', '+00:00'))
+        if isinstance(task["due_date"], str):
+            due_date = datetime.fromisoformat(task["due_date"].replace('Z', '+00:00'))
+        else:
+            due_date = task["due_date"]  # Already a datetime object
     else:
         due_date = created_date + timedelta(days=7)
     
