@@ -36,6 +36,13 @@ async def create_task(
                 detail="Project not found"
             )
         
+        # Verify user has access to this project's organization
+        if project.get("organization_id") != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: Project belongs to different organization"
+            )
+        
         # Verify assignees exist if provided
         assignee_ids = task_data.assignee_ids.copy() if task_data.assignee_ids else []
         
