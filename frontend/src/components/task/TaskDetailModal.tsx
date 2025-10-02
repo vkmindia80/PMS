@@ -472,7 +472,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto max-h-96">
+        <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 200px)' }}>
           {activeTab === 'details' && (
             <TaskDetailsTab
               task={task}
