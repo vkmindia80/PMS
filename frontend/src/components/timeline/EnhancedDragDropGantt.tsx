@@ -1514,6 +1514,25 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
             </button>
           </div>
 
+          {/* Fit to screen button */}
+          <button
+            onClick={() => {
+              // Calculate optimal zoom level to fit timeline in available space
+              if (timelineMetrics?.availableWidth && timelineMetrics?.totalDays) {
+                const daysPerUnit = getDaysPerUnit(viewConfig.mode);
+                const unitsNeeded = Math.ceil(timelineMetrics.totalDays / daysPerUnit);
+                const optimalUnit = timelineMetrics.availableWidth / unitsNeeded;
+                const baseUnit = isMobile ? 80 : 140;
+                const fitZoom = Math.max(0.1, Math.min(2.0, optimalUnit / baseUnit));
+                onViewConfigChange({ zoom_level: fitZoom });
+              }
+            }}
+            className="p-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg border border-green-300"
+            title="Fit to Screen"
+          >
+            <Maximize2 className="h-4 w-4" />
+          </button>
+
           <select
             value={viewConfig.mode}
             onChange={(e) => onViewConfigChange({ mode: e.target.value as any })}
