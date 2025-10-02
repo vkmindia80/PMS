@@ -151,34 +151,81 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
   // Calculate timeline dimensions with safe error handling
   const timelineMetrics = useMemo(() => {
     try {
-      if (!filteredTasks || !filteredTasks.length) return null;
+      console.log('=== Timeline Metrics Calculation Debug ===');
+      console.log('FilteredTasks count:', filteredTasks?.length || 0);
+      console.log('ViewConfig:', viewConfig);
+      
+      if (!filteredTasks || !filteredTasks.length) {
+        console.log('No filtered tasks available');
+        return null;
+      }
 
       const taskNameWidth = isMobile ? 200 : 300;
       const taskHeight = isMobile ? 50 : 60;
       const headerHeight = isMobile ? 80 : 100;
       
-      // Calculate date range with validation
-      const validTasks = filteredTasks.filter(task => 
-        task && task.start_date && task.finish_date
-      );
+      // Calculate date range with validation and better error handling
+      const validTasks = filteredTasks.filter(task => {
+        if (!task) {
+          console.log('Invalid task (null/undefined)');
+          return false;
+        }
+        if (!task.start_date || !task.finish_date) {
+          console.log('Task missing dates:', task.id, task.name);
+          return false;
+        }
+        
+        // Test date parsing
+        const startDate = new Date(task.start_date);
+        const finishDate = new Date(task.finish_date);
+        
+        if (isNaN(startDate.getTime()) || isNaN(finishDate.getTime())) {
+          console.log('Task with invalid dates:', task.id, task.start_date, task.finish_date);
+          return false;
+        }
+        
+        return true;
+      });
       
-      if (!validTasks.length) return null;
+      console.log('Valid tasks after date filtering:', validTasks.length);
+      
+      if (!validTasks.length) {
+        console.log('No valid tasks found after date validation');
+        // Return a default timeline to show empty state
+        return {
+          taskNameWidth,
+          taskHeight,
+          headerHeight,
+          timeUnit: 100,
+          timelineWidth: 1000,
+          totalDays: 30,
+          minDate: new Date(),
+          maxDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          canvasWidth: taskNameWidth + 1000,
+          canvasHeight: headerHeight + 200
+        };
+      }
       
       const allDates = validTasks.flatMap(task => {
         try {
-          return [
-            new Date(task.start_date),
-            new Date(task.finish_date)
-          ].filter(date => !isNaN(date.getTime()));
-        } catch {
+          const startDate = new Date(task.start_date);
+          const finishDate = new Date(task.finish_date);
+          return [startDate, finishDate];
+        } catch (error) {
+          console.log('Error parsing task dates:', task.id, error);
           return [];
         }
       });
       
-      if (!allDates.length) return null;
+      if (!allDates.length) {
+        console.log('No valid dates extracted from tasks');
+        return null;
+      }
       
       const minDate = new Date(Math.min(...allDates.map(d => d.getTime())));
       const maxDate = new Date(Math.max(...allDates.map(d => d.getTime())));
+      
+      console.log('Date range:', minDate.toISOString(), 'to', maxDate.toISOString());
       
       // Add padding
       minDate.setDate(minDate.getDate() - 3);
@@ -188,7 +235,7 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       
       // Calculate time unit width with safe defaults
       const mode = viewConfig?.mode || 'week';
-      const zoomLevel = viewConfig?.zoom_level || 1.0;
+      const zoomLevel = Math.max(0.1, Math.min(5.0, viewConfig?.zoom_level || 1.0));
       
       const baseTimeUnit = {
         day: isMobile ? 80 : 120,
@@ -201,6 +248,14 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       const timeUnit = Math.max(isMobile ? 30 : 50, baseTimeUnit * zoomLevel);
       const timelineWidth = Math.max(1000, totalDays * (timeUnit / getDaysPerUnit(mode)));
       
+      const canvasWidth = taskNameWidth + timelineWidth;
+      const canvasHeight = headerHeight + (filteredTasks.length * taskHeight) + 100;
+      
+      console.log('Timeline metrics calculated:', {
+        taskNameWidth, taskHeight, headerHeight, timeUnit, timelineWidth, 
+        totalDays, canvasWidth, canvasHeight
+      });
+      
       return {
         taskNameWidth,
         taskHeight,
@@ -210,11 +265,12 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
         totalDays,
         minDate,
         maxDate,
-        canvasWidth: taskNameWidth + timelineWidth,
-        canvasHeight: headerHeight + (filteredTasks.length * taskHeight) + 100
+        canvasWidth,
+        canvasHeight
       };
     } catch (error) {
       console.error('Timeline metrics calculation error:', error);
+      console.log('Returning null due to error');
       return null;
     }
   }, [filteredTasks, viewConfig?.mode, viewConfig?.zoom_level, isMobile]);
