@@ -115,18 +115,30 @@ export class DynamicTimelineService {
     return new Promise((resolve, reject) => {
       try {
         const wsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/api/timeline/ws/${projectId}`;
+        
+        // Add timeout for WebSocket connection
+        const connectionTimeout = setTimeout(() => {
+          console.log('⚠️ WebSocket connection timeout, continuing without real-time features');
+          resolve(); // Don't reject, just continue without WebSocket
+        }, 5000);
+        
         this.ws = new WebSocket(wsUrl);
 
         this.ws.onopen = () => {
+          clearTimeout(connectionTimeout);
           console.log('🔗 Timeline WebSocket connected');
           this.isConnected = true;
           this.wsReconnectAttempts = 0;
           
           // Send authentication
-          this.ws?.send(JSON.stringify({
-            type: 'authenticate',
-            token: token
-          }));
+          try {
+            this.ws?.send(JSON.stringify({
+              type: 'authenticate',
+              token: token
+            }));
+          } catch (authError) {
+            console.warn('WebSocket auth send failed:', authError);
+          }
 
           resolve();
         };
@@ -141,19 +153,30 @@ export class DynamicTimelineService {
         };
 
         this.ws.onclose = () => {
+          clearTimeout(connectionTimeout);
           console.log('📴 Timeline WebSocket disconnected');
           this.isConnected = false;
-          this.attemptReconnect(projectId, token);
+          // Don't auto-reconnect on first failure to prevent endless loops
+          if (this.wsReconnectAttempts === 0) {
+            console.log('ℹ️ WebSocket closed on first attempt, continuing without real-time features');
+          } else {
+            this.attemptReconnect(projectId, token);
+          }
         };
 
         this.ws.onerror = (error) => {
+          clearTimeout(connectionTimeout);
           console.error('❌ Timeline WebSocket error:', error);
-          reject(error);
+          this.isConnected = false;
+          // Don't reject on WebSocket errors, just log and continue
+          console.log('ℹ️ Continuing without real-time WebSocket features');
+          resolve();
         };
 
       } catch (error) {
         console.error('Failed to initialize WebSocket:', error);
-        reject(error);
+        // Don't reject on initialization errors, just continue without WebSocket
+        resolve();
       }
     });
   }
