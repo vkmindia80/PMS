@@ -145,13 +145,80 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     if (task && isOpen) {
       setEditData({})
       setIsEditing(false)
+      fetchTaskWithDetails()
+      fetchAvailableUsers()
       if (activeTab === 'comments') {
         fetchComments()
       } else if (activeTab === 'activity') {
         fetchActivity()
+      } else if (activeTab === 'dependencies') {
+        fetchDependentTasks()
       }
     }
   }, [task, isOpen, activeTab])
+
+  const fetchTaskWithDetails = async () => {
+    if (!task || !tokens?.access_token) return
+    
+    try {
+      setLoading(true)
+      const response = await fetch(`${API_URL}/api/tasks/${task.id}/detailed`, {
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        const taskDetails = await response.json()
+        setTaskWithDetails(taskDetails)
+      }
+    } catch (error) {
+      console.error('Error fetching task details:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchAvailableUsers = async () => {
+    if (!tokens?.access_token) return
+    
+    try {
+      const response = await fetch(`${API_URL}/api/users`, {
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        const users = await response.json()
+        setAvailableUsers(users)
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error)
+    }
+  }
+
+  const fetchDependentTasks = async () => {
+    if (!task || !tokens?.access_token) return
+    
+    try {
+      const response = await fetch(`${API_URL}/api/tasks/${task.id}/dependents`, {
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        const dependents = await response.json()
+        setDependentTasks(dependents)
+      }
+    } catch (error) {
+      console.error('Error fetching dependent tasks:', error)
+    }
+  }
 
   const fetchComments = async () => {
     if (!task || !tokens?.access_token) return
