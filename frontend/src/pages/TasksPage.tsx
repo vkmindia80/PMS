@@ -587,13 +587,67 @@ const TasksPage: React.FC = () => {
         )}
       </div>
 
-      {/* Modals would go here */}
-      {showCreateModal && (
-        <CreateTaskModal
-          onClose={() => setShowCreateModal(false)}
-          onSubmit={handleCreateTask}
-        />
-      )}
+      {/* Enhanced Task Detail Modal */}
+      <TaskDetailModal
+        task={selectedTask}
+        isOpen={!!selectedTask && !showTimeModal}
+        onClose={() => setSelectedTask(null)}
+        onUpdate={async (taskId: string, updates: Partial<Task>) => {
+          try {
+            const response = await fetch(`${API_BASE}/api/tasks/${taskId}`, {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${tokens?.access_token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(updates)
+            })
+
+            if (response.ok) {
+              fetchTasks()
+              if (viewMode === 'kanban') fetchKanbanData()
+              if (viewMode === 'analytics') fetchAnalytics()
+              toast.success('Task updated successfully!')
+            } else {
+              throw new Error('Failed to update task')
+            }
+          } catch (error) {
+            console.error('Error updating task:', error)
+            throw error
+          }
+        }}
+        onDelete={async (taskId: string) => {
+          try {
+            const response = await fetch(`${API_BASE}/api/tasks/${taskId}`, {
+              method: 'DELETE',
+              headers: {
+                'Authorization': `Bearer ${tokens?.access_token}`,
+                'Content-Type': 'application/json'
+              }
+            })
+
+            if (response.ok) {
+              setSelectedTask(null)
+              fetchTasks()
+              if (viewMode === 'kanban') fetchKanbanData()
+              if (viewMode === 'analytics') fetchAnalytics()
+              toast.success('Task deleted successfully!')
+            } else {
+              throw new Error('Failed to delete task')
+            }
+          } catch (error) {
+            console.error('Error deleting task:', error)
+            throw error
+          }
+        }}
+      />
+
+      {/* Enhanced Task Creation Modal */}
+      <EnhancedTaskCreateModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={handleCreateTask}
+      />
 
       {showTimeModal && selectedTask && (
         <TimeLogModal
