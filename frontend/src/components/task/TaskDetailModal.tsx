@@ -615,9 +615,12 @@ const TaskDetailsTab: React.FC<{
           )}
         </div>
 
-        {/* Assignees */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Assignees</label>
+        {/* Assignees - Enhanced Display */}
+        <div className="col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            <Users className="inline h-4 w-4 mr-1" />
+            Assigned Team Members
+          </label>
           {isEditing ? (
             <select
               multiple
@@ -636,21 +639,23 @@ const TaskDetailsTab: React.FC<{
               ))}
             </select>
           ) : (
-            <div className="space-y-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {(task.assignee_ids && task.assignee_ids.length > 0) ? (
                 task.assignee_ids.map((assigneeId) => {
                   const assignee = availableUsers?.find(user => user.id === assigneeId);
                   return (
-                    <div key={assigneeId} className="flex items-center space-x-2">
-                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="h-3 w-3 text-blue-600" />
+                    <div key={assigneeId} className="flex items-center space-x-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <User className="h-5 w-5 text-blue-600" />
                       </div>
-                      <span className="text-sm text-gray-900">
-                        {assignee ? `${assignee.first_name} ${assignee.last_name}` : 'Unknown User'}
-                      </span>
-                      {assignee && (
-                        <span className="text-xs text-gray-500">({assignee.email})</span>
-                      )}
+                      <div>
+                        <div className="font-medium text-gray-900">
+                          {assignee ? `${assignee.first_name} ${assignee.last_name}` : 'Unknown User'}
+                        </div>
+                        {assignee && (
+                          <div className="text-sm text-gray-500">{assignee.email}</div>
+                        )}
+                      </div>
                     </div>
                   );
                 })
@@ -659,21 +664,31 @@ const TaskDetailsTab: React.FC<{
                 (() => {
                   const assignee = availableUsers?.find(user => user.id === task.assignee_id);
                   return (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="h-3 w-3 text-blue-600" />
+                    <div className="flex items-center space-x-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <User className="h-5 w-5 text-blue-600" />
                       </div>
-                      <span className="text-sm text-gray-900">
-                        {assignee ? `${assignee.first_name} ${assignee.last_name}` : 'Unknown User'}
-                      </span>
-                      {assignee && (
-                        <span className="text-xs text-gray-500">({assignee.email})</span>
-                      )}
+                      <div>
+                        <div className="font-medium text-gray-900">
+                          {assignee ? `${assignee.first_name} ${assignee.last_name}` : 'Unknown User'}
+                        </div>
+                        {assignee && (
+                          <div className="text-sm text-gray-500">{assignee.email}</div>
+                        )}
+                      </div>
                     </div>
                   );
                 })()
               ) : (
-                <span className="text-sm text-gray-500">No assignees</span>
+                <div className="flex items-center space-x-3 p-3 bg-gray-50 border border-gray-200 rounded-lg col-span-2">
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                    <User className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-gray-500">No assignees</div>
+                    <div className="text-sm text-gray-400">This task is unassigned</div>
+                  </div>
+                </div>
               )}
             </div>
           )}
