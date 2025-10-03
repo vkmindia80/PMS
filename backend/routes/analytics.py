@@ -220,8 +220,10 @@ async def get_dashboard_metrics(
         
         # Calculate basic metrics
         active_projects = len([p for p in projects if p.get("status") == "active"])
+        total_projects = len(projects)
         
-        # Team members count (consistent with current frontend logic)
+        # Team metrics - separate teams count and team members count
+        teams_count = len(teams)
         total_team_members = sum(team.get("member_count", len(team.get("members", []))) for team in teams)
         
         # Pending tasks (consistent with current frontend: todo + in_progress)
@@ -229,12 +231,17 @@ async def get_dashboard_metrics(
         
         return {
             "projects": active_projects,
-            "teams": total_team_members,
+            "total_projects": total_projects,
+            "teams": teams_count,
+            "team_members": total_team_members,
             "tasks": pending_tasks,
             "metadata": {
-                "total_projects": len(projects),
-                "total_teams": len(teams),
+                "total_projects": total_projects,
+                "active_projects": active_projects,
+                "total_teams": teams_count,
+                "total_team_members": total_team_members,
                 "total_tasks": len(tasks),
+                "pending_tasks": pending_tasks,
                 "project_filter_applied": bool(selected_project_ids),
                 "filtered_project_ids": selected_project_ids
             }
