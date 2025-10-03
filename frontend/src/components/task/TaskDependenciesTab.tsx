@@ -522,9 +522,9 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
                 <div className="flex justify-between text-red-700">
                   <span>Bottleneck Risk:</span>
                   <span className="font-medium">
-                    {dependentTasks.length > 5 ? 'High' :
-                     dependentTasks.length > 2 ? 'Medium' :
-                     dependentTasks.length > 0 ? 'Low' :
+                    {(dependentTasks || []).length > 5 ? 'High' :
+                     (dependentTasks || []).length > 2 ? 'Medium' :
+                     (dependentTasks || []).length > 0 ? 'Low' :
                      'None'}
                   </span>
                 </div>
