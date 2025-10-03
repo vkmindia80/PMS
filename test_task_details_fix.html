@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Details Fix Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .task-detail { border: 1px solid #ccc; margin: 10px 0; padding: 15px; border-radius: 8px; }
+        .label { font-weight: bold; color: #333; }
+        .value { color: #666; margin-left: 10px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Task Details Fix Verification</h1>
+    <div id="result"></div>
+
+    <script>
+        async function testTaskDetails() {
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                // Step 1: Login
+                const loginResponse = await fetch('http://localhost:8001/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'demo@company.com',
+                        password: 'demo123456'
+                    })
+                });
+                
+                const loginData = await loginResponse.json();
+                const token = loginData.tokens.access_token;
+                
+                resultDiv.innerHTML += '<div class="success">✅ Login successful</div>';
+                
+                // Step 2: Get tasks
+                const tasksResponse = await fetch('http://localhost:8001/api/tasks/?limit=1', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const tasks = await tasksResponse.json();
+                const firstTask = tasks[0];
+                
+                resultDiv.innerHTML += '<div class="success">✅ Tasks fetched</div>';
+                
+                // Step 3: Get detailed task
+                const detailedResponse = await fetch(`http://localhost:8001/api/tasks/${firstTask.id}/detailed`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const detailedTask = await detailedResponse.json();
+                
+                resultDiv.innerHTML += '<div class="success">✅ Detailed task fetched</div>';
+                
+                // Step 4: Display the data to verify our fixes
+                const taskHtml = `
+                    <div class="task-detail">
+                        <h3>Task: ${detailedTask.title}</h3>
+                        
+                        <div><span class="label">Description:</span>
+                            <span class="value">${detailedTask.description || 'No description provided'}</span>
+                        </div>
+                        
+                        <div><span class="label">Assignees:</span>
+                            <span class="value">
+                                ${detailedTask.assignees && detailedTask.assignees.length > 0 
+                                    ? detailedTask.assignees.map(a => `${a.first_name} ${a.last_name} (${a.email})`).join(', ')
+                                    : 'Unknown User'
+                                }
+                            </span>
+                        </div>
+                        
+                        <div><span class="label">Start Date:</span>
+                            <span class="value">
+                                ${detailedTask.start_date 
+                                    ? new Date(detailedTask.start_date).toLocaleDateString()
+                                    : 'Not set'
+                                }
+                            </span>
+                        </div>
+                        
+                        <div><span class="label">Due Date:</span>
+                            <span class="value">
+                                ${detailedTask.due_date 
+                                    ? new Date(detailedTask.due_date).toLocaleDateString()
+                                    : 'Not set'
+                                }
+                            </span>
+                        </div>
+                        
+                        <div><span class="label">Estimated Hours:</span>
+                            <span class="value">
+                                ${detailedTask.time_tracking?.estimated_hours 
+                                    ? `${detailedTask.time_tracking.estimated_hours.toFixed(2)}h`
+                                    : 'Not estimated'
+                                }
+                            </span>
+                        </div>
+                    </div>
+                `;
+                
+                resultDiv.innerHTML += taskHtml;
+                
+                // Summary
+                const hasDescription = detailedTask.description && detailedTask.description.trim() !== '';
+                const hasAssignees = detailedTask.assignees && detailedTask.assignees.length > 0;
+                const hasStartDate = detailedTask.start_date;
+                const hasEstimatedHours = detailedTask.time_tracking?.estimated_hours;
+                
+                resultDiv.innerHTML += `
+                    <div class="task-detail">
+                        <h3>Fix Verification Summary:</h3>
+                        <div class="${hasDescription ? 'success' : 'error'}">
+                            ${hasDescription ? '✅' : '❌'} Description: ${hasDescription ? 'FIXED' : 'STILL MISSING'}
+                        </div>
+                        <div class="${hasAssignees ? 'success' : 'error'}">
+                            ${hasAssignees ? '✅' : '❌'} Team Assignment: ${hasAssignees ? 'FIXED' : 'STILL MISSING'}
+                        </div>
+                        <div class="${hasStartDate ? 'success' : 'error'}">
+                            ${hasStartDate ? '✅' : '❌'} Start Date: ${hasStartDate ? 'FIXED' : 'STILL MISSING'}
+                        </div>
+                        <div class="${hasEstimatedHours ? 'success' : 'error'}">
+                            ${hasEstimatedHours ? '✅' : '❌'} Estimated Hours: ${hasEstimatedHours ? 'FIXED' : 'STILL MISSING'}
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+        
+        // Run the test when page loads
+        testTaskDetails();
+    </script>
+</body>
+</html>
