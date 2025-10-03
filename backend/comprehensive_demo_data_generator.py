@@ -1315,6 +1315,9 @@ class ComprehensiveDemoDataGenerator:
                 )
                 
                 self.generated_data["tasks"].extend(project_tasks)
+            
+            # Create task dependencies after all tasks are created
+            await self._create_task_dependencies()
                 
             # Update organization project count
             await self.db.organizations.update_one(
