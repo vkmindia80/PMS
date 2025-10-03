@@ -605,6 +605,7 @@ const TasksPage: React.FC = () => {
             onTaskClick={setSelectedTask}
             statusConfig={statusConfig}
             priorityConfig={priorityConfig}
+            getAssigneeNames={getAssigneeNames}
           />
         )}
 
