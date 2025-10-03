@@ -920,7 +920,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
           
           {activeTab === 'dependencies' && (
             <TaskDependenciesTab
-              task={task}
+              task={taskWithDetails || task}
               dependentTasks={dependentTasks}
               relatedTasks={relatedTasks}
               isEditing={isEditing}
