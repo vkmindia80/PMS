@@ -1356,7 +1356,7 @@ class ComprehensiveDemoDataGenerator:
 
     async def _create_task_dependencies(self):
         """Create realistic task dependencies within projects"""
-        logger.info("🔗 Creating task dependencies...")
+        logger.info("🔗 Creating enhanced task dependencies...")
         
         try:
             # Group tasks by project for dependency creation
@@ -1367,85 +1367,118 @@ class ComprehensiveDemoDataGenerator:
                     tasks_by_project[project_id] = []
                 tasks_by_project[project_id].append(task)
             
-            # Define dependency patterns for different project types
-            dependency_patterns = {
-                "healthcare_ai": [
-                    # Dependencies based on typical healthcare AI project workflow
-                    ("regulatory pathway planning", "clinical research"),
-                    ("design dicom", "implement computer vision"),
-                    ("computer vision", "clinical decision support"),
-                    ("clinical validation", "fda quality management"),
-                    ("cybersecurity assessments", "production deployment")
-                ],
-                "fintech_trading": [
-                    ("market data processing", "trading engine"),
-                    ("risk management system", "algorithmic trading strategies"),
-                    ("trading engine", "portfolio management"),
-                    ("compliance monitoring", "audit trail")
-                ],
-                "iot_smartcity": [
-                    ("sensor network", "edge computing nodes"),
-                    ("edge computing", "machine learning models"),
-                    ("dashboard", "emergency services integration"),
-                    ("cybersecurity measures", "public reporting dashboard")
-                ]
-            }
+            total_dependencies_created = 0
             
             for project_id, project_tasks in tasks_by_project.items():
-                if len(project_tasks) < 3:  # Skip projects with too few tasks
+                if len(project_tasks) < 2:  # Skip projects with too few tasks
                     continue
                 
-                # Sort tasks by creation order to create logical dependencies
-                project_tasks.sort(key=lambda t: t["created_at"])
+                # Sort tasks by start date to create logical sequence
+                project_tasks.sort(key=lambda t: t.get("start_date", datetime.utcnow()))
                 
                 dependencies_created = 0
-                max_dependencies = min(len(project_tasks) - 1, 8)  # Limit dependencies per project
                 
-                for i, task in enumerate(project_tasks[1:], 1):  # Start from second task
-                    # 60% chance to create a dependency
-                    if random.random() < 0.6 and dependencies_created < max_dependencies:
-                        # Create dependency on previous task or a task 1-2 positions back
-                        possible_predecessors = project_tasks[max(0, i-3):i]
-                        if possible_predecessors:
-                            predecessor = random.choice(possible_predecessors)
+                # Create sequential dependencies (each task depends on previous ones)
+                for i in range(1, len(project_tasks)):
+                    current_task = project_tasks[i]
+                    
+                    # 70% chance to create a dependency for proper workflow
+                    if random.random() < 0.7:
+                        # Choose predecessor(s) from earlier tasks
+                        possible_predecessors = project_tasks[:i]
+                        
+                        # For early tasks, depend on 1 task; for later tasks, potentially more
+                        num_dependencies = 1 if i <= 2 else random.choice([1, 1, 2])  # Mostly 1, sometimes 2
+                        
+                        if len(possible_predecessors) >= num_dependencies:
+                            # Choose predecessors - prefer recent tasks but sometimes earlier ones
+                            if num_dependencies == 1:
+                                # 80% chance to depend on immediate predecessor, 20% on earlier task
+                                if random.random() < 0.8 and i > 0:
+                                    predecessors = [project_tasks[i-1]]
+                                else:
+                                    predecessors = [random.choice(possible_predecessors)]
+                            else:
+                                # For multiple dependencies, choose 2 different tasks
+                                predecessors = random.sample(possible_predecessors, num_dependencies)
                             
-                            # Create dependency relationship
-                            dependency = {
-                                "id": str(uuid.uuid4()),
-                                "predecessor_task_id": predecessor["id"],
-                                "successor_task_id": task["id"],
-                                "dependency_type": random.choice(["finish_to_start", "start_to_start", "finish_to_finish"]),
-                                "lag_days": random.randint(0, 3),  # 0-3 days lag
-                                "created_at": datetime.utcnow(),
-                                "updated_at": datetime.utcnow()
-                            }
-                            
-                            # Update both tasks with dependency information
-                            await self.db.tasks.update_one(
-                                {"id": task["id"]},
-                                {
-                                    "$push": {"dependencies": predecessor["id"]},
-                                    "$set": {"updated_at": datetime.utcnow()}
-                                }
-                            )
-                            
-                            await self.db.tasks.update_one(
-                                {"id": predecessor["id"]},
-                                {
-                                    "$push": {"blocking_tasks": task["id"]},
-                                    "$set": {"updated_at": datetime.utcnow()}
-                                }
-                            )
-                            
-                            # Update local data as well
-                            task["dependencies"].append(predecessor["id"])
-                            predecessor["blocking_tasks"].append(task["id"])
-                            
-                            dependencies_created += 1
+                            # Create dependencies
+                            for predecessor in predecessors:
+                                # Skip if already dependent
+                                if predecessor["id"] not in current_task.get("dependencies", []):
+                                    # Update current task dependencies
+                                    await self.db.tasks.update_one(
+                                        {"id": current_task["id"]},
+                                        {
+                                            "$addToSet": {"dependencies": predecessor["id"]},
+                                            "$set": {"updated_at": datetime.utcnow()}
+                                        }
+                                    )
+                                    
+                                    # Update predecessor blocking tasks
+                                    await self.db.tasks.update_one(
+                                        {"id": predecessor["id"]},
+                                        {
+                                            "$addToSet": {"blocking_tasks": current_task["id"]},
+                                            "$set": {"updated_at": datetime.utcnow()}
+                                        }
+                                    )
+                                    
+                                    # Update local data structures
+                                    if "dependencies" not in current_task:
+                                        current_task["dependencies"] = []
+                                    if "blocking_tasks" not in predecessor:
+                                        predecessor["blocking_tasks"] = []
+                                        
+                                    current_task["dependencies"].append(predecessor["id"])
+                                    predecessor["blocking_tasks"].append(current_task["id"])
+                                    
+                                    dependencies_created += 1
+                                    total_dependencies_created += 1
                 
                 logger.info(f"   Created {dependencies_created} dependencies for project {project_id}")
             
-            logger.info("✅ Task dependencies created successfully")
+            # Also create some cross-task dependencies for realism (shared resources, etc.)
+            if total_dependencies_created < len(self.generated_data["tasks"]) * 0.3:  # If we have less than 30% dependency coverage
+                additional_deps = 0
+                for _ in range(10):  # Try to create up to 10 additional cross-task dependencies
+                    task1, task2 = random.sample(self.generated_data["tasks"], 2)
+                    
+                    # Only create dependency if tasks are in different projects but related work
+                    if (task1["project_id"] != task2["project_id"] and 
+                        task1["id"] not in task2.get("dependencies", []) and
+                        task2["id"] not in task1.get("dependencies", [])):
+                        
+                        # Randomly assign which depends on which
+                        if random.choice([True, False]):
+                            dependent_task, prerequisite_task = task1, task2
+                        else:
+                            dependent_task, prerequisite_task = task2, task1
+                        
+                        # Create cross-project dependency
+                        await self.db.tasks.update_one(
+                            {"id": dependent_task["id"]},
+                            {
+                                "$addToSet": {"dependencies": prerequisite_task["id"]},
+                                "$set": {"updated_at": datetime.utcnow()}
+                            }
+                        )
+                        
+                        await self.db.tasks.update_one(
+                            {"id": prerequisite_task["id"]},
+                            {
+                                "$addToSet": {"blocking_tasks": dependent_task["id"]},
+                                "$set": {"updated_at": datetime.utcnow()}
+                            }
+                        )
+                        
+                        additional_deps += 1
+                        total_dependencies_created += 1
+                
+                if additional_deps > 0:
+                    logger.info(f"   Created {additional_deps} additional cross-project dependencies")
+            
+            logger.info(f"✅ Task dependencies created successfully - Total: {total_dependencies_created}")
             return True
             
         except Exception as e:
