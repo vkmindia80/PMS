@@ -36,7 +36,9 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
   // Filter tasks for dependency selection
   const availableTasksForDependency = (relatedTasks || []).filter(t => 
     t.id !== task.id && 
-    !(task.dependencies || []).some(dep => dep.task_id === t.id) &&
+    !(task.dependencies || []).some(dep => 
+      typeof dep === 'string' ? dep === t.id : dep.task_id === t.id
+    ) &&
     t.title && t.title.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
