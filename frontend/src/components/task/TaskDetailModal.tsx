@@ -121,6 +121,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   const [taskWithDetails, setTaskWithDetails] = useState<any>(null)
   const [availableUsers, setAvailableUsers] = useState<any[]>([])
   const [dependentTasks, setDependentTasks] = useState<any[]>([])
+  const [relatedTasks, setRelatedTasks] = useState<any[]>([])
 
   // Editable task data
   const [editData, setEditData] = useState<Partial<Task>>({})
