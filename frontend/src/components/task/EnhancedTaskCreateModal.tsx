@@ -205,12 +205,14 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
         type: formData.type,
         project_id: formData.project_id,
         assignee_ids: formData.assignee_ids,
-        due_date: formData.due_date ? new Date(formData.due_date).toISOString() : undefined,
-        start_date: formData.start_date ? new Date(formData.start_date).toISOString() : undefined,
+        // Convert date strings to ISO datetime strings (set to start of day for due_date, start_date)
+        due_date: formData.due_date ? new Date(formData.due_date + 'T23:59:59').toISOString() : undefined,
+        start_date: formData.start_date ? new Date(formData.start_date + 'T00:00:00').toISOString() : undefined,
         time_tracking: {
           estimated_hours: formData.estimated_hours ? parseFloat(formData.estimated_hours) : undefined
         },
         tags: formData.tags,
+        // Convert dependencies to the correct format for backend
         dependencies: [...formData.pre_tasks, ...formData.post_tasks],
         progress_percentage: formData.progress_percentage
       }
