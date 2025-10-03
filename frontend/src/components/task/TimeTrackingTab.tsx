@@ -29,6 +29,8 @@ interface TimeTrackingTabProps {
   isTimerRunning: boolean
   timerElapsed: number
   formatTime: (ms: number) => string
+  onStartTimer: () => void
+  onStopTimer: () => void
 }
 
 export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
