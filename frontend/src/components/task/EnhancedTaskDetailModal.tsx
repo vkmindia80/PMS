@@ -1117,18 +1117,55 @@ const TaskOverviewTab: React.FC<{
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Link className="h-5 w-5 mr-2 text-indigo-600" />
             Related Tasks
+            <span className="ml-2 text-sm font-normal text-gray-500">
+              ({relatedTasks.length})
+            </span>
           </h3>
-          <div className="space-y-2">
-            {relatedTasks.slice(0, 3).map((relatedTask) => (
-              <div key={relatedTask.id} className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded">
-                <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded ${statusConfig[relatedTask.status]?.color}`}>
-                  {statusConfig[relatedTask.status]?.icon}
-                </span>
-                <span className="text-sm text-gray-900 truncate">{relatedTask.title}</span>
+          <div className="space-y-3">
+            {relatedTasks.slice(0, 5).map((relatedTask) => (
+              <div key={relatedTask.id} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg border border-gray-100 cursor-pointer transition-colors">
+                <div className="flex items-center space-x-2">
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded ${statusConfig[relatedTask.status]?.color}`}>
+                    {statusConfig[relatedTask.status]?.icon}
+                  </span>
+                  <span className={`inline-flex px-2 py-1 text-xs font-medium rounded border ${
+                    relatedTask.relationshipType === 'dependency' 
+                      ? 'bg-orange-50 text-orange-700 border-orange-200' 
+                      : 'bg-blue-50 text-blue-700 border-blue-200'
+                  }`}>
+                    {relatedTask.relationshipLabel}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-900 truncate">{relatedTask.title}</div>
+                  <div className="text-xs text-gray-500 flex items-center space-x-2">
+                    <span>{relatedTask.priority} priority</span>
+                    {relatedTask.due_date && (
+                      <>
+                        <span>•</span>
+                        <span>Due: {new Date(relatedTask.due_date).toLocaleDateString()}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
             {relatedTasks.length === 0 && (
-              <p className="text-sm text-gray-500">No related tasks found</p>
+              <div className="text-center py-4 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
+                <Link className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                <p className="text-sm font-medium text-gray-700">No related tasks found</p>
+                <p className="text-xs text-gray-500">No dependencies or dependents</p>
+              </div>
+            )}
+            {relatedTasks.length > 5 && (
+              <div className="text-center pt-2">
+                <button
+                  onClick={() => setActiveTab('dependencies')}
+                  className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                >
+                  View all {relatedTasks.length} related tasks →
+                </button>
+              </div>
             )}
           </div>
         </div>
