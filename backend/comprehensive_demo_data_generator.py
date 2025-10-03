@@ -1787,6 +1787,9 @@ class ComprehensiveDemoDataGenerator:
                     "comments_created": len(self.generated_data["comments"]),
                     "files_created": len(self.generated_data["files"]),
                     "notifications_created": len(self.generated_data["notifications"]),
+                    "resource_allocations_created": len(self.generated_data.get("resource_allocations", [])),
+                    "time_entries_created": len(self.generated_data.get("time_entries", [])),
+                    "project_metrics_created": len(self.generated_data.get("project_metrics", [])),
                     "total_data_points": sum(len(data) for data in self.generated_data.values())
                 },
                 "statistics": {
