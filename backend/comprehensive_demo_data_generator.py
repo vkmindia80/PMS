@@ -38,138 +38,171 @@ class ComprehensiveDemoDataGenerator:
             "notifications": []
         }
         
-        # User profiles with realistic data for different roles
+        # Enhanced user profiles with specialized roles for diverse project types
         self.user_profiles = [
-            # Development Team
+            # AI/ML Team
             {
-                "email": "sarah.johnson@company.com",
-                "first_name": "Sarah", "last_name": "Johnson",
+                "email": "dr.sarah.neural@company.com",
+                "first_name": "Dr. Sarah", "last_name": "Neural",
+                "role": "team_lead", "department": "AI Research",
+                "skills": ["TensorFlow", "PyTorch", "Computer Vision", "NLP", "MLOps", "Deep Learning", "Research"],
+                "hourly_rate": 120, "experience_years": 12,
+                "bio": "AI Research Director with PhD in Machine Learning, specializing in medical AI applications and computer vision",
+                "certifications": ["Google Cloud ML Engineer", "AWS ML Specialty", "NVIDIA Deep Learning"],
+                "clearance_level": "Top Secret"
+            },
+            {
+                "email": "marcus.quantum@company.com",
+                "first_name": "Marcus", "last_name": "Quantum",
+                "role": "member", "department": "AI Research",
+                "skills": ["Quantum Computing", "Qiskit", "Python", "Linear Algebra", "Quantum Algorithms", "Physics"],
+                "hourly_rate": 110, "experience_years": 8,
+                "bio": "Quantum Computing Engineer with background in theoretical physics and quantum algorithm development",
+                "certifications": ["IBM Qiskit Certified", "Microsoft Quantum Development Kit"]
+            },
+            
+            # Blockchain & Security Team
+            {
+                "email": "elena.blockchain@company.com",
+                "first_name": "Elena", "last_name": "Blockchain",
+                "role": "team_lead", "department": "Blockchain Engineering",
+                "skills": ["Solidity", "Ethereum", "Smart Contracts", "Web3", "Cryptography", "DeFi", "Security"],
+                "hourly_rate": 115, "experience_years": 9,
+                "bio": "Senior Blockchain Engineer with expertise in DeFi protocols and smart contract security",
+                "certifications": ["Certified Ethereum Developer", "Blockchain Security Professional"]
+            },
+            {
+                "email": "james.cybersec@company.com",
+                "first_name": "James", "last_name": "CyberSec",
+                "role": "member", "department": "Security",
+                "skills": ["Penetration Testing", "SIEM", "Threat Intelligence", "Malware Analysis", "Forensics", "Python"],
+                "hourly_rate": 95, "experience_years": 7,
+                "bio": "Cybersecurity Analyst specializing in threat detection and incident response",
+                "certifications": ["CISSP", "CEH", "GCIH", "OSCP"],
+                "clearance_level": "Secret"
+            },
+            
+            # IoT & Hardware Team
+            {
+                "email": "raj.iot@company.com",
+                "first_name": "Raj", "last_name": "IoTExpert",
+                "role": "team_lead", "department": "IoT Engineering",
+                "skills": ["IoT Architecture", "Edge Computing", "Arduino", "Raspberry Pi", "MQTT", "LoRaWAN", "5G"],
+                "hourly_rate": 100, "experience_years": 10,
+                "bio": "IoT Solutions Architect with expertise in smart city infrastructure and industrial IoT",
+                "certifications": ["AWS IoT Core Specialty", "Cisco IoT Professional"]
+            },
+            
+            # FinTech Team
+            {
+                "email": "olivia.fintech@company.com",
+                "first_name": "Olivia", "last_name": "FinTech",
+                "role": "team_lead", "department": "Financial Technology",
+                "skills": ["HFT", "Risk Management", "Derivatives", "Quantitative Analysis", "Python", "C++", "Trading Systems"],
+                "hourly_rate": 135, "experience_years": 11,
+                "bio": "Quantitative Developer with Wall Street experience in high-frequency trading and risk systems",
+                "certifications": ["CFA", "FRM", "Series 7", "Series 63"],
+                "compliance": ["SEC", "FINRA", "SOX"]
+            },
+            
+            # AR/VR Team
+            {
+                "email": "alex.immersive@company.com",
+                "first_name": "Alex", "last_name": "Immersive",
+                "role": "member", "department": "XR Development",
+                "skills": ["Unity", "Unreal Engine", "ARKit", "ARCore", "WebXR", "3D Modeling", "VR/AR UX"],
+                "hourly_rate": 88, "experience_years": 6,
+                "bio": "Extended Reality Developer creating immersive training experiences and spatial computing solutions",
+                "certifications": ["Unity Certified Expert", "Meta AR Developer"]
+            },
+            
+            # Healthcare IT Team
+            {
+                "email": "dr.emily.healthtech@company.com",
+                "first_name": "Dr. Emily", "last_name": "HealthTech",
+                "role": "team_lead", "department": "Healthcare Technology",
+                "skills": ["DICOM", "HL7 FHIR", "Medical Imaging", "FDA Compliance", "Clinical Workflows", "Radiology"],
+                "hourly_rate": 125, "experience_years": 15,
+                "bio": "Medical Informaticist and Radiologist leading healthcare AI development with clinical expertise",
+                "certifications": ["Board Certified Radiologist", "HIMSS CPHIMS", "ABII"],
+                "compliance": ["HIPAA", "FDA 510k", "ISO 13485"]
+            },
+            
+            # Energy & Sustainability Team
+            {
+                "email": "peter.greentech@company.com",
+                "first_name": "Peter", "last_name": "GreenTech",
+                "role": "member", "department": "Energy Systems",
+                "skills": ["Smart Grid", "Energy Storage", "Solar Systems", "Battery Management", "SCADA", "Power Electronics"],
+                "hourly_rate": 92, "experience_years": 8,
+                "bio": "Renewable Energy Engineer specializing in smart grid integration and energy management systems",
+                "certifications": ["Professional Engineer (PE)", "NABCEP Solar PV", "IEEE Power & Energy"]
+            },
+            
+            # Gaming Team
+            {
+                "email": "zoe.gamedev@company.com",
+                "first_name": "Zoe", "last_name": "GameDev",
+                "role": "member", "department": "Game Development",
+                "skills": ["Unreal Engine", "Unity", "C#", "Game Design", "Multiplayer Systems", "Graphics Programming"],
+                "hourly_rate": 82, "experience_years": 7,
+                "bio": "Senior Game Developer with AAA studio experience in multiplayer game architecture",
+                "certifications": ["Unity Certified Programmer", "Unreal Authorized Instructor"]
+            },
+            
+            # EdTech Team
+            {
+                "email": "miguel.edtech@company.com",
+                "first_name": "Miguel", "last_name": "EdTech",
+                "role": "member", "department": "Educational Technology",
+                "skills": ["Learning Analytics", "Adaptive Learning", "LMS", "SCORM", "xAPI", "Pedagogy", "UX Research"],
+                "hourly_rate": 78, "experience_years": 9,
+                "bio": "Educational Technologist with expertise in adaptive learning systems and learning analytics",
+                "certifications": ["Certified Professional in Learning and Performance", "Google for Education"]
+            },
+            
+            # Advanced Engineering Team
+            {
+                "email": "lisa.fullstack@company.com",
+                "first_name": "Lisa", "last_name": "FullStack",
                 "role": "team_lead", "department": "Engineering",
-                "skills": ["React", "TypeScript", "Node.js", "Python", "Team Leadership", "System Design"],
+                "skills": ["React", "Node.js", "Microservices", "GraphQL", "Docker", "Kubernetes", "System Design"],
+                "hourly_rate": 105, "experience_years": 11,
+                "bio": "Principal Engineer with expertise in large-scale distributed systems and cloud architecture",
+                "certifications": ["AWS Solutions Architect Professional", "Google Cloud Architect"]
+            },
+            
+            # Product Management
+            {
+                "email": "jennifer.product@company.com",
+                "first_name": "Jennifer", "last_name": "Product",
+                "role": "manager", "department": "Product Management",
+                "skills": ["Product Strategy", "User Research", "Analytics", "Roadmap Planning", "Stakeholder Management", "Agile"],
+                "hourly_rate": 95, "experience_years": 10,
+                "bio": "Senior Product Manager with experience launching enterprise B2B products from conception to scale",
+                "certifications": ["Certified Scrum Product Owner", "Google Analytics IQ"]
+            },
+            
+            # Quality Assurance
+            {
+                "email": "robert.qa@company.com",
+                "first_name": "Robert", "last_name": "QualityAssurance",
+                "role": "member", "department": "Quality Assurance",
+                "skills": ["Test Automation", "Selenium", "API Testing", "Performance Testing", "Security Testing", "CI/CD"],
+                "hourly_rate": 70, "experience_years": 6,
+                "bio": "QA Engineer specializing in automated testing frameworks and continuous integration",
+                "certifications": ["ISTQB Advanced", "Selenium Certified"]
+            },
+            
+            # UX Research Team
+            {
+                "email": "maria.uxresearch@company.com",
+                "first_name": "Maria", "last_name": "UXResearch",
+                "role": "team_lead", "department": "User Experience",
+                "skills": ["User Research", "Design Thinking", "Prototyping", "Accessibility", "A/B Testing", "Figma"],
                 "hourly_rate": 85, "experience_years": 8,
-                "bio": "Senior Full-Stack Developer with expertise in modern web technologies and team leadership"
-            },
-            {
-                "email": "marcus.chen@company.com", 
-                "first_name": "Marcus", "last_name": "Chen",
-                "role": "member", "department": "Engineering",
-                "skills": ["Python", "FastAPI", "PostgreSQL", "Docker", "AWS", "MongoDB"],
-                "hourly_rate": 75, "experience_years": 6,
-                "bio": "Backend Developer specializing in scalable API development and cloud infrastructure"
-            },
-            {
-                "email": "emily.rodriguez@company.com",
-                "first_name": "Emily", "last_name": "Rodriguez", 
-                "role": "member", "department": "Engineering",
-                "skills": ["React", "TypeScript", "Tailwind CSS", "Next.js", "JavaScript", "UI/UX Design"],
-                "hourly_rate": 70, "experience_years": 4,
-                "bio": "Frontend Developer passionate about creating beautiful and intuitive user interfaces"
-            },
-            {
-                "email": "james.wilson@company.com",
-                "first_name": "James", "last_name": "Wilson",
-                "role": "member", "department": "Engineering", 
-                "skills": ["React Native", "iOS Development", "Android Development", "Flutter", "Swift", "Kotlin"],
-                "hourly_rate": 80, "experience_years": 7,
-                "bio": "Mobile Developer with cross-platform expertise and native development experience"
-            },
-            {
-                "email": "alex.kumar@company.com",
-                "first_name": "Alex", "last_name": "Kumar",
-                "role": "member", "department": "Engineering",
-                "skills": ["Docker", "Kubernetes", "AWS", "Terraform", "Jenkins", "Python", "Linux"],
-                "hourly_rate": 85, "experience_years": 9,
-                "bio": "DevOps Engineer focused on automation, scalability, and cloud infrastructure"
-            },
-            
-            # Design Team
-            {
-                "email": "maria.gonzalez@company.com",
-                "first_name": "Maria", "last_name": "Gonzalez",
-                "role": "team_lead", "department": "Design",
-                "skills": ["UI/UX Design", "Figma", "Adobe Creative Suite", "User Research", "Prototyping", "Design Systems"],
-                "hourly_rate": 80, "experience_years": 7,
-                "bio": "Lead UX Designer with expertise in user research and design system architecture"
-            },
-            {
-                "email": "david.thompson@company.com",
-                "first_name": "David", "last_name": "Thompson",
-                "role": "member", "department": "Design",
-                "skills": ["UI Design", "Figma", "Sketch", "Prototyping", "Visual Design", "Brand Identity"],
-                "hourly_rate": 65, "experience_years": 4,
-                "bio": "Visual Designer specializing in modern UI design and brand identity"
-            },
-            
-            # Data Science Team  
-            {
-                "email": "lisa.park@company.com",
-                "first_name": "Lisa", "last_name": "Park",
-                "role": "team_lead", "department": "Data Science",
-                "skills": ["Python", "Machine Learning", "Data Analysis", "Pandas", "TensorFlow", "SQL", "Statistics"],
-                "hourly_rate": 90, "experience_years": 10,
-                "bio": "Senior Data Scientist with expertise in ML model development and statistical analysis"
-            },
-            {
-                "email": "michael.chang@company.com",
-                "first_name": "Michael", "last_name": "Chang",
-                "role": "member", "department": "Data Science",
-                "skills": ["Python", "Data Analysis", "SQL", "R", "Data Visualization", "Excel", "Tableau"],
-                "hourly_rate": 65, "experience_years": 3,
-                "bio": "Data Analyst focused on business intelligence and data visualization"
-            },
-            
-            # Marketing Team
-            {
-                "email": "jennifer.davis@company.com",
-                "first_name": "Jennifer", "last_name": "Davis",
-                "role": "manager", "department": "Marketing",
-                "skills": ["Digital Marketing", "Content Strategy", "SEO/SEM", "Social Media", "Analytics", "Campaign Management"],
-                "hourly_rate": 75, "experience_years": 8,
-                "bio": "Marketing Manager with expertise in digital campaigns and content strategy"
-            },
-            {
-                "email": "robert.taylor@company.com",
-                "first_name": "Robert", "last_name": "Taylor",
-                "role": "member", "department": "Marketing",
-                "skills": ["Content Creation", "Social Media", "SEO", "Google Analytics", "Brand Management", "Copywriting"],
-                "hourly_rate": 55, "experience_years": 3,
-                "bio": "Marketing Specialist focused on content creation and social media management"
-            },
-            
-            # Sales Team
-            {
-                "email": "patricia.brown@company.com",
-                "first_name": "Patricia", "last_name": "Brown", 
-                "role": "manager", "department": "Sales",
-                "skills": ["B2B Sales", "CRM Management", "Lead Generation", "Customer Success", "Negotiation", "Pipeline Management"],
-                "hourly_rate": 70, "experience_years": 9,
-                "bio": "Sales Manager with proven track record in B2B sales and customer relationship management"
-            },
-            {
-                "email": "christopher.white@company.com",
-                "first_name": "Christopher", "last_name": "White",
-                "role": "member", "department": "Sales",
-                "skills": ["B2B Sales", "Account Management", "CRM", "Customer Success", "Prospecting", "Presentation"],
-                "hourly_rate": 60, "experience_years": 4,
-                "bio": "Sales Representative specializing in account management and customer success"
-            },
-            
-            # Operations Team
-            {
-                "email": "amanda.martinez@company.com",
-                "first_name": "Amanda", "last_name": "Martinez",
-                "role": "manager", "department": "Operations",
-                "skills": ["Strategic Planning", "Agile/Scrum", "Risk Management", "Team Leadership", "Process Optimization"],
-                "hourly_rate": 75, "experience_years": 8,
-                "bio": "Operations Manager focused on strategic planning and process optimization"
-            },
-            {
-                "email": "daniel.garcia@company.com", 
-                "first_name": "Daniel", "last_name": "Garcia",
-                "role": "member", "department": "Operations",
-                "skills": ["Agile/Scrum", "Kanban", "Risk Management", "Team Coordination", "Quality Assurance"],
-                "hourly_rate": 55, "experience_years": 5,
-                "bio": "Operations Coordinator with expertise in agile methodologies and quality assurance"
+                "bio": "Senior UX Researcher with expertise in accessibility and inclusive design principles",
+                "certifications": ["Google UX Design Certificate", "Nielsen Norman Group UX Certification"]
             }
         ]
         
