@@ -487,7 +487,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     if (!task || !newComment.trim() || !tokens?.access_token) return
     
     try {
-      const response = await fetch(`${API_URL}/api/comments/`, {
+      const response = await fetch(`${getApiUrlDynamic()}/api/comments/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
