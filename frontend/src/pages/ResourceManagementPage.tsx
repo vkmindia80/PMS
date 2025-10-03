@@ -746,7 +746,7 @@ const ResourceManagementPage: React.FC = () => {
                         Redistribute from {opportunity.from_name} to {opportunity.to_name}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {opportunity.redistributable_tasks} tasks ({opportunity.potential_hours_moved}h)
+                        {opportunity.redistributable_tasks} tasks ({formatHoursWithSuffix(opportunity.potential_hours_moved)})
                       </p>
                     </div>
                     <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
