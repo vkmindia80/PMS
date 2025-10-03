@@ -23,6 +23,7 @@ import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext'
 import aiService, { AIModelResponse, ModelComparison } from '../services/aiService'
 import tensorflowService, { PredictionResult, TaskData, PerformanceMetrics } from '../services/tensorflowService'
+import { formatHours, formatHoursWithSuffix } from '../utils/hourFormatter'
 
 interface ModelStatus {
   name: string
