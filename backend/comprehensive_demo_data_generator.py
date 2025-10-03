@@ -1558,6 +1558,99 @@ class ComprehensiveDemoDataGenerator:
             logger.error(f"❌ Comments/files creation failed: {e}")
             return False
 
+    async def create_analytics_data(self):
+        """Create comprehensive analytics and resource management data"""
+        logger.info("📊 Creating analytics and resource management data...")
+        
+        try:
+            # Create resource allocation records
+            if self.generated_data["users"] and self.generated_data["projects"]:
+                for project in self.generated_data["projects"]:
+                    for member_id in project["team_members"][:3]:  # Top 3 team members per project
+                        # Create resource allocation
+                        allocation_data = {
+                            "id": str(uuid.uuid4()),
+                            "user_id": member_id,
+                            "project_id": project["id"],
+                            "organization_id": self.org_id,
+                            "allocation_percentage": random.randint(20, 100),
+                            "start_date": project.get("start_date", datetime.utcnow()),
+                            "end_date": project.get("due_date"),
+                            "role_in_project": random.choice(["developer", "designer", "analyst", "tester", "lead"]),
+                            "hourly_rate": random.randint(50, 150),
+                            "skills_utilized": random.sample(["Python", "React", "AI/ML", "DevOps", "Design", "Testing"], k=random.randint(2, 4)),
+                            "created_at": datetime.utcnow() - timedelta(days=random.randint(1, 60)),
+                            "updated_at": datetime.utcnow()
+                        }
+                        
+                        # Store in a hypothetical resource_allocations collection
+                        if "resource_allocations" not in self.generated_data:
+                            self.generated_data["resource_allocations"] = []
+                        self.generated_data["resource_allocations"].append(allocation_data)
+            
+            # Create time tracking entries for better analytics
+            for task in self.generated_data["tasks"]:
+                if task["status"] in ["completed", "in_progress", "in_review"]:
+                    # Create detailed time log entries
+                    total_hours = task["time_tracking"]["actual_hours"]
+                    if total_hours > 0:
+                        num_entries = random.randint(1, min(5, int(total_hours / 2)))  # Multiple time entries
+                        hours_per_entry = total_hours / num_entries
+                        
+                        for i in range(num_entries):
+                            time_entry = {
+                                "id": str(uuid.uuid4()),
+                                "task_id": task["id"],
+                                "user_id": task.get("assignee_id"),
+                                "project_id": task["project_id"],
+                                "hours": hours_per_entry,
+                                "date": task["start_date"] + timedelta(days=i * 2) if task["start_date"] else datetime.utcnow(),
+                                "description": f"Work on {task['title'][:50]}",
+                                "billable": random.choice([True, False]),
+                                "created_at": datetime.utcnow(),
+                                "updated_at": datetime.utcnow()
+                            }
+                            
+                            if "time_entries" not in self.generated_data:
+                                self.generated_data["time_entries"] = []
+                            self.generated_data["time_entries"].append(time_entry)
+            
+            # Create project metrics and KPIs
+            for project in self.generated_data["projects"]:
+                project_metrics = {
+                    "id": str(uuid.uuid4()),
+                    "project_id": project["id"],
+                    "organization_id": self.org_id,
+                    "budget_utilization": random.uniform(0.6, 1.2),  # 60% to 120%
+                    "schedule_performance": random.uniform(0.8, 1.1),  # 80% to 110%
+                    "quality_score": random.randint(85, 98),
+                    "team_satisfaction": random.uniform(7.5, 9.5),  # Out of 10
+                    "stakeholder_satisfaction": random.uniform(7.0, 9.0),
+                    "risk_score": random.randint(1, 5),  # 1 = low risk, 5 = high risk
+                    "velocity": random.randint(15, 45),  # Story points per sprint
+                    "defect_density": random.uniform(0.1, 0.8),  # Defects per 1000 lines of code
+                    "code_coverage": random.randint(70, 95),  # Percentage
+                    "created_at": datetime.utcnow(),
+                    "updated_at": datetime.utcnow()
+                }
+                
+                if "project_metrics" not in self.generated_data:
+                    self.generated_data["project_metrics"] = []
+                self.generated_data["project_metrics"].append(project_metrics)
+            
+            logger.info(f"✅ Created analytics data:")
+            logger.info(f"   📊 Resource allocations: {len(self.generated_data.get('resource_allocations', []))}")
+            logger.info(f"   ⏱️ Time entries: {len(self.generated_data.get('time_entries', []))}")
+            logger.info(f"   📈 Project metrics: {len(self.generated_data.get('project_metrics', []))}")
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Analytics data creation failed: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
+
     async def create_notifications(self):
         """Create realistic notifications"""
         logger.info("🔔 Creating notifications...")
