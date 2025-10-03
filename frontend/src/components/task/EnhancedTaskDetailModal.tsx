@@ -918,13 +918,29 @@ const TaskOverviewTab: React.FC<{
               Assignment
             </h4>
             <div className="space-y-2">
-              {(task.assignee_ids && task.assignee_ids.length > 0) || task.assignee_id ? (
+              {taskWithDetails?.assignees && taskWithDetails.assignees.length > 0 ? (
+                <div className="space-y-2">
+                  {taskWithDetails.assignees.map((assignee: any, index: number) => (
+                    <div key={assignee.id || index} className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <User className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-gray-900">
+                          {assignee.first_name} {assignee.last_name}
+                        </span>
+                        <span className="text-xs text-gray-500">{assignee.email}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (task.assignee_ids && task.assignee_ids.length > 0) || task.assignee_id ? (
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                     <User className="h-4 w-4 text-blue-600" />
                   </div>
                   <span className="text-sm font-medium text-gray-900">
-                    {task.assignee_ids?.length > 1 ? `${task.assignee_ids.length} assignees` : 'Assigned'}
+                    {task.assignee_ids?.length > 1 ? `${task.assignee_ids.length} assignees` : 'Loading assignee...'}
                   </span>
                 </div>
               ) : (
