@@ -356,19 +356,19 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
                 <div className="flex justify-between">
                   <span className="text-blue-700">Largest Entry:</span>
                   <span className="font-medium text-blue-900">
-                    {Math.max(...task.time_tracking.logged_time.map(e => e.hours)).toFixed(1)}h
+                    {formatHoursWithSuffix(Math.max(...task.time_tracking.logged_time.map(e => e.hours)))}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-blue-700">Smallest Entry:</span>
                   <span className="font-medium text-blue-900">
-                    {Math.min(...task.time_tracking.logged_time.map(e => e.hours)).toFixed(1)}h
+                    {formatHoursWithSuffix(Math.min(...task.time_tracking.logged_time.map(e => e.hours)))}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-blue-700">Most Recent:</span>
                   <span className="font-medium text-blue-900">
-                    {task.time_tracking.logged_time[0]?.hours.toFixed(1)}h
+                    {formatHoursWithSuffix(task.time_tracking.logged_time[0]?.hours)}
                   </span>
                 </div>
               </div>
