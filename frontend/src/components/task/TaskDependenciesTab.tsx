@@ -299,7 +299,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
                 <p className="text-sm">No other tasks are waiting on this one</p>
               </div>
             ) : (
-              dependentTasks.map((depTask) => (
+              (dependentTasks || []).map((depTask) => (
                 <div key={depTask.id} className="relative flex items-center justify-between p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
                   <div className="flex items-center space-x-4 flex-1">
                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
