@@ -14,6 +14,7 @@ import {
 import GlobalProjectFilter from '../components/common/GlobalProjectFilter';
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext';
 import { API_URL } from '../utils/config';
+import { formatHours, formatHoursWithSuffix } from '../utils/hourFormatter';
 
 interface ResourceAllocation {
   current_state: {
