@@ -421,7 +421,7 @@ export const TaskDetailsTab: React.FC<TaskDetailsTabProps> = ({
                 min="0"
                 value={editData.time_tracking?.estimated_hours !== undefined 
                   ? editData.time_tracking.estimated_hours 
-                  : task.time_tracking.estimated_hours || ''
+                  : task.time_tracking?.estimated_hours || ''
                 }
                 onChange={(e) => setEditData({ 
                   ...editData, 
