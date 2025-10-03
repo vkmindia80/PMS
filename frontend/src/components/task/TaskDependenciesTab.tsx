@@ -213,7 +213,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
                           <div className="font-semibold text-gray-900">
-                            {dependentTask ? dependentTask.title : `Task ${dep.task_id.substring(0, 8)}`}
+                            {dependentTask ? dependentTask.title : `Task ${depTaskId.substring(0, 8)}`}
                           </div>
                           {dependentTask && (
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getTaskStatusColor(dependentTask.status)}`}>
