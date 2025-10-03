@@ -108,7 +108,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
           
           <div className="text-center bg-white rounded-lg p-4 shadow-sm border border-gray-100">
             <div className="text-2xl font-bold text-green-600 mb-1">
-              {dependentTasks.length}
+              {(dependentTasks || []).length}
             </div>
             <div className="text-sm text-gray-600">Dependents</div>
             <div className="text-xs text-gray-500 mt-1">Tasks this blocks</div>
