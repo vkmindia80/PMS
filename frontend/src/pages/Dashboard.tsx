@@ -135,7 +135,7 @@ const Dashboard: React.FC = () => {
         projects: projectsCount,
         total_projects: projectsCount,
         teams: teamsCount,
-        team_members: teamsCount, // Fallback logic for backwards compatibility
+        team_members: teamMembersCount,
         tasks: tasksCount
       })
     } catch (error) {
