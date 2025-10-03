@@ -501,7 +501,7 @@ const ResourceManagementPage: React.FC = () => {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Available Capacity</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {capacityPlanning.capacity_metrics?.available_capacity_hours || 0}h
+                  {formatHoursWithSuffix(capacityPlanning.capacity_metrics?.available_capacity_hours)}
                 </p>
               </div>
             </div>
