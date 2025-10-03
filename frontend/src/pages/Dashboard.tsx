@@ -52,9 +52,11 @@ const Dashboard: React.FC = () => {
       if (metricsResponse.ok) {
         const metricsData = await metricsResponse.json()
         setDashboardData({
-          projects: metricsData.projects,
-          teams: metricsData.teams,
-          tasks: metricsData.tasks
+          projects: metricsData.projects || 0,
+          total_projects: metricsData.total_projects || 0,
+          teams: metricsData.teams || 0,
+          team_members: metricsData.team_members || 0,
+          tasks: metricsData.tasks || 0
         })
       } else {
         console.error('Failed to fetch dashboard metrics:', metricsResponse.status, metricsResponse.statusText)
