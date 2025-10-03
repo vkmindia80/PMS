@@ -481,8 +481,8 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
             <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
               <h5 className="font-medium text-yellow-900 mb-3">Critical Path Impact</h5>
               <div className="space-y-2 text-sm">
-                {task.dependencies.filter(dep => {
-                  const depTask = relatedTasks.find(t => t.id === dep.task_id)
+                {(task.dependencies || []).filter(dep => {
+                  const depTask = (relatedTasks || []).find(t => t.id === dep.task_id)
                   return depTask && ['blocked', 'in_progress'].includes(depTask.status)
                 }).length > 0 ? (
                   <div className="text-yellow-800">
