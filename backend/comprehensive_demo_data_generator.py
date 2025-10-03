@@ -1776,6 +1776,7 @@ class ComprehensiveDemoDataGenerator:
                 ("Create tasks", self.create_tasks),
                 ("Create comments and files", self.create_comments_and_files),
                 ("Create notifications", self.create_notifications),
+                ("Generate analytics data", self.create_analytics_data),
                 ("Update team project counts", self.update_team_project_counts)
             ]
             
