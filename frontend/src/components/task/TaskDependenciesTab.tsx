@@ -225,7 +225,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
                         <div className="flex items-center space-x-4 text-sm text-gray-600">
                           <div className="flex items-center space-x-1">
                             <Target className="h-3 w-3" />
-                            <span>Type: {dep.dependency_type.replace('_', ' ')}</span>
+                            <span>Type: {depType.replace('_', ' ')}</span>
                           </div>
                           
                           {dependentTask && (
