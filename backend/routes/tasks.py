@@ -103,7 +103,7 @@ async def create_task(
             detail=f"Failed to create task: {str(e)}"
         )
 
-@router.get("/", response_model=List[TaskSummary])
+@router.get("/")
 async def get_tasks(
     project_id: Optional[str] = Query(None, description="Filter by project IDs (comma-separated for multiple)"),
     assignee_id: Optional[str] = Query(None, description="Filter by assignee ID"),
@@ -111,6 +111,7 @@ async def get_tasks(
     priority: Optional[TaskPriority] = Query(None, description="Filter by priority"),
     type: Optional[TaskType] = Query(None, description="Filter by type"),
     search: Optional[str] = Query(None, description="Search in title and description"),
+    full_details: bool = Query(False, description="Return full task details including dependencies and team members"),
     skip: int = Query(0, ge=0, description="Number of tasks to skip"),
     limit: int = Query(100, ge=1, le=1000, description="Number of tasks to return"),
     current_user: User = Depends(get_current_active_user)
