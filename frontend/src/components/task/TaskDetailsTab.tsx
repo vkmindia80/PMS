@@ -365,12 +365,15 @@ export const TaskDetailsTab: React.FC<TaskDetailsTabProps> = ({
                 </div>
               ) : (
                 <div className={`p-3 rounded-lg ${
-                  task.due_date && new Date(task.due_date) < new Date() && task.status !== 'completed'
+                  (taskWithDetails?.due_date ?? task.due_date) && new Date(taskWithDetails?.due_date ?? task.due_date) < new Date() && task.status !== 'completed'
                     ? 'bg-red-50 text-red-900' 
                     : 'bg-gray-50 text-gray-900'
                 }`}>
-                  {task.due_date ? new Date(task.due_date).toLocaleString() : 'Not set'}
-                  {task.due_date && new Date(task.due_date) < new Date() && task.status !== 'completed' && (
+                  {(taskWithDetails?.due_date ?? task.due_date) ? 
+                    new Date(taskWithDetails?.due_date ?? task.due_date).toLocaleDateString() : 
+                    'Not set'
+                  }
+                  {(taskWithDetails?.due_date ?? task.due_date) && new Date(taskWithDetails?.due_date ?? task.due_date) < new Date() && task.status !== 'completed' && (
                     <div className="flex items-center mt-1">
                       <AlertTriangle className="h-4 w-4 text-red-600 mr-1" />
                       <span className="text-xs font-medium text-red-600">OVERDUE</span>
