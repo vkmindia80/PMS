@@ -963,15 +963,21 @@ const TaskOverviewTab: React.FC<{
               <div className="flex justify-between">
                 <span className="text-gray-600">Start:</span>
                 <span className="font-medium">
-                  {task.start_date ? new Date(task.start_date).toLocaleDateString() : 'Not set'}
+                  {(taskWithDetails?.start_date ?? task.start_date) ? 
+                    new Date(taskWithDetails?.start_date ?? task.start_date).toLocaleDateString() : 
+                    'Not set'
+                  }
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Due:</span>
                 <span className={`font-medium ${
-                  task.due_date && new Date(task.due_date) < new Date() ? 'text-red-600' : 'text-gray-900'
+                  (taskWithDetails?.due_date ?? task.due_date) && new Date(taskWithDetails?.due_date ?? task.due_date) < new Date() ? 'text-red-600' : 'text-gray-900'
                 }`}>
-                  {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'Not set'}
+                  {(taskWithDetails?.due_date ?? task.due_date) ? 
+                    new Date(taskWithDetails?.due_date ?? task.due_date).toLocaleDateString() : 
+                    'Not set'
+                  }
                 </span>
               </div>
             </div>
