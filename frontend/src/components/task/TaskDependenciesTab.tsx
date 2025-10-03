@@ -62,7 +62,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
   const addDependency = () => {
     if (!selectedTask) return
     
-    const newDependencies = [...task.dependencies, {
+    const newDependencies = [...(task.dependencies || []), {
       task_id: selectedTask,
       dependency_type: dependencyType
     }]
