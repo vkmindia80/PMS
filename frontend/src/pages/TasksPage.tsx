@@ -904,7 +904,8 @@ const TasksList: React.FC<{
   onLogTime: (task: Task) => void
   statusConfig: any
   priorityConfig: any
-}> = ({ tasks, onTaskClick, onLogTime, statusConfig, priorityConfig }) => {
+  getAssigneeNames: (task: Task) => string
+}> = ({ tasks, onTaskClick, onLogTime, statusConfig, priorityConfig, getAssigneeNames }) => {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       <div className="overflow-x-auto">
