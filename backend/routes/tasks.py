@@ -181,26 +181,7 @@ async def get_tasks(
         tasks = await cursor.to_list(length=limit)
         
         # Convert to TaskSummary format
-        task_summaries = []
-        for task in tasks:
-            task_summaries.append(TaskSummary(
-                id=task["id"],
-                title=task["title"],
-                status=TaskStatus(task["status"]),
-                priority=TaskPriority(task["priority"]),
-                type=TaskType(task["type"]),
-                project_id=task["project_id"],
-                organization_id=task.get("organization_id"),
-                assignee_id=task.get("assignee_id"),
-                assignee_ids=task.get("assignee_ids", []),
-                due_date=task.get("due_date"),
-                start_date=task.get("start_date"),
-                created_at=task.get("created_at"),
-                updated_at=task.get("updated_at"),
-                progress_percentage=task.get("progress_percentage", 0.0),
-                time_tracking=TaskTimeTracking(**task.get("time_tracking", {})) if task.get("time_tracking") else None,
-                subtask_count=task.get("subtask_count", 0)
-            ))
+        task_summaries = [create_task_summary(task) for task in tasks]
         
         return task_summaries
         
