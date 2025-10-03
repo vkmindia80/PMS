@@ -553,46 +553,102 @@ class ComprehensiveDemoDataGenerator:
         try:
             team_configs = [
                 {
-                    "name": "Development Team",
-                    "description": "Full-stack development team responsible for web and mobile applications",
+                    "name": "AI Research Team",
+                    "description": "Advanced AI/ML research and development team specializing in healthcare and quantum computing applications",
+                    "type": "development",
+                    "department": "AI Research",
+                    "skills_focus": ["TensorFlow", "PyTorch", "Computer Vision", "NLP", "Quantum Computing", "Research"]
+                },
+                {
+                    "name": "Blockchain Engineering Team",
+                    "description": "Distributed systems and blockchain technology team focused on enterprise solutions",
+                    "type": "development",
+                    "department": "Blockchain Engineering",
+                    "skills_focus": ["Solidity", "Ethereum", "Smart Contracts", "Web3", "Cryptography", "DeFi"]
+                },
+                {
+                    "name": "Cybersecurity Team",
+                    "description": "Information security and threat intelligence team protecting enterprise assets",
+                    "type": "operations",
+                    "department": "Security",
+                    "skills_focus": ["Penetration Testing", "SIEM", "Threat Intelligence", "Malware Analysis", "Forensics"]
+                },
+                {
+                    "name": "IoT Engineering Team",
+                    "description": "Internet of Things and edge computing team developing smart city solutions",
+                    "type": "development",
+                    "department": "IoT Engineering",
+                    "skills_focus": ["IoT Architecture", "Edge Computing", "MQTT", "LoRaWAN", "5G", "Real-time Analytics"]
+                },
+                {
+                    "name": "Financial Technology Team",
+                    "description": "High-frequency trading and financial systems development team",
+                    "type": "development",
+                    "department": "Financial Technology",
+                    "skills_focus": ["HFT", "Risk Management", "Trading Systems", "Quantitative Analysis", "C++", "Python"]
+                },
+                {
+                    "name": "Extended Reality Team",
+                    "description": "AR/VR development team creating immersive training and gaming experiences",
+                    "type": "development",
+                    "department": "XR Development",
+                    "skills_focus": ["Unity", "Unreal Engine", "ARKit", "ARCore", "3D Modeling", "VR/AR UX"]
+                },
+                {
+                    "name": "Healthcare Technology Team",
+                    "description": "Medical informatics and healthcare AI team ensuring clinical compliance",
+                    "type": "development",
+                    "department": "Healthcare Technology",
+                    "skills_focus": ["DICOM", "HL7 FHIR", "Medical Imaging", "FDA Compliance", "Clinical Workflows"]
+                },
+                {
+                    "name": "Energy Systems Team",
+                    "description": "Smart grid and renewable energy technology development team",
+                    "type": "development",
+                    "department": "Energy Systems",
+                    "skills_focus": ["Smart Grid", "Energy Storage", "Battery Management", "SCADA", "Power Electronics"]
+                },
+                {
+                    "name": "Game Development Team",
+                    "description": "Gaming platform and social features development team",
+                    "type": "development",
+                    "department": "Game Development",
+                    "skills_focus": ["Unreal Engine", "Unity", "Multiplayer Systems", "Game Design", "Graphics Programming"]
+                },
+                {
+                    "name": "Educational Technology Team",
+                    "description": "Learning platforms and adaptive education technology development team",
+                    "type": "development",
+                    "department": "Educational Technology",
+                    "skills_focus": ["Learning Analytics", "Adaptive Learning", "LMS", "Pedagogy", "UX Research"]
+                },
+                {
+                    "name": "Core Engineering Team",
+                    "description": "Full-stack development team handling platform infrastructure and integration",
                     "type": "development",
                     "department": "Engineering",
-                    "skills_focus": ["React", "Node.js", "Python", "TypeScript", "Mobile Development", "DevOps"]
+                    "skills_focus": ["React", "Node.js", "Microservices", "GraphQL", "Docker", "System Design"]
                 },
                 {
-                    "name": "Design Team",
-                    "description": "User experience and visual design team creating intuitive interfaces", 
+                    "name": "User Experience Team",
+                    "description": "User research and design team ensuring accessibility and inclusive design",
                     "type": "design",
-                    "department": "Design",
-                    "skills_focus": ["UI/UX Design", "Figma", "Prototyping", "User Research"]
+                    "department": "User Experience",
+                    "skills_focus": ["User Research", "Design Thinking", "Prototyping", "Accessibility", "A/B Testing"]
                 },
                 {
-                    "name": "Data Science Team",
-                    "description": "Data analytics and business intelligence team driving data-driven decisions",
-                    "type": "operations", 
-                    "department": "Data Science",
-                    "skills_focus": ["Python", "Data Analysis", "Machine Learning", "SQL"]
-                },
-                {
-                    "name": "Marketing Team",
-                    "description": "Digital marketing and content strategy team focused on growth",
-                    "type": "marketing",
-                    "department": "Marketing",
-                    "skills_focus": ["Digital Marketing", "Content Strategy", "SEO/SEM", "Social Media"]
-                },
-                {
-                    "name": "Sales Team", 
-                    "description": "Business development and customer success team driving revenue growth",
-                    "type": "sales",
-                    "department": "Sales",
-                    "skills_focus": ["B2B Sales", "Account Management", "Customer Success", "CRM"]
-                },
-                {
-                    "name": "Operations Team",
-                    "description": "Project management and operations coordination ensuring smooth execution",
+                    "name": "Product Management Team",
+                    "description": "Strategic product planning and stakeholder coordination team",
                     "type": "operations",
-                    "department": "Operations", 
-                    "skills_focus": ["Agile/Scrum", "Strategic Planning", "Risk Management"]
+                    "department": "Product Management",
+                    "skills_focus": ["Product Strategy", "User Research", "Analytics", "Roadmap Planning", "Stakeholder Management"]
+                },
+                {
+                    "name": "Quality Assurance Team",
+                    "description": "Comprehensive testing and quality assurance team ensuring system reliability",
+                    "type": "operations",
+                    "department": "Quality Assurance",
+                    "skills_focus": ["Test Automation", "API Testing", "Performance Testing", "Security Testing", "CI/CD"]
                 }
             ]
             
