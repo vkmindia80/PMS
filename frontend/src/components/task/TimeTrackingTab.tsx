@@ -273,13 +273,13 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-gray-900">
-                  {(task.time_tracking.logged_time.reduce((sum, entry) => sum + entry.hours, 0)).toFixed(1)}h
+                  {formatHoursWithSuffix(task.time_tracking.logged_time.reduce((sum, entry) => sum + entry.hours, 0))}
                 </div>
                 <div className="text-sm text-gray-600">Total Hours</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold text-gray-900">
-                  {(task.time_tracking.logged_time.reduce((sum, entry) => sum + entry.hours, 0) / task.time_tracking.logged_time.length).toFixed(1)}h
+                  {formatHoursWithSuffix(task.time_tracking.logged_time.reduce((sum, entry) => sum + entry.hours, 0) / task.time_tracking.logged_time.length)}
                 </div>
                 <div className="text-sm text-gray-600">Average Entry</div>
               </div>
