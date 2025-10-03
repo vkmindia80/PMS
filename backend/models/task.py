@@ -194,7 +194,11 @@ class TaskSummary(BaseModel):
     assignee_id: Optional[str]
     assignee_ids: List[str] = Field(default_factory=list)
     due_date: Optional[datetime]
+    start_date: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     progress_percentage: float
+    time_tracking: Optional[TaskTimeTracking] = None
     subtask_count: int = Field(default=0)
     
     @property
