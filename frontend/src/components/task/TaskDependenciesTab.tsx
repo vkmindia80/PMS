@@ -185,7 +185,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
           </div>
 
           <div className="space-y-3">
-            {task.dependencies.length === 0 ? (
+            {(task.dependencies || []).length === 0 ? (
               <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
                 <ArrowLeft className="h-12 w-12 mx-auto mb-3 text-gray-300" />
                 <h4 className="font-medium text-gray-700 mb-1">No Dependencies</h4>
