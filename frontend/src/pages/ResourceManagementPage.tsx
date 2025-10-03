@@ -548,7 +548,7 @@ const ResourceManagementPage: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">{team.utilization_percent}%</p>
-                    <p className="text-xs text-gray-500">{team.utilized_hours}h / {team.total_capacity_hours}h</p>
+                    <p className="text-xs text-gray-500">{formatHoursWithSuffix(team.utilized_hours)} / {formatHoursWithSuffix(team.total_capacity_hours)}</p>
                   </div>
                   <div className="w-24 bg-gray-200 rounded-full h-2">
                     <div 
