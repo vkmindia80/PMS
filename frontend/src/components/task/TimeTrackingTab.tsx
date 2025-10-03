@@ -260,7 +260,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
           </span>
         </h3>
         
-        {task.time_tracking.logged_time && task.time_tracking.logged_time.length > 0 ? (
+        {task.time_tracking?.logged_time && task.time_tracking.logged_time.length > 0 ? (
           <div className="space-y-3">
             {/* Summary Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
