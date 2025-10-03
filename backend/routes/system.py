@@ -61,14 +61,17 @@ async def generate_comprehensive_demo_data():
                             "success_rate": 100,
                             "access_info": report_data.get('access_information', {}),
                             "features": [
-                                f"{report_data.get('summary', {}).get('users_created', 0)} Professional Users with Skills & Roles",
-                                f"{report_data.get('summary', {}).get('teams_created', 0)} Specialized Teams (Dev, Design, Marketing, Sales, Ops)",
-                                f"{report_data.get('summary', {}).get('projects_created', 0)} Diverse Enterprise Projects",
-                                f"{report_data.get('summary', {}).get('tasks_created', 0)} Realistic Tasks with Dependencies",
-                                f"{report_data.get('summary', {}).get('comments_created', 0)} Comments & Discussions",
-                                f"{report_data.get('summary', {}).get('files_created', 0)} File Attachments",
-                                "AI Training Records and Integration Configurations",
-                                "Complete Analytics and Resource Management Data"
+                                f"👥 {report_data.get('summary', {}).get('users_created', 0)} Professional Users with Skills & Roles",
+                                f"👨‍👩‍👧‍👦 {report_data.get('summary', {}).get('teams_created', 0)} Specialized Teams (AI, Blockchain, IoT, FinTech, etc.)",
+                                f"📁 {report_data.get('summary', {}).get('projects_created', 0)} Diverse Enterprise Projects with Budgets & Timelines",
+                                f"✅ {report_data.get('summary', {}).get('tasks_created', 0)} Enhanced Tasks with Start/End Dates",
+                                f"🔗 {report_data.get('statistics', {}).get('tasks_with_dependencies', 0)} Tasks with Dependencies ({report_data.get('statistics', {}).get('dependency_completion_rate', '0%')})",
+                                f"👥 {report_data.get('statistics', {}).get('tasks_with_multiple_assignees', 0)} Multi-Assignee Tasks ({report_data.get('statistics', {}).get('multi_assignee_rate', '0%')})",
+                                f"⏱️ {report_data.get('statistics', {}).get('total_estimated_hours', 0):,.0f} Hours of Time Tracking Data",
+                                f"💬 {report_data.get('summary', {}).get('comments_created', 0)} Comments & Discussions",
+                                f"📎 {report_data.get('summary', {}).get('files_created', 0)} File Attachments",
+                                "🤖 AI Training Records and Integration Configurations",
+                                "📊 Complete Analytics and Resource Management Data"
                             ]
                         }
                     }
