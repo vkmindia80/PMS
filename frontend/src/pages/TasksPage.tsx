@@ -115,6 +115,31 @@ const TasksPage: React.FC = () => {
     critical: { label: 'Critical', color: 'text-red-600', icon: '🚨' }
   }
 
+  // Fetch users for assignee lookup
+  const fetchUsers = async () => {
+    if (!tokens?.access_token) return
+    
+    try {
+      const response = await fetch(`${API_BASE}/api/users/`, {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (response.ok) {
+        const usersData = await response.json()
+        const userLookup: Record<string, any> = {}
+        usersData.forEach((user: any) => {
+          userLookup[user.id] = user
+        })
+        setUsers(userLookup)
+      }
+    } catch (err) {
+      console.error('Error fetching users:', err)
+    }
+  }
+
   // Fetch tasks
   const fetchTasks = async () => {
     if (!tokens?.access_token) return
