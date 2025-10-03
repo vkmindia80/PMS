@@ -1129,19 +1129,19 @@ const TaskAnalytics: React.FC<{
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">
-              {analytics.time_tracking.total_estimated_hours}h
+              {formatHoursWithSuffix(analytics.time_tracking.total_estimated_hours)}
             </div>
             <p className="text-sm text-gray-500">Estimated Hours</p>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600">
-              {analytics.time_tracking.total_actual_hours}h
+              {formatHoursWithSuffix(analytics.time_tracking.total_actual_hours)}
             </div>
             <p className="text-sm text-gray-500">Actual Hours</p>
           </div>
           <div className="text-center">
             <div className={`text-2xl font-bold ${analytics.time_tracking.time_variance >= 0 ? 'text-red-600' : 'text-green-600'}`}>
-              {analytics.time_tracking.time_variance >= 0 ? '+' : ''}{analytics.time_tracking.time_variance}h
+              {analytics.time_tracking.time_variance >= 0 ? '+' : ''}{formatHours(analytics.time_tracking.time_variance)}h
             </div>
             <p className="text-sm text-gray-500">Variance</p>
           </div>
