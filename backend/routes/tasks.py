@@ -19,6 +19,27 @@ from models.user import User
 
 router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 
+def create_task_summary(task: Dict) -> TaskSummary:
+    """Helper function to create TaskSummary from task dict"""
+    return TaskSummary(
+        id=task["id"],
+        title=task["title"],
+        status=TaskStatus(task["status"]),
+        priority=TaskPriority(task["priority"]),
+        type=TaskType(task["type"]),
+        project_id=task["project_id"],
+        organization_id=task.get("organization_id"),
+        assignee_id=task.get("assignee_id"),
+        assignee_ids=task.get("assignee_ids", []),
+        due_date=task.get("due_date"),
+        start_date=task.get("start_date"),
+        created_at=task.get("created_at"),
+        updated_at=task.get("updated_at"),
+        progress_percentage=task.get("progress_percentage", 0.0),
+        time_tracking=TaskTimeTracking(**task.get("time_tracking", {})) if task.get("time_tracking") else None,
+        subtask_count=task.get("subtask_count", 0)
+    )
+
 @router.post("/", response_model=Task, status_code=status.HTTP_201_CREATED)
 async def create_task(
     task_data: TaskCreate,
