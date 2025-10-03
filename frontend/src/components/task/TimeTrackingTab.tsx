@@ -110,7 +110,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
               'text-gray-600'
             }`}>
               {timeVariance.status === 'no-estimate' ? 'N/A' : 
-               `${timeVariance.variance > 0 ? '+' : ''}${timeVariance.variance.toFixed(1)}h`
+               `${timeVariance.variance > 0 ? '+' : ''}${formatHours(timeVariance.variance)}h`
               }
             </div>
             <div className="text-sm text-gray-600">Variance</div>
