@@ -256,7 +256,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
           <TrendingUp className="h-5 w-5 mr-2 text-purple-600" />
           Time Entries History
           <span className="ml-2 text-sm font-normal text-gray-500">
-            ({task.time_tracking.logged_time?.length || 0} entries)
+            ({task.time_tracking?.logged_time?.length || 0} entries)
           </span>
         </h3>
         
