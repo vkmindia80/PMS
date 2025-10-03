@@ -79,10 +79,10 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
 
   // Calculate dependency health
   const dependencyHealth = {
-    total: task.dependencies.length + dependentTasks.length,
-    blocked: dependentTasks.filter(t => t.status === 'blocked').length,
-    completed: [...task.dependencies, ...dependentTasks].filter(dep => {
-      const depTask = relatedTasks.find(t => t.id === dep.task_id || t.id === dep.id)
+    total: (task.dependencies || []).length + (dependentTasks || []).length,
+    blocked: (dependentTasks || []).filter(t => t.status === 'blocked').length,
+    completed: [...(task.dependencies || []), ...(dependentTasks || [])].filter(dep => {
+      const depTask = (relatedTasks || []).find(t => t.id === dep.task_id || t.id === dep.id)
       return depTask?.status === 'completed'
     }).length
   }
