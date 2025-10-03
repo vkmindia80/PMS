@@ -53,6 +53,12 @@ async def generate_comprehensive_demo_data():
                             "tasks_created": report_data.get('summary', {}).get('tasks_created', 0),
                             "comments_created": report_data.get('summary', {}).get('comments_created', 0),
                             "files_created": report_data.get('summary', {}).get('files_created', 0),
+                            "tasks_with_dependencies": report_data.get('statistics', {}).get('tasks_with_dependencies', 0),
+                            "tasks_with_multiple_assignees": report_data.get('statistics', {}).get('tasks_with_multiple_assignees', 0),
+                            "total_estimated_hours": report_data.get('statistics', {}).get('total_estimated_hours', 0),
+                            "dependency_rate": report_data.get('statistics', {}).get('dependency_completion_rate', '0%'),
+                            "multi_assignee_rate": report_data.get('statistics', {}).get('multi_assignee_rate', '0%'),
+                            "success_rate": 100,
                             "access_info": report_data.get('access_information', {}),
                             "features": [
                                 f"{report_data.get('summary', {}).get('users_created', 0)} Professional Users with Skills & Roles",
