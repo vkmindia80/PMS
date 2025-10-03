@@ -34,10 +34,10 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
   const [dependencyType, setDependencyType] = useState<'blocks' | 'depends_on'>('depends_on')
 
   // Filter tasks for dependency selection
-  const availableTasksForDependency = relatedTasks.filter(t => 
+  const availableTasksForDependency = (relatedTasks || []).filter(t => 
     t.id !== task.id && 
-    !task.dependencies.some(dep => dep.task_id === t.id) &&
-    t.title.toLowerCase().includes(searchTerm.toLowerCase())
+    !(task.dependencies || []).some(dep => dep.task_id === t.id) &&
+    t.title && t.title.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const getDependencyTypeIcon = (type: string) => {
