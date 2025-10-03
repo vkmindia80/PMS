@@ -206,85 +206,227 @@ class ComprehensiveDemoDataGenerator:
             }
         ]
         
-        # Project templates with realistic data
+        # 10 Diverse, Comprehensive Project Templates with Industry-Specific Requirements
         self.project_templates = [
             {
-                "name": "E-commerce Platform Redesign",
-                "description": "Complete overhaul of the company's e-commerce platform with modern UI/UX, enhanced performance, and mobile responsiveness",
-                "type": "software_development",
-                "priority": "high",
-                "status": "active",
-                "estimated_hours": 2400,
-                "duration_weeks": 16,
-                "budget": 180000,
-                "required_skills": ["React", "Node.js", "PostgreSQL", "UI/UX Design", "DevOps"],
-                "category": "Web Development",
-                "tags": ["ecommerce", "frontend", "backend", "redesign"]
-            },
-            {
-                "name": "Mobile App Development", 
-                "description": "Native mobile application for iOS and Android platforms with offline capabilities and real-time synchronization",
-                "type": "mobile_development",
+                "name": "AI-Powered Medical Diagnosis Platform",
+                "description": "FDA-compliant AI platform for automated medical image analysis supporting radiology, pathology, and dermatology workflows. Integrates with existing PACS/RIS systems and provides real-time diagnostic assistance with explainable AI features.",
+                "type": "healthcare_ai",
                 "priority": "critical",
                 "status": "active",
-                "estimated_hours": 1800,
-                "duration_weeks": 12,
-                "budget": 150000,
-                "required_skills": ["React Native", "Mobile Development", "API Integration", "UI/UX Design"],
-                "category": "Mobile Development",
-                "tags": ["mobile", "ios", "android", "cross-platform"]
+                "estimated_hours": 4800,
+                "duration_weeks": 28,
+                "budget": 850000,
+                "required_skills": ["TensorFlow", "PyTorch", "Computer Vision", "DICOM", "HL7 FHIR", "Medical Imaging", "FDA Compliance"],
+                "category": "Healthcare AI",
+                "tags": ["ai", "healthcare", "fda", "medical-imaging", "compliance"],
+                "compliance_requirements": ["HIPAA", "FDA 510k", "ISO 13485", "IEC 62304"],
+                "stakeholders": ["Radiologists", "Hospital IT", "FDA Regulatory", "Clinical Research"],
+                "risks": ["Regulatory approval delays", "Clinical validation challenges", "Integration complexity"],
+                "budget_breakdown": {
+                    "development": 450000,
+                    "compliance": 200000,
+                    "clinical_trials": 150000,
+                    "infrastructure": 50000
+                }
             },
             {
-                "name": "Data Analytics Dashboard",
-                "description": "Business intelligence dashboard for real-time analytics, reporting, and data visualization with interactive charts",
-                "type": "analytics",
-                "priority": "medium", 
+                "name": "Smart City IoT Traffic Management System",
+                "description": "Large-scale IoT deployment for intelligent traffic optimization across metropolitan area. Includes edge computing nodes, real-time analytics, predictive modeling, and integration with existing city infrastructure.",
+                "type": "iot_smartcity",
+                "priority": "high",
+                "status": "planning",
+                "estimated_hours": 5500,
+                "duration_weeks": 32,
+                "budget": 1200000,
+                "required_skills": ["IoT Architecture", "Edge Computing", "5G", "Real-time Analytics", "MQTT", "LoRaWAN", "Machine Learning"],
+                "category": "Smart Infrastructure",
+                "tags": ["iot", "smart-city", "traffic", "edge-computing", "analytics"],
+                "compliance_requirements": ["FCC Regulations", "Data Privacy Laws", "Municipal Standards"],
+                "stakeholders": ["City Planning", "Traffic Authority", "Citizens", "Emergency Services"],
+                "risks": ["Weather resilience", "Cybersecurity threats", "Public privacy concerns"],
+                "budget_breakdown": {
+                    "hardware": 600000,
+                    "development": 350000,
+                    "deployment": 200000,
+                    "maintenance": 50000
+                }
+            },
+            {
+                "name": "Blockchain-Based Supply Chain Tracker",
+                "description": "Immutable supply chain transparency platform using Ethereum smart contracts. Enables end-to-end traceability from raw materials to consumer delivery with automated compliance reporting and sustainability metrics.",
+                "type": "blockchain_logistics",
+                "priority": "medium",
                 "status": "active",
-                "estimated_hours": 1200,
-                "duration_weeks": 10,
-                "budget": 90000,
-                "required_skills": ["Python", "Data Science", "React", "PostgreSQL"],
-                "category": "Data Science",
-                "tags": ["analytics", "dashboard", "data", "visualization"]
+                "estimated_hours": 3200,
+                "duration_weeks": 22,
+                "budget": 480000,
+                "required_skills": ["Solidity", "Ethereum", "Smart Contracts", "Web3", "Supply Chain", "Cryptography"],
+                "category": "Blockchain Logistics",
+                "tags": ["blockchain", "supply-chain", "transparency", "smart-contracts", "sustainability"],
+                "compliance_requirements": ["GDPR", "Import/Export Regulations", "Environmental Standards"],
+                "stakeholders": ["Suppliers", "Manufacturers", "Retailers", "Regulators", "Consumers"],
+                "risks": ["Gas fee volatility", "Scalability limitations", "Adoption resistance"],
+                "budget_breakdown": {
+                    "development": 280000,
+                    "smart_contracts": 120000,
+                    "integration": 60000,
+                    "auditing": 20000
+                }
             },
             {
-                "name": "Customer Support Portal",
-                "description": "Self-service customer support portal with AI-powered chatbot, knowledge base, and ticket management system", 
-                "type": "customer_service",
+                "name": "Real-Time Financial Trading Platform",
+                "description": "Ultra-low latency algorithmic trading system supporting equities, derivatives, and cryptocurrency markets. Includes risk management, compliance monitoring, and real-time market data processing at microsecond speeds.",
+                "type": "fintech_trading",
+                "priority": "critical",
+                "status": "active",
+                "estimated_hours": 6000,
+                "duration_weeks": 36,
+                "budget": 2100000,
+                "required_skills": ["HFT", "C++", "Quantitative Analysis", "Risk Management", "Trading Systems", "Market Data"],
+                "category": "Financial Technology",
+                "tags": ["fintech", "trading", "hft", "risk-management", "algorithms"],
+                "compliance_requirements": ["SEC Regulations", "FINRA", "SOX", "MiFID II", "Basel III"],
+                "stakeholders": ["Traders", "Risk Managers", "Compliance Officers", "Regulators"],
+                "risks": ["Market volatility", "Regulatory changes", "System latency", "Cybersecurity"],
+                "budget_breakdown": {
+                    "development": 1200000,
+                    "infrastructure": 500000,
+                    "compliance": 300000,
+                    "testing": 100000
+                }
+            },
+            {
+                "name": "AR/VR Corporate Training Ecosystem",
+                "description": "Immersive training platform for enterprise skills development using mixed reality. Includes safety simulations, soft skills training, and collaborative virtual environments with learning analytics and progress tracking.",
+                "type": "xr_training",
                 "priority": "medium",
                 "status": "planning",
-                "estimated_hours": 1600,
-                "duration_weeks": 14,
-                "budget": 120000,
-                "required_skills": ["Vue.js", "Python", "AI/ML", "UI/UX Design"],
-                "category": "Customer Service",
-                "tags": ["support", "ai", "chatbot", "self-service"]
+                "estimated_hours": 3800,
+                "duration_weeks": 24,
+                "budget": 720000,
+                "required_skills": ["Unity", "Unreal Engine", "ARKit", "ARCore", "3D Modeling", "Learning Analytics", "VR/AR UX"],
+                "category": "Extended Reality",
+                "tags": ["ar", "vr", "training", "enterprise", "simulation", "analytics"],
+                "compliance_requirements": ["SCORM", "xAPI", "Accessibility Standards", "Corporate Training Standards"],
+                "stakeholders": ["HR Teams", "Training Managers", "Employees", "Safety Officers"],
+                "risks": ["VR motion sickness", "Hardware compatibility", "Content development costs"],
+                "budget_breakdown": {
+                    "development": 450000,
+                    "content_creation": 180000,
+                    "hardware": 60000,
+                    "deployment": 30000
+                }
             },
             {
-                "name": "Marketing Automation System",
-                "description": "Comprehensive marketing automation platform with email campaigns, lead scoring, and customer journey mapping",
-                "type": "marketing",
-                "priority": "medium",
-                "status": "completed",
-                "estimated_hours": 2000, 
-                "duration_weeks": 15,
-                "budget": 140000,
-                "required_skills": ["JavaScript", "Python", "Marketing", "Database"],
-                "category": "Marketing Technology",
-                "tags": ["automation", "email", "campaigns", "leads"]
-            },
-            {
-                "name": "Infrastructure Modernization",
-                "description": "Migration to cloud-native architecture with microservices, containerization, and automated deployment pipelines",
-                "type": "infrastructure",
+                "name": "Quantum Computing Research Platform",
+                "description": "Hybrid quantum-classical computing platform for materials science and drug discovery research. Provides quantum simulation capabilities, algorithm development tools, and secure access to quantum hardware resources.",
+                "type": "quantum_research",
                 "priority": "high",
                 "status": "active",
-                "estimated_hours": 2800,
+                "estimated_hours": 4500,
+                "duration_weeks": 30,
+                "budget": 950000,
+                "required_skills": ["Quantum Computing", "Qiskit", "Linear Algebra", "Quantum Algorithms", "Materials Science", "Drug Discovery"],
+                "category": "Advanced Computing",
+                "tags": ["quantum", "research", "materials", "drug-discovery", "simulation"],
+                "compliance_requirements": ["Research Ethics", "Data Security", "Export Controls", "IP Protection"],
+                "stakeholders": ["Research Scientists", "Universities", "Pharmaceutical Companies", "Government Agencies"],
+                "risks": ["Quantum coherence limitations", "Hardware availability", "Talent scarcity"],
+                "budget_breakdown": {
+                    "development": 550000,
+                    "quantum_hardware": 250000,
+                    "research": 100000,
+                    "security": 50000
+                }
+            },
+            {
+                "name": "Sustainable Energy Management System",
+                "description": "Smart grid optimization platform integrating renewable energy sources, battery storage, and demand response. Provides real-time energy trading, carbon footprint tracking, and predictive maintenance for energy infrastructure.",
+                "type": "energy_management",
+                "priority": "high",
+                "status": "active",
+                "estimated_hours": 4200,
+                "duration_weeks": 26,
+                "budget": 780000,
+                "required_skills": ["Smart Grid", "Energy Storage", "Battery Management", "SCADA", "Power Electronics", "Machine Learning"],
+                "category": "Green Technology",
+                "tags": ["energy", "sustainability", "smart-grid", "renewable", "carbon-tracking"],
+                "compliance_requirements": ["Grid Codes", "Environmental Regulations", "Energy Market Rules"],
+                "stakeholders": ["Utilities", "Energy Traders", "Environmental Agencies", "Consumers"],
+                "risks": ["Grid stability", "Weather dependency", "Regulatory changes", "Technology obsolescence"],
+                "budget_breakdown": {
+                    "development": 420000,
+                    "hardware": 240000,
+                    "integration": 80000,
+                    "certification": 40000
+                }
+            },
+            {
+                "name": "Next-Gen Gaming Platform with Social Features",
+                "description": "Cloud-based gaming ecosystem supporting cross-platform multiplayer experiences with integrated social features, live streaming, tournaments, and user-generated content. Includes anti-cheat systems and community moderation.",
+                "type": "gaming_social",
+                "priority": "medium",
+                "status": "completed",
+                "estimated_hours": 5200,
+                "duration_weeks": 34,
+                "budget": 920000,
+                "required_skills": ["Unreal Engine", "Unity", "Multiplayer Systems", "Cloud Gaming", "Live Streaming", "Community Management"],
+                "category": "Gaming Entertainment",
+                "tags": ["gaming", "multiplayer", "social", "streaming", "tournaments"],
+                "compliance_requirements": ["Age Rating Systems", "Data Protection", "Content Moderation", "Anti-Cheat Policies"],
+                "stakeholders": ["Gamers", "Content Creators", "Game Developers", "Esports Organizations"],
+                "risks": ["Server capacity", "Toxicity management", "Competitive landscape", "Platform fees"],
+                "budget_breakdown": {
+                    "development": 520000,
+                    "infrastructure": 280000,
+                    "content": 80000,
+                    "marketing": 40000
+                }
+            },
+            {
+                "name": "AI-Driven Cybersecurity Threat Detection",
+                "description": "Enterprise security platform using machine learning for real-time threat detection, behavioral analytics, and automated incident response. Integrates with SIEM systems and provides zero-trust security architecture.",
+                "type": "cybersecurity_ai",
+                "priority": "critical",
+                "status": "active",
+                "estimated_hours": 3600,
                 "duration_weeks": 20,
-                "budget": 200000,
-                "required_skills": ["DevOps", "Docker", "Kubernetes", "AWS", "Python"],
-                "category": "Infrastructure",
-                "tags": ["cloud", "microservices", "containers", "automation"]
+                "budget": 680000,
+                "required_skills": ["Machine Learning", "Cybersecurity", "SIEM", "Threat Intelligence", "Network Security", "Incident Response"],
+                "category": "Enterprise Security",
+                "tags": ["cybersecurity", "ai", "threat-detection", "zero-trust", "siem"],
+                "compliance_requirements": ["SOC 2", "ISO 27001", "NIST Framework", "GDPR"],
+                "stakeholders": ["Security Teams", "IT Operations", "Compliance Officers", "Executive Leadership"],
+                "risks": ["False positive rates", "Advanced persistent threats", "Skill shortage", "Regulatory compliance"],
+                "budget_breakdown": {
+                    "development": 400000,
+                    "security_tools": 180000,
+                    "training": 60000,
+                    "compliance": 40000
+                }
+            },
+            {
+                "name": "Adaptive EdTech Learning Platform",
+                "description": "AI-powered personalized learning ecosystem with adaptive content delivery, real-time assessment, and learning analytics. Supports multiple pedagogical approaches and integrates with existing educational infrastructure.",
+                "type": "edtech_adaptive",
+                "priority": "medium",
+                "status": "planning",
+                "estimated_hours": 3400,
+                "duration_weeks": 18,
+                "budget": 520000,
+                "required_skills": ["Learning Analytics", "Adaptive Learning", "AI/ML", "Educational Psychology", "LMS Integration", "Accessibility"],
+                "category": "Educational Technology",
+                "tags": ["edtech", "adaptive-learning", "ai", "analytics", "personalization"],
+                "compliance_requirements": ["COPPA", "FERPA", "Accessibility Standards", "Educational Standards"],
+                "stakeholders": ["Educators", "Students", "Administrators", "Parents", "Education Boards"],
+                "risks": ["Learning effectiveness validation", "Privacy concerns", "Teacher adoption", "Technology gaps"],
+                "budget_breakdown": {
+                    "development": 300000,
+                    "content": 120000,
+                    "research": 70000,
+                    "accessibility": 30000
+                }
             }
         ]
 
