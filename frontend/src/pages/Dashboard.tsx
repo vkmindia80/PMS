@@ -129,7 +129,9 @@ const Dashboard: React.FC = () => {
 
       setDashboardData({
         projects: projectsCount,
+        total_projects: projectsCount,
         teams: teamsCount,
+        team_members: teamsCount, // Fallback logic for backwards compatibility
         tasks: tasksCount
       })
     } catch (error) {
