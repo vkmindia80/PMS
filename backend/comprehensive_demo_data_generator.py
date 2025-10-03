@@ -1701,7 +1701,15 @@ class ComprehensiveDemoDataGenerator:
                     "completed_projects": completed_projects,
                     "active_tasks": active_tasks,
                     "completed_tasks": completed_tasks,
-                    "team_members_total": len(self.generated_data["users"]) + 1  # +1 for demo user
+                    "team_members_total": len(self.generated_data["users"]) + 1,  # +1 for demo user
+                    "tasks_with_dependencies": tasks_with_dependencies,
+                    "tasks_with_multiple_assignees": tasks_with_multiple_assignees,
+                    "total_estimated_hours": total_estimated_hours,
+                    "total_actual_hours": total_actual_hours,
+                    "teams_by_type": teams_by_type,
+                    "projects_by_category": projects_by_category,
+                    "dependency_completion_rate": f"{(tasks_with_dependencies / len(self.generated_data['tasks']) * 100):.1f}%" if self.generated_data["tasks"] else "0%",
+                    "multi_assignee_rate": f"{(tasks_with_multiple_assignees / len(self.generated_data['tasks']) * 100):.1f}%" if self.generated_data["tasks"] else "0%"
                 },
                 "access_information": {
                     "demo_login": "demo@company.com / demo123456",
