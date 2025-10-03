@@ -309,17 +309,56 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     if (!task || !tokens?.access_token) return
     
     try {
-      const response = await fetch(`${API_URL}/api/tasks?project_id=${task.project_id}&limit=10`, {
+      // Fetch tasks that this task depends on (prerequisites)
+      const dependencyTaskIds = (task.dependencies || []).map(dep => dep.task_id)
+      const dependencyTasks = []
+      
+      // Fetch each dependency task
+      for (const taskId of dependencyTaskIds) {
+        try {
+          const response = await fetch(`${getApiUrlDynamic()}/api/tasks/${taskId}`, {
+            headers: {
+              'Authorization': `Bearer ${tokens.access_token}`,
+              'Content-Type': 'application/json'
+            }
+          })
+          
+          if (response.ok) {
+            const dependencyTask = await response.json()
+            dependencyTasks.push({
+              ...dependencyTask,
+              relationshipType: 'dependency', // This task depends on this
+              relationshipLabel: 'Prerequisite'
+            })
+          }
+        } catch (error) {
+          console.error(`Error fetching dependency task ${taskId}:`, error)
+        }
+      }
+      
+      // Fetch tasks that depend on this task (dependents)
+      const dependentsResponse = await fetch(`${getApiUrlDynamic()}/api/tasks/${task.id}/dependents`, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
         }
       })
       
-      if (response.ok) {
-        const tasks = await response.json()
-        setRelatedTasks(tasks.filter((t: any) => t.id !== task.id))
+      let dependentTasks = []
+      if (dependentsResponse.ok) {
+        const dependents = await dependentsResponse.json()
+        dependentTasks = dependents.map((dep: any) => ({
+          ...dep,
+          relationshipType: 'dependent', // This task blocks this
+          relationshipLabel: 'Blocks'
+        }))
+        setDependentTasks(dependents)
       }
+      
+      // Combine both dependency and dependent tasks for the Related Tasks section
+      const allRelatedTasks = [...dependencyTasks, ...dependentTasks]
+      setRelatedTasks(allRelatedTasks)
+      
     } catch (error) {
       console.error('Error fetching related tasks:', error)
     }
