@@ -313,7 +313,9 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     
     try {
       // Fetch tasks that this task depends on (prerequisites)
-      const dependencyTaskIds = (task.dependencies || []).map(dep => dep.task_id)
+      const dependencyTaskIds = (task.dependencies || []).map(dep => 
+        typeof dep === 'string' ? dep : dep.task_id
+      )
       console.log('🔍 Dependency task IDs:', dependencyTaskIds)
       
       const dependencyTasks = []
