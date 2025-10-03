@@ -1,5 +1,6 @@
 import React from 'react'
 import { Clock, Play, Pause, Square, Plus, Timer, TrendingUp, Target } from 'lucide-react'
+import { formatHours, formatHoursWithSuffix, formatHoursVariance } from '../../utils/hourFormatter'
 
 interface Task {
   id: string
