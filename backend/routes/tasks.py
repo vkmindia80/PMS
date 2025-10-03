@@ -276,15 +276,42 @@ async def get_task_with_details(
         
         # Prepare detailed task response - safely handle task data
         try:
-            # First try to create Task object to validate data
-            task_obj = Task(**task)
+            # Clean up task data before validation
+            cleaned_task = dict(task)
+            
+            # Fix dependencies format - convert strings to proper TaskDependency format
+            if "dependencies" in cleaned_task and cleaned_task["dependencies"]:
+                fixed_dependencies = []
+                for dep in cleaned_task["dependencies"]:
+                    if isinstance(dep, str):
+                        # Convert string ID to TaskDependency format
+                        fixed_dependencies.append({
+                            "task_id": dep,
+                            "dependency_type": "blocks"
+                        })
+                    elif isinstance(dep, dict):
+                        fixed_dependencies.append(dep)
+                cleaned_task["dependencies"] = fixed_dependencies
+            
+            # Ensure time_tracking has proper structure
+            if "time_tracking" in cleaned_task and cleaned_task["time_tracking"]:
+                time_tracking = cleaned_task["time_tracking"]
+                if not isinstance(time_tracking, dict):
+                    cleaned_task["time_tracking"] = {
+                        "estimated_hours": None,
+                        "actual_hours": 0.0,
+                        "logged_time": []
+                    }
+            
+            # Try to create Task object to validate data
+            task_obj = Task(**cleaned_task)
             task_with_details = task_obj.dict()
         except Exception as validation_error:
-            # If validation fails, use raw task data and handle missing fields
+            # If validation still fails, use raw task data with safe defaults
             print(f"Task validation error for {task_id}: {validation_error}")
             task_with_details = dict(task)
             
-            # Ensure required fields exist with defaults
+            # Ensure required fields exist with safe defaults
             task_with_details.setdefault("progress_percentage", 0.0)
             task_with_details.setdefault("time_tracking", {
                 "estimated_hours": None,
