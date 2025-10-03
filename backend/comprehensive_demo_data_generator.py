@@ -1225,6 +1225,40 @@ class ComprehensiveDemoDataGenerator:
                     elif status == "in_review":
                         actual_hours = estimated_hours * random.uniform(0.8, 1.0)
                     
+                    # Enhanced team member assignment - assign multiple team members
+                    assigned_team_members = [assignee_id] if assignee_id else []
+                    if len(project["team_members"]) > 1 and random.random() < 0.4:  # 40% chance for multiple assignees
+                        additional_members = random.sample(
+                            [m for m in project["team_members"] if m != assignee_id], 
+                            min(2, len(project["team_members"]) - 1)
+                        )
+                        assigned_team_members.extend(additional_members)
+                    
+                    # Enhanced date calculation with proper sequencing
+                    if project.get("start_date"):
+                        # Calculate based on project timeline and task sequence
+                        project_duration = (project.get("due_date", datetime.utcnow()) - project["start_date"]).days
+                        task_sequence_offset = int(i / len(selected_tasks) * project_duration * 0.8)  # 80% of project duration for tasks
+                        task_start = project["start_date"] + timedelta(days=task_sequence_offset)
+                        task_duration = random.randint(2, 14)  # 2-14 days per task
+                        task_due = task_start + timedelta(days=task_duration)
+                        
+                        # Adjust for weekends (simplified - just add days if due on weekend)
+                        while task_due.weekday() >= 5:  # Saturday = 5, Sunday = 6
+                            task_due += timedelta(days=1)
+                    else:
+                        task_start = datetime.utcnow()
+                        task_due = task_start + timedelta(days=random.randint(3, 21))
+                    
+                    # More realistic progress and completion dates
+                    if status == "completed":
+                        actual_completion = task_due - timedelta(days=random.randint(0, 3))  # Completed slightly before or on due date
+                        task_completed_at = actual_completion
+                    elif status == "in_review":
+                        task_completed_at = None
+                    else:
+                        task_completed_at = None
+                    
                     task_data = {
                         "id": task_id,
                         "title": task_title,
@@ -1233,24 +1267,33 @@ class ComprehensiveDemoDataGenerator:
                         "priority": random.choice(["low", "medium", "high", "critical"]),
                         "type": random.choice(["task", "feature", "bug", "improvement"]),
                         "project_id": project["id"],
-                        "organization_id": self.org_id,  # Add organization_id for API filtering
+                        "organization_id": self.org_id,
                         "assignee_id": assignee_id,
+                        "assigned_team_members": assigned_team_members,  # Multiple team members
                         "reporter_id": project["owner_id"],
                         "parent_task_id": None,
-                        "due_date": task_due if task_due else None,
-                        "start_date": task_start if task_start else None,
-                        "completed_at": task_due if status == "completed" else None,
+                        "due_date": task_due,
+                        "start_date": task_start,
+                        "completed_at": task_completed_at,
                         "time_tracking": {
                             "estimated_hours": estimated_hours,
                             "actual_hours": actual_hours,
-                            "logged_time": []
+                            "logged_time": [],
+                            "billable_hours": actual_hours * random.uniform(0.7, 1.0),  # Some hours may be non-billable
+                            "overtime_hours": max(0, actual_hours - estimated_hours) if actual_hours > estimated_hours else 0
                         },
-                        "dependencies": [],
+                        "dependencies": [],  # Will be populated after all tasks are created
+                        "blocking_tasks": [],  # Tasks that this task is blocking
                         "subtasks": [],
                         "tags": random.sample(project["tags"], min(2, len(project["tags"]))),
                         "labels": [project["category"]],
-                        "custom_fields": {},
+                        "custom_fields": {
+                            "complexity": random.choice(["low", "medium", "high", "very_high"]),
+                            "business_value": random.choice(["low", "medium", "high", "critical"]),
+                            "risk_level": random.choice(["low", "medium", "high"])
+                        },
                         "progress_percentage": 100 if status == "completed" else (80 if status == "in_review" else (random.randint(20, 70) if status == "in_progress" else 0)),
+                        "effort_points": random.randint(1, 13),  # Story points / effort estimation
                         "created_at": datetime.utcnow() - timedelta(days=random.randint(1, 30)),
                         "updated_at": datetime.utcnow()
                     }
