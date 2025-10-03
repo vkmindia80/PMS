@@ -189,7 +189,6 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
       calculateTaskHealth()
       fetchTaskWithDetails()
       fetchAvailableUsers()
-      fetchRelatedTasks()
       if (activeTab === 'comments') {
         fetchComments()
       } else if (activeTab === 'activity') {
@@ -199,6 +198,14 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
       }
     }
   }, [task, isOpen, activeTab])
+
+  // Separate useEffect to fetch related tasks after taskWithDetails is available
+  useEffect(() => {
+    if (taskWithDetails && isOpen) {
+      console.log('🔍 taskWithDetails available, fetching related tasks')
+      fetchRelatedTasks()
+    }
+  }, [taskWithDetails, isOpen])
 
   const calculateTaskHealth = () => {
     if (!task) return
