@@ -165,7 +165,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
               />
             </div>
             <div className="text-xs text-gray-500 mt-1">
-              {(task.time_tracking?.actual_hours || 0).toFixed(1)}h of {task.time_tracking?.estimated_hours || 0}h estimated
+              {formatHoursWithSuffix(task.time_tracking?.actual_hours)} of {formatHoursWithSuffix(task.time_tracking?.estimated_hours)} estimated
             </div>
           </div>
         )}
