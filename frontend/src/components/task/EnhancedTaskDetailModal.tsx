@@ -516,7 +516,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     if (!task || !timeLogHours || !tokens?.access_token) return
     
     try {
-      const response = await fetch(`${API_URL}/api/tasks/${task.id}/time/log?hours=${timeLogHours}&description=${encodeURIComponent(timeLogDescription)}`, {
+      const response = await fetch(`${getApiUrlDynamic()}/api/tasks/${task.id}/time/log?hours=${timeLogHours}&description=${encodeURIComponent(timeLogDescription)}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
