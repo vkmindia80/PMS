@@ -99,9 +99,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
       
       if (result.success) {
         toast.success(
-          `✅ Demo data generated successfully!\n` +
-          `📊 ${result.details?.total_data_points || 0}+ data points created\n` +
-          `⚡ Success rate: ${result.details?.success_rate || 0}%`,
+          `🎉 Enhanced demo data generated successfully!\n` +
+          `📊 ${result.details?.total_data_points || 0}+ comprehensive data points\n` +
+          `👥 ${result.details?.users_created || 0} users, ${result.details?.teams_created || 0} teams, ${result.details?.projects_created || 0} projects\n` +
+          `✅ ${result.details?.tasks_created || 0} tasks with dates, dependencies & team members`,
           { 
             id: 'demo-generation',
             duration: 5000,
