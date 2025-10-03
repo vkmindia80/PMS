@@ -180,35 +180,45 @@ async def list_projects(
         cursor = db.projects.find(query).skip(skip).limit(limit)
         projects = await cursor.to_list(length=limit)
         
-        # Convert to ProjectSummary format
-        project_summaries = []
-        for project in projects:
-            # Handle due_date conversion from datetime string to date
-            due_date = None
-            if project.get("due_date"):
-                due_date_str = project["due_date"]
-                if isinstance(due_date_str, str):
-                    try:
-                        due_date = datetime.fromisoformat(due_date_str.replace("Z", "+00:00")).date()
-                    except:
-                        due_date = None
-                elif hasattr(due_date_str, 'date'):
-                    due_date = due_date_str.date()
+        # Convert to ProjectSummary format or return full details
+        if full_details:
+            # Return full project details as raw dict (will be serialized as JSON)
+            result_projects = []
+            for project in projects:
+                # Serialize the project data
+                serialized_project = serialize_project(project.copy())
+                result_projects.append(serialized_project)
+            return result_projects
+        else:
+            # Return standard ProjectSummary format
+            project_summaries = []
+            for project in projects:
+                # Handle due_date conversion from datetime string to date
+                due_date = None
+                if project.get("due_date"):
+                    due_date_str = project["due_date"]
+                    if isinstance(due_date_str, str):
+                        try:
+                            due_date = datetime.fromisoformat(due_date_str.replace("Z", "+00:00")).date()
+                        except:
+                            due_date = None
+                    elif hasattr(due_date_str, 'date'):
+                        due_date = due_date_str.date()
+                
+                project_summary = {
+                    "id": project["id"],
+                    "name": project["name"],
+                    "status": project["status"],
+                    "priority": project["priority"],
+                    "progress_percentage": project.get("progress_percentage", 0),
+                    "due_date": due_date,
+                    "owner_id": project["owner_id"],
+                    "task_count": project.get("task_count", 0),
+                    "team_member_count": len(project.get("team_members", []))
+                }
+                project_summaries.append(project_summary)
             
-            project_summary = {
-                "id": project["id"],
-                "name": project["name"],
-                "status": project["status"],
-                "priority": project["priority"],
-                "progress_percentage": project.get("progress_percentage", 0),
-                "due_date": due_date,
-                "owner_id": project["owner_id"],
-                "task_count": project.get("task_count", 0),
-                "team_member_count": len(project.get("team_members", []))
-            }
-            project_summaries.append(project_summary)
-        
-        return project_summaries
+            return project_summaries
         
     except Exception as e:
         raise HTTPException(
