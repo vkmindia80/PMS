@@ -514,8 +514,8 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
                   <span>Dependency Risk:</span>
                   <span className="font-medium">
                     {dependencyHealth.blocked > 0 ? 'High' :
-                     task.dependencies.length > 3 ? 'Medium' :
-                     task.dependencies.length > 0 ? 'Low' :
+                     (task.dependencies || []).length > 3 ? 'Medium' :
+                     (task.dependencies || []).length > 0 ? 'Low' :
                      'None'}
                   </span>
                 </div>
