@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { API_URL } from '../../utils/config'
+import { formatHours, formatHoursWithSuffix, formatHoursVariance } from '../../utils/hourFormatter'
 import toast from 'react-hot-toast'
 
 interface Task {
