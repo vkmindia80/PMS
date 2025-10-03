@@ -620,6 +620,7 @@ const TasksPage: React.FC = () => {
             }}
             statusConfig={statusConfig}
             priorityConfig={priorityConfig}
+            getAssigneeNames={getAssigneeNames}
           />
         )}
 
