@@ -719,31 +719,31 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
               <div className="text-xl font-bold text-blue-600">
-                {task.progress_percentage || 0}%
+                {(taskWithDetails?.progress_percentage ?? task.progress_percentage) || 0}%
               </div>
               <div className="text-sm text-gray-600">Progress</div>
             </div>
             <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
               <div className="text-xl font-bold text-green-600">
-                {task.time_tracking?.estimated_hours || 0}h
+                {(taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0}h
               </div>
               <div className="text-sm text-gray-600">Estimated</div>
             </div>
             <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
               <div className="text-xl font-bold text-orange-600">
-                {task.time_tracking?.actual_hours || 0}h
+                {(taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0}h
               </div>
               <div className="text-sm text-gray-600">Logged</div>
             </div>
             <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
               <div className="text-xl font-bold text-purple-600">
-                {task.comment_count || 0}
+                {(taskWithDetails?.comment_count ?? task.comment_count) || 0}
               </div>
               <div className="text-sm text-gray-600">Comments</div>
             </div>
             <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
               <div className="text-xl font-bold text-indigo-600">
-                {task.dependencies?.length || 0}
+                {(taskWithDetails?.dependencies?.length ?? task.dependencies?.length) || 0}
               </div>
               <div className="text-sm text-gray-600">Dependencies</div>
             </div>
