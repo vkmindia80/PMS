@@ -274,8 +274,29 @@ async def get_task_with_details(
                 "description": project.get("description")
             }
         
-        # Prepare detailed task response
-        task_with_details = Task(**task).dict()
+        # Prepare detailed task response - safely handle task data
+        try:
+            # First try to create Task object to validate data
+            task_obj = Task(**task)
+            task_with_details = task_obj.dict()
+        except Exception as validation_error:
+            # If validation fails, use raw task data and handle missing fields
+            print(f"Task validation error for {task_id}: {validation_error}")
+            task_with_details = dict(task)
+            
+            # Ensure required fields exist with defaults
+            task_with_details.setdefault("progress_percentage", 0.0)
+            task_with_details.setdefault("time_tracking", {
+                "estimated_hours": None,
+                "actual_hours": 0.0,
+                "logged_time": []
+            })
+            task_with_details.setdefault("dependencies", [])
+            task_with_details.setdefault("subtask_count", 0)
+            task_with_details.setdefault("comment_count", 0)
+            task_with_details.setdefault("attachment_count", 0)
+        
+        # Add enriched data
         task_with_details.update({
             "assignees": assignees,
             "reporter": reporter_details,
