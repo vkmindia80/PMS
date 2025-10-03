@@ -299,7 +299,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
                         </div>
                         <div>
                           <div className="font-semibold text-gray-900">
-                            {entry.hours} {entry.hours === 1 ? 'hour' : 'hours'}
+                            {formatHoursWithSuffix(entry.hours)}
                           </div>
                           <div className="text-sm text-gray-600">
                             {new Date(entry.created_at).toLocaleDateString()} at {new Date(entry.created_at).toLocaleTimeString()}
