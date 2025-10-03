@@ -42,7 +42,9 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
   setTimeLogDescription,
   isTimerRunning,
   timerElapsed,
-  formatTime
+  formatTime,
+  onStartTimer,
+  onStopTimer
 }) => {
   const getTimeVariance = () => {
     if (!task.time_tracking?.estimated_hours || task.time_tracking.estimated_hours === 0) {
