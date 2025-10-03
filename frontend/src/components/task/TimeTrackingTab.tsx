@@ -145,7 +145,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
         </div>
 
         {/* Progress Bar */}
-        {task.time_tracking.estimated_hours && (
+        {task.time_tracking?.estimated_hours && (
           <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-gray-700">Time Progress</span>
