@@ -192,8 +192,8 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
                 <p className="text-sm">This task can start immediately</p>
               </div>
             ) : (
-              task.dependencies.map((dep, index) => {
-                const dependentTask = relatedTasks.find(t => t.id === dep.task_id)
+              (task.dependencies || []).map((dep, index) => {
+                const dependentTask = (relatedTasks || []).find(t => t.id === dep.task_id)
                 const { icon, color, bg } = getDependencyTypeIcon(dep.dependency_type)
                 
                 return (
