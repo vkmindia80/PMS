@@ -17,7 +17,9 @@ const Dashboard: React.FC = () => {
   const [showProjectModal, setShowProjectModal] = useState(false)
   const [dashboardData, setDashboardData] = useState({
     projects: 0,
+    total_projects: 0,
     teams: 0,
+    team_members: 0,
     tasks: 0
   })
 
