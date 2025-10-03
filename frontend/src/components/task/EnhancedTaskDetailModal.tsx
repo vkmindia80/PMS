@@ -991,21 +991,29 @@ const TaskOverviewTab: React.FC<{
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Estimated:</span>
-                <span className="font-medium">{task.time_tracking?.estimated_hours || 0}h</span>
+                <span className="font-medium">
+                  {(taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0}h
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Logged:</span>
-                <span className="font-medium">{task.time_tracking?.actual_hours || 0}h</span>
+                <span className="font-medium">
+                  {((taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0).toFixed(1)}h
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Variance:</span>
                 <span className={`font-medium ${
-                  (task.time_tracking?.actual_hours || 0) > (task.time_tracking?.estimated_hours || 0) 
+                  ((taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0) > 
+                  ((taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0) 
                     ? 'text-red-600' 
                     : 'text-green-600'
                 }`}>
-                  {task.time_tracking?.estimated_hours 
-                    ? `${((task.time_tracking?.actual_hours || 0) - (task.time_tracking?.estimated_hours || 0)) > 0 ? '+' : ''}${((task.time_tracking?.actual_hours || 0) - (task.time_tracking?.estimated_hours || 0)).toFixed(1)}h`
+                  {(taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours)
+                    ? `${(((taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0) - 
+                           ((taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0)) > 0 ? '+' : ''}${
+                           (((taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0) - 
+                           ((taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0)).toFixed(1)}h`
                     : 'N/A'
                   }
                 </span>
