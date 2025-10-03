@@ -49,7 +49,7 @@ interface Task {
   dependencies: Array<{
     task_id: string
     dependency_type: string
-  }>
+  } | string>
   subtasks: string[]
   tags: string[]
   labels: string[]
