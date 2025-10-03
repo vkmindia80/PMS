@@ -859,42 +859,107 @@ class ComprehensiveDemoDataGenerator:
             return False
 
     def _generate_project_milestones(self, template, start_date, due_date, progress):
-        """Generate realistic project milestones"""
+        """Generate realistic project milestones with industry-specific phases"""
         milestone_templates = {
-            "software_development": [
-                "Requirements Analysis & Planning",
-                "System Design & Architecture",
-                "Core Development Phase",
-                "Testing & Quality Assurance",
-                "Deployment & Launch"
+            "healthcare_ai": [
+                "Regulatory Requirements Analysis & Clinical Research",
+                "AI Model Architecture Design & Data Pipeline Setup",
+                "Medical Image Processing Development & Algorithm Training",
+                "Clinical Validation & FDA Pre-submission Preparation",
+                "Integration Testing & DICOM/HL7 FHIR Compliance",
+                "Clinical Trial Coordination & Performance Validation",
+                "FDA 510k Submission & Regulatory Review Process",
+                "Production Deployment & Clinical Workflow Integration"
             ],
-            "mobile_development": [
-                "App Design & Wireframing",
-                "Core Feature Development",
-                "Platform Integration",
-                "Testing & Optimization",
-                "App Store Deployment"
+            "iot_smartcity": [
+                "City Infrastructure Assessment & Stakeholder Alignment",
+                "IoT Network Architecture Design & Edge Computing Setup",
+                "Sensor Deployment Strategy & Communication Protocols",
+                "Real-time Analytics Platform Development",
+                "Traffic Algorithm Implementation & Machine Learning Models",
+                "Pilot Deployment & Performance Monitoring",
+                "City-wide Rollout & Integration with Emergency Services",
+                "Performance Optimization & Maintenance Framework"
             ],
-            "analytics": [
-                "Data Source Integration",
-                "Dashboard Framework",
-                "Visualization Components",
-                "User Testing & Feedback",
-                "Production Deployment"
+            "blockchain_logistics": [
+                "Supply Chain Analysis & Smart Contract Architecture",
+                "Ethereum Network Setup & Development Environment",
+                "Smart Contract Development & Security Auditing",
+                "Web3 Integration & User Interface Development",
+                "Supplier Onboarding & Integration Testing",
+                "Blockchain Deployment & Gas Optimization",
+                "End-to-end Traceability Testing & Compliance Verification",
+                "Production Launch & Sustainability Metrics Integration"
             ],
-            "marketing": [
-                "Campaign Strategy Development",
-                "Content Creation & Assets",
-                "Campaign Launch",
-                "Performance Monitoring",
-                "Results Analysis & Reporting"
+            "fintech_trading": [
+                "Market Analysis & Regulatory Compliance Framework",
+                "Ultra-Low Latency Architecture Design & Risk Management System",
+                "Algorithmic Trading Engine Development & Backtesting",
+                "Market Data Integration & Real-time Processing Optimization",
+                "Risk Controls Implementation & Compliance Monitoring",
+                "Performance Testing & Latency Optimization",
+                "Regulatory Approval & Stress Testing",
+                "Production Deployment & Live Trading Validation"
             ],
-            "infrastructure": [
-                "Current State Assessment",
-                "Migration Strategy Planning",
-                "Infrastructure Setup",
-                "Migration Execution",
-                "Monitoring & Optimization"
+            "xr_training": [
+                "Learning Objectives Analysis & VR/AR Content Strategy",
+                "3D Environment Design & Immersive Experience Development",
+                "Unity/Unreal Engine Implementation & Physics Simulation",
+                "Learning Analytics Integration & Progress Tracking",
+                "Multi-platform Testing & Hardware Compatibility",
+                "User Experience Testing & Motion Sickness Mitigation",
+                "Enterprise Integration & LMS Connectivity",
+                "Training Program Launch & Effectiveness Measurement"
+            ],
+            "quantum_research": [
+                "Quantum Algorithm Research & Mathematical Framework",
+                "Quantum Hardware Access & Development Environment Setup",
+                "Hybrid Classical-Quantum Algorithm Development",
+                "Materials Science & Drug Discovery Model Implementation",
+                "Quantum Simulation Testing & Error Correction",
+                "Research Collaboration Platform & Security Implementation",
+                "Performance Benchmarking & Scientific Validation",
+                "Research Publication & Platform Production Deployment"
+            ],
+            "energy_management": [
+                "Grid Infrastructure Analysis & Renewable Energy Assessment",
+                "Smart Grid Architecture Design & IoT Sensor Planning",
+                "Energy Storage System Integration & Battery Management",
+                "Real-time Analytics Platform & Predictive Modeling",
+                "Demand Response System & Energy Trading Platform",
+                "Grid Integration Testing & Stability Validation",
+                "Carbon Footprint Tracking & Sustainability Reporting",
+                "Production Deployment & Utility Integration"
+            ],
+            "gaming_social": [
+                "Game Design Document & Social Features Architecture",
+                "Cross-platform Engine Setup & Multiplayer Framework",
+                "Core Gameplay Development & Social Integration",
+                "Live Streaming Integration & Tournament System",
+                "Anti-cheat Implementation & Community Moderation Tools",
+                "Beta Testing & Performance Optimization",
+                "Cloud Infrastructure Scaling & Launch Preparation",
+                "Live Service Launch & Community Management"
+            ],
+            "cybersecurity_ai": [
+                "Threat Landscape Analysis & AI Model Architecture",
+                "Machine Learning Pipeline & Behavioral Analytics Development",
+                "SIEM Integration & Threat Intelligence Platform",
+                "Zero-trust Architecture Implementation & Network Monitoring",
+                "Automated Incident Response & Orchestration",
+                "Security Testing & Penetration Testing Validation",
+                "SOC Integration & Analyst Training Program",
+                "Production Deployment & Continuous Threat Monitoring"
+            ],
+            "edtech_adaptive": [
+                "Educational Psychology Research & Learning Model Design",
+                "AI-powered Adaptive Engine & Content Recommendation System",
+                "Learning Analytics Platform & Progress Tracking",
+                "Content Management System & Curriculum Integration",
+                "Accessibility Compliance & Multi-device Optimization",
+                "Educator Training Platform & Assessment Tools",
+                "Pilot Program & Learning Effectiveness Validation",
+                "Educational Institution Rollout & Performance Monitoring"
             ]
         }
         
