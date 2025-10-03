@@ -1161,7 +1161,7 @@ class ComprehensiveDemoDataGenerator:
             
             for project in self.generated_data["projects"]:
                 # Get appropriate task templates
-                project_type = next((t["type"] for t in self.project_templates if t["name"] == project["name"]), "default")
+                project_type = project.get("type", "default")
                 task_templates = task_templates_by_type.get(project_type, default_tasks)
                 
                 num_tasks = random.randint(8, 15)
