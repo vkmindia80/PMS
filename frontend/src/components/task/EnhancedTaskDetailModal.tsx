@@ -309,11 +309,14 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     if (!task || !tokens?.access_token) return
     
     console.log('🔍 fetchRelatedTasks called for task:', task.id, task.title)
-    console.log('🔍 Task dependencies:', task.dependencies)
+    
+    // Use taskWithDetails if available (which has properly formatted dependencies), otherwise use task
+    const taskToUse = taskWithDetails || task
+    console.log('🔍 Task dependencies (from taskWithDetails):', taskToUse.dependencies)
     
     try {
       // Fetch tasks that this task depends on (prerequisites)
-      const dependencyTaskIds = (task.dependencies || []).map(dep => 
+      const dependencyTaskIds = (taskToUse.dependencies || []).map(dep => 
         typeof dep === 'string' ? dep : dep.task_id
       )
       console.log('🔍 Dependency task IDs:', dependencyTaskIds)
