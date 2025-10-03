@@ -86,7 +86,8 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
     total: (task.dependencies || []).length + (dependentTasks || []).length,
     blocked: (dependentTasks || []).filter(t => t.status === 'blocked').length,
     completed: [...(task.dependencies || []), ...(dependentTasks || [])].filter(dep => {
-      const depTask = (relatedTasks || []).find(t => t.id === dep.task_id || t.id === dep.id)
+      const depTaskId = typeof dep === 'string' ? dep : (dep.task_id || dep.id)
+      const depTask = (relatedTasks || []).find(t => t.id === depTaskId || t.id === dep.id)
       return depTask?.status === 'completed'
     }).length
   }
