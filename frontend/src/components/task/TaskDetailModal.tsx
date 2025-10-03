@@ -960,7 +960,7 @@ const TaskDetailsTab: React.FC<TaskDetailsTabProps> = ({
                 : 'text-green-600'
             }`}>
               {task.time_tracking.estimated_hours 
-                ? `${((task.time_tracking.actual_hours || 0) - task.time_tracking.estimated_hours) > 0 ? '+' : ''}${((task.time_tracking.actual_hours || 0) - task.time_tracking.estimated_hours).toFixed(1)}h`
+                ? formatHoursVariance(task.time_tracking.actual_hours, task.time_tracking.estimated_hours)
                 : 'N/A'
               }
             </div>
