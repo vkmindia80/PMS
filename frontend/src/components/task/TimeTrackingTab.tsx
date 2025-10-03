@@ -150,7 +150,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-gray-700">Time Progress</span>
               <span className="text-sm text-gray-600">
-                {Math.round((task.time_tracking.actual_hours / task.time_tracking.estimated_hours) * 100)}%
+                {Math.round(((task.time_tracking?.actual_hours || 0) / (task.time_tracking?.estimated_hours || 1)) * 100)}%
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-3">
