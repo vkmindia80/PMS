@@ -60,7 +60,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
   const timeVariance = getTimeVariance()
   
   const getEfficiencyScore = () => {
-    if (!task.time_tracking.estimated_hours) return null
+    if (!task.time_tracking?.estimated_hours) return null
     
     const efficiency = (task.time_tracking.estimated_hours / task.time_tracking.actual_hours) * 100
     
