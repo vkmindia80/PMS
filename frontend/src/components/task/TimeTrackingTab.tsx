@@ -160,7 +160,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
                   timeVariance.status === 'warning' ? 'bg-gradient-to-r from-yellow-500 to-orange-600' :
                   'bg-gradient-to-r from-blue-500 to-green-600'
                 }`}
-                style={{ width: `${Math.min((task.time_tracking.actual_hours / task.time_tracking.estimated_hours) * 100, 100)}%` }}
+                style={{ width: `${Math.min(((task.time_tracking?.actual_hours || 0) / (task.time_tracking?.estimated_hours || 1)) * 100, 100)}%` }}
               />
             </div>
             <div className="text-xs text-gray-500 mt-1">
