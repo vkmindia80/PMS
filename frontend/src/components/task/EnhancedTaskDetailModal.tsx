@@ -8,7 +8,7 @@ import {
   Zap, Target, TrendingUp, Timer, Play, Pause, Square
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
-import { API_URL } from '../../utils/config'
+import { getApiUrlDynamic } from '../../utils/config'
 import toast from 'react-hot-toast'
 
 // Import tab components
