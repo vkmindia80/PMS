@@ -266,7 +266,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     
     try {
       setLoading(true)
-      const response = await fetch(`${API_URL}/api/tasks/${task.id}/detailed`, {
+      const response = await fetch(`${getApiUrlDynamic()}/api/tasks/${task.id}/detailed`, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
