@@ -756,7 +756,8 @@ const KanbanBoard: React.FC<{
   onTaskClick: (task: Task) => void
   statusConfig: any
   priorityConfig: any
-}> = ({ data, onTaskMove, onTaskClick, statusConfig, priorityConfig }) => {
+  getAssigneeNames: (task: Task) => string
+}> = ({ data, onTaskMove, onTaskClick, statusConfig, priorityConfig, getAssigneeNames }) => {
   const handleDragStart = (e: React.DragEvent, task: Task) => {
     e.dataTransfer.setData('application/json', JSON.stringify(task))
   }
