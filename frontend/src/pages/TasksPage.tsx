@@ -72,6 +72,7 @@ const TasksPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [analytics, setAnalytics] = useState<TaskAnalytics | null>(null)
+  const [users, setUsers] = useState<Record<string, any>>({}) // User lookup by ID
 
   // View states
   const [viewMode, setViewMode] = useState<'kanban' | 'list' | 'analytics'>('kanban')
