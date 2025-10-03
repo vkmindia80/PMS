@@ -1659,11 +1659,29 @@ class ComprehensiveDemoDataGenerator:
         logger.info("📋 Generating completion report...")
         
         try:
-            # Calculate statistics
+            # Calculate comprehensive statistics
             active_projects = len([p for p in self.generated_data["projects"] if p["status"] == "active"])
             completed_projects = len([p for p in self.generated_data["projects"] if p["status"] == "completed"])
             active_tasks = len([t for t in self.generated_data["tasks"] if t["status"] in ["todo", "in_progress"]])
             completed_tasks = len([t for t in self.generated_data["tasks"] if t["status"] == "completed"])
+            
+            # Enhanced task statistics
+            tasks_with_dependencies = len([t for t in self.generated_data["tasks"] if t.get("dependencies", [])])
+            tasks_with_multiple_assignees = len([t for t in self.generated_data["tasks"] if len(t.get("assigned_team_members", [])) > 1])
+            total_estimated_hours = sum(t.get("time_tracking", {}).get("estimated_hours", 0) for t in self.generated_data["tasks"])
+            total_actual_hours = sum(t.get("time_tracking", {}).get("actual_hours", 0) for t in self.generated_data["tasks"])
+            
+            # Team and user statistics
+            teams_by_type = {}
+            for team in self.generated_data["teams"]:
+                team_type = team.get("type", "unknown")
+                teams_by_type[team_type] = teams_by_type.get(team_type, 0) + 1
+            
+            # Project category distribution
+            projects_by_category = {}
+            for project in self.generated_data["projects"]:
+                category = project.get("category", "unknown")
+                projects_by_category[category] = projects_by_category.get(category, 0) + 1
             
             report = {
                 "generation_timestamp": datetime.utcnow().isoformat(),
