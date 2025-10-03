@@ -824,10 +824,12 @@ const KanbanBoard: React.FC<{
                   
                   <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                     <div className="flex items-center space-x-2">
-                      {task.assignee_id && (
+                      {(task.assignee_id || (task.assignee_ids && task.assignee_ids.length > 0)) && (
                         <div className="flex items-center space-x-1">
                           <span>👤</span>
-                          <span>Assigned</span>
+                          <span className="text-xs font-medium truncate max-w-[80px]" title={getAssigneeNames(task)}>
+                            {getAssigneeNames(task)}
+                          </span>
                         </div>
                       )}
                       {task.due_date && (
