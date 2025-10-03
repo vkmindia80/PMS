@@ -197,8 +197,8 @@ export const TaskDetailsTab: React.FC<TaskDetailsTabProps> = ({
           />
         ) : (
           <div className="prose prose-sm max-w-none text-gray-700 bg-gray-50 rounded-lg p-4">
-            {task.description ? (
-              task.description.split('\n').map((line, index) => (
+            {(taskWithDetails?.description ?? task.description) ? (
+              (taskWithDetails?.description ?? task.description).split('\n').map((line: string, index: number) => (
                 <p key={index} className="mb-2">{line || '\u00A0'}</p>
               ))
             ) : (
