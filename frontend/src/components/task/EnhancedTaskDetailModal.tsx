@@ -993,13 +993,13 @@ const TaskOverviewTab: React.FC<{
               <div className="flex justify-between">
                 <span className="text-gray-600">Estimated:</span>
                 <span className="font-medium">
-                  {(taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0}h
+                  {formatHoursWithSuffix(taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Logged:</span>
                 <span className="font-medium">
-                  {((taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0).toFixed(1)}h
+                  {formatHoursWithSuffix(taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours)}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -1013,8 +1013,8 @@ const TaskOverviewTab: React.FC<{
                   {(taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours)
                     ? `${(((taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0) - 
                            ((taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0)) > 0 ? '+' : ''}${
-                           (((taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0) - 
-                           ((taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0)).toFixed(1)}h`
+                           formatHours(((taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0) - 
+                           ((taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0))}h`
                     : 'N/A'
                   }
                 </span>
