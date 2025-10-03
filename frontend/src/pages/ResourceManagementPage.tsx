@@ -709,7 +709,7 @@ const ResourceManagementPage: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">{user.utilization_percent}%</p>
-                    <p className="text-xs text-gray-500">{user.current_hours}h</p>
+                    <p className="text-xs text-gray-500">{formatHoursWithSuffix(user.current_hours)}</p>
                   </div>
                   <div className="w-24 bg-gray-200 rounded-full h-2">
                     <div 
