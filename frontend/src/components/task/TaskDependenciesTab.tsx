@@ -198,8 +198,10 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
               </div>
             ) : (
               (task.dependencies || []).map((dep, index) => {
-                const dependentTask = (relatedTasks || []).find(t => t.id === dep.task_id)
-                const { icon, color, bg } = getDependencyTypeIcon(dep.dependency_type)
+                const depTaskId = typeof dep === 'string' ? dep : dep.task_id
+                const depType = typeof dep === 'string' ? 'depends_on' : dep.dependency_type
+                const dependentTask = (relatedTasks || []).find(t => t.id === depTaskId)
+                const { icon, color, bg } = getDependencyTypeIcon(depType)
                 
                 return (
                   <div key={index} className={`relative flex items-center justify-between p-4 rounded-lg border-2 ${bg}`}>
