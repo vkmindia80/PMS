@@ -19,7 +19,7 @@ interface Task {
   due_date?: string
   start_date?: string
   completed_at?: string
-  time_tracking: {
+  time_tracking?: {
     estimated_hours?: number
     actual_hours: number
   }
