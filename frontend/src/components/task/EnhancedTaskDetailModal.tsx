@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { getApiUrlDynamic } from '../../utils/config'
+import { formatHours, formatHoursWithSuffix, formatSecondsToHours } from '../../utils/hourFormatter'
 import toast from 'react-hot-toast'
 
 // Import tab components
