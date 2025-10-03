@@ -310,7 +310,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
               </button>
             </div>
             <p className="text-xs text-primary-600 mt-1">
-              🚀 Create 500+ realistic demo data points for full system showcase
+              🚀 Create 500+ enhanced data points: tasks with start/end dates, dependencies, multiple assignees, and comprehensive project analytics
             </p>
           </div>
         </div>
