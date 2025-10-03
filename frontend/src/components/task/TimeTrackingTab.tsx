@@ -4,10 +4,10 @@ import { Clock, Play, Pause, Square, Plus, Timer, TrendingUp, Target } from 'luc
 interface Task {
   id: string
   title: string
-  time_tracking: {
+  time_tracking?: {
     estimated_hours?: number
     actual_hours: number
-    logged_time: Array<{
+    logged_time?: Array<{
       id: string
       user_id: string
       hours: number
