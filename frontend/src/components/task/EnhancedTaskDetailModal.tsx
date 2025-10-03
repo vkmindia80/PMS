@@ -726,13 +726,13 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
             </div>
             <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
               <div className="text-xl font-bold text-green-600">
-                {(taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours) || 0}h
+                {formatHoursWithSuffix(taskWithDetails?.time_tracking?.estimated_hours ?? task.time_tracking?.estimated_hours)}
               </div>
               <div className="text-sm text-gray-600">Estimated</div>
             </div>
             <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
               <div className="text-xl font-bold text-orange-600">
-                {(taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours) || 0}h
+                {formatHoursWithSuffix(taskWithDetails?.time_tracking?.actual_hours ?? task.time_tracking?.actual_hours)}
               </div>
               <div className="text-sm text-gray-600">Logged</div>
             </div>
