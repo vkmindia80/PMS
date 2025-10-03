@@ -273,7 +273,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
 
                     {isEditing && (
                       <button
-                        onClick={() => removeDependency(dep.task_id)}
+                        onClick={() => removeDependency(depTaskId)}
                         className="ml-4 p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
                       >
                         <Minus className="h-4 w-4" />
