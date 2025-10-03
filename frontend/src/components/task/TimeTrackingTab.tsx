@@ -340,7 +340,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
       </div>
 
       {/* Time Analysis & Insights */}
-      {task.time_tracking.logged_time && task.time_tracking.logged_time.length > 3 && (
+      {task.time_tracking?.logged_time && task.time_tracking.logged_time.length > 3 && (
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <Target className="h-5 w-5 mr-2 text-orange-600" />
