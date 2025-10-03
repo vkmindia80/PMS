@@ -435,7 +435,7 @@ export const TaskDetailsTab: React.FC<TaskDetailsTabProps> = ({
               />
             ) : (
               <div className="text-gray-900 p-3 bg-gray-50 rounded-lg">
-                {task.time_tracking.estimated_hours ? `${task.time_tracking.estimated_hours} hours` : 'Not estimated'}
+                {task.time_tracking?.estimated_hours ? `${task.time_tracking.estimated_hours} hours` : 'Not estimated'}
               </div>
             )}
           </div>
