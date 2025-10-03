@@ -1235,20 +1235,34 @@ class ComprehensiveDemoDataGenerator:
                         assigned_team_members.extend(additional_members)
                     
                     # Enhanced date calculation with proper sequencing
-                    if project.get("start_date"):
+                    if project.get("start_date") and project.get("due_date"):
                         # Calculate based on project timeline and task sequence
-                        project_duration = (project.get("due_date", datetime.utcnow()) - project["start_date"]).days
-                        task_sequence_offset = int(i / len(selected_tasks) * project_duration * 0.8)  # 80% of project duration for tasks
-                        task_start = project["start_date"] + timedelta(days=task_sequence_offset)
-                        task_duration = random.randint(2, 14)  # 2-14 days per task
-                        task_due = task_start + timedelta(days=task_duration)
+                        project_duration = (project["due_date"] - project["start_date"]).days
                         
-                        # Adjust for weekends (simplified - just add days if due on weekend)
-                        while task_due.weekday() >= 5:  # Saturday = 5, Sunday = 6
-                            task_due += timedelta(days=1)
+                        if project_duration > 0:
+                            # Distribute tasks across project timeline
+                            task_sequence_offset = int((i / len(selected_tasks)) * project_duration * 0.9)  # 90% of project duration
+                            task_start = project["start_date"] + timedelta(days=task_sequence_offset)
+                            
+                            # Task duration based on complexity
+                            task_duration = random.randint(3, 12)  # 3-12 days per task
+                            task_due = task_start + timedelta(days=task_duration)
+                            
+                            # Ensure task doesn't extend beyond project end date
+                            if task_due > project["due_date"]:
+                                task_due = project["due_date"]
+                                task_start = task_due - timedelta(days=task_duration)
+                                if task_start < project["start_date"]:
+                                    task_start = project["start_date"]
+                        else:
+                            # Fallback for invalid project dates
+                            task_start = project["start_date"]
+                            task_due = task_start + timedelta(days=random.randint(3, 14))
                     else:
-                        task_start = datetime.utcnow()
-                        task_due = task_start + timedelta(days=random.randint(3, 21))
+                        # Fallback for projects without proper dates
+                        base_date = datetime.utcnow() - timedelta(days=30)
+                        task_start = base_date + timedelta(days=i * 2)  # Space tasks 2 days apart
+                        task_due = task_start + timedelta(days=random.randint(3, 10))
                     
                     # More realistic progress and completion dates
                     if status == "completed":
