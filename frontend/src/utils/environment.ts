@@ -55,11 +55,10 @@ export const getApiUrl = (): string => {
     return backendUrl;
   }
   
-  // If on emergentagent.com domain, use relative URLs to let proxy handle it
+  // If on emergentagent.com domain, use HTTPS to match the frontend
   if (isEmergentagentDomain()) {
-    // For preview domains, use the same origin (protocol + hostname)
-    // This will be handled by the proxy configuration
-    return `${protocol}//${hostname}`;
+    // For preview domains, use HTTPS protocol to avoid mixed content issues
+    return `https://${hostname}`;
   }
   
   // Default fallback
