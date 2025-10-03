@@ -193,12 +193,32 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
             </div>
             
             {isTimerRunning ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-green-600 font-medium">Recording time</span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-green-600 font-medium">Recording time</span>
+                </div>
+                <button
+                  onClick={onStopTimer}
+                  className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center justify-center space-x-2"
+                  data-testid="stop-timer-btn"
+                >
+                  <Square className="h-4 w-4" />
+                  <span>Stop Timer</span>
+                </button>
               </div>
             ) : (
-              <div className="text-sm text-gray-400">Click Start Timer to begin tracking</div>
+              <div className="space-y-3">
+                <div className="text-sm text-gray-400">Click Start Timer to begin tracking</div>
+                <button
+                  onClick={onStartTimer}
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2"
+                  data-testid="start-timer-btn"
+                >
+                  <Play className="h-4 w-4" />
+                  <span>Start Timer</span>
+                </button>
+              </div>
             )}
           </div>
         </div>
