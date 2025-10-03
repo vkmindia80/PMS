@@ -217,21 +217,34 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
         <div className="card-content">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="text-center p-6 bg-primary-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-primary-900 mb-2">Projects</h3>
+              <h3 className="text-lg font-semibold text-primary-900 mb-2">Active Projects</h3>
               <p className="text-3xl font-bold text-primary-600">{dashboardData.projects}</p>
-              <p className="text-sm text-primary-700">Active Projects</p>
+              <p className="text-sm text-primary-700">Currently Active</p>
+            </div>
+            <div className="text-center p-6 bg-blue-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">Total Projects</h3>
+              <p className="text-3xl font-bold text-blue-600">{dashboardData.total_projects}</p>
+              <p className="text-sm text-blue-700">All Projects</p>
             </div>
             <div className="text-center p-6 bg-success-50 rounded-lg">
               <h3 className="text-lg font-semibold text-success-900 mb-2">Teams</h3>
               <p className="text-3xl font-bold text-success-600">{dashboardData.teams}</p>
-              <p className="text-sm text-success-700">Team Members</p>
+              <p className="text-sm text-success-700">Active Teams</p>
             </div>
+            <div className="text-center p-6 bg-emerald-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-emerald-900 mb-2">Team Members</h3>
+              <p className="text-3xl font-bold text-emerald-600">{dashboardData.team_members}</p>
+              <p className="text-sm text-emerald-700">Total Members</p>
+            </div>
+          </div>
+          
+          <div className="mt-6">
             <div className="text-center p-6 bg-warning-50 rounded-lg">
-              <h3 className="text-lg font-semibold text-warning-900 mb-2">Tasks</h3>
+              <h3 className="text-lg font-semibold text-warning-900 mb-2">Pending Tasks</h3>
               <p className="text-3xl font-bold text-warning-600">{dashboardData.tasks}</p>
-              <p className="text-sm text-warning-700">Pending Tasks</p>
+              <p className="text-sm text-warning-700">In Progress & To Do</p>
             </div>
           </div>
         </div>
