@@ -308,14 +308,20 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
   const fetchRelatedTasks = async () => {
     if (!task || !tokens?.access_token) return
     
+    console.log('🔍 fetchRelatedTasks called for task:', task.id, task.title)
+    console.log('🔍 Task dependencies:', task.dependencies)
+    
     try {
       // Fetch tasks that this task depends on (prerequisites)
       const dependencyTaskIds = (task.dependencies || []).map(dep => dep.task_id)
+      console.log('🔍 Dependency task IDs:', dependencyTaskIds)
+      
       const dependencyTasks = []
       
       // Fetch each dependency task
       for (const taskId of dependencyTaskIds) {
         try {
+          console.log(`🔍 Fetching dependency task: ${taskId}`)
           const response = await fetch(`${getApiUrlDynamic()}/api/tasks/${taskId}`, {
             headers: {
               'Authorization': `Bearer ${tokens.access_token}`,
@@ -323,20 +329,26 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
             }
           })
           
+          console.log(`🔍 Response for ${taskId}:`, response.status, response.ok)
+          
           if (response.ok) {
             const dependencyTask = await response.json()
+            console.log(`✅ Successfully fetched dependency task:`, dependencyTask.title)
             dependencyTasks.push({
               ...dependencyTask,
               relationshipType: 'dependency', // This task depends on this
               relationshipLabel: 'Prerequisite'
             })
+          } else {
+            console.error(`❌ Failed to fetch dependency task ${taskId}, status: ${response.status}`)
           }
         } catch (error) {
-          console.error(`Error fetching dependency task ${taskId}:`, error)
+          console.error(`❌ Error fetching dependency task ${taskId}:`, error)
         }
       }
       
       // Fetch tasks that depend on this task (dependents)
+      console.log('🔍 Fetching dependents for task:', task.id)
       const dependentsResponse = await fetch(`${getApiUrlDynamic()}/api/tasks/${task.id}/dependents`, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
@@ -344,23 +356,31 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
         }
       })
       
+      console.log('🔍 Dependents response:', dependentsResponse.status, dependentsResponse.ok)
+      
       let dependentTasks = []
       if (dependentsResponse.ok) {
         const dependents = await dependentsResponse.json()
+        console.log('✅ Dependents fetched:', dependents.length, 'tasks')
         dependentTasks = dependents.map((dep: any) => ({
           ...dep,
           relationshipType: 'dependent', // This task blocks this
           relationshipLabel: 'Blocks'
         }))
         setDependentTasks(dependents)
+      } else {
+        console.error('❌ Failed to fetch dependents, status:', dependentsResponse.status)
       }
       
       // Combine both dependency and dependent tasks for the Related Tasks section
       const allRelatedTasks = [...dependencyTasks, ...dependentTasks]
+      console.log('🔍 Total related tasks:', allRelatedTasks.length)
+      console.log('🔍 Related tasks:', allRelatedTasks.map(t => ({ id: t.id, title: t.title, label: t.relationshipLabel })))
+      
       setRelatedTasks(allRelatedTasks)
       
     } catch (error) {
-      console.error('Error fetching related tasks:', error)
+      console.error('❌ Error fetching related tasks:', error)
     }
   }
 
