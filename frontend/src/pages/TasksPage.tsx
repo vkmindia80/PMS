@@ -5,6 +5,7 @@ import { API_URL } from '../utils/config'
 import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
 import { EnhancedTaskDetailModal } from '../components/task/EnhancedTaskDetailModal'
 import { EnhancedTaskCreateModal } from '../components/task/EnhancedTaskCreateModal'
+import { formatHours, formatHoursWithSuffix, formatHoursVariance } from '../utils/hourFormatter'
 import toast from 'react-hot-toast'
 
 // Task-related interfaces
