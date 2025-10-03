@@ -223,6 +223,34 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     }
   }
 
+  const fetchRelatedTasks = async () => {
+    if (!task || !tokens?.access_token) return
+    
+    try {
+      // Fetch all tasks from the same project to show as potential dependencies
+      const response = await fetch(`${API_URL}/api/tasks?project_id=${task.project_id}&limit=1000`, {
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        const tasks = await response.json()
+        // Convert task summaries to full tasks for compatibility
+        const fullTasks = tasks.map((t: any) => ({
+          ...t,
+          status: typeof t.status === 'string' ? t.status : t.status?.value || 'todo',
+          priority: typeof t.priority === 'string' ? t.priority : t.priority?.value || 'medium',
+          type: typeof t.type === 'string' ? t.type : t.type?.value || 'task'
+        }))
+        setRelatedTasks(fullTasks)
+      }
+    } catch (error) {
+      console.error('Error fetching related tasks:', error)
+    }
+  }
+
   const fetchComments = async () => {
     if (!task || !tokens?.access_token) return
     
