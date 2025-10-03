@@ -222,7 +222,7 @@ const ResourceManagementPage: React.FC = () => {
               <Clock className="h-8 w-8 text-green-500" />
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Available Capacity</p>
-                <p className="text-2xl font-bold text-gray-900">{resourceAllocation.current_state.available_capacity_hours}h</p>
+                <p className="text-2xl font-bold text-gray-900">{formatHoursWithSuffix(resourceAllocation.current_state.available_capacity_hours)}</p>
               </div>
             </div>
           </div>
