@@ -169,7 +169,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
               <ArrowLeft className="h-5 w-5 mr-2 text-orange-600" />
               Dependencies
               <span className="ml-2 text-sm font-normal text-gray-500">
-                ({task.dependencies.length})
+                ({(task.dependencies || []).length})
               </span>
             </h3>
             
