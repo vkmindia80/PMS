@@ -500,7 +500,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
                 
                 {(dependentTasks || []).filter(t => t.status === 'blocked').length > 0 && (
                   <div className="text-yellow-800">
-                    🚫 {dependentTasks.filter(t => t.status === 'blocked').length} task(s) waiting on this completion.
+                    🚫 {(dependentTasks || []).filter(t => t.status === 'blocked').length} task(s) waiting on this completion.
                   </div>
                 )}
               </div>
