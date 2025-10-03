@@ -403,7 +403,7 @@ const ResourceManagementPage: React.FC = () => {
                   <div>
                     <h4 className="text-sm font-medium text-gray-900">{rec.task.title}</h4>
                     <p className="text-sm text-gray-500">
-                      Priority: {rec.task.priority} • {rec.task.estimated_hours}h • 
+                      Priority: {rec.task.priority} • {formatHoursWithSuffix(rec.task.estimated_hours)} • 
                       Due: {rec.task.due_date ? new Date(rec.task.due_date).toLocaleDateString() : 'No deadline'}
                     </p>
                     {rec.task.requirements.length > 0 && (
