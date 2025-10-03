@@ -104,12 +104,16 @@ const Dashboard: React.FC = () => {
         console.error('Failed to fetch projects:', projectsResponse.status, projectsResponse.statusText)
       }
 
-      // Fetch teams count  
+      // Fetch teams count and team members count 
       const teamsResponse = await fetch(`${API_URL}/api/teams/?organization_id=demo-org-001`, { headers })
       let teamsCount = 0
+      let teamMembersCount = 0
       if (teamsResponse.ok) {
         const teamsData = await teamsResponse.json()
-        teamsCount = Array.isArray(teamsData) ? teamsData.reduce((sum, team) => sum + team.member_count, 0) : 0
+        if (Array.isArray(teamsData)) {
+          teamsCount = teamsData.length
+          teamMembersCount = teamsData.reduce((sum, team) => sum + (team.member_count || 0), 0)
+        }
       } else {
         console.error('Failed to fetch teams:', teamsResponse.status, teamsResponse.statusText)
       }
