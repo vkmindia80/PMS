@@ -1283,7 +1283,7 @@ class ComprehensiveDemoDataGenerator:
                         "project_id": project["id"],
                         "organization_id": self.org_id,
                         "assignee_id": assignee_id,
-                        "assigned_team_members": assigned_team_members,  # Multiple team members
+                        "assignee_ids": assigned_team_members,  # Correct field name for multiple assignees
                         "reporter_id": project["owner_id"],
                         "parent_task_id": None,
                         "due_date": task_due,
