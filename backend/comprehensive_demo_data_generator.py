@@ -776,7 +776,10 @@ class ComprehensiveDemoDataGenerator:
                 if not suitable_members:
                     suitable_members = [user["id"] for user in self.generated_data["users"][:5]]
                 else:
-                    suitable_members = suitable_members[:random.randint(3, min(8, len(suitable_members)))]
+                    # Fix: ensure valid range for randint by using max to handle edge case where exactly 3 members exist
+                    max_members = min(8, len(suitable_members))
+                    min_members = min(3, max_members)
+                    suitable_members = suitable_members[:random.randint(min_members, max_members)]
                 
                 # Generate realistic project dates and progress
                 created_date = datetime.utcnow() - timedelta(days=random.randint(30, 180))
