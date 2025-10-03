@@ -77,12 +77,15 @@ async def add_test_dependencies():
             }
         })
         
-        # Execute bulk update
+        # Execute updates one by one
         if updates:
-            # Remove the duplicate update for task3
-            updates = updates[:-2] + [updates[-1]]  # Keep first two and last one
-            result = await db.tasks.bulk_write(updates)
-            print(f"✅ Updated {result.modified_count} tasks with dependencies")
+            modified_count = 0
+            for update in updates[:-1]:  # Skip the duplicate
+                filter_doc = update["updateOne"]["filter"]
+                update_doc = update["updateOne"]["update"]
+                result = await db.tasks.update_one(filter_doc, update_doc)
+                modified_count += result.modified_count
+            print(f"✅ Updated {modified_count} tasks with dependencies")
         
         # Print summary of created dependencies
         print("\n📊 Dependency Summary:")
