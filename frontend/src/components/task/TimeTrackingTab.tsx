@@ -93,7 +93,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
 
           <div className="text-center bg-white rounded-lg p-4 shadow-sm border border-gray-100">
             <div className="text-2xl font-bold text-green-600 mb-1">
-              {task.time_tracking.actual_hours.toFixed(1)}h
+              {(task.time_tracking?.actual_hours || 0).toFixed(1)}h
             </div>
             <div className="text-sm text-gray-600">Logged Time</div>
             <div className="text-xs text-gray-500 mt-1">
