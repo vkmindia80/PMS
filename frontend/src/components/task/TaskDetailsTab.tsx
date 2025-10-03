@@ -238,7 +238,22 @@ export const TaskDetailsTab: React.FC<TaskDetailsTabProps> = ({
             </div>
           ) : (
             <div className="space-y-3">
-              {(task.assignee_ids && task.assignee_ids.length > 0) ? (
+              {/* Use taskWithDetails.assignees first (from detailed API), then fall back to manual lookup */}
+              {taskWithDetails?.assignees && taskWithDetails.assignees.length > 0 ? (
+                taskWithDetails.assignees.map((assignee: any) => (
+                  <div key={assignee.id} className="flex items-center space-x-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <User className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900">
+                        {`${assignee.first_name} ${assignee.last_name}`}
+                      </div>
+                      <div className="text-sm text-gray-600">{assignee.email}</div>
+                    </div>
+                  </div>
+                ))
+              ) : (task.assignee_ids && task.assignee_ids.length > 0) ? (
                 task.assignee_ids.map((assigneeId) => {
                   const assignee = availableUsers?.find(user => user.id === assigneeId);
                   return (
