@@ -85,7 +85,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
           <div className="text-center bg-white rounded-lg p-4 shadow-sm border border-gray-100">
             <div className="text-2xl font-bold text-blue-600 mb-1">
-              {task.time_tracking.estimated_hours || 0}h
+              {task.time_tracking?.estimated_hours || 0}h
             </div>
             <div className="text-sm text-gray-600">Estimated Time</div>
             <div className="text-xs text-gray-500 mt-1">Original budget</div>
