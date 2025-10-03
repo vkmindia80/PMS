@@ -435,7 +435,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
   const handleStopTimer = () => {
     if (currentTimerStart) {
       const totalSeconds = Math.floor((Date.now() - currentTimerStart.getTime()) / 1000)
-      const hours = (totalSeconds / 3600).toFixed(2)
+      const hours = formatHours(totalSeconds / 3600)
       setTimeLogHours(hours)
       setTimeLogDescription('Timed work session')
     }
