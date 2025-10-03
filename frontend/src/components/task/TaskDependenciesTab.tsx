@@ -488,7 +488,7 @@ export const TaskDependenciesTab: React.FC<TaskDependenciesTabProps> = ({
                   <div className="text-yellow-800">
                     ⚠️ Some dependencies are not complete. This may delay task completion.
                   </div>
-                ) : task.dependencies.length > 0 ? (
+                ) : (task.dependencies || []).length > 0 ? (
                   <div className="text-yellow-800">
                     ✅ All dependencies are on track or completed.
                   </div>
