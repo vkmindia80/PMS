@@ -155,6 +155,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
         fetchActivity()
       } else if (activeTab === 'dependencies') {
         fetchDependentTasks()
+        fetchRelatedTasks()
       }
     }
   }, [task, isOpen, activeTab])
