@@ -332,7 +332,10 @@ export const TaskDetailsTab: React.FC<TaskDetailsTabProps> = ({
                 />
               ) : (
                 <div className="text-gray-900 p-3 bg-gray-50 rounded-lg">
-                  {task.start_date ? new Date(task.start_date).toLocaleString() : 'Not set'}
+                  {(taskWithDetails?.start_date ?? task.start_date) ? 
+                    new Date(taskWithDetails?.start_date ?? task.start_date).toLocaleDateString() : 
+                    'Not set'
+                  }
                 </div>
               )}
             </div>
