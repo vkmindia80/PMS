@@ -149,6 +149,7 @@ async def list_projects(
     status_filter: Optional[ProjectStatus] = Query(None, description="Filter by project status"),
     priority_filter: Optional[ProjectPriority] = Query(None, description="Filter by project priority"),
     owner_id: Optional[str] = Query(None, description="Filter by project owner"),
+    full_details: bool = Query(False, description="Return full project details including description and team members"),
     limit: int = Query(50, ge=1, le=100, description="Number of projects to return"),
     skip: int = Query(0, ge=0, description="Number of projects to skip"),
     current_user: User = Depends(get_current_user)
