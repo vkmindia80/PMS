@@ -363,8 +363,27 @@ const TasksPage: React.FC = () => {
     setFilteredTasks(filtered)
   }
 
+  // Helper function to get assignee names
+  const getAssigneeNames = (task: Task): string => {
+    const assigneeIds = task.assignee_ids && task.assignee_ids.length > 0 
+      ? task.assignee_ids 
+      : task.assignee_id ? [task.assignee_id] : []
+    
+    if (assigneeIds.length === 0) return 'Unassigned'
+    
+    const names = assigneeIds.map(id => {
+      const user = users[id]
+      return user ? `${user.first_name} ${user.last_name}` : 'Unknown User'
+    })
+    
+    if (names.length === 1) return names[0]
+    if (names.length <= 3) return names.join(', ')
+    return `${names.slice(0, 2).join(', ')} +${names.length - 2} more`
+  }
+
   // Effects
   useEffect(() => {
+    fetchUsers()
     fetchTasks()
     fetchAnalytics()
   }, [tokens?.access_token, selectedProject]) // Added selectedProject as dependency
