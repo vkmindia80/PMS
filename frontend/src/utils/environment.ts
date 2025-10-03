@@ -46,13 +46,10 @@ export const getApiUrl = (): string => {
   const hostname = window.location.hostname;
   const protocol = window.location.protocol;
   
-  // For localhost development, use the configured backend URL directly
+  // For localhost development, always use local backend
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    // Check for environment variables first
-    const backendUrl = import.meta.env.VITE_API_URL || 
-                      import.meta.env.REACT_APP_BACKEND_URL || 
-                      'http://localhost:8001';
-    return backendUrl;
+    // Always use localhost:8001 for local development
+    return 'http://localhost:8001';
   }
   
   // If on emergentagent.com domain, use HTTPS to match the frontend
