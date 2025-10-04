@@ -538,7 +538,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     }
   }
 
-  const handleAddComment = async () => {
+  const handleAddComment = async (type: 'comment' | 'note' | 'review' = 'comment') => {
     if (!task || !newComment.trim() || !tokens?.access_token) return
     
     try {
