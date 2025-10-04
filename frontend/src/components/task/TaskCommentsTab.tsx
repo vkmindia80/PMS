@@ -363,28 +363,48 @@ const CommentCard: React.FC<{
       {/* Comment Header */}
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-start space-x-3">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-            comment.type === 'review' ? 'bg-purple-100' :
-            comment.type === 'approval' ? 'bg-green-100' :
-            comment.type === 'note' ? 'bg-blue-100' :
-            'bg-gray-100'
-          }`}>
-            <User className={`h-5 w-5 ${
-              comment.type === 'review' ? 'text-purple-600' :
-              comment.type === 'approval' ? 'text-green-600' :
-              comment.type === 'note' ? 'text-blue-600' :
-              'text-gray-600'
-            }`} />
+          {/* Enhanced User Avatar */}
+          <div className="relative">
+            {user?.avatar_url ? (
+              <img
+                src={user.avatar_url}
+                alt={`${user.first_name} ${user.last_name}`}
+                className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+              />
+            ) : (
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-white shadow-sm ${
+                comment.type === 'review' ? 'bg-purple-500' :
+                comment.type === 'approval' ? 'bg-green-500' :
+                comment.type === 'note' ? 'bg-blue-500' :
+                user ? 'bg-gray-500' : 'bg-red-500'
+              }`}>
+                {user ? (user.first_name?.[0] || 'U') + (user.last_name?.[0] || '') : '?'}
+              </div>
+            )}
+            {/* Online status indicator (if available) */}
+            {user && (
+              <div className="absolute -bottom-0 -right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
+            )}
           </div>
           
           <div className="flex-1">
             <div className="flex items-center space-x-2 mb-1">
-              <div className="font-semibold text-gray-900">
+              <div className={`font-semibold ${user ? 'text-gray-900' : 'text-red-600'}`}>
                 {user ? `${user.first_name} ${user.last_name}` : 'Unknown User'}
               </div>
               {user && (
-                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                  @{user.email.split('@')[0]}
+                <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                  @{user.username || user.email.split('@')[0]}
+                </div>
+              )}
+              {user?.role && (
+                <div className={`text-xs px-2 py-1 rounded-full font-medium ${
+                  user.role === 'admin' ? 'bg-red-100 text-red-700' :
+                  user.role === 'manager' ? 'bg-purple-100 text-purple-700' :
+                  user.role === 'team_lead' ? 'bg-blue-100 text-blue-700' :
+                  'bg-gray-100 text-gray-700'
+                }`}>
+                  {user.role.replace('_', ' ')}
                 </div>
               )}
               {comment.is_edited && (
