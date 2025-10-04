@@ -312,7 +312,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     }
   }
 
-  const handleAddComment = async () => {
+  const handleAddComment = async (commentType: 'comment' | 'note' | 'review' = 'comment') => {
     if (!task || !newComment.trim() || !tokens?.access_token) return
     
     try {
@@ -324,6 +324,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
         },
         body: JSON.stringify({
           content: newComment,
+          type: commentType,
           entity_type: 'task',
           entity_id: task.id,
           author_id: user?.id
@@ -331,13 +332,90 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       })
       
       if (response.ok) {
+        const newCommentData = await response.json()
         setNewComment('')
+        // Immediately add to local state for better UX
+        setComments(prev => [newCommentData, ...prev])
+        // Also refetch to ensure sync
         fetchComments()
-        toast.success('Comment added!')
+        // Update task comment count
+        if (onUpdate) {
+          await onUpdate(task.id, { 
+            ...task, 
+            comment_count: (task.comment_count || 0) + 1 
+          })
+        }
+        toast.success(`${commentType.charAt(0).toUpperCase() + commentType.slice(1)} added!`)
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Failed to create comment')
       }
     } catch (error) {
       console.error('Error adding comment:', error)
-      toast.error('Failed to add comment')
+      toast.error(`Failed to add ${commentType}: ${error.message}`)
+    }
+  }
+
+  const handleAddReaction = async (commentId: string, emoji: string) => {
+    if (!tokens?.access_token) return
+    
+    try {
+      const response = await fetch(`${API_URL}/api/comments/${commentId}/reactions?emoji=${encodeURIComponent(emoji)}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        const updatedComment = await response.json()
+        // Update the comment in local state
+        setComments(prev => prev.map(c => c.id === commentId ? updatedComment : c))
+        toast.success('Reaction added!')
+      } else {
+        throw new Error('Failed to add reaction')
+      }
+    } catch (error) {
+      console.error('Error adding reaction:', error)
+      toast.error('Failed to add reaction')
+    }
+  }
+
+  const handleReply = async (parentId: string, content: string) => {
+    if (!task || !content.trim() || !tokens?.access_token) return
+    
+    try {
+      const response = await fetch(`${API_URL}/api/comments/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: content,
+          type: 'comment',
+          entity_type: 'task',
+          entity_id: task.id,
+          author_id: user?.id,
+          parent_id: parentId
+        })
+      })
+      
+      if (response.ok) {
+        const newReply = await response.json()
+        // Add reply to local state
+        setComments(prev => [newReply, ...prev])
+        // Refetch to ensure proper threading
+        fetchComments()
+        toast.success('Reply added!')
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Failed to create reply')
+      }
+    } catch (error) {
+      console.error('Error adding reply:', error)
+      toast.error(`Failed to add reply: ${error.message}`)
     }
   }
 
