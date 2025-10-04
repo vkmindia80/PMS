@@ -550,7 +550,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
         },
         body: JSON.stringify({
           content: newComment,
-          type: commentType,
+          type: type,
           entity_type: 'task',
           entity_id: task.id,
           author_id: user?.id,
