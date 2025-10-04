@@ -608,6 +608,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
               newComment={newComment}
               setNewComment={setNewComment}
               onAddComment={handleAddComment}
+              onAddReaction={handleAddReaction}
+              onReply={handleReply}
               availableUsers={availableUsers}
             />
           )}
