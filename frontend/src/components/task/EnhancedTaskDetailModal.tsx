@@ -550,20 +550,28 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
         },
         body: JSON.stringify({
           content: newComment,
+          type: commentType,
           entity_type: 'task',
           entity_id: task.id,
-          author_id: user?.id
+          author_id: user?.id,
+          mentions: [],
+          attachments: [],
+          is_internal: false,
+          is_pinned: false
         })
       })
       
       if (response.ok) {
         setNewComment('')
-        fetchComments()
-        toast.success('Comment added!')
+        await fetchComments() // Ensure comments are refetched
+        toast.success(`${commentType.charAt(0).toUpperCase() + commentType.slice(1)} added successfully!`)
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Failed to add comment')
       }
     } catch (error) {
       console.error('Error adding comment:', error)
-      toast.error('Failed to add comment')
+      toast.error(`Failed to add ${commentType}`)
     }
   }
 
