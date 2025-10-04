@@ -593,7 +593,7 @@ const CommentCard: React.FC<{
           <div className="relative">
             <button
               onClick={() => setShowEmojiPicker(showEmojiPicker === comment.id ? null : comment.id)}
-              className="flex items-center space-x-1 text-sm text-gray-500 hover:text-gray-700 px-2 py-1 rounded-full hover:bg-gray-100 transition-colors"
+              className="flex items-center space-x-1.5 text-sm text-gray-500 hover:text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all duration-200 border border-transparent hover:border-blue-200 font-medium"
               title="Add reaction"
             >
               <Smile className="h-4 w-4" />
