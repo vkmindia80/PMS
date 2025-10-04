@@ -561,17 +561,29 @@ const CommentCard: React.FC<{
                     return acc
                   }, {} as Record<string, { count: number, users: string[] }>)
                   
-                  return Object.entries(reactionGroups).map(([emoji, data]) => (
-                    <button
-                      key={emoji}
-                      onClick={() => onAddReaction && onAddReaction(comment.id, emoji)}
-                      className="inline-flex items-center space-x-1 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-full text-sm transition-colors cursor-pointer"
-                      title={`${data.count} reaction${data.count > 1 ? 's' : ''}`}
-                    >
-                      <span>{emoji}</span>
-                      <span className="text-blue-600 font-medium">{data.count}</span>
-                    </button>
-                  ))
+                  return Object.entries(reactionGroups).map(([emoji, data]) => {
+                    // Check if current user has reacted with this emoji
+                    const currentUserId = 'demo-user-001' // In real app, get this from auth context
+                    const userHasReacted = data.users.includes(currentUserId)
+                    
+                    return (
+                      <button
+                        key={emoji}
+                        onClick={() => onAddReaction && onAddReaction(comment.id, emoji)}
+                        className={`inline-flex items-center space-x-1 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 ${
+                          userHasReacted 
+                            ? 'bg-blue-100 border-2 border-blue-300 text-blue-700 shadow-sm' 
+                            : 'bg-gray-100 border border-gray-200 text-gray-700 hover:bg-gray-150 hover:border-gray-300'
+                        }`}
+                        title={`${data.count} reaction${data.count > 1 ? 's' : ''} • Click to ${userHasReacted ? 'remove' : 'add'} your reaction`}
+                      >
+                        <span className="text-base">{emoji}</span>
+                        <span className={`font-semibold ${userHasReacted ? 'text-blue-800' : 'text-gray-600'}`}>
+                          {data.count}
+                        </span>
+                      </button>
+                    )
+                  })
                 })()}
               </div>
             )}
