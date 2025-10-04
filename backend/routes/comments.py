@@ -29,18 +29,20 @@ async def create_comment(
         
         # Verify the entity exists based on entity_type
         entity_collection = None
-        if comment_data.entity_type == EntityType.TASK:
+        entity_type_value = comment_data.entity_type.value if hasattr(comment_data.entity_type, 'value') else str(comment_data.entity_type)
+        
+        if entity_type_value == "task":
             entity_collection = db.tasks
-        elif comment_data.entity_type == EntityType.PROJECT:
+        elif entity_type_value == "project":
             entity_collection = db.projects
-        elif comment_data.entity_type == EntityType.USER:
+        elif entity_type_value == "user":
             entity_collection = db.users
-        elif comment_data.entity_type == EntityType.ORGANIZATION:
+        elif entity_type_value == "organization":
             entity_collection = db.organizations
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Unsupported entity type: {comment_data.entity_type}"
+                detail=f"Unsupported entity type: {entity_type_value}"
             )
         
         # Check if entity exists
