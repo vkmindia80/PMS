@@ -396,7 +396,6 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
           type: 'comment',
           entity_type: 'task',
           entity_id: task.id,
-          author_id: user?.id,
           parent_id: parentId
         })
       })
