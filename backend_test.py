@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing for Time Tracking Functionality
-Tests authentication, time tracking APIs, and task management
+Comprehensive Backend API Testing for Comments Functionality
+Tests authentication, comments APIs, reactions, and conversation history
 """
 
 import requests
@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-class TimeTrackingAPITester:
+class CommentsAPITester:
     def __init__(self, base_url: str = "https://convo-fixer.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
