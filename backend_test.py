@@ -534,9 +534,9 @@ class TimeTrackingAPITester:
         if time_tracking_working >= 2:
             test_results["time_tracking_functionality"]["status"] = "working"
         elif time_tracking_working >= 1:
-            test_results["timeline_functionality"]["status"] = "partial"
+            test_results["time_tracking_functionality"]["status"] = "partial"
         else:
-            test_results["timeline_functionality"]["status"] = "failing"
+            test_results["time_tracking_functionality"]["status"] = "failing"
         
         # Final summary
         test_results["test_summary"].update({
