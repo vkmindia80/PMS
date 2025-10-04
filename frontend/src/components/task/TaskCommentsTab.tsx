@@ -522,7 +522,9 @@ const CommentCard: React.FC<{
               </button>
               <button
                 onClick={() => {
-                  // Handle reply submission
+                  if (onReply && replyText.trim()) {
+                    onReply(comment.id, replyText)
+                  }
                   setShowReplyForm(false)
                   setReplyText('')
                 }}
