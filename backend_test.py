@@ -590,7 +590,7 @@ def main():
     
     # Return appropriate exit code
     if results["authentication"]["status"] == "working" and \
-       results["timeline_functionality"]["status"] in ["working", "partial"] and \
+       results["time_tracking_functionality"]["status"] in ["working", "partial"] and \
        len(results["critical_issues"]) == 0:
         print("\n🎉 Backend testing completed successfully!")
         return 0
