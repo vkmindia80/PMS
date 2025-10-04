@@ -300,7 +300,7 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
                   Discussion Timeline
                 </div>
                 <span className="text-sm font-normal text-gray-500">
-                  Showing {sortedComments.length} of {comments.length} comments
+                  Showing {organizedComments.length} threads ({filteredComments.length} total comments)
                 </span>
               </h4>
               
