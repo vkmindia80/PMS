@@ -1,0 +1,50 @@
+{
+  "test_summary": {
+    "start_time": "2025-10-04T22:15:09.436153",
+    "base_url": "https://nested-replies-1.preview.emergentagent.com",
+    "test_entity": "task/test-task-threading-001",
+    "end_time": "2025-10-04T22:15:09.621581",
+    "total_tests": 3,
+    "passed_tests": 2,
+    "success_rate": "66.7%",
+    "issues_count": 2,
+    "created_comments": 0
+  },
+  "test_results": {
+    "login": {
+      "passed": true,
+      "timestamp": "2025-10-04T22:15:09.537898"
+    },
+    "create_test_data": {
+      "passed": false,
+      "timestamp": "2025-10-04T22:15:09.578322"
+    },
+    "comment_threads_endpoint": {
+      "passed": true,
+      "timestamp": "2025-10-04T22:15:09.621559"
+    },
+    "reactions_all_levels": {
+      "passed": false,
+      "timestamp": "2025-10-04T22:15:09.621577"
+    }
+  },
+  "threading_features": {
+    "unlimited_nesting": "working",
+    "chronological_ordering": "working",
+    "visual_hierarchy": "unknown",
+    "reactions_all_levels": "failing",
+    "pinned_comments_first": "working"
+  },
+  "issues": [
+    {
+      "test": "create_test_data",
+      "issue": "Test create_test_data failed",
+      "impact": "Medium"
+    },
+    {
+      "test": "reactions_all_levels",
+      "issue": "Test reactions_all_levels failed",
+      "impact": "Medium"
+    }
+  ]
+}
