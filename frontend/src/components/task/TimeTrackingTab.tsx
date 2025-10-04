@@ -287,6 +287,7 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
               onClick={onLogTime}
               disabled={!timeLogHours || parseFloat(timeLogHours) <= 0 || !timeLogDescription.trim()}
               className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              data-testid="log-time-entry-btn"
             >
               <Plus className="h-4 w-4 inline mr-2" />
               Log Time Entry
