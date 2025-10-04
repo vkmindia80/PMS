@@ -35,6 +35,13 @@ interface Comment {
   resolved_at?: string
   created_at: string
   updated_at: string
+  nested_replies?: Comment[] // For unlimited nesting support
+}
+
+interface CommentThread {
+  root_comment: Comment
+  replies: Comment[]
+  total_replies: number
 }
 
 interface TaskCommentsTabProps {
