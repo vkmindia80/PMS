@@ -272,36 +272,52 @@ class TimeTrackingAPITester:
             self.log("❌ Failed to log manual time entry")
             return False
 
-    def test_gantt_data(self) -> bool:
-        """Test Gantt chart data retrieval"""
+    def test_task_detailed_view(self) -> bool:
+        """Test detailed task view with time tracking data"""
         if not self.token:
-            self.log("❌ Cannot test Gantt data - no authentication token")
+            self.log("❌ Cannot test task details - no authentication token")
             return False
             
-        if not self.demo_project_id:
-            self.log("⚠️ No project ID available, skipping Gantt data test")
+        if not self.demo_task_id:
+            self.log("❌ Cannot test task details - no task ID available")
             return False
             
         success, response = self.run_test(
-            f"Gantt Chart Data ({self.demo_project_id})",
+            f"Task Detailed View ({self.demo_task_id})",
             "GET",
-            f"/api/dynamic-timeline/gantt/{self.demo_project_id}/enhanced",
+            f"/api/tasks/{self.demo_task_id}/detailed",
             200
         )
         
         if success:
-            tasks = response.get('tasks', [])
-            dependencies = response.get('dependencies', [])
-            conflicts = response.get('conflicts', [])
+            self.log(f"✅ Task detailed view retrieved:")
+            self.log(f"   Task title: {response.get('title', 'Unknown')}")
+            self.log(f"   Task status: {response.get('status', 'Unknown')}")
             
-            self.log(f"✅ Gantt chart data retrieved:")
-            self.log(f"   Tasks: {len(tasks)}")
-            self.log(f"   Dependencies: {len(dependencies)}")
-            self.log(f"   Conflicts detected: {len(conflicts)}")
-            
-            return True
+            # Check time tracking data
+            time_tracking = response.get('time_tracking', {})
+            if time_tracking:
+                estimated_hours = time_tracking.get('estimated_hours')
+                actual_hours = time_tracking.get('actual_hours', 0)
+                logged_time = time_tracking.get('logged_time', [])
+                
+                self.log(f"   Estimated hours: {estimated_hours}")
+                self.log(f"   Actual hours: {actual_hours}")
+                self.log(f"   Time entries count: {len(logged_time)}")
+                
+                # Show recent time entries
+                if logged_time:
+                    self.log("   Recent time entries:")
+                    for i, entry in enumerate(logged_time[-3:]):  # Show last 3 entries
+                        self.log(f"     {i+1}. {entry.get('hours')}h - {entry.get('description', 'No description')}")
+                        self.log(f"        Date: {entry.get('date', 'Unknown')} by {entry.get('user_id', 'Unknown')}")
+                
+                return True
+            else:
+                self.log("⚠️ No time tracking data found")
+                return False
         else:
-            self.log("❌ Failed to retrieve Gantt chart data")
+            self.log("❌ Failed to retrieve task detailed view")
             return False
 
     def test_tasks_list(self) -> bool:
