@@ -259,6 +259,8 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
                       showEmojiPicker={showEmojiPicker}
                       setShowEmojiPicker={setShowEmojiPicker}
                       emojis={emojis}
+                      onAddReaction={onAddReaction}
+                      onReply={onReply}
                     />
                   ))}
                 </div>
