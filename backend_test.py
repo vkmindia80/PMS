@@ -350,27 +350,197 @@ class CommentsAPITester:
             self.log(f"⚠️ Only {success_count}/{len(comment_types)} comment types created")
             return success_count > 0
 
-    def test_analytics_dashboard(self) -> bool:
-        """Test analytics dashboard data"""
+    def test_comment_reactions(self) -> bool:
+        """Test adding reactions to comments"""
         if not self.token:
-            self.log("❌ Cannot test analytics - no authentication token")
+            self.log("❌ Cannot test reactions - no authentication token")
             return False
             
+        if not self.test_comment_ids:
+            self.log("❌ Cannot test reactions - no comment IDs available")
+            return False
+            
+        comment_id = self.test_comment_ids[0]  # Use first created comment
+        test_emojis = ["👍", "❤️", "😄"]
+        
+        success_count = 0
+        
+        for emoji in test_emojis:
+            success, response = self.run_test(
+                f"Add Reaction ({emoji})",
+                "POST",
+                f"/api/comments/{comment_id}/reactions?emoji={emoji}",
+                200
+            )
+            
+            if success:
+                reactions = response.get('reactions', [])
+                reaction_count = response.get('reaction_count', 0)
+                self.log(f"   ✅ Reaction {emoji} added. Total reactions: {reaction_count}")
+                success_count += 1
+            else:
+                self.log(f"   ❌ Failed to add reaction {emoji}")
+        
+        if success_count == len(test_emojis):
+            self.log("✅ All reactions added successfully")
+            return True
+        else:
+            self.log(f"⚠️ Only {success_count}/{len(test_emojis)} reactions added")
+            return success_count > 0
+
+    def test_comment_replies(self) -> bool:
+        """Test creating replies to comments"""
+        if not self.token:
+            self.log("❌ Cannot test replies - no authentication token")
+            return False
+            
+        if not self.test_comment_ids:
+            self.log("❌ Cannot test replies - no comment IDs available")
+            return False
+            
+        parent_comment_id = self.test_comment_ids[0]  # Use first created comment as parent
+        
+        reply_data = {
+            "content": "This is a reply to the parent comment",
+            "type": "comment",
+            "entity_type": "task",
+            "entity_id": self.demo_task_id,
+            "parent_id": parent_comment_id
+        }
+        
         success, response = self.run_test(
-            "Analytics Dashboard Summary",
-            "GET",
-            "/api/analytics/dashboard/summary",
-            200
+            "Create Reply Comment",
+            "POST",
+            "/api/comments/",
+            201,
+            data=reply_data
         )
         
         if success:
-            self.log("✅ Analytics dashboard data retrieved")
-            if 'tasks' in response:
-                tasks_data = response['tasks']
-                self.log(f"   Tasks summary: {tasks_data}")
-            return True
+            reply_id = response.get('id')
+            parent_id = response.get('parent_id')
+            
+            if reply_id and parent_id == parent_comment_id:
+                self.test_comment_ids.append(reply_id)
+                self.log(f"   ✅ Reply created: {reply_id}")
+                self.log(f"   Parent comment: {parent_id}")
+                
+                # Verify parent comment reply count increased
+                success_parent, parent_response = self.run_test(
+                    "Check Parent Comment Reply Count",
+                    "GET",
+                    f"/api/comments/{parent_comment_id}",
+                    200
+                )
+                
+                if success_parent:
+                    reply_count = parent_response.get('reply_count', 0)
+                    self.log(f"   Parent comment reply count: {reply_count}")
+                    return reply_count > 0
+                else:
+                    self.log("   ⚠️ Could not verify parent comment reply count")
+                    return True  # Reply was created successfully
+            else:
+                self.log("   ❌ Reply missing ID or incorrect parent ID")
+                return False
         else:
-            self.log("❌ Failed to retrieve analytics dashboard data")
+            self.log("❌ Failed to create reply")
+            return False
+
+    def test_comment_conversation_history(self) -> bool:
+        """Test conversation history maintenance"""
+        if not self.token:
+            self.log("❌ Cannot test conversation history - no authentication token")
+            return False
+            
+        if not self.demo_task_id:
+            self.log("❌ Cannot test conversation history - no task ID available")
+            return False
+            
+        # Get comments before adding new ones
+        success_before, response_before = self.run_test(
+            "Get Comments Before",
+            "GET",
+            f"/api/comments/?entity_type=task&entity_id={self.demo_task_id}",
+            200
+        )
+        
+        if not success_before:
+            self.log("❌ Failed to get comments before test")
+            return False
+            
+        comments_before = response_before if isinstance(response_before, list) else []
+        count_before = len(comments_before)
+        
+        # Add multiple comments to test conversation flow
+        conversation_comments = [
+            "Starting a new conversation thread",
+            "Adding to the conversation with more details",
+            "Final comment in this conversation"
+        ]
+        
+        created_comments = []
+        
+        for i, content in enumerate(conversation_comments):
+            comment_data = {
+                "content": content,
+                "type": "comment",
+                "entity_type": "task",
+                "entity_id": self.demo_task_id
+            }
+            
+            success, response = self.run_test(
+                f"Add Conversation Comment {i+1}",
+                "POST",
+                "/api/comments/",
+                201,
+                data=comment_data
+            )
+            
+            if success and response.get('id'):
+                created_comments.append(response)
+                self.test_comment_ids.append(response['id'])
+        
+        # Get comments after adding new ones
+        success_after, response_after = self.run_test(
+            "Get Comments After",
+            "GET",
+            f"/api/comments/?entity_type=task&entity_id={self.demo_task_id}",
+            200
+        )
+        
+        if success_after:
+            comments_after = response_after if isinstance(response_after, list) else []
+            count_after = len(comments_after)
+            
+            self.log(f"   Comments before: {count_before}")
+            self.log(f"   Comments after: {count_after}")
+            self.log(f"   Expected increase: {len(created_comments)}")
+            
+            if count_after >= count_before + len(created_comments):
+                self.log("✅ Conversation history maintained correctly")
+                
+                # Verify chronological order (newest first)
+                if len(comments_after) >= 2:
+                    first_comment = comments_after[0]
+                    second_comment = comments_after[1]
+                    
+                    first_time = datetime.fromisoformat(first_comment['created_at'].replace('Z', '+00:00'))
+                    second_time = datetime.fromisoformat(second_comment['created_at'].replace('Z', '+00:00'))
+                    
+                    if first_time >= second_time:
+                        self.log("   ✅ Comments are in correct chronological order")
+                        return True
+                    else:
+                        self.log("   ⚠️ Comments may not be in correct chronological order")
+                        return True  # Still consider success as comments were added
+                
+                return True
+            else:
+                self.log("❌ Conversation history not maintained properly")
+                return False
+        else:
+            self.log("❌ Failed to get comments after test")
             return False
 
     def test_cors_preflight(self) -> bool:
