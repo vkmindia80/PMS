@@ -378,39 +378,74 @@ async def get_comment_threads(
     entity_id: str,
     current_user: User = Depends(get_current_active_user)
 ):
-    """Get comment threads for an entity"""
+    """Get comment threads for an entity with unlimited nesting support"""
     try:
         db = await get_database()
         
-        # Get all comments for the entity
+        # Get all comments for the entity, sorted chronologically (oldest first)
         comments = await db.comments.find({
             "entity_type": entity_type.value,
             "entity_id": entity_id
         }).sort("created_at", 1).to_list(length=None)
         
-        # Organize into threads
-        threads = {}
-        all_comments = {comment["id"]: Comment(**comment) for comment in comments}
+        if not comments:
+            return []
         
-        for comment in comments:
-            comment_obj = Comment(**comment)
+        # Convert to Comment objects and create lookup dict
+        comment_objects = {}
+        for comment_data in comments:
+            comment_objects[comment_data["id"]] = Comment(**comment_data)
+        
+        # Build nested thread structure recursively
+        def build_nested_replies(parent_id: str) -> List[Comment]:
+            """Recursively build nested replies for a parent comment"""
+            replies = []
+            for comment_id, comment_obj in comment_objects.items():
+                if comment_obj.parent_id == parent_id:
+                    # This comment is a direct reply to the parent
+                    # Recursively get its nested replies
+                    nested_replies = build_nested_replies(comment_id)
+                    
+                    # Add nested replies as a custom attribute for frontend processing
+                    comment_obj_dict = comment_obj.dict()
+                    comment_obj_dict["nested_replies"] = nested_replies
+                    enhanced_comment = Comment(**{k: v for k, v in comment_obj_dict.items() if k != "nested_replies"})
+                    enhanced_comment.nested_replies = nested_replies
+                    
+                    replies.append(enhanced_comment)
             
-            if not comment["parent_id"]:
-                # This is a root comment
-                if comment["id"] not in threads:
-                    threads[comment["id"]] = CommentThread(
-                        root_comment=comment_obj,
-                        replies=[],
-                        total_replies=0
-                    )
-            else:
-                # This is a reply
-                thread_id = comment["thread_id"] or comment["parent_id"]
-                if thread_id in threads:
-                    threads[thread_id].replies.append(comment_obj)
-                    threads[thread_id].total_replies += 1
+            # Sort replies chronologically (oldest first)
+            return sorted(replies, key=lambda x: x.created_at)
         
-        return list(threads.values())
+        # Find root comments (no parent_id) and build their thread trees
+        root_threads = []
+        for comment_id, comment_obj in comment_objects.items():
+            if not comment_obj.parent_id:
+                # This is a root comment
+                nested_replies = build_nested_replies(comment_id)
+                
+                # Calculate total reply count (including nested)
+                def count_total_replies(replies_list: List[Comment]) -> int:
+                    total = len(replies_list)
+                    for reply in replies_list:
+                        if hasattr(reply, 'nested_replies'):
+                            total += count_total_replies(reply.nested_replies)
+                    return total
+                
+                total_reply_count = count_total_replies(nested_replies)
+                
+                # Create thread with nested structure
+                thread = CommentThread(
+                    root_comment=comment_obj,
+                    replies=nested_replies,  # This will now contain the full nested structure
+                    total_replies=total_reply_count
+                )
+                root_threads.append(thread)
+        
+        # Sort root threads chronologically (oldest first) with pinned comments first
+        root_threads.sort(key=lambda x: (not x.root_comment.is_pinned, x.root_comment.created_at))
+        
+        return root_threads
         
     except Exception as e:
         raise HTTPException(
