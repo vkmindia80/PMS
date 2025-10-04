@@ -185,7 +185,7 @@ class TimeTrackingAPITester:
         success, response = self.run_test(
             "Tasks List",
             "GET",
-            "/api/tasks",
+            "/api/tasks/",
             200
         )
         
