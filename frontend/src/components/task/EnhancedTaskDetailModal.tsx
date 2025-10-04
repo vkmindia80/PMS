@@ -421,16 +421,36 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     
     try {
       setLoading(true)
-      const response = await fetch(`${getApiUrlDynamic()}/api/comments/?entity_type=task&entity_id=${task.id}`, {
+      
+      // Fetch threaded comments using the enhanced API endpoint
+      const threadsResponse = await fetch(`${getApiUrlDynamic()}/api/comments/threads/task/${task.id}`, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
         }
       })
       
-      if (response.ok) {
-        const commentsData = await response.json()
-        setComments(commentsData)
+      if (threadsResponse.ok) {
+        const threadsData = await threadsResponse.json()
+        setCommentThreads(threadsData)
+        
+        // Also flatten for backward compatibility (if needed)
+        const flatComments: Comment[] = []
+        threadsData.forEach((thread: any) => {
+          flatComments.push(thread.root_comment)
+          if (thread.root_comment.nested_replies) {
+            const flattenReplies = (replies: any[]) => {
+              replies.forEach(reply => {
+                flatComments.push(reply)
+                if (reply.nested_replies) {
+                  flattenReplies(reply.nested_replies)
+                }
+              })
+            }
+            flattenReplies(thread.root_comment.nested_replies)
+          }
+        })
+        setComments(flatComments)
       }
     } catch (error) {
       console.error('Error fetching comments:', error)
