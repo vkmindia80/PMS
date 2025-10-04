@@ -476,7 +476,9 @@ const CommentCard: React.FC<{
                     <button
                       key={emoji}
                       onClick={() => {
-                        // Handle emoji reaction
+                        if (onAddReaction) {
+                          onAddReaction(comment.id, emoji)
+                        }
                         setShowEmojiPicker(null)
                       }}
                       className="p-2 hover:bg-gray-100 rounded text-lg"
