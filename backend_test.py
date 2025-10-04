@@ -217,60 +217,48 @@ class CommentsAPITester:
             self.log("❌ Failed to retrieve tasks list")
             return False
 
-    def test_manual_time_logging(self) -> bool:
-        """Test manual time logging functionality"""
+    def test_create_comment(self) -> bool:
+        """Test creating a new comment"""
         if not self.token:
-            self.log("❌ Cannot test time logging - no authentication token")
+            self.log("❌ Cannot test comment creation - no authentication token")
             return False
             
         if not self.demo_task_id:
-            self.log("❌ Cannot test time logging - no task ID available")
+            self.log("❌ Cannot test comment creation - no task ID available")
             return False
             
-        # Test manual time logging
-        test_hours = 2.5
-        test_description = "Backend API testing - manual time entry"
+        # Test creating a comment
+        comment_data = {
+            "content": "This is a test comment for backend API testing",
+            "type": "comment",
+            "entity_type": "task",
+            "entity_id": self.demo_task_id
+        }
         
         success, response = self.run_test(
-            f"Manual Time Logging ({test_hours}h)",
+            "Create Comment",
             "POST",
-            f"/api/tasks/{self.demo_task_id}/time/log?hours={test_hours}&description={test_description}",
-            200
+            "/api/comments/",
+            201,
+            data=comment_data
         )
         
         if success:
-            self.log(f"✅ Manual time logging successful:")
-            
-            # Check if response contains updated task data
-            if 'time_tracking' in response:
-                time_tracking = response['time_tracking']
-                actual_hours = time_tracking.get('actual_hours', 0)
-                logged_entries = len(time_tracking.get('logged_time', []))
-                
-                self.log(f"   Updated actual hours: {actual_hours}")
-                self.log(f"   Total time entries: {logged_entries}")
-                
-                # Verify the new entry was added
-                logged_time = time_tracking.get('logged_time', [])
-                if logged_time:
-                    latest_entry = logged_time[-1]  # Get the last entry
-                    self.log(f"   Latest entry: {latest_entry.get('hours')}h - {latest_entry.get('description')}")
-                    
-                    # Verify the entry matches what we logged
-                    if latest_entry.get('hours') == test_hours and test_description in latest_entry.get('description', ''):
-                        self.log("✅ Time entry verification successful")
-                        return True
-                    else:
-                        self.log("⚠️ Time entry data doesn't match expected values")
-                        return False
-                else:
-                    self.log("⚠️ No time entries found in response")
-                    return False
+            self.log(f"✅ Comment creation successful:")
+            comment_id = response.get('id')
+            if comment_id:
+                self.test_comment_ids.append(comment_id)
+                self.log(f"   Comment ID: {comment_id}")
+                self.log(f"   Content: {response.get('content')}")
+                self.log(f"   Type: {response.get('type')}")
+                self.log(f"   Author: {response.get('author_id')}")
+                self.log(f"   Created: {response.get('created_at')}")
+                return True
             else:
-                self.log("⚠️ No time_tracking data in response")
+                self.log("⚠️ No comment ID in response")
                 return False
         else:
-            self.log("❌ Failed to log manual time entry")
+            self.log("❌ Failed to create comment")
             return False
 
     def test_task_detailed_view(self) -> bool:
