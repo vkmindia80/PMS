@@ -134,7 +134,23 @@ async def create_task(
                 detail="Failed to create task"
             )
         
-        return Task(**created_task)
+        # Clean up task data before validation
+        cleaned_task = dict(created_task)
+        
+        # Fix dependencies format - convert strings to proper TaskDependency format
+        if "dependencies" in cleaned_task and cleaned_task["dependencies"]:
+            fixed_dependencies = []
+            for dep in cleaned_task["dependencies"]:
+                if isinstance(dep, str):
+                    fixed_dependencies.append({
+                        "task_id": dep,
+                        "dependency_type": "blocks"
+                    })
+                elif isinstance(dep, dict):
+                    fixed_dependencies.append(dep)
+            cleaned_task["dependencies"] = fixed_dependencies
+        
+        return Task(**cleaned_task)
         
     except Exception as e:
         raise HTTPException(
