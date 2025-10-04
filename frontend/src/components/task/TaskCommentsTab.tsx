@@ -589,17 +589,18 @@ const CommentCard: React.FC<{
             </button>
             
             {showEmojiPicker === comment.id && (
-              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-lg z-20 p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">Pick a reaction</span>
+              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-xl z-30 p-4 min-w-[280px]">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-semibold text-gray-800">Pick a reaction</span>
                   <button
                     onClick={() => setShowEmojiPicker(null)}
-                    className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
+                    className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    aria-label="Close emoji picker"
                   >
-                    <X className="h-3 w-3" />
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
-                <div className="grid grid-cols-6 gap-1">
+                <div className="grid grid-cols-6 gap-2">
                   {emojis.map((emoji) => (
                     <button
                       key={emoji}
@@ -609,12 +610,17 @@ const CommentCard: React.FC<{
                         }
                         setShowEmojiPicker(null)
                       }}
-                      className="p-2 hover:bg-gray-100 rounded-lg text-lg transition-colors hover:scale-110 transform"
+                      className="p-3 hover:bg-gray-100 rounded-lg text-xl transition-all duration-200 hover:scale-110 transform active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                       title={`React with ${emoji}`}
                     >
                       {emoji}
                     </button>
                   ))}
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-100">
+                  <p className="text-xs text-gray-500 text-center">
+                    Click to add your reaction to this comment
+                  </p>
                 </div>
               </div>
             )}
