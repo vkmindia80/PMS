@@ -101,17 +101,30 @@ class Comment(BaseDBModel, CommentBase):
     resolved_by: Optional[str] = Field(None, description="User who resolved the comment")
     resolved_at: Optional[datetime] = Field(None, description="When comment was resolved")
     
+    # Nested replies for unlimited threading depth (populated by API)
+    nested_replies: Optional[List['Comment']] = Field(default=None, description="Nested replies for unlimited threading")
+    
     @property
     def is_reply(self) -> bool:
         return self.parent_id is not None
     
     @property
     def has_replies(self) -> bool:
-        return self.reply_count > 0
+        return self.reply_count > 0 or (self.nested_replies and len(self.nested_replies) > 0)
     
     def get_reaction_count_by_emoji(self, emoji: str) -> int:
         """Get count of specific emoji reactions"""
         return len([r for r in self.reactions if r.emoji == emoji])
+    
+    def get_total_nested_reply_count(self) -> int:
+        """Get total count of all nested replies recursively"""
+        if not self.nested_replies:
+            return 0
+        
+        count = len(self.nested_replies)
+        for reply in self.nested_replies:
+            count += reply.get_total_nested_reply_count()
+        return count
 
 class CommentInDB(Comment):
     """Comment model as stored in database"""
