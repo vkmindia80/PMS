@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { 
   MessageSquare, User, Clock, CheckSquare, Paperclip, 
   History, Pin, Reply, ThumbsUp, Heart, Smile,
-  Plus, Send, Filter, Search
+  Plus, Send, Filter, Search, UserCircle, X
 } from 'lucide-react'
 
 interface Comment {
