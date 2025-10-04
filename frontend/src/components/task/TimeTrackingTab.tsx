@@ -201,29 +201,18 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
                   <span className="text-sm text-green-600 font-medium">Recording time</span>
                 </div>
                 
-                {/* Timer Control Buttons */}
-                <div className="space-y-2">
-                  <button
-                    onClick={onStopAndSaveTimer}
-                    className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2"
-                    data-testid="stop-save-timer-btn"
-                  >
-                    <Square className="h-4 w-4" />
-                    <span>Stop & Save Timer</span>
-                  </button>
-                  
-                  <button
-                    onClick={onStopTimer}
-                    className="w-full px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors font-medium flex items-center justify-center space-x-2"
-                    data-testid="stop-timer-btn"
-                  >
-                    <Pause className="h-4 w-4" />
-                    <span>Stop & Edit Timer</span>
-                  </button>
-                </div>
+                {/* Timer Control Button */}
+                <button
+                  onClick={onStopAndSaveTimer}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center space-x-2"
+                  data-testid="stop-save-timer-btn"
+                >
+                  <Square className="h-4 w-4" />
+                  <span>Stop & Save Timer</span>
+                </button>
                 
                 <div className="text-xs text-gray-500 text-center">
-                  💡 "Stop & Save" logs time immediately, "Stop & Edit" lets you modify before logging
+                  💡 Timer will automatically log the time when stopped
                 </div>
               </div>
             ) : (
