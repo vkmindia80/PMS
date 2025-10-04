@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class TimeTrackingAPITester:
-    def __init__(self, base_url: str = "https://task-timer-begin.preview.emergentagent.com"):
+    def __init__(self, base_url: str = "https://convo-fixer.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user_data = None
@@ -428,7 +428,7 @@ class TimeTrackingAPITester:
             response = requests.options(
                 f"{self.base_url}/api/auth/login",
                 headers={
-                    'Origin': 'https://task-timer-begin.preview.emergentagent.com',
+                    'Origin': 'https://convo-fixer.preview.emergentagent.com',
                     'Access-Control-Request-Method': 'POST',
                     'Access-Control-Request-Headers': 'Content-Type,Authorization'
                 },
