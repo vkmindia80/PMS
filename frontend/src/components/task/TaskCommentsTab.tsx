@@ -563,7 +563,7 @@ const CommentCard: React.FC<{
                   
                   return Object.entries(reactionGroups).map(([emoji, data]) => {
                     // Check if current user has reacted with this emoji
-                    const currentUserId = 'demo-user-001' // In real app, get this from auth context
+                    const currentUserId = availableUsers.find(u => u.email === 'demo@company.com')?.id || 'demo-user-001' 
                     const userHasReacted = data.users.includes(currentUserId)
                     
                     return (
