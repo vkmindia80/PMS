@@ -63,6 +63,17 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
   const [searchTerm, setSearchTerm] = useState('')
   const [showEmojiPicker, setShowEmojiPicker] = useState<string | null>(null)
 
+  // Debug logging for user data
+  useEffect(() => {
+    console.log('📊 TaskCommentsTab - Available users:', availableUsers?.length || 0)
+    console.log('📊 TaskCommentsTab - Comments count:', comments?.length || 0)
+    if (comments?.length > 0 && availableUsers?.length > 0) {
+      const authorIds = comments.map(c => c.author_id)
+      const foundUsers = authorIds.filter(id => availableUsers.find(u => u.id === id))
+      console.log('📊 TaskCommentsTab - Author IDs found:', foundUsers.length, 'of', authorIds.length)
+    }
+  }, [comments, availableUsers])
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
