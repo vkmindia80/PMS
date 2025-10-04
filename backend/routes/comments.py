@@ -50,7 +50,7 @@ async def create_comment(
         if not entity:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"{comment_data.entity_type.value.title()} not found"
+                detail=f"{entity_type_value.title()} not found"
             )
         
         # Create comment with ID and timestamps
