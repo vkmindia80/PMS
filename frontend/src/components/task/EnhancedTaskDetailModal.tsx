@@ -503,18 +503,6 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     toast.success('Timer started!')
   }
 
-  const handleStopTimer = () => {
-    if (currentTimerStart) {
-      const totalSeconds = Math.floor((Date.now() - currentTimerStart.getTime()) / 1000)
-      const hours = formatHours(totalSeconds / 3600)
-      setTimeLogHours(hours)
-      setTimeLogDescription('Timed work session')
-    }
-    setIsTimerRunning(false)
-    setCurrentTimerStart(null)
-    toast.info('Timer stopped. Time logged to form.')
-  }
-
   const handleStopAndSaveTimer = async () => {
     if (!task || !currentTimerStart || !tokens?.access_token) return
     
