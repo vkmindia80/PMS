@@ -673,13 +673,26 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
               <div className="flex items-center space-x-2 px-3 py-2 bg-white rounded-lg border border-gray-200">
                 {isTimerRunning ? (
                   <>
-                    <button
-                      onClick={handleStopTimer}
-                      className="flex items-center space-x-1 text-red-600 hover:text-red-700"
-                      data-testid="stop-timer-btn"
-                    >
-                      <Square className="h-4 w-4" />
-                    </button>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={handleStopAndSaveTimer}
+                        className="flex items-center space-x-1 text-green-600 hover:text-green-700 px-2 py-1 rounded border border-green-300 hover:bg-green-50"
+                        title="Stop timer and automatically log time"
+                        data-testid="stop-save-timer-btn"
+                      >
+                        <Square className="h-3 w-3" />
+                        <span className="text-xs">Save</span>
+                      </button>
+                      <button
+                        onClick={handleStopTimer}
+                        className="flex items-center space-x-1 text-orange-600 hover:text-orange-700 px-2 py-1 rounded border border-orange-300 hover:bg-orange-50"
+                        title="Stop timer and edit before logging"
+                        data-testid="stop-timer-btn"
+                      >
+                        <Pause className="h-3 w-3" />
+                        <span className="text-xs">Edit</span>
+                      </button>
+                    </div>
                     <span className="text-sm font-mono text-gray-900">
                       {formatTime(timerElapsed)}
                     </span>
