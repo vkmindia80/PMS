@@ -31,6 +31,7 @@ interface TimeTrackingTabProps {
   formatTime: (ms: number) => string
   onStartTimer: () => void
   onStopTimer: () => void
+  onStopAndSaveTimer: () => void
 }
 
 export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
