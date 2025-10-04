@@ -693,11 +693,11 @@ class CommentsAPITester:
 def main():
     """Main test execution"""
     print("=" * 80)
-    print("Time Tracking Functionality - Backend API Testing")
+    print("Comments Functionality - Backend API Testing")
     print("=" * 80)
     
     # Initialize tester with the public endpoint
-    tester = TimeTrackingAPITester()
+    tester = CommentsAPITester()
     
     # Run comprehensive tests
     results = tester.run_comprehensive_test()
@@ -713,7 +713,7 @@ def main():
     
     # Return appropriate exit code
     if results["authentication"]["status"] == "working" and \
-       results["time_tracking_functionality"]["status"] in ["working", "partial"] and \
+       results["comments_functionality"]["status"] in ["working", "partial"] and \
        len(results["critical_issues"]) == 0:
         print("\n🎉 Backend testing completed successfully!")
         return 0
