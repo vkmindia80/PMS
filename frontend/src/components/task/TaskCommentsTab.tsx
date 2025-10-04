@@ -531,12 +531,15 @@ const CommentCard: React.FC<{
   const [replyText, setReplyText] = useState('')
 
   const getCommentBorder = () => {
-    if (isPinned) return 'border-l-4 border-l-yellow-400 bg-yellow-50'
+    const baseStyle = depth > 0 ? 'border-l-2' : 'border-l-4'
+    const borderOpacity = depth > 2 ? 'opacity-60' : depth > 0 ? 'opacity-80' : ''
+    
+    if (isPinned) return `${baseStyle} border-l-yellow-400 bg-yellow-50 ${borderOpacity}`
     switch (comment.type) {
-      case 'review': return 'border-l-4 border-l-purple-400 bg-purple-50'
-      case 'approval': return 'border-l-4 border-l-green-400 bg-green-50'
-      case 'note': return 'border-l-4 border-l-blue-400 bg-blue-50'
-      default: return 'border-l-4 border-l-gray-400 bg-white'
+      case 'review': return `${baseStyle} border-l-purple-400 bg-purple-50 ${borderOpacity}`
+      case 'approval': return `${baseStyle} border-l-green-400 bg-green-50 ${borderOpacity}`
+      case 'note': return `${baseStyle} border-l-blue-400 bg-blue-50 ${borderOpacity}`
+      default: return `${baseStyle} border-l-gray-400 ${depth > 0 ? 'bg-gray-50' : 'bg-white'} ${borderOpacity}`
     }
   }
 
