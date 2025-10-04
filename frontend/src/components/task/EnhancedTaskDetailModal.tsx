@@ -564,7 +564,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
       if (response.ok) {
         setNewComment('')
         await fetchComments() // Ensure comments are refetched
-        toast.success(`${commentType.charAt(0).toUpperCase() + commentType.slice(1)} added successfully!`)
+        toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} added successfully!`)
       } else {
         const errorData = await response.json()
         throw new Error(errorData.detail || 'Failed to add comment')
