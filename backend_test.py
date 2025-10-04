@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing for Dynamic Timeline Dashboard
-Tests authentication, timeline APIs, and real-time statistics
+Comprehensive Backend API Testing for Time Tracking Functionality
+Tests authentication, time tracking APIs, and task management
 """
 
 import requests
@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-class DynamicTimelineAPITester:
+class TimeTrackingAPITester:
     def __init__(self, base_url: str = "https://task-time-tracker-2.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
