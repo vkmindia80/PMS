@@ -574,6 +574,67 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     }
   }
 
+  const handleAddReaction = async (commentId: string, emoji: string) => {
+    if (!tokens?.access_token) return
+    
+    try {
+      const response = await fetch(`${getApiUrlDynamic()}/api/comments/${commentId}/reactions?emoji=${encodeURIComponent(emoji)}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        await fetchComments() // Refresh comments to show updated reactions
+        toast.success('Reaction added!')
+      } else {
+        throw new Error('Failed to add reaction')
+      }
+    } catch (error) {
+      console.error('Error adding reaction:', error)
+      toast.error('Failed to add reaction')
+    }
+  }
+
+  const handleReply = async (parentId: string, content: string) => {
+    if (!task || !tokens?.access_token || !content.trim()) return
+    
+    try {
+      const response = await fetch(`${getApiUrlDynamic()}/api/comments/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          content: content,
+          type: 'comment',
+          entity_type: 'task',
+          entity_id: task.id,
+          author_id: user?.id,
+          parent_id: parentId,
+          mentions: [],
+          attachments: [],
+          is_internal: false,
+          is_pinned: false
+        })
+      })
+      
+      if (response.ok) {
+        await fetchComments() // Refresh comments to show new reply
+        toast.success('Reply added!')
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Failed to add reply')
+      }
+    } catch (error) {
+      console.error('Error adding reply:', error)
+      toast.error('Failed to add reply')
+    }
+  }
+
   const handleLogTime = async () => {
     if (!task || !timeLogHours || !tokens?.access_token) return
     
