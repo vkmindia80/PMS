@@ -466,7 +466,24 @@ async def update_task(
         
         # Get updated task
         updated_task = await db.tasks.find_one({"id": task_id})
-        return Task(**updated_task)
+        
+        # Clean up task data before validation
+        cleaned_task = dict(updated_task)
+        
+        # Fix dependencies format - convert strings to proper TaskDependency format
+        if "dependencies" in cleaned_task and cleaned_task["dependencies"]:
+            fixed_dependencies = []
+            for dep in cleaned_task["dependencies"]:
+                if isinstance(dep, str):
+                    fixed_dependencies.append({
+                        "task_id": dep,
+                        "dependency_type": "blocks"
+                    })
+                elif isinstance(dep, dict):
+                    fixed_dependencies.append(dep)
+            cleaned_task["dependencies"] = fixed_dependencies
+        
+        return Task(**cleaned_task)
         
     except Exception as e:
         if isinstance(e, HTTPException):
@@ -666,7 +683,24 @@ async def move_task_on_board(
         
         # Get updated task
         updated_task = await db.tasks.find_one({"id": task_id})
-        return Task(**updated_task)
+        
+        # Clean up task data before validation
+        cleaned_task = dict(updated_task)
+        
+        # Fix dependencies format - convert strings to proper TaskDependency format
+        if "dependencies" in cleaned_task and cleaned_task["dependencies"]:
+            fixed_dependencies = []
+            for dep in cleaned_task["dependencies"]:
+                if isinstance(dep, str):
+                    fixed_dependencies.append({
+                        "task_id": dep,
+                        "dependency_type": "blocks"
+                    })
+                elif isinstance(dep, dict):
+                    fixed_dependencies.append(dep)
+            cleaned_task["dependencies"] = fixed_dependencies
+        
+        return Task(**cleaned_task)
         
     except Exception as e:
         if isinstance(e, HTTPException):
@@ -744,7 +778,24 @@ async def log_time_entry(
         
         # Get updated task
         updated_task = await db.tasks.find_one({"id": task_id})
-        return Task(**updated_task)
+        
+        # Clean up task data before validation
+        cleaned_task = dict(updated_task)
+        
+        # Fix dependencies format - convert strings to proper TaskDependency format
+        if "dependencies" in cleaned_task and cleaned_task["dependencies"]:
+            fixed_dependencies = []
+            for dep in cleaned_task["dependencies"]:
+                if isinstance(dep, str):
+                    fixed_dependencies.append({
+                        "task_id": dep,
+                        "dependency_type": "blocks"
+                    })
+                elif isinstance(dep, dict):
+                    fixed_dependencies.append(dep)
+            cleaned_task["dependencies"] = fixed_dependencies
+        
+        return Task(**cleaned_task)
         
     except Exception as e:
         if isinstance(e, HTTPException):
@@ -1051,7 +1102,24 @@ async def add_task_dependency(
         
         # Get updated task
         updated_task = await db.tasks.find_one({"id": task_id})
-        return Task(**updated_task)
+        
+        # Clean up task data before validation
+        cleaned_task = dict(updated_task)
+        
+        # Fix dependencies format - convert strings to proper TaskDependency format
+        if "dependencies" in cleaned_task and cleaned_task["dependencies"]:
+            fixed_dependencies = []
+            for dep in cleaned_task["dependencies"]:
+                if isinstance(dep, str):
+                    fixed_dependencies.append({
+                        "task_id": dep,
+                        "dependency_type": "blocks"
+                    })
+                elif isinstance(dep, dict):
+                    fixed_dependencies.append(dep)
+            cleaned_task["dependencies"] = fixed_dependencies
+        
+        return Task(**cleaned_task)
         
     except Exception as e:
         if isinstance(e, HTTPException):
@@ -1096,7 +1164,24 @@ async def remove_task_dependency(
         
         # Get updated task
         updated_task = await db.tasks.find_one({"id": task_id})
-        return Task(**updated_task)
+        
+        # Clean up task data before validation
+        cleaned_task = dict(updated_task)
+        
+        # Fix dependencies format - convert strings to proper TaskDependency format
+        if "dependencies" in cleaned_task and cleaned_task["dependencies"]:
+            fixed_dependencies = []
+            for dep in cleaned_task["dependencies"]:
+                if isinstance(dep, str):
+                    fixed_dependencies.append({
+                        "task_id": dep,
+                        "dependency_type": "blocks"
+                    })
+                elif isinstance(dep, dict):
+                    fixed_dependencies.append(dep)
+            cleaned_task["dependencies"] = fixed_dependencies
+        
+        return Task(**cleaned_task)
         
     except Exception as e:
         if isinstance(e, HTTPException):
