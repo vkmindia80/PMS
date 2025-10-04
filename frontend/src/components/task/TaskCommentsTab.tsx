@@ -268,17 +268,17 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
         ) : (
           <>
             {/* Pinned Comments */}
-            {sortedComments.filter(c => c.is_pinned).length > 0 && (
+            {organizedComments.filter(c => c.is_pinned).length > 0 && (
               <div className="mb-6">
                 <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                   <Pin className="h-5 w-5 mr-2 text-yellow-600" />
                   Pinned Messages
                 </h4>
                 <div className="space-y-3">
-                  {sortedComments.filter(c => c.is_pinned).map((comment) => (
-                    <CommentCard 
-                      key={`pinned-${comment.id}`} 
-                      comment={comment} 
+                  {organizedComments.filter(c => c.is_pinned).map((commentThread) => (
+                    <CommentThread 
+                      key={`pinned-${commentThread.id}`} 
+                      mainComment={commentThread} 
                       availableUsers={availableUsers} 
                       isPinned={true}
                       showEmojiPicker={showEmojiPicker}
