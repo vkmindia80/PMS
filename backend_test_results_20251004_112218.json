@@ -1,0 +1,76 @@
+{
+  "test_summary": {
+    "start_time": "2025-10-04T11:22:18.309343",
+    "base_url": "https://task-time-tracker-2.preview.emergentagent.com",
+    "end_time": "2025-10-04T11:22:18.807953",
+    "total_tests": 11,
+    "passed_tests": 11,
+    "success_rate": "100.0%",
+    "critical_issues_count": 0
+  },
+  "test_results": {
+    "health_check": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.350203"
+    },
+    "cors_preflight": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.409689"
+    },
+    "demo_login": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.445774"
+    },
+    "user_profile": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.485852"
+    },
+    "projects_list": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.522701"
+    },
+    "tasks_list": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.570134"
+    },
+    "task_detailed_view": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.610442"
+    },
+    "manual_time_logging": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.653533"
+    },
+    "time_tracking_consistency": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.769261"
+    },
+    "analytics_dashboard": {
+      "passed": true,
+      "timestamp": "2025-10-04T11:22:18.807939"
+    }
+  },
+  "critical_issues": [],
+  "authentication": {
+    "status": "working",
+    "credentials": "demo@company.com / demo123456"
+  },
+  "api_endpoints": {
+    "working": [
+      "health_check",
+      "cors_preflight",
+      "demo_login",
+      "user_profile",
+      "projects_list",
+      "tasks_list",
+      "task_detailed_view",
+      "manual_time_logging",
+      "time_tracking_consistency",
+      "analytics_dashboard"
+    ],
+    "failing": []
+  },
+  "time_tracking_functionality": {
+    "status": "working"
+  }
+}
