@@ -80,6 +80,15 @@ export const API_ENDPOINTS = {
     get tasks() { return `${getApiUrl()}/api/analytics/tasks`; },
     get teams() { return `${getApiUrl()}/api/analytics/teams`; },
   },
+  comments: {
+    get list() { return `${getApiUrl()}/api/comments/`; },
+    get create() { return `${getApiUrl()}/api/comments/`; },
+    details: (id: string) => `${getApiUrl()}/api/comments/${id}`,
+    reactions: (id: string) => `${getApiUrl()}/api/comments/${id}/reactions`,
+    resolve: (id: string) => `${getApiUrl()}/api/comments/${id}/resolve`,
+    threads: (entityType: string, entityId: string) => `${getApiUrl()}/api/comments/threads/${entityType}/${entityId}`,
+    stats: (entityType: string, entityId: string) => `${getApiUrl()}/api/comments/stats/${entityType}/${entityId}`,
+  },
   security: {
     get dashboard() { return `${getApiUrl()}/api/security/dashboard/metrics`; },
     get threats() { return `${getApiUrl()}/api/security/threats/active`; },
