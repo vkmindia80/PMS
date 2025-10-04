@@ -552,7 +552,6 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
           type: type,
           entity_type: 'task',
           entity_id: task.id,
-          author_id: user?.id,
           mentions: [],
           attachments: [],
           is_internal: false,
