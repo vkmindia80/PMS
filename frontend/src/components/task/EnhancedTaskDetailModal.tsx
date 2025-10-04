@@ -946,7 +946,6 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
               timerElapsed={timerElapsed}
               formatTime={formatTime}
               onStartTimer={handleStartTimer}
-              onStopTimer={handleStopTimer}
               onStopAndSaveTimer={handleStopAndSaveTimer}
             />
           )}
