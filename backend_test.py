@@ -649,17 +649,17 @@ class CommentsAPITester:
                 "impact": "Critical - blocks all functionality"
             })
         
-        # Determine time tracking functionality status
-        time_tracking_tests = ["manual_time_logging", "time_tracking_consistency", "task_detailed_view"]
-        time_tracking_working = sum(1 for test in time_tracking_tests 
-                                  if test_results["test_results"].get(test, {}).get("passed", False))
+        # Determine comments functionality status
+        comments_tests = ["create_comment", "comment_types", "comment_reactions", "comment_replies", "comment_conversation_history"]
+        comments_working = sum(1 for test in comments_tests 
+                              if test_results["test_results"].get(test, {}).get("passed", False))
         
-        if time_tracking_working >= 2:
-            test_results["time_tracking_functionality"]["status"] = "working"
-        elif time_tracking_working >= 1:
-            test_results["time_tracking_functionality"]["status"] = "partial"
+        if comments_working >= 4:
+            test_results["comments_functionality"]["status"] = "working"
+        elif comments_working >= 2:
+            test_results["comments_functionality"]["status"] = "partial"
         else:
-            test_results["time_tracking_functionality"]["status"] = "failing"
+            test_results["comments_functionality"]["status"] = "failing"
         
         # Final summary
         test_results["test_summary"].update({
