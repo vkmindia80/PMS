@@ -595,7 +595,7 @@ async def main():
         print("   • Real-time workload balancing suggestions")
         print("   • Comprehensive skills gap analysis")
         
-        print(f"\n🌐 Access at: https://github-connect-15.preview.emergentagent.com/resource-management")
+        print(f"\n🌐 Access at: https://nested-replies-1.preview.emergentagent.com/resource-management")
         print("📧 Login: demo@company.com / demo123456")
         
     except Exception as e:
