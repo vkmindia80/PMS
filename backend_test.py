@@ -575,7 +575,7 @@ class CommentsAPITester:
 
     def run_comprehensive_test(self) -> Dict[str, Any]:
         """Run all tests and return comprehensive results"""
-        self.log("🚀 Starting Comprehensive Time Tracking API Testing")
+        self.log("🚀 Starting Comprehensive Comments API Testing")
         self.log(f"   Base URL: {self.base_url}")
         self.log(f"   Test time: {datetime.now().isoformat()}")
         
@@ -588,7 +588,7 @@ class CommentsAPITester:
             "critical_issues": [],
             "authentication": {"status": "unknown"},
             "api_endpoints": {"working": [], "failing": []},
-            "time_tracking_functionality": {"status": "unknown"}
+            "comments_functionality": {"status": "unknown"}
         }
         
         # Test sequence
@@ -599,10 +599,12 @@ class CommentsAPITester:
             ("user_profile", self.test_user_profile),
             ("projects_list", self.test_projects_list),
             ("tasks_list", self.test_tasks_list),
-            ("task_detailed_view", self.test_task_detailed_view),
-            ("manual_time_logging", self.test_manual_time_logging),
-            ("time_tracking_consistency", self.test_time_tracking_consistency),
-            ("analytics_dashboard", self.test_analytics_dashboard)
+            ("get_comments", self.test_get_comments),
+            ("create_comment", self.test_create_comment),
+            ("comment_types", self.test_comment_types),
+            ("comment_reactions", self.test_comment_reactions),
+            ("comment_replies", self.test_comment_replies),
+            ("comment_conversation_history", self.test_comment_conversation_history)
         ]
         
         for test_name, test_func in tests:
