@@ -344,6 +344,6 @@
     "frontend": "http://localhost:3000",
     "backend_api": "http://localhost:8001",
     "api_docs": "http://localhost:8001/docs",
-    "external_url": "https://nested-replies-1.preview.emergentagent.com"
+    "external_url": "https://reaction-validation.preview.emergentagent.com"
   }
 }
