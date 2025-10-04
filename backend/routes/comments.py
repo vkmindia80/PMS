@@ -449,7 +449,11 @@ async def get_comment_stats(
         # Recent activity
         recent_activity = None
         if comments:
-            recent_activity = max(datetime.fromisoformat(c["created_at"]) for c in comments)
+            recent_activity = max(
+                c["created_at"] if isinstance(c["created_at"], datetime) 
+                else datetime.fromisoformat(c["created_at"].replace("Z", "+00:00")) 
+                for c in comments
+            )
         
         return CommentStats(
             entity_type=entity_type,
