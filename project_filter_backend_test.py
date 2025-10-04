@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 
 class ProjectFilterAPITester:
-    def __init__(self, base_url="https://task-display-fix-1.preview.emergentagent.com"):
+    def __init__(self, base_url="https://enterprise-guide-6.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.tests_run = 0

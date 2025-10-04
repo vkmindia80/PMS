@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class DynamicTimelineAPITester:
-    def __init__(self, base_url: str = "https://task-display-fix-1.preview.emergentagent.com"):
+    def __init__(self, base_url: str = "https://enterprise-guide-6.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user_data = None
@@ -314,7 +314,7 @@ class DynamicTimelineAPITester:
             response = requests.options(
                 f"{self.base_url}/api/auth/login",
                 headers={
-                    'Origin': 'https://task-display-fix-1.preview.emergentagent.com',
+                    'Origin': 'https://enterprise-guide-6.preview.emergentagent.com',
                     'Access-Control-Request-Method': 'POST',
                     'Access-Control-Request-Headers': 'Content-Type,Authorization'
                 },
