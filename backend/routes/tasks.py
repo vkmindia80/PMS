@@ -40,6 +40,24 @@ def create_task_summary(task: Dict) -> TaskSummary:
         subtask_count=task.get("subtask_count", 0)
     )
 
+def ensure_time_tracking_consistency(time_tracking: Dict) -> Dict:
+    """Ensure time tracking data consistency by recalculating actual_hours from logged_time"""
+    if not time_tracking:
+        return {
+            "estimated_hours": None,
+            "actual_hours": 0.0,
+            "logged_time": []
+        }
+    
+    logged_time = time_tracking.get("logged_time", [])
+    actual_hours = sum(entry.get("hours", 0.0) for entry in logged_time)
+    
+    return {
+        "estimated_hours": time_tracking.get("estimated_hours"),
+        "actual_hours": actual_hours,
+        "logged_time": logged_time
+    }
+
 @router.post("/", response_model=Task, status_code=status.HTTP_201_CREATED)
 async def create_task(
     task_data: TaskCreate,
