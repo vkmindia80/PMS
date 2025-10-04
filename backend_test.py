@@ -19,6 +19,7 @@ class CommentsAPITester:
         self.tests_passed = 0
         self.demo_project_id = None
         self.demo_task_id = None
+        self.test_comment_ids = []  # Store created comment IDs for cleanup
 
     def log(self, message: str, level: str = "INFO"):
         """Log test messages with timestamp"""
