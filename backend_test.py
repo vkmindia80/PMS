@@ -574,7 +574,7 @@ def main():
     print("=" * 80)
     
     # Initialize tester with the public endpoint
-    tester = DynamicTimelineAPITester()
+    tester = TimeTrackingAPITester()
     
     # Run comprehensive tests
     results = tester.run_comprehensive_test()
