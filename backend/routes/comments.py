@@ -423,22 +423,26 @@ async def get_comment_threads(
                 nested_replies = build_nested_replies(comment_id)
                 
                 # Calculate total reply count (including nested)
-                def count_total_replies(replies_list: List[Comment]) -> int:
+                def count_total_replies(replies_list: List[Dict]) -> int:
                     total = len(replies_list)
                     for reply in replies_list:
-                        if hasattr(reply, 'nested_replies'):
-                            total += count_total_replies(reply.nested_replies)
+                        if reply.get('nested_replies'):
+                            total += count_total_replies(reply['nested_replies'])
                     return total
                 
                 total_reply_count = count_total_replies(nested_replies)
                 
+                # Convert root comment to dict and add nested replies
+                root_comment_dict = comment_obj.dict()
+                root_comment_dict["nested_replies"] = nested_replies
+                
                 # Create thread with nested structure
-                thread = CommentThread(
-                    root_comment=comment_obj,
-                    replies=nested_replies,  # This will now contain the full nested structure
-                    total_replies=total_reply_count
-                )
-                root_threads.append(thread)
+                thread_dict = {
+                    "root_comment": root_comment_dict,
+                    "replies": nested_replies,  # This will now contain the full nested structure
+                    "total_replies": total_reply_count
+                }
+                root_threads.append(thread_dict)
         
         # Sort root threads chronologically (oldest first) with pinned comments first
         root_threads.sort(key=lambda x: (not x.root_comment.is_pinned, x.root_comment.created_at))
