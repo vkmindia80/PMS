@@ -43,6 +43,8 @@ interface TaskCommentsTabProps {
   newComment: string
   setNewComment: (value: string) => void
   onAddComment: (commentType: 'comment' | 'note' | 'review') => void
+  onAddReaction?: (commentId: string, emoji: string) => void
+  onReply?: (parentId: string, content: string) => void
   availableUsers?: any[]
 }
 
