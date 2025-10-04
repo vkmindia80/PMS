@@ -526,14 +526,14 @@ class TimeTrackingAPITester:
                 "impact": "Critical - blocks all functionality"
             })
         
-        # Determine timeline functionality status
-        timeline_tests = ["timeline_stats_overall", "timeline_stats_project", "gantt_data"]
-        timeline_working = sum(1 for test in timeline_tests 
-                             if test_results["test_results"].get(test, {}).get("passed", False))
+        # Determine time tracking functionality status
+        time_tracking_tests = ["manual_time_logging", "time_tracking_consistency", "task_detailed_view"]
+        time_tracking_working = sum(1 for test in time_tracking_tests 
+                                  if test_results["test_results"].get(test, {}).get("passed", False))
         
-        if timeline_working >= 2:
+        if time_tracking_working >= 2:
             test_results["timeline_functionality"]["status"] = "working"
-        elif timeline_working >= 1:
+        elif time_tracking_working >= 1:
             test_results["timeline_functionality"]["status"] = "partial"
         else:
             test_results["timeline_functionality"]["status"] = "failing"
