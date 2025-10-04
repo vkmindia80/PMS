@@ -395,9 +395,9 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
   )
 }
 
-// Enhanced Comment Thread Component
-const CommentThread: React.FC<{
-  mainComment: Comment & { replies?: Comment[] }
+// Enhanced Threaded Comment View with Unlimited Nesting and Connecting Lines
+const ThreadedCommentView: React.FC<{
+  thread: CommentThread
   availableUsers: any[]
   isPinned?: boolean
   showEmojiPicker: string | null
@@ -405,36 +405,105 @@ const CommentThread: React.FC<{
   emojis: string[]
   onAddReaction?: (commentId: string, emoji: string) => void
   onReply?: (parentId: string, content: string) => void
-}> = ({ mainComment, availableUsers, isPinned = false, showEmojiPicker, setShowEmojiPicker, emojis, onAddReaction, onReply }) => {
+  depth: number
+  isLastInLevel?: boolean
+}> = ({ 
+  thread, 
+  availableUsers, 
+  isPinned = false, 
+  showEmojiPicker, 
+  setShowEmojiPicker, 
+  emojis, 
+  onAddReaction, 
+  onReply,
+  depth,
+  isLastInLevel = false
+}) => {
   
   return (
-    <div className="space-y-3">
-      {/* Main Comment */}
-      <CommentCard 
-        comment={mainComment}
-        availableUsers={availableUsers}
-        isPinned={isPinned}
-        showEmojiPicker={showEmojiPicker}
-        setShowEmojiPicker={setShowEmojiPicker}
-        emojis={emojis}
-        onAddReaction={onAddReaction}
-        onReply={onReply}
-      />
+    <div className="relative">
+      {/* Connecting Line for Visual Hierarchy */}
+      {depth > 0 && (
+        <>
+          {/* Vertical line connecting to parent */}
+          <div 
+            className="absolute left-6 top-0 w-0.5 bg-gradient-to-b from-blue-200 to-gray-200" 
+            style={{ height: '2rem', top: '-0.5rem' }}
+          />
+          {/* Horizontal line to comment */}
+          <div 
+            className="absolute left-6 top-6 h-0.5 bg-gradient-to-r from-blue-200 to-gray-200" 
+            style={{ width: '1.5rem' }}
+          />
+          {/* Continue vertical line if not last in level */}
+          {!isLastInLevel && (
+            <div 
+              className="absolute left-6 top-6 w-0.5 bg-gradient-to-b from-blue-200 to-gray-200" 
+              style={{ height: 'calc(100% - 1.5rem)' }}
+            />
+          )}
+        </>
+      )}
+
+      {/* Comment Content */}
+      <div className={depth > 0 ? 'ml-12' : ''}>
+        <CommentCard 
+          comment={thread.root_comment}
+          availableUsers={availableUsers}
+          isPinned={isPinned}
+          showEmojiPicker={showEmojiPicker}
+          setShowEmojiPicker={setShowEmojiPicker}
+          emojis={emojis}
+          onAddReaction={onAddReaction}
+          onReply={onReply}
+          isReply={depth > 0}
+          depth={depth}
+        />
+      </div>
       
-      {/* Replies */}
-      {mainComment.replies && mainComment.replies.length > 0 && (
-        <div className="ml-12 space-y-3 border-l-2 border-gray-100 pl-4">
-          {mainComment.replies.map((reply) => (
-            <CommentCard 
+      {/* Recursively render nested replies */}
+      {thread.root_comment.nested_replies && thread.root_comment.nested_replies.length > 0 && (
+        <div className="space-y-3 mt-3">
+          {thread.root_comment.nested_replies.map((reply, index) => (
+            <ThreadedCommentView
               key={reply.id}
-              comment={reply}
+              thread={{
+                root_comment: reply,
+                replies: [], // nested_replies are already in the comment object
+                total_replies: reply.nested_replies?.length || 0
+              }}
               availableUsers={availableUsers}
               showEmojiPicker={showEmojiPicker}
               setShowEmojiPicker={setShowEmojiPicker}
               emojis={emojis}
               onAddReaction={onAddReaction}
               onReply={onReply}
-              isReply={true}
+              depth={depth + 1}
+              isLastInLevel={index === thread.root_comment.nested_replies.length - 1}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Legacy replies support for backward compatibility */}
+      {thread.replies && thread.replies.length > 0 && (
+        <div className="space-y-3 mt-3">
+          {thread.replies.map((reply, index) => (
+            <ThreadedCommentView
+              key={reply.id}
+              thread={{
+                root_comment: reply,
+                replies: [],
+                total_replies: 0
+              }}
+              availableUsers={availableUsers}
+              showEmojiPicker={showEmojiPicker}
+              setShowEmojiPicker={setShowEmojiPicker}
+              emojis={emojis}
+              onAddReaction={onAddReaction}
+              onReply={onReply}
+              depth={depth + 1}
+              isLastInLevel={index === thread.replies.length - 1}
             />
           ))}
         </div>
