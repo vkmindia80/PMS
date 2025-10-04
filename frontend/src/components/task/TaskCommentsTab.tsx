@@ -42,7 +42,7 @@ interface TaskCommentsTabProps {
   loading: boolean
   newComment: string
   setNewComment: (value: string) => void
-  onAddComment: () => void
+  onAddComment: (commentType: 'comment' | 'note' | 'review') => void
   availableUsers?: any[]
 }
 
