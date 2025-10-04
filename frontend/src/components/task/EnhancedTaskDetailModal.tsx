@@ -124,6 +124,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
   const [isEditing, setIsEditing] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'details' | 'comments' | 'activity' | 'dependencies' | 'time'>('overview')
   const [comments, setComments] = useState<Comment[]>([])
+  const [commentThreads, setCommentThreads] = useState<any[]>([])
   const [activities, setActivities] = useState<TaskActivity[]>([])
   const [loading, setLoading] = useState(false)
   const [newComment, setNewComment] = useState('')
