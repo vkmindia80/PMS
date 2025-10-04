@@ -205,7 +205,7 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
               </span>
             </div>
             <button
-              onClick={onAddComment}
+              onClick={() => onAddComment(commentType)}
               disabled={!newComment.trim()}
               className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
