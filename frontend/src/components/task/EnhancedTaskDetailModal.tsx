@@ -1018,6 +1018,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
           {activeTab === 'comments' && (
             <TaskCommentsTab
               comments={comments}
+              commentThreads={commentThreads}
               loading={loading}
               newComment={newComment}
               setNewComment={setNewComment}
