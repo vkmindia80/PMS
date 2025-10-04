@@ -145,14 +145,37 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
     }
   }, [commentThreads, comments, filterType, searchTerm])
 
+  // Helper function to flatten all comments from threads
+  const getAllComments = () => {
+    if (commentThreads) {
+      const allComments: Comment[] = []
+      
+      const addCommentsRecursive = (comment: Comment) => {
+        allComments.push(comment)
+        if (comment.nested_replies) {
+          comment.nested_replies.forEach(addCommentsRecursive)
+        }
+      }
+      
+      commentThreads.forEach(thread => {
+        addCommentsRecursive(thread.root_comment)
+        thread.replies.forEach(addCommentsRecursive)
+      })
+      
+      return allComments
+    }
+    return comments
+  }
+
   // Group comments by type for summary - MUST be defined before any conditional returns
-  const commentSummary = comments.reduce((acc, comment) => {
+  const allComments = getAllComments()
+  const commentSummary = allComments.reduce((acc, comment) => {
     acc[comment.type] = (acc[comment.type] || 0) + 1
     return acc
   }, {} as Record<string, number>)
 
-  const resolvedCount = comments.filter(c => c.is_resolved).length
-  const pinnedCount = comments.filter(c => c.is_pinned).length
+  const resolvedCount = allComments.filter(c => c.is_resolved).length
+  const pinnedCount = allComments.filter(c => c.is_pinned).length
 
   const emojis = ['👍', '👎', '❤️', '😍', '😄', '😮', '😢', '😡', '🎉', '🚀', '👀', '🔥']
 
