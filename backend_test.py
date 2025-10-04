@@ -320,25 +320,83 @@ class TimeTrackingAPITester:
             self.log("❌ Failed to retrieve task detailed view")
             return False
 
-    def test_tasks_list(self) -> bool:
-        """Test tasks list retrieval"""
+    def test_time_tracking_consistency(self) -> bool:
+        """Test time tracking data consistency"""
         if not self.token:
-            self.log("❌ Cannot test tasks - no authentication token")
+            self.log("❌ Cannot test time tracking consistency - no authentication token")
             return False
             
-        success, response = self.run_test(
-            "Tasks List",
+        if not self.demo_task_id:
+            self.log("❌ Cannot test time tracking consistency - no task ID available")
+            return False
+            
+        # Get task data before logging time
+        success_before, response_before = self.run_test(
+            "Task Data Before Time Log",
             "GET",
-            "/api/tasks",
+            f"/api/tasks/{self.demo_task_id}",
             200
         )
         
-        if success:
-            tasks = response.get('tasks', [])
-            self.log(f"✅ Tasks retrieved: {len(tasks)} tasks found")
+        if not success_before:
+            self.log("❌ Failed to get task data before time logging")
+            return False
+            
+        time_tracking_before = response_before.get('time_tracking', {})
+        actual_hours_before = time_tracking_before.get('actual_hours', 0)
+        entries_before = len(time_tracking_before.get('logged_time', []))
+        
+        self.log(f"   Before: {actual_hours_before}h actual, {entries_before} entries")
+        
+        # Log additional time
+        test_hours = 1.25
+        test_description = "Time tracking consistency test"
+        
+        success_log, response_log = self.run_test(
+            f"Log Additional Time ({test_hours}h)",
+            "POST",
+            f"/api/tasks/{self.demo_task_id}/time/log?hours={test_hours}&description={test_description}",
+            200
+        )
+        
+        if not success_log:
+            self.log("❌ Failed to log additional time")
+            return False
+            
+        # Get task data after logging time
+        success_after, response_after = self.run_test(
+            "Task Data After Time Log",
+            "GET",
+            f"/api/tasks/{self.demo_task_id}",
+            200
+        )
+        
+        if not success_after:
+            self.log("❌ Failed to get task data after time logging")
+            return False
+            
+        time_tracking_after = response_after.get('time_tracking', {})
+        actual_hours_after = time_tracking_after.get('actual_hours', 0)
+        entries_after = len(time_tracking_after.get('logged_time', []))
+        
+        self.log(f"   After: {actual_hours_after}h actual, {entries_after} entries")
+        
+        # Verify consistency
+        expected_hours = actual_hours_before + test_hours
+        expected_entries = entries_before + 1
+        
+        hours_match = abs(actual_hours_after - expected_hours) < 0.01  # Allow small floating point differences
+        entries_match = entries_after == expected_entries
+        
+        if hours_match and entries_match:
+            self.log("✅ Time tracking consistency verified")
+            self.log(f"   Hours increased by {test_hours}h as expected")
+            self.log(f"   Entry count increased by 1 as expected")
             return True
         else:
-            self.log("❌ Failed to retrieve tasks list")
+            self.log("❌ Time tracking consistency failed")
+            self.log(f"   Expected hours: {expected_hours}, got: {actual_hours_after}")
+            self.log(f"   Expected entries: {expected_entries}, got: {entries_after}")
             return False
 
     def test_analytics_dashboard(self) -> bool:
