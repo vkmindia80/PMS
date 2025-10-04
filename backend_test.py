@@ -216,35 +216,60 @@ class TimeTrackingAPITester:
             self.log("❌ Failed to retrieve tasks list")
             return False
 
-    def test_timeline_stats_project(self) -> bool:
-        """Test project-specific timeline statistics"""
+    def test_manual_time_logging(self) -> bool:
+        """Test manual time logging functionality"""
         if not self.token:
-            self.log("❌ Cannot test project timeline stats - no authentication token")
+            self.log("❌ Cannot test time logging - no authentication token")
             return False
             
-        if not self.demo_project_id:
-            self.log("⚠️ No project ID available, testing with 'all' parameter")
-            project_id = "all"
-        else:
-            project_id = self.demo_project_id
+        if not self.demo_task_id:
+            self.log("❌ Cannot test time logging - no task ID available")
+            return False
             
+        # Test manual time logging
+        test_hours = 2.5
+        test_description = "Backend API testing - manual time entry"
+        
         success, response = self.run_test(
-            f"Project Timeline Statistics ({project_id})",
-            "GET",
-            f"/api/dynamic-timeline/stats/{project_id}/realtime",
+            f"Manual Time Logging ({test_hours}h)",
+            "POST",
+            f"/api/tasks/{self.demo_task_id}/time/log?hours={test_hours}&description={test_description}",
             200
         )
         
         if success:
-            stats = response
-            self.log(f"✅ Project timeline stats retrieved:")
-            self.log(f"   Total tasks: {stats.get('total_tasks', 0)}")
-            self.log(f"   Completed: {stats.get('completed_tasks', 0)}")
-            self.log(f"   Resource utilization: {stats.get('resource_utilization', 0)}%")
-            self.log(f"   Estimated completion: {stats.get('estimated_completion', 'N/A')}")
-            return True
+            self.log(f"✅ Manual time logging successful:")
+            
+            # Check if response contains updated task data
+            if 'time_tracking' in response:
+                time_tracking = response['time_tracking']
+                actual_hours = time_tracking.get('actual_hours', 0)
+                logged_entries = len(time_tracking.get('logged_time', []))
+                
+                self.log(f"   Updated actual hours: {actual_hours}")
+                self.log(f"   Total time entries: {logged_entries}")
+                
+                # Verify the new entry was added
+                logged_time = time_tracking.get('logged_time', [])
+                if logged_time:
+                    latest_entry = logged_time[-1]  # Get the last entry
+                    self.log(f"   Latest entry: {latest_entry.get('hours')}h - {latest_entry.get('description')}")
+                    
+                    # Verify the entry matches what we logged
+                    if latest_entry.get('hours') == test_hours and test_description in latest_entry.get('description', ''):
+                        self.log("✅ Time entry verification successful")
+                        return True
+                    else:
+                        self.log("⚠️ Time entry data doesn't match expected values")
+                        return False
+                else:
+                    self.log("⚠️ No time entries found in response")
+                    return False
+            else:
+                self.log("⚠️ No time_tracking data in response")
+                return False
         else:
-            self.log("❌ Failed to retrieve project timeline statistics")
+            self.log("❌ Failed to log manual time entry")
             return False
 
     def test_gantt_data(self) -> bool:
