@@ -43,24 +43,12 @@ export const getApiUrl = (): string => {
     return import.meta.env.VITE_API_URL || 'http://localhost:8001';
   }
   
-  const hostname = window.location.hostname;
-  const protocol = window.location.protocol;
+  // Always use the configured backend URL from environment variables
+  const envBackendUrl = import.meta.env.VITE_API_URL || 
+                       import.meta.env.REACT_APP_BACKEND_URL || 
+                       'http://localhost:8001';
   
-  // For localhost development, always use local backend
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    // Always use localhost:8001 for local development
-    return 'http://localhost:8001';
-  }
-  
-  // If on emergentagent.com domain, use HTTPS to match the frontend
-  if (isEmergentagentDomain()) {
-    // For preview domains, use HTTPS protocol to avoid mixed content issues
-    // But keep using localhost:8001 for backend calls even on emergentagent domains
-    return 'http://localhost:8001';
-  }
-  
-  // Default fallback
-  return 'http://localhost:8001';
+  return envBackendUrl;
 };
 
 // Environment info for debugging
