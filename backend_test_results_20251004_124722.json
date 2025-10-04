@@ -1,0 +1,87 @@
+{
+  "test_summary": {
+    "start_time": "2025-10-04T12:47:22.145818",
+    "base_url": "https://convo-fixer.preview.emergentagent.com",
+    "end_time": "2025-10-04T12:47:22.903564",
+    "total_tests": 15,
+    "passed_tests": 8,
+    "success_rate": "53.3%",
+    "critical_issues_count": 0
+  },
+  "test_results": {
+    "health_check": {
+      "passed": true,
+      "timestamp": "2025-10-04T12:47:22.221508"
+    },
+    "cors_preflight": {
+      "passed": true,
+      "timestamp": "2025-10-04T12:47:22.295806"
+    },
+    "demo_login": {
+      "passed": true,
+      "timestamp": "2025-10-04T12:47:22.338342"
+    },
+    "user_profile": {
+      "passed": true,
+      "timestamp": "2025-10-04T12:47:22.374143"
+    },
+    "projects_list": {
+      "passed": true,
+      "timestamp": "2025-10-04T12:47:22.412511"
+    },
+    "tasks_list": {
+      "passed": true,
+      "timestamp": "2025-10-04T12:47:22.452395"
+    },
+    "get_comments": {
+      "passed": true,
+      "timestamp": "2025-10-04T12:47:22.492312"
+    },
+    "create_comment": {
+      "passed": false,
+      "timestamp": "2025-10-04T12:47:22.526852"
+    },
+    "comment_types": {
+      "passed": false,
+      "timestamp": "2025-10-04T12:47:22.639165"
+    },
+    "comment_reactions": {
+      "passed": false,
+      "timestamp": "2025-10-04T12:47:22.639179"
+    },
+    "comment_replies": {
+      "passed": false,
+      "timestamp": "2025-10-04T12:47:22.639188"
+    },
+    "comment_conversation_history": {
+      "passed": true,
+      "timestamp": "2025-10-04T12:47:22.903548"
+    }
+  },
+  "critical_issues": [],
+  "authentication": {
+    "status": "working",
+    "credentials": "demo@company.com / demo123456"
+  },
+  "api_endpoints": {
+    "working": [
+      "health_check",
+      "cors_preflight",
+      "demo_login",
+      "user_profile",
+      "projects_list",
+      "tasks_list",
+      "get_comments",
+      "comment_conversation_history"
+    ],
+    "failing": [
+      "create_comment",
+      "comment_types",
+      "comment_reactions",
+      "comment_replies"
+    ]
+  },
+  "comments_functionality": {
+    "status": "failing"
+  }
+}
