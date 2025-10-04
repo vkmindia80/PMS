@@ -175,30 +175,44 @@ class TimeTrackingAPITester:
             self.log("❌ Failed to retrieve projects list")
             return False
 
-    def test_timeline_stats_overall(self) -> bool:
-        """Test overall timeline statistics"""
+    def test_tasks_list(self) -> bool:
+        """Test tasks list retrieval"""
         if not self.token:
-            self.log("❌ Cannot test timeline stats - no authentication token")
+            self.log("❌ Cannot test tasks - no authentication token")
             return False
             
         success, response = self.run_test(
-            "Overall Timeline Statistics",
+            "Tasks List",
             "GET",
-            "/api/dynamic-timeline/stats/all/realtime",
+            "/api/tasks",
             200
         )
         
         if success:
-            stats = response
-            self.log(f"✅ Overall timeline stats retrieved:")
-            self.log(f"   Total tasks: {stats.get('total_tasks', 0)}")
-            self.log(f"   Completed tasks: {stats.get('completed_tasks', 0)}")
-            self.log(f"   In progress: {stats.get('in_progress_tasks', 0)}")
-            self.log(f"   Overdue: {stats.get('overdue_tasks', 0)}")
-            self.log(f"   Health score: {stats.get('timeline_health_score', 0)}")
+            # Handle both list and dict responses
+            if isinstance(response, list):
+                tasks = response
+            else:
+                tasks = response.get('tasks', response)
+                
+            self.log(f"✅ Tasks retrieved: {len(tasks)} tasks found")
+            
+            # Store first task ID for time tracking testing
+            if tasks and len(tasks) > 0:
+                first_task = tasks[0]
+                if isinstance(first_task, dict):
+                    self.demo_task_id = first_task.get('id')
+                    self.log(f"   Using task for time tracking tests: {self.demo_task_id}")
+                    self.log(f"   Task title: {first_task.get('title', 'Unknown')}")
+                    
+                    # Check if task has time tracking data
+                    time_tracking = first_task.get('time_tracking', {})
+                    self.log(f"   Current actual hours: {time_tracking.get('actual_hours', 0)}")
+                    self.log(f"   Time entries: {len(time_tracking.get('logged_time', []))}")
+            
             return True
         else:
-            self.log("❌ Failed to retrieve overall timeline statistics")
+            self.log("❌ Failed to retrieve tasks list")
             return False
 
     def test_timeline_stats_project(self) -> bool:
