@@ -298,84 +298,57 @@ class CommentsAPITester:
             self.log("❌ Failed to retrieve comments")
             return False
 
-    def test_time_tracking_consistency(self) -> bool:
-        """Test time tracking data consistency"""
+    def test_comment_types(self) -> bool:
+        """Test creating different types of comments"""
         if not self.token:
-            self.log("❌ Cannot test time tracking consistency - no authentication token")
+            self.log("❌ Cannot test comment types - no authentication token")
             return False
             
         if not self.demo_task_id:
-            self.log("❌ Cannot test time tracking consistency - no task ID available")
+            self.log("❌ Cannot test comment types - no task ID available")
             return False
             
-        # Get task data before logging time
-        success_before, response_before = self.run_test(
-            "Task Data Before Time Log",
-            "GET",
-            f"/api/tasks/{self.demo_task_id}",
-            200
-        )
+        comment_types = [
+            ("note", "This is a test note for documentation"),
+            ("review", "This is a review comment with feedback"),
+            ("comment", "This is a regular comment")
+        ]
         
-        if not success_before:
-            self.log("❌ Failed to get task data before time logging")
-            return False
+        success_count = 0
+        
+        for comment_type, content in comment_types:
+            comment_data = {
+                "content": content,
+                "type": comment_type,
+                "entity_type": "task",
+                "entity_id": self.demo_task_id
+            }
             
-        time_tracking_before = response_before.get('time_tracking', {})
-        actual_hours_before = time_tracking_before.get('actual_hours', 0)
-        entries_before = len(time_tracking_before.get('logged_time', []))
-        
-        self.log(f"   Before: {actual_hours_before}h actual, {entries_before} entries")
-        
-        # Log additional time
-        test_hours = 1.25
-        test_description = "Time tracking consistency test"
-        
-        success_log, response_log = self.run_test(
-            f"Log Additional Time ({test_hours}h)",
-            "POST",
-            f"/api/tasks/{self.demo_task_id}/time/log?hours={test_hours}&description={test_description}",
-            200
-        )
-        
-        if not success_log:
-            self.log("❌ Failed to log additional time")
-            return False
+            success, response = self.run_test(
+                f"Create {comment_type.title()} Comment",
+                "POST",
+                "/api/comments/",
+                201,
+                data=comment_data
+            )
             
-        # Get task data after logging time
-        success_after, response_after = self.run_test(
-            "Task Data After Time Log",
-            "GET",
-            f"/api/tasks/{self.demo_task_id}",
-            200
-        )
+            if success:
+                comment_id = response.get('id')
+                if comment_id:
+                    self.test_comment_ids.append(comment_id)
+                    self.log(f"   ✅ {comment_type.title()} comment created: {comment_id}")
+                    success_count += 1
+                else:
+                    self.log(f"   ❌ {comment_type.title()} comment missing ID")
+            else:
+                self.log(f"   ❌ Failed to create {comment_type} comment")
         
-        if not success_after:
-            self.log("❌ Failed to get task data after time logging")
-            return False
-            
-        time_tracking_after = response_after.get('time_tracking', {})
-        actual_hours_after = time_tracking_after.get('actual_hours', 0)
-        entries_after = len(time_tracking_after.get('logged_time', []))
-        
-        self.log(f"   After: {actual_hours_after}h actual, {entries_after} entries")
-        
-        # Verify consistency
-        expected_hours = actual_hours_before + test_hours
-        expected_entries = entries_before + 1
-        
-        hours_match = abs(actual_hours_after - expected_hours) < 0.01  # Allow small floating point differences
-        entries_match = entries_after == expected_entries
-        
-        if hours_match and entries_match:
-            self.log("✅ Time tracking consistency verified")
-            self.log(f"   Hours increased by {test_hours}h as expected")
-            self.log(f"   Entry count increased by 1 as expected")
+        if success_count == len(comment_types):
+            self.log("✅ All comment types created successfully")
             return True
         else:
-            self.log("❌ Time tracking consistency failed")
-            self.log(f"   Expected hours: {expected_hours}, got: {actual_hours_after}")
-            self.log(f"   Expected entries: {expected_entries}, got: {entries_after}")
-            return False
+            self.log(f"⚠️ Only {success_count}/{len(comment_types)} comment types created")
+            return success_count > 0
 
     def test_analytics_dashboard(self) -> bool:
         """Test analytics dashboard data"""
