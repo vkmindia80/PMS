@@ -532,7 +532,7 @@ class TimeTrackingAPITester:
                                   if test_results["test_results"].get(test, {}).get("passed", False))
         
         if time_tracking_working >= 2:
-            test_results["timeline_functionality"]["status"] = "working"
+            test_results["time_tracking_functionality"]["status"] = "working"
         elif time_tracking_working >= 1:
             test_results["timeline_functionality"]["status"] = "partial"
         else:
