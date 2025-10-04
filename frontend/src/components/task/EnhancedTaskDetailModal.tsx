@@ -571,7 +571,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
       }
     } catch (error) {
       console.error('Error adding comment:', error)
-      toast.error(`Failed to add ${commentType}`)
+      toast.error(`Failed to add ${type}`)
     }
   }
 
