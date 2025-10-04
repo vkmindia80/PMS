@@ -458,37 +458,62 @@ const CommentCard: React.FC<{
           )}
         </div>
 
-        {/* Reactions */}
-        <div className="flex items-center space-x-2">
-          {/* Existing Reactions */}
-          {comment.reactions && comment.reactions.length > 0 && (
-            <div className="flex items-center space-x-1">
-              {comment.reactions.slice(0, 3).map((reaction, idx) => (
-                <button
-                  key={idx} 
-                  className="text-sm bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 cursor-pointer transition-colors"
-                >
-                  {reaction.emoji} 1
-                </button>
-              ))}
-              {comment.reactions.length > 3 && (
-                <span className="text-xs text-gray-500">+{comment.reactions.length - 3}</span>
-              )}
-            </div>
-          )}
+        {/* Enhanced Reactions */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            {/* Grouped Reactions with Counts */}
+            {comment.reactions && comment.reactions.length > 0 && (
+              <div className="flex items-center space-x-1">
+                {(() => {
+                  // Group reactions by emoji and count them
+                  const reactionGroups = comment.reactions.reduce((acc, reaction) => {
+                    if (!acc[reaction.emoji]) {
+                      acc[reaction.emoji] = { count: 0, users: [] }
+                    }
+                    acc[reaction.emoji].count++
+                    acc[reaction.emoji].users.push(reaction.user_id)
+                    return acc
+                  }, {} as Record<string, { count: number, users: string[] }>)
+                  
+                  return Object.entries(reactionGroups).map(([emoji, data]) => (
+                    <button
+                      key={emoji}
+                      onClick={() => onAddReaction && onAddReaction(comment.id, emoji)}
+                      className="inline-flex items-center space-x-1 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-full text-sm transition-colors cursor-pointer"
+                      title={`${data.count} reaction${data.count > 1 ? 's' : ''}`}
+                    >
+                      <span>{emoji}</span>
+                      <span className="text-blue-600 font-medium">{data.count}</span>
+                    </button>
+                  ))
+                })()}
+              </div>
+            )}
+          </div>
           
-          {/* Add Reaction */}
+          {/* Add Reaction Button */}
           <div className="relative">
             <button
               onClick={() => setShowEmojiPicker(showEmojiPicker === comment.id ? null : comment.id)}
-              className="text-sm text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100 transition-colors"
+              className="flex items-center space-x-1 text-sm text-gray-500 hover:text-gray-700 px-2 py-1 rounded-full hover:bg-gray-100 transition-colors"
+              title="Add reaction"
             >
               <Smile className="h-4 w-4" />
+              <span className="text-xs">React</span>
             </button>
             
             {showEmojiPicker === comment.id && (
-              <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 p-2">
-                <div className="grid grid-cols-5 gap-1">
+              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-lg z-20 p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">Pick a reaction</span>
+                  <button
+                    onClick={() => setShowEmojiPicker(null)}
+                    className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-6 gap-1">
                   {emojis.map((emoji) => (
                     <button
                       key={emoji}
@@ -498,7 +523,8 @@ const CommentCard: React.FC<{
                         }
                         setShowEmojiPicker(null)
                       }}
-                      className="p-2 hover:bg-gray-100 rounded text-lg"
+                      className="p-2 hover:bg-gray-100 rounded-lg text-lg transition-colors hover:scale-110 transform"
+                      title={`React with ${emoji}`}
                     >
                       {emoji}
                     </button>
