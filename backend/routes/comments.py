@@ -372,7 +372,7 @@ async def add_reaction(
             detail=f"Failed to add reaction: {str(e)}"
         )
 
-@router.get("/threads/{entity_type}/{entity_id}", response_model=List[CommentThread])
+@router.get("/threads/{entity_type}/{entity_id}")
 async def get_comment_threads(
     entity_type: EntityType,
     entity_id: str,
