@@ -57,7 +57,8 @@ interface TaskCommentsTabProps {
 }
 
 export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({ 
-  comments, 
+  comments = [], 
+  commentThreads,
   loading, 
   newComment, 
   setNewComment, 
@@ -75,42 +76,74 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
   useEffect(() => {
     console.log('📊 TaskCommentsTab - Available users:', availableUsers?.length || 0)
     console.log('📊 TaskCommentsTab - Comments count:', comments?.length || 0)
+    console.log('📊 TaskCommentsTab - Comment threads:', commentThreads?.length || 0)
     if (comments?.length > 0 && availableUsers?.length > 0) {
       const authorIds = comments.map(c => c.author_id)
       const foundUsers = authorIds.filter(id => availableUsers.find(u => u.id === id))
       console.log('📊 TaskCommentsTab - Author IDs found:', foundUsers.length, 'of', authorIds.length)
     }
-  }, [comments, availableUsers])
+  }, [comments, commentThreads, availableUsers])
 
-  // Filter and search comments - MUST be defined before any conditional returns
-  const filteredComments = comments.filter(comment => {
+  // Helper function to filter comments recursively including nested replies
+  const filterCommentRecursive = (comment: Comment): boolean => {
     const matchesType = filterType === 'all' || 
       (filterType === 'resolved' ? comment.is_resolved : comment.type === filterType)
     const matchesSearch = !searchTerm || 
       comment.content.toLowerCase().includes(searchTerm.toLowerCase())
-    return matchesType && matchesSearch
-  })
+    
+    // If the comment itself matches, return true
+    if (matchesType && matchesSearch) return true
+    
+    // Check if any nested reply matches
+    if (comment.nested_replies && comment.nested_replies.length > 0) {
+      return comment.nested_replies.some(reply => filterCommentRecursive(reply))
+    }
+    
+    return false
+  }
 
-  // Organize comments into threads (main comments and their replies) - MUST be defined before any conditional returns
+  // Use threaded data structure if available, fallback to old organization
   const organizedComments = React.useMemo(() => {
-    const mainComments = filteredComments.filter(comment => !comment.parent_id)
-    const replies = filteredComments.filter(comment => comment.parent_id)
-    
-    // Sort main comments (pinned first, then by date)
-    const sortedMainComments = [...mainComments].sort((a, b) => {
-      if (a.is_pinned && !b.is_pinned) return -1
-      if (!a.is_pinned && b.is_pinned) return 1
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    })
-    
-    // Add replies to their parent comments
-    return sortedMainComments.map(mainComment => ({
-      ...mainComment,
-      replies: replies
-        .filter(reply => reply.parent_id === mainComment.id)
-        .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-    }))
-  }, [filteredComments])
+    if (commentThreads && commentThreads.length > 0) {
+      // Use new threaded structure with filtering
+      return commentThreads
+        .filter(thread => filterCommentRecursive(thread.root_comment))
+        .sort((a, b) => {
+          // Pinned comments first, then chronological order (oldest first)
+          if (a.root_comment.is_pinned && !b.root_comment.is_pinned) return -1
+          if (!a.root_comment.is_pinned && b.root_comment.is_pinned) return 1
+          return new Date(a.root_comment.created_at).getTime() - new Date(b.root_comment.created_at).getTime()
+        })
+    } else {
+      // Fallback to old organization logic for backward compatibility
+      const filteredComments = comments.filter(comment => {
+        const matchesType = filterType === 'all' || 
+          (filterType === 'resolved' ? comment.is_resolved : comment.type === filterType)
+        const matchesSearch = !searchTerm || 
+          comment.content.toLowerCase().includes(searchTerm.toLowerCase())
+        return matchesType && matchesSearch
+      })
+
+      const mainComments = filteredComments.filter(comment => !comment.parent_id)
+      const replies = filteredComments.filter(comment => comment.parent_id)
+      
+      // Sort main comments (pinned first, then chronologically oldest first)
+      const sortedMainComments = [...mainComments].sort((a, b) => {
+        if (a.is_pinned && !b.is_pinned) return -1
+        if (!a.is_pinned && b.is_pinned) return 1
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      })
+      
+      // Add replies to their parent comments (chronological order)
+      return sortedMainComments.map(mainComment => ({
+        root_comment: mainComment,
+        replies: replies
+          .filter(reply => reply.parent_id === mainComment.id)
+          .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()),
+        total_replies: replies.filter(reply => reply.parent_id === mainComment.id).length
+      }))
+    }
+  }, [commentThreads, comments, filterType, searchTerm])
 
   // Group comments by type for summary - MUST be defined before any conditional returns
   const commentSummary = comments.reduce((acc, comment) => {
