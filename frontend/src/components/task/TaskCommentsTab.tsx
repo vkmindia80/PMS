@@ -629,8 +629,14 @@ const CommentCard: React.FC<{
           </div>
         </div>
         
-        {/* Comment Type Badge */}
+        {/* Comment Type Badge and Thread Depth Indicator */}
         <div className="flex items-center space-x-2">
+          {depth > 0 && (
+            <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium flex items-center">
+              <Reply className="h-3 w-3 mr-1" />
+              Level {depth}
+            </div>
+          )}
           {isPinned && (
             <div className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium flex items-center">
               <Pin className="h-3 w-3 mr-1" />
