@@ -94,12 +94,26 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
     return matchesType && matchesSearch
   })
 
-  // Sort comments by creation date (newest first, but pinned first)
-  const sortedComments = [...filteredComments].sort((a, b) => {
-    if (a.is_pinned && !b.is_pinned) return -1
-    if (!a.is_pinned && b.is_pinned) return 1
-    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  })
+  // Organize comments into threads (main comments and their replies)
+  const organizedComments = React.useMemo(() => {
+    const mainComments = filteredComments.filter(comment => !comment.parent_id)
+    const replies = filteredComments.filter(comment => comment.parent_id)
+    
+    // Sort main comments (pinned first, then by date)
+    const sortedMainComments = [...mainComments].sort((a, b) => {
+      if (a.is_pinned && !b.is_pinned) return -1
+      if (!a.is_pinned && b.is_pinned) return 1
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    })
+    
+    // Add replies to their parent comments
+    return sortedMainComments.map(mainComment => ({
+      ...mainComment,
+      replies: replies
+        .filter(reply => reply.parent_id === mainComment.id)
+        .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+    }))
+  }, [filteredComments])
 
   // Group comments by type for summary
   const commentSummary = comments.reduce((acc, comment) => {
