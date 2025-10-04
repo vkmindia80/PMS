@@ -558,12 +558,12 @@ class TimeTrackingAPITester:
         else:
             self.log("❌ Authentication is failing")
             
-        if test_results["timeline_functionality"]["status"] == "working":
-            self.log("✅ Timeline functionality is working correctly")
-        elif test_results["timeline_functionality"]["status"] == "partial":
-            self.log("⚠️ Timeline functionality is partially working")
+        if test_results["time_tracking_functionality"]["status"] == "working":
+            self.log("✅ Time tracking functionality is working correctly")
+        elif test_results["time_tracking_functionality"]["status"] == "partial":
+            self.log("⚠️ Time tracking functionality is partially working")
         else:
-            self.log("❌ Timeline functionality is failing")
+            self.log("❌ Time tracking functionality is failing")
         
         return test_results
 
