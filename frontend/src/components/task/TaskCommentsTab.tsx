@@ -45,7 +45,8 @@ interface CommentThread {
 }
 
 interface TaskCommentsTabProps {
-  comments: Comment[]
+  comments: Comment[] // Raw comments list for backward compatibility
+  commentThreads?: CommentThread[] // New threaded structure from API
   loading: boolean
   newComment: string
   setNewComment: (value: string) => void
