@@ -577,7 +577,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     if (!tokens?.access_token) return
     
     try {
-      const response = await fetch(`${getApiUrlDynamic()}/api/comments/${commentId}/reactions?emoji=${encodeURIComponent(emoji)}`, {
+      const response = await fetch(`${getApiUrlDynamic()}/api/comments/${commentId}/reactions/?emoji=${encodeURIComponent(emoji)}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
