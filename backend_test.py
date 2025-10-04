@@ -570,7 +570,7 @@ class TimeTrackingAPITester:
 def main():
     """Main test execution"""
     print("=" * 80)
-    print("Dynamic Timeline Dashboard - Backend API Testing")
+    print("Time Tracking Functionality - Backend API Testing")
     print("=" * 80)
     
     # Initialize tester with the public endpoint
