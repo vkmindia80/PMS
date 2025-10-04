@@ -467,7 +467,7 @@ class TimeTrackingAPITester:
             "critical_issues": [],
             "authentication": {"status": "unknown"},
             "api_endpoints": {"working": [], "failing": []},
-            "timeline_functionality": {"status": "unknown"}
+            "time_tracking_functionality": {"status": "unknown"}
         }
         
         # Test sequence
