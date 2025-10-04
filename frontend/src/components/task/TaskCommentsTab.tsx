@@ -74,21 +74,7 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
     }
   }, [comments, availableUsers])
 
-  // Show loading state but don't return early to avoid hook issues
-  if (loading) {
-    return (
-      <div className="p-6">
-        <div className="flex items-center justify-center p-8">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading comments...</p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Filter and search comments
+  // Filter and search comments - MUST be defined before any conditional returns
   const filteredComments = comments.filter(comment => {
     const matchesType = filterType === 'all' || 
       (filterType === 'resolved' ? comment.is_resolved : comment.type === filterType)
@@ -97,7 +83,7 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
     return matchesType && matchesSearch
   })
 
-  // Organize comments into threads (main comments and their replies)
+  // Organize comments into threads (main comments and their replies) - MUST be defined before any conditional returns
   const organizedComments = React.useMemo(() => {
     const mainComments = filteredComments.filter(comment => !comment.parent_id)
     const replies = filteredComments.filter(comment => comment.parent_id)
@@ -118,7 +104,7 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
     }))
   }, [filteredComments])
 
-  // Group comments by type for summary
+  // Group comments by type for summary - MUST be defined before any conditional returns
   const commentSummary = comments.reduce((acc, comment) => {
     acc[comment.type] = (acc[comment.type] || 0) + 1
     return acc
@@ -128,6 +114,20 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
   const pinnedCount = comments.filter(c => c.is_pinned).length
 
   const emojis = ['👍', '👎', '❤️', '😄', '😮', '😢', '😡', '🎉', '🚀', '👀']
+
+  // Show loading state AFTER all hooks are defined
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="flex items-center justify-center p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading comments...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-6">
