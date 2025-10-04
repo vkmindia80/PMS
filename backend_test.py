@@ -18,6 +18,7 @@ class TimeTrackingAPITester:
         self.tests_run = 0
         self.tests_passed = 0
         self.demo_project_id = None
+        self.demo_task_id = None
 
     def log(self, message: str, level: str = "INFO"):
         """Log test messages with timestamp"""
