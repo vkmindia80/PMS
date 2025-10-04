@@ -296,7 +296,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     if (!tokens?.access_token) return
     
     try {
-      const response = await fetch(`${getApiUrlDynamic()}/api/users`, {
+      const response = await fetch(`${getApiUrlDynamic()}/api/users/`, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
