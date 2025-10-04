@@ -30,7 +30,6 @@ interface TimeTrackingTabProps {
   timerElapsed: number
   formatTime: (ms: number) => string
   onStartTimer: () => void
-  onStopTimer: () => void
   onStopAndSaveTimer: () => void
 }
 
