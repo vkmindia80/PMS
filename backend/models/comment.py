@@ -60,6 +60,9 @@ class CommentBase(BaseModel):
 
 class CommentCreate(BaseCreateModel, CommentBase):
     """Comment creation model"""
+    # Override author_id to be optional since it's set automatically from current user
+    author_id: Optional[str] = Field(None, description="Comment author user ID (set automatically)")
+    
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
@@ -67,7 +70,6 @@ class CommentCreate(BaseCreateModel, CommentBase):
                 "type": "comment",
                 "entity_type": "task",
                 "entity_id": "task-123",
-                "author_id": "user-456",
                 "mentions": [
                     {
                         "user_id": "user-789",
