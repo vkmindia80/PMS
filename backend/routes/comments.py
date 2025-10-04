@@ -85,7 +85,7 @@ async def create_comment(
             )
         
         # Update entity comment count
-        if comment_data.entity_type == EntityType.TASK:
+        if entity_type_value == "task":
             await db.tasks.update_one(
                 {"id": comment_data.entity_id},
                 {"$inc": {"comment_count": 1}}
