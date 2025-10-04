@@ -337,13 +337,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
         setComments(prev => [newCommentData, ...prev])
         // Also refetch to ensure sync
         fetchComments()
-        // Update task comment count
-        if (onUpdate) {
-          await onUpdate(task.id, { 
-            ...task, 
-            comment_count: (task.comment_count || 0) + 1 
-          })
-        }
+        // Update task comment count locally
+        task.comment_count = (task.comment_count || 0) + 1
         toast.success(`${commentType.charAt(0).toUpperCase() + commentType.slice(1)} added!`)
       } else {
         const errorData = await response.json()
