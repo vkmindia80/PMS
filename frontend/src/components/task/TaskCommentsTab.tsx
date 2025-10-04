@@ -335,17 +335,17 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
         ) : (
           <>
             {/* Pinned Comments */}
-            {organizedComments.filter(c => c.is_pinned).length > 0 && (
+            {organizedComments.filter(thread => thread.root_comment.is_pinned).length > 0 && (
               <div className="mb-6">
                 <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                   <Pin className="h-5 w-5 mr-2 text-yellow-600" />
                   Pinned Messages
                 </h4>
                 <div className="space-y-3">
-                  {organizedComments.filter(c => c.is_pinned).map((commentThread) => (
-                    <CommentThread 
-                      key={`pinned-${commentThread.id}`} 
-                      mainComment={commentThread} 
+                  {organizedComments.filter(thread => thread.root_comment.is_pinned).map((commentThread) => (
+                    <ThreadedCommentView 
+                      key={`pinned-${commentThread.root_comment.id}`} 
+                      thread={commentThread} 
                       availableUsers={availableUsers} 
                       isPinned={true}
                       showEmojiPicker={showEmojiPicker}
@@ -353,6 +353,7 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
                       emojis={emojis}
                       onAddReaction={onAddReaction}
                       onReply={onReply}
+                      depth={0}
                     />
                   ))}
                 </div>
@@ -367,21 +368,22 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
                   Discussion Timeline
                 </div>
                 <span className="text-sm font-normal text-gray-500">
-                  Showing {organizedComments.length} threads ({filteredComments.length} total comments)
+                  Showing {organizedComments.length} threads ({allComments.length} total comments)
                 </span>
               </h4>
               
               <div className="space-y-6">
                 {organizedComments.map((commentThread) => (
-                  <CommentThread 
-                    key={commentThread.id} 
-                    mainComment={commentThread} 
+                  <ThreadedCommentView 
+                    key={commentThread.root_comment.id} 
+                    thread={commentThread} 
                     availableUsers={availableUsers}
                     showEmojiPicker={showEmojiPicker}
                     setShowEmojiPicker={setShowEmojiPicker}
                     emojis={emojis}
                     onAddReaction={onAddReaction}
                     onReply={onReply}
+                    depth={0}
                   />
                 ))}
               </div>
