@@ -261,52 +261,41 @@ class CommentsAPITester:
             self.log("❌ Failed to create comment")
             return False
 
-    def test_task_detailed_view(self) -> bool:
-        """Test detailed task view with time tracking data"""
+    def test_get_comments(self) -> bool:
+        """Test retrieving comments for a task"""
         if not self.token:
-            self.log("❌ Cannot test task details - no authentication token")
+            self.log("❌ Cannot test get comments - no authentication token")
             return False
             
         if not self.demo_task_id:
-            self.log("❌ Cannot test task details - no task ID available")
+            self.log("❌ Cannot test get comments - no task ID available")
             return False
             
         success, response = self.run_test(
-            f"Task Detailed View ({self.demo_task_id})",
+            f"Get Comments for Task ({self.demo_task_id})",
             "GET",
-            f"/api/tasks/{self.demo_task_id}/detailed",
+            f"/api/comments/?entity_type=task&entity_id={self.demo_task_id}",
             200
         )
         
         if success:
-            self.log(f"✅ Task detailed view retrieved:")
-            self.log(f"   Task title: {response.get('title', 'Unknown')}")
-            self.log(f"   Task status: {response.get('status', 'Unknown')}")
+            comments = response if isinstance(response, list) else []
+            self.log(f"✅ Comments retrieved: {len(comments)} comments found")
             
-            # Check time tracking data
-            time_tracking = response.get('time_tracking', {})
-            if time_tracking:
-                estimated_hours = time_tracking.get('estimated_hours')
-                actual_hours = time_tracking.get('actual_hours', 0)
-                logged_time = time_tracking.get('logged_time', [])
-                
-                self.log(f"   Estimated hours: {estimated_hours}")
-                self.log(f"   Actual hours: {actual_hours}")
-                self.log(f"   Time entries count: {len(logged_time)}")
-                
-                # Show recent time entries
-                if logged_time:
-                    self.log("   Recent time entries:")
-                    for i, entry in enumerate(logged_time[-3:]):  # Show last 3 entries
-                        self.log(f"     {i+1}. {entry.get('hours')}h - {entry.get('description', 'No description')}")
-                        self.log(f"        Date: {entry.get('date', 'Unknown')} by {entry.get('user_id', 'Unknown')}")
-                
-                return True
-            else:
-                self.log("⚠️ No time tracking data found")
-                return False
+            if comments:
+                for i, comment in enumerate(comments[:3]):  # Show first 3 comments
+                    self.log(f"   Comment {i+1}:")
+                    self.log(f"     ID: {comment.get('id')}")
+                    self.log(f"     Content: {comment.get('content', '')[:50]}...")
+                    self.log(f"     Type: {comment.get('type')}")
+                    self.log(f"     Author: {comment.get('author_id')}")
+                    self.log(f"     Created: {comment.get('created_at')}")
+                    self.log(f"     Replies: {comment.get('reply_count', 0)}")
+                    self.log(f"     Reactions: {comment.get('reaction_count', 0)}")
+            
+            return True
         else:
-            self.log("❌ Failed to retrieve task detailed view")
+            self.log("❌ Failed to retrieve comments")
             return False
 
     def test_time_tracking_consistency(self) -> bool:
