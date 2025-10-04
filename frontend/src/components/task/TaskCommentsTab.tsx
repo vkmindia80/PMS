@@ -516,12 +516,12 @@ const CommentCard: React.FC<{
           {/* Reply Button */}
           <button
             onClick={() => setShowReplyForm(!showReplyForm)}
-            className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 cursor-pointer"
+            className="flex items-center space-x-1.5 text-blue-600 hover:text-blue-800 cursor-pointer px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all duration-200 border border-transparent hover:border-blue-200 font-medium"
           >
-            <Reply className="h-3 w-3" />
-            <span>Reply</span>
+            <Reply className="h-4 w-4" />
+            <span className="text-xs">Reply</span>
             {comment.reply_count > 0 && (
-              <span className="bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded text-xs">
+              <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-bold ml-1">
                 {comment.reply_count}
               </span>
             )}
