@@ -305,7 +305,9 @@ const CommentCard: React.FC<{
   showEmojiPicker: string | null
   setShowEmojiPicker: (id: string | null) => void
   emojis: string[]
-}> = ({ comment, availableUsers, isPinned = false, showEmojiPicker, setShowEmojiPicker, emojis }) => {
+  onAddReaction?: (commentId: string, emoji: string) => void
+  onReply?: (parentId: string, content: string) => void
+}> = ({ comment, availableUsers, isPinned = false, showEmojiPicker, setShowEmojiPicker, emojis, onAddReaction, onReply }) => {
   const user = availableUsers.find(u => u.id === comment.author_id)
   const isOldComment = new Date().getTime() - new Date(comment.created_at).getTime() > 7 * 24 * 60 * 60 * 1000 // 7 days
   const [showReplyForm, setShowReplyForm] = useState(false)
