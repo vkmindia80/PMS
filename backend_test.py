@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class CommentsAPITester:
-    def __init__(self, base_url: str = "https://comment-reaction-fix.preview.emergentagent.com"):
+    def __init__(self, base_url: str = "https://feedback-display.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user_data = None
@@ -549,7 +549,7 @@ class CommentsAPITester:
             response = requests.options(
                 f"{self.base_url}/api/auth/login",
                 headers={
-                    'Origin': 'https://comment-reaction-fix.preview.emergentagent.com',
+                    'Origin': 'https://feedback-display.preview.emergentagent.com',
                     'Access-Control-Request-Method': 'POST',
                     'Access-Control-Request-Headers': 'Content-Type,Authorization'
                 },
