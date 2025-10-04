@@ -258,19 +258,31 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     
     try {
       setLoading(true)
-      const response = await fetch(`${API_URL}/api/comments?entity_type=task&entity_id=${task.id}`, {
+      const url = `${API_URL}/api/comments?entity_type=task&entity_id=${task.id}`
+      console.log('🔍 Fetching comments from:', url)
+      console.log('🔍 Task ID:', task.id)
+      
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
         }
       })
       
+      console.log('🔍 Comments API Response Status:', response.status)
+      
       if (response.ok) {
         const commentsData = await response.json()
+        console.log('🔍 Fetched comments data:', commentsData)
+        console.log('🔍 Comments count:', commentsData.length)
         setComments(commentsData)
+      } else {
+        console.error('❌ Failed to fetch comments:', response.status, response.statusText)
+        const errorData = await response.text()
+        console.error('❌ Error details:', errorData)
       }
     } catch (error) {
-      console.error('Error fetching comments:', error)
+      console.error('❌ Error fetching comments:', error)
     } finally {
       setLoading(false)
     }
