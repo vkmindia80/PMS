@@ -5,7 +5,7 @@ import {
   AlertTriangle, ArrowRight, ArrowLeft, Plus, Minus,
   User, Tag, FileText, History, Copy, Share2, Archive,
   MoreVertical, Eye, EyeOff, Star, Trash2, RefreshCw,
-  Zap, Target, TrendingUp, Timer, Play, Pause, Square
+  Zap, Target, TrendingUp, Timer, Play, Square
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { getApiUrlDynamic } from '../../utils/config'
