@@ -304,11 +304,11 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
                 </span>
               </h4>
               
-              <div className="space-y-4">
-                {sortedComments.map((comment) => (
-                  <CommentCard 
-                    key={comment.id} 
-                    comment={comment} 
+              <div className="space-y-6">
+                {organizedComments.map((commentThread) => (
+                  <CommentThread 
+                    key={commentThread.id} 
+                    mainComment={commentThread} 
                     availableUsers={availableUsers}
                     showEmojiPicker={showEmojiPicker}
                     setShowEmojiPicker={setShowEmojiPicker}
