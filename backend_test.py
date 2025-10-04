@@ -477,10 +477,10 @@ class TimeTrackingAPITester:
             ("demo_login", self.test_demo_login),
             ("user_profile", self.test_user_profile),
             ("projects_list", self.test_projects_list),
-            ("timeline_stats_overall", self.test_timeline_stats_overall),
-            ("timeline_stats_project", self.test_timeline_stats_project),
-            ("gantt_data", self.test_gantt_data),
             ("tasks_list", self.test_tasks_list),
+            ("task_detailed_view", self.test_task_detailed_view),
+            ("manual_time_logging", self.test_manual_time_logging),
+            ("time_tracking_consistency", self.test_time_tracking_consistency),
             ("analytics_dashboard", self.test_analytics_dashboard)
         ]
         
