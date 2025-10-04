@@ -515,6 +515,40 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     toast.info('Timer stopped. Time logged to form.')
   }
 
+  const handleStopAndSaveTimer = async () => {
+    if (!task || !currentTimerStart || !tokens?.access_token) return
+    
+    try {
+      const totalSeconds = Math.floor((Date.now() - currentTimerStart.getTime()) / 1000)
+      const hours = formatHours(totalSeconds / 3600)
+      const description = 'Timed work session'
+      
+      setIsTimerRunning(false)
+      setCurrentTimerStart(null)
+      
+      // Automatically log the time entry
+      const response = await fetch(`${getApiUrlDynamic()}/api/tasks/${task.id}/time/log?hours=${hours}&description=${encodeURIComponent(description)}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        toast.success(`Timer stopped and ${hours}h logged successfully!`)
+        
+        // Refresh task data to show updated time tracking
+        await fetchTaskWithDetails()
+      } else {
+        toast.error('Failed to log timer data')
+      }
+    } catch (error) {
+      console.error('Error logging timer data:', error)
+      toast.error('Failed to log timer data')
+    }
+  }
+
   const handleAddComment = async () => {
     if (!task || !newComment.trim() || !tokens?.access_token) return
     
