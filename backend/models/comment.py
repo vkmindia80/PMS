@@ -178,3 +178,6 @@ class CommentStats(BaseModel):
     note_count: int = Field(default=0)
     review_count: int = Field(default=0)
     suggestion_count: int = Field(default=0)
+
+# Update forward references for recursive Comment model
+Comment.model_rebuild()
