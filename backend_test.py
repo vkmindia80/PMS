@@ -454,7 +454,7 @@ class TimeTrackingAPITester:
 
     def run_comprehensive_test(self) -> Dict[str, Any]:
         """Run all tests and return comprehensive results"""
-        self.log("🚀 Starting Comprehensive Dynamic Timeline API Testing")
+        self.log("🚀 Starting Comprehensive Time Tracking API Testing")
         self.log(f"   Base URL: {self.base_url}")
         self.log(f"   Test time: {datetime.now().isoformat()}")
         
