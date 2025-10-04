@@ -560,7 +560,9 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
         setTimeLogHours('')
         setTimeLogDescription('')
         toast.success('Time logged successfully!')
-        // Refresh task data if needed
+        
+        // Refresh task data to show updated time tracking
+        await fetchTaskWithDetails()
       }
     } catch (error) {
       console.error('Error logging time:', error)
