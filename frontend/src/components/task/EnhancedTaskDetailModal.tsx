@@ -889,7 +889,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
 
           {activeTab === 'time' && (
             <TimeTrackingTab
-              task={task}
+              task={taskWithDetails || task}
               onLogTime={handleLogTime}
               timeLogHours={timeLogHours}
               setTimeLogHours={setTimeLogHours}
