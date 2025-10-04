@@ -113,7 +113,7 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
   const resolvedCount = comments.filter(c => c.is_resolved).length
   const pinnedCount = comments.filter(c => c.is_pinned).length
 
-  const emojis = ['👍', '👎', '❤️', '😄', '😮', '😢', '😡', '🎉', '🚀', '👀']
+  const emojis = ['👍', '👎', '❤️', '😍', '😄', '😮', '😢', '😡', '🎉', '🚀', '👀', '🔥']
 
   // Show loading state AFTER all hooks are defined
   if (loading) {
