@@ -445,7 +445,7 @@ async def get_comment_threads(
                 root_threads.append(thread_dict)
         
         # Sort root threads chronologically (oldest first) with pinned comments first
-        root_threads.sort(key=lambda x: (not x.root_comment.is_pinned, x.root_comment.created_at))
+        root_threads.sort(key=lambda x: (not x["root_comment"]["is_pinned"], x["root_comment"]["created_at"]))
         
         return root_threads
         
