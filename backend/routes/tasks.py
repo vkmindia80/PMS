@@ -241,7 +241,23 @@ async def get_task(
                 detail="Task not found"
             )
         
-        return Task(**task)
+        # Clean up task data before validation
+        cleaned_task = dict(task)
+        
+        # Fix dependencies format - convert strings to proper TaskDependency format
+        if "dependencies" in cleaned_task and cleaned_task["dependencies"]:
+            fixed_dependencies = []
+            for dep in cleaned_task["dependencies"]:
+                if isinstance(dep, str):
+                    fixed_dependencies.append({
+                        "task_id": dep,
+                        "dependency_type": "blocks"
+                    })
+                elif isinstance(dep, dict):
+                    fixed_dependencies.append(dep)
+            cleaned_task["dependencies"] = fixed_dependencies
+        
+        return Task(**cleaned_task)
         
     except Exception as e:
         if isinstance(e, HTTPException):
