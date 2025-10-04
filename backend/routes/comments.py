@@ -397,7 +397,7 @@ async def get_comment_threads(
             comment_objects[comment_data["id"]] = Comment(**comment_data)
         
         # Build nested thread structure recursively
-        def build_nested_replies(parent_id: str) -> List[Comment]:
+        def build_nested_replies(parent_id: str) -> List[Dict]:
             """Recursively build nested replies for a parent comment"""
             replies = []
             for comment_id, comment_obj in comment_objects.items():
@@ -406,16 +406,14 @@ async def get_comment_threads(
                     # Recursively get its nested replies
                     nested_replies = build_nested_replies(comment_id)
                     
-                    # Add nested replies as a custom attribute for frontend processing
-                    comment_obj_dict = comment_obj.dict()
-                    comment_obj_dict["nested_replies"] = nested_replies
-                    enhanced_comment = Comment(**{k: v for k, v in comment_obj_dict.items() if k != "nested_replies"})
-                    enhanced_comment.nested_replies = nested_replies
+                    # Convert to dict and add nested replies
+                    comment_dict = comment_obj.dict()
+                    comment_dict["nested_replies"] = nested_replies
                     
-                    replies.append(enhanced_comment)
+                    replies.append(comment_dict)
             
             # Sort replies chronologically (oldest first)
-            return sorted(replies, key=lambda x: x.created_at)
+            return sorted(replies, key=lambda x: x["created_at"])
         
         # Find root comments (no parent_id) and build their thread trees
         root_threads = []
