@@ -44,7 +44,6 @@ export const TimeTrackingTab: React.FC<TimeTrackingTabProps> = ({
   timerElapsed,
   formatTime,
   onStartTimer,
-  onStopTimer,
   onStopAndSaveTimer
 }) => {
   const getTimeVariance = () => {
