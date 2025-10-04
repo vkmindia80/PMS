@@ -55,7 +55,8 @@ export const getApiUrl = (): string => {
   // If on emergentagent.com domain, use HTTPS to match the frontend
   if (isEmergentagentDomain()) {
     // For preview domains, use HTTPS protocol to avoid mixed content issues
-    return `https://${hostname}`;
+    // But keep using localhost:8001 for backend calls even on emergentagent domains
+    return 'http://localhost:8001';
   }
   
   // Default fallback
