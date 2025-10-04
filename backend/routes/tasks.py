@@ -661,13 +661,18 @@ async def log_time_entry(
         
         # Update task time tracking
         current_time_tracking = existing_task.get("time_tracking", {})
-        current_actual_hours = current_time_tracking.get("actual_hours", 0.0)
         current_logged_time = current_time_tracking.get("logged_time", [])
+        
+        # Add new entry to logged_time array
+        new_logged_time = current_logged_time + [time_entry]
+        
+        # Recalculate actual_hours from all logged_time entries to ensure consistency
+        new_actual_hours = sum(entry.get("hours", 0.0) for entry in new_logged_time)
         
         new_time_tracking = {
             "estimated_hours": current_time_tracking.get("estimated_hours"),
-            "actual_hours": current_actual_hours + hours,
-            "logged_time": current_logged_time + [time_entry]
+            "actual_hours": new_actual_hours,
+            "logged_time": new_logged_time
         }
         
         # Update task
