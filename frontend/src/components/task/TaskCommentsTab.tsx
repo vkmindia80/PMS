@@ -512,18 +512,19 @@ const ThreadedCommentView: React.FC<{
   )
 }
 
-// Enhanced Comment Card Component  
+// Enhanced Comment Card Component with Threading Support  
 const CommentCard: React.FC<{
   comment: Comment
   availableUsers: any[]
   isPinned?: boolean
   isReply?: boolean
+  depth?: number
   showEmojiPicker: string | null
   setShowEmojiPicker: (id: string | null) => void
   emojis: string[]
   onAddReaction?: (commentId: string, emoji: string) => void
   onReply?: (parentId: string, content: string) => void
-}> = ({ comment, availableUsers, isPinned = false, isReply = false, showEmojiPicker, setShowEmojiPicker, emojis, onAddReaction, onReply }) => {
+}> = ({ comment, availableUsers, isPinned = false, isReply = false, depth = 0, showEmojiPicker, setShowEmojiPicker, emojis, onAddReaction, onReply }) => {
   const user = availableUsers.find(u => u.id === comment.author_id)
   const isOldComment = new Date().getTime() - new Date(comment.created_at).getTime() > 7 * 24 * 60 * 60 * 1000 // 7 days
   const [showReplyForm, setShowReplyForm] = useState(false)
