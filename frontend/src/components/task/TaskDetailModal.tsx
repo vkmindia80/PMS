@@ -9,6 +9,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { API_URL } from '../../utils/config'
 import { formatHours, formatHoursWithSuffix, formatHoursVariance } from '../../utils/hourFormatter'
 import toast from 'react-hot-toast'
+import { TaskCommentsTab } from './TaskCommentsTab'
 
 interface Task {
   id: string
