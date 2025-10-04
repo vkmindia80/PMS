@@ -326,9 +326,9 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
   )
 }
 
-// Enhanced Comment Card Component
-const CommentCard: React.FC<{
-  comment: Comment
+// Enhanced Comment Thread Component
+const CommentThread: React.FC<{
+  mainComment: Comment & { replies?: Comment[] }
   availableUsers: any[]
   isPinned?: boolean
   showEmojiPicker: string | null
@@ -336,7 +336,56 @@ const CommentCard: React.FC<{
   emojis: string[]
   onAddReaction?: (commentId: string, emoji: string) => void
   onReply?: (parentId: string, content: string) => void
-}> = ({ comment, availableUsers, isPinned = false, showEmojiPicker, setShowEmojiPicker, emojis, onAddReaction, onReply }) => {
+}> = ({ mainComment, availableUsers, isPinned = false, showEmojiPicker, setShowEmojiPicker, emojis, onAddReaction, onReply }) => {
+  
+  return (
+    <div className="space-y-3">
+      {/* Main Comment */}
+      <CommentCard 
+        comment={mainComment}
+        availableUsers={availableUsers}
+        isPinned={isPinned}
+        showEmojiPicker={showEmojiPicker}
+        setShowEmojiPicker={setShowEmojiPicker}
+        emojis={emojis}
+        onAddReaction={onAddReaction}
+        onReply={onReply}
+      />
+      
+      {/* Replies */}
+      {mainComment.replies && mainComment.replies.length > 0 && (
+        <div className="ml-12 space-y-3 border-l-2 border-gray-100 pl-4">
+          {mainComment.replies.map((reply) => (
+            <CommentCard 
+              key={reply.id}
+              comment={reply}
+              availableUsers={availableUsers}
+              showEmojiPicker={showEmojiPicker}
+              setShowEmojiPicker={setShowEmojiPicker}
+              emojis={emojis}
+              onAddReaction={onAddReaction}
+              onReply={onReply}
+              isReply={true}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Enhanced Comment Card Component  
+const CommentCard: React.FC<{
+  comment: Comment
+  availableUsers: any[]
+  isPinned?: boolean
+  isReply?: boolean
+  showEmojiPicker: string | null
+  setShowEmojiPicker: (id: string | null) => void
+  emojis: string[]
+  onAddReaction?: (commentId: string, emoji: string) => void
+  onReply?: (parentId: string, content: string) => void
+}> = ({ comment, availableUsers, isPinned = false, isReply = false, showEmojiPicker, setShowEmojiPicker, emojis, onAddReaction, onReply }) => {
   const user = availableUsers.find(u => u.id === comment.author_id)
   const isOldComment = new Date().getTime() - new Date(comment.created_at).getTime() > 7 * 24 * 60 * 60 * 1000 // 7 days
   const [showReplyForm, setShowReplyForm] = useState(false)
