@@ -421,10 +421,10 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
   }
 
   const fetchComments = async () => {
-    if (!task || !tokens?.access_token) return
+    if (!task || !tokens?.access_token || commentsLoading) return
     
     try {
-      setLoading(true)
+      setCommentsLoading(true)
       
       // Fetch threaded comments using the enhanced API endpoint
       const threadsResponse = await fetch(`${getApiUrlDynamic()}/api/comments/threads/task/${task.id}`, {
@@ -459,7 +459,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
     } catch (error) {
       console.error('Error fetching comments:', error)
     } finally {
-      setLoading(false)
+      setCommentsLoading(false)
     }
   }
 
