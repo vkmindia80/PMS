@@ -127,6 +127,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
   const [commentThreads, setCommentThreads] = useState<any[]>([])
   const [activities, setActivities] = useState<TaskActivity[]>([])
   const [loading, setLoading] = useState(false)
+  const [commentsLoading, setCommentsLoading] = useState(false)
   const [newComment, setNewComment] = useState('')
   const [timeLogHours, setTimeLogHours] = useState('')
   const [timeLogDescription, setTimeLogDescription] = useState('')
