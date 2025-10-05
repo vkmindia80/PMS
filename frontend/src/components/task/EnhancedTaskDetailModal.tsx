@@ -191,7 +191,9 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
       calculateTaskHealth()
       fetchTaskWithDetails()
       fetchAvailableUsers()
-      if (activeTab === 'comments') {
+      
+      // Only fetch comments if not already loading to prevent race conditions
+      if (activeTab === 'comments' && !commentsLoading) {
         fetchComments()
       } else if (activeTab === 'activity') {
         fetchActivity()
