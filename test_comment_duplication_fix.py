@@ -17,7 +17,7 @@ API_BASE = f"{BASE_URL}/api"
 def get_auth_token():
     """Get authentication token"""
     auth_data = {
-        "username": "demo@company.com",
+        "email": "demo@company.com",
         "password": "demopass123"
     }
     
