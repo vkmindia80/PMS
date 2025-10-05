@@ -396,6 +396,17 @@ async def get_comment_threads(
         # Convert to Comment objects and create lookup dict
         comment_objects = {}
         for comment_data in comments:
+            # Fix reactions field if it's a dict instead of list (data migration issue)
+            if isinstance(comment_data.get("reactions"), dict):
+                comment_data["reactions"] = []
+            
+            # Ensure all required fields have default values
+            comment_data.setdefault("reactions", [])
+            comment_data.setdefault("reply_count", 0)
+            comment_data.setdefault("reaction_count", 0)
+            comment_data.setdefault("is_resolved", False)
+            comment_data.setdefault("nested_replies", None)
+            
             comment_objects[comment_data["id"]] = Comment(**comment_data)
         
         # Build nested thread structure recursively
