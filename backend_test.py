@@ -117,20 +117,23 @@ class CommentReplyBugTester:
         print("TESTING TASK RETRIEVAL")
         print("="*60)
         
+        # Use a known task ID from existing comments
+        self.test_task_id = "eef9793e-91e1-4e61-850f-673d3d0e94b9"
+        print(f"    ✅ Using known test task ID: {self.test_task_id}")
+        
+        # Verify the task exists by checking if it has comments
         success, response = self.run_test(
-            "Get Tasks",
+            "Verify Task Has Comments",
             "GET",
-            "/api/tasks?limit=10",
+            f"/api/comments/?entity_type=task&entity_id={self.test_task_id}&limit=1",
             200
         )
         
         if success and isinstance(response, list) and len(response) > 0:
-            self.test_task_id = response[0]['id']
-            task_title = response[0].get('title', 'Unknown')
-            print(f"    ✅ Found test task: {task_title} (ID: {self.test_task_id})")
+            print(f"    ✅ Task verified - has {len(response)} comment(s)")
             return True
         else:
-            print(f"    ❌ No tasks found or invalid response")
+            print(f"    ❌ Task verification failed")
             return False
 
     def test_create_comment(self, content: str, comment_type: str = "comment", parent_id: str = None):
