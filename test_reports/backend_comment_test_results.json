@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-05T14:45:57.738632",
+  "timestamp": "2025-10-05T14:47:39.810458",
   "success": false,
   "tests_run": 2,
   "tests_passed": 1,
@@ -11,8 +11,8 @@
       "response_data": {
         "message": "Login successful",
         "tokens": {
-          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5Njc3MzU3LCJ0eXBlIjoiYWNjZXNzIn0.Nh1VRNiCZACqrLK0loNeONPcI1156jZ3Esf86J3oung",
-          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwMjgwMzU3LCJ0eXBlIjoicmVmcmVzaCJ9.JwKOAOM_9XUPDSIytM_cFDuG7ApAqcNhLTpiHFjAN4M",
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5Njc3NDU5LCJ0eXBlIjoiYWNjZXNzIn0.DJvz6n65PeZPCwz7l3_cov5aCqpv4V_AyvxgPIB9DYE",
+          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwMjgwNDU5LCJ0eXBlIjoicmVmcmVzaCJ9.ltgtc97JhGApEgQzmigBGep-H0j0ZqKPqMZ0jz1VLiU",
           "token_type": "bearer",
           "expires_in": 1800
         },
@@ -30,7 +30,7 @@
           "is_active": true,
           "status": "active",
           "email_verified": true,
-          "last_login": "2025-10-05T14:37:37.846000",
+          "last_login": "2025-10-05T14:47:32.749000",
           "timezone": "UTC",
           "language": "en",
           "theme": "light",
@@ -38,10 +38,10 @@
           "profile_completed": true,
           "onboarding_completed": true,
           "created_at": "2025-10-05T14:36:55.408000",
-          "updated_at": "2025-10-05T14:37:37.846000"
+          "updated_at": "2025-10-05T14:47:32.749000"
         }
       },
-      "timestamp": "2025-10-05T14:45:57.684417"
+      "timestamp": "2025-10-05T14:47:39.749652"
     },
     {
       "test_name": "Get Tasks",
@@ -50,7 +50,7 @@
       "response_data": {
         "detail": "Not authenticated"
       },
-      "timestamp": "2025-10-05T14:45:57.737742"
+      "timestamp": "2025-10-05T14:47:39.809548"
     }
   ],
   "bug_status": "STILL_EXISTS"
