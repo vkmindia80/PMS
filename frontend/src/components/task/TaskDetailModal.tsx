@@ -154,7 +154,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       fetchTaskWithDetails()
       fetchAvailableUsers()
       if (activeTab === 'comments') {
-        fetchComments()
+        fetchComments(true) // Skip loading check for initial load
       } else if (activeTab === 'activity') {
         fetchActivity()
       } else if (activeTab === 'dependencies') {
@@ -162,7 +162,26 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
         fetchRelatedTasks()
       }
     }
-  }, [task, isOpen, activeTab])
+  }, [task, isOpen])
+
+  // Separate effect for tab changes to avoid race conditions
+  useEffect(() => {
+    if (task && isOpen && activeTab === 'comments') {
+      // Only fetch if we don't have comments loaded yet
+      if (comments.length === 0 && commentThreads.length === 0) {
+        fetchComments(true)
+      }
+    } else if (task && isOpen && activeTab === 'activity') {
+      if (activities.length === 0) {
+        fetchActivity()
+      }
+    } else if (task && isOpen && activeTab === 'dependencies') {
+      if (dependentTasks.length === 0 || relatedTasks.length === 0) {
+        fetchDependentTasks()
+        fetchRelatedTasks()
+      }
+    }
+  }, [activeTab])
 
   const fetchTaskWithDetails = async () => {
     if (!task || !tokens?.access_token) return
