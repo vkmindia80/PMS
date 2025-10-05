@@ -255,11 +255,17 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     }
   }
 
-  const fetchComments = async () => {
+  const fetchComments = async (skipLoadingCheck = false) => {
     if (!task || !tokens?.access_token) return
     
+    // Prevent concurrent fetches unless explicitly requested
+    if (!skipLoadingCheck && isCommentsLoading) {
+      console.log('🔄 Comments fetch already in progress, skipping...')
+      return
+    }
+    
     try {
-      setLoading(true)
+      setIsCommentsLoading(true)
       // Use threaded comments endpoint for proper display
       const threadsUrl = `${API_URL}/api/comments/threads/task/${task.id}`
       const flatUrl = `${API_URL}/api/comments/?entity_type=task&entity_id=${task.id}`
@@ -311,7 +317,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     } catch (error) {
       console.error('❌ Error fetching comments:', error)
     } finally {
-      setLoading(false)
+      setIsCommentsLoading(false)
     }
   }
 
