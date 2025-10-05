@@ -750,7 +750,7 @@ const CommentCard: React.FC<{
             </button>
             
             {showEmojiPicker === comment.id && (
-              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-xl z-30 p-4 min-w-[280px]">
+              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] p-4 min-w-[280px] max-w-[320px]">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-semibold text-gray-800">Pick a reaction</span>
                   <button
