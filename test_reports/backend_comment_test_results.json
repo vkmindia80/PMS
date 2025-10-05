@@ -1,0 +1,57 @@
+{
+  "timestamp": "2025-10-05T14:45:57.738632",
+  "success": false,
+  "tests_run": 2,
+  "tests_passed": 1,
+  "results": [
+    {
+      "test_name": "User Login",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "message": "Login successful",
+        "tokens": {
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5Njc3MzU3LCJ0eXBlIjoiYWNjZXNzIn0.Nh1VRNiCZACqrLK0loNeONPcI1156jZ3Esf86J3oung",
+          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwMjgwMzU3LCJ0eXBlIjoicmVmcmVzaCJ9.JwKOAOM_9XUPDSIytM_cFDuG7ApAqcNhLTpiHFjAN4M",
+          "token_type": "bearer",
+          "expires_in": 1800
+        },
+        "user": {
+          "id": "demo-user-001",
+          "email": "demo@company.com",
+          "username": "demo_user",
+          "first_name": "Demo",
+          "last_name": "User",
+          "phone": "+1-555-0123",
+          "bio": "Demo user for testing the Enterprise Portfolio Management system",
+          "avatar_url": null,
+          "role": "admin",
+          "organization_id": "demo-org-001",
+          "is_active": true,
+          "status": "active",
+          "email_verified": true,
+          "last_login": "2025-10-05T14:37:37.846000",
+          "timezone": "UTC",
+          "language": "en",
+          "theme": "light",
+          "notifications_enabled": true,
+          "profile_completed": true,
+          "onboarding_completed": true,
+          "created_at": "2025-10-05T14:36:55.408000",
+          "updated_at": "2025-10-05T14:37:37.846000"
+        }
+      },
+      "timestamp": "2025-10-05T14:45:57.684417"
+    },
+    {
+      "test_name": "Get Tasks",
+      "success": false,
+      "details": "Status: 403",
+      "response_data": {
+        "detail": "Not authenticated"
+      },
+      "timestamp": "2025-10-05T14:45:57.737742"
+    }
+  ],
+  "bug_status": "STILL_EXISTS"
+}
