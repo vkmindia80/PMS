@@ -584,8 +584,26 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
       })
       
       if (response.ok) {
+        const newCommentData = await response.json()
         setNewComment('')
-        await fetchComments() // Ensure comments are refetched
+        
+        // Optimistic update: Add the new comment immediately to avoid race conditions
+        const optimisticComment: Comment = {
+          ...newCommentData,
+          author_id: user?.id || 'current-user',
+          reactions: [],
+          reply_count: 0,
+          nested_replies: []
+        }
+        
+        // Add to both comments and comment threads
+        setComments(prev => [...prev, optimisticComment])
+        setCommentThreads(prev => [...prev, {
+          root_comment: optimisticComment,
+          replies: [],
+          total_replies: 0
+        }])
+        
         toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} added successfully!`)
       } else {
         const errorData = await response.json()
