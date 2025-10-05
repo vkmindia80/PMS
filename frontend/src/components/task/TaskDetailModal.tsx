@@ -693,13 +693,15 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
             <TaskCommentsTab
               comments={comments}
               commentThreads={commentThreads}
-              loading={loading}
+              loading={isCommentsLoading}
               newComment={newComment}
               setNewComment={setNewComment}
               onAddComment={handleAddComment}
               onAddReaction={handleAddReaction}
               onReply={handleReply}
               availableUsers={availableUsers}
+              isSubmittingComment={isSubmittingComment}
+              isSubmittingReply={isSubmittingReply}
             />
           )}
           
