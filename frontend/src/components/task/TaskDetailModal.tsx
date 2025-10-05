@@ -372,9 +372,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       if (response.ok) {
         const newCommentData = await response.json()
         setNewComment('')
-        // Immediately add to local state for better UX
-        setComments(prev => [newCommentData, ...prev])
-        // Also refetch to ensure sync
+        // Only refetch comments to ensure proper threading and avoid duplicates
         fetchComments()
         // Update task comment count locally
         task.comment_count = (task.comment_count || 0) + 1
