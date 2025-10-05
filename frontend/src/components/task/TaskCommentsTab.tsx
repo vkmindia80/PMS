@@ -768,7 +768,8 @@ const CommentCard: React.FC<{
           {/* Add Reaction Button */}
           <div className="relative">
             <button
-              onClick={() => setShowEmojiPicker(showEmojiPicker === comment.id ? null : comment.id)}
+              ref={reactButtonRef}
+              onClick={handleEmojiPickerToggle}
               className="flex items-center space-x-1.5 text-sm text-gray-500 hover:text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all duration-200 border border-transparent hover:border-blue-200 font-medium"
               title="Add reaction"
             >
@@ -783,8 +784,8 @@ const CommentCard: React.FC<{
                   className="fixed inset-0 z-[9998]" 
                   onClick={() => setShowEmojiPicker(null)}
                 />
-                {/* Emoji picker with improved positioning */}
-                <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] p-4 min-w-[280px] max-w-[320px]">
+                {/* Emoji picker with smart positioning */}
+                <div className={`absolute ${pickerPosition === 'left' ? 'right-full mr-2' : 'right-0'} top-10 bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] p-4 min-w-[280px] max-w-[320px]`}>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-semibold text-gray-800">Pick a reaction</span>
                     <button
