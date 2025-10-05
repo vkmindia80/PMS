@@ -469,9 +469,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   }
 
   const handleReply = async (parentId: string, content: string) => {
-    if (!task || !content.trim() || !tokens?.access_token) return
+    if (!task || !content.trim() || !tokens?.access_token || isSubmittingReply) return
     
     try {
+      setIsSubmittingReply(true)
       const response = await fetch(`${API_URL}/api/comments/`, {
         method: 'POST',
         headers: {
@@ -489,8 +490,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       
       if (response.ok) {
         const newReply = await response.json()
-        // Only refetch to ensure proper threading and avoid duplicates
-        fetchComments()
+        // Wait a bit then refetch to avoid race condition with useEffect
+        setTimeout(() => {
+          fetchComments()
+        }, 100)
         toast.success('Reply added!')
       } else {
         const errorData = await response.json()
@@ -499,6 +502,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     } catch (error) {
       console.error('Error adding reply:', error)
       toast.error(`Failed to add reply: ${error.message}`)
+    } finally {
+      setIsSubmittingReply(false)
     }
   }
 
