@@ -380,9 +380,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   }
 
   const handleAddComment = async (commentType: 'comment' | 'note' | 'review' = 'comment') => {
-    if (!task || !newComment.trim() || !tokens?.access_token) return
+    if (!task || !newComment.trim() || !tokens?.access_token || isSubmittingComment) return
     
     try {
+      setIsSubmittingComment(true)
       const response = await fetch(`${API_URL}/api/comments/`, {
         method: 'POST',
         headers: {
@@ -400,8 +401,10 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       if (response.ok) {
         const newCommentData = await response.json()
         setNewComment('')
-        // Only refetch comments to ensure proper threading and avoid duplicates
-        fetchComments()
+        // Wait a bit then refetch to avoid race condition with useEffect
+        setTimeout(() => {
+          fetchComments()
+        }, 100)
         // Update task comment count locally
         task.comment_count = (task.comment_count || 0) + 1
         toast.success(`${commentType.charAt(0).toUpperCase() + commentType.slice(1)} added!`)
@@ -412,6 +415,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     } catch (error) {
       console.error('Error adding comment:', error)
       toast.error(`Failed to add ${commentType}: ${error.message}`)
+    } finally {
+      setIsSubmittingComment(false)
     }
   }
 
