@@ -116,6 +116,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   const [commentThreads, setCommentThreads] = useState<any[]>([])
   const [activities, setActivities] = useState<TaskActivity[]>([])
   const [loading, setLoading] = useState(false)
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false)
   const [newComment, setNewComment] = useState('')
   const [timeLogHours, setTimeLogHours] = useState('')
   const [timeLogDescription, setTimeLogDescription] = useState('')
