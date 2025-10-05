@@ -9,7 +9,7 @@ import sys
 
 def test_comment_fix():
     """Test that replies are not duplicated"""
-    base_url = "https://duplicate-reply-fix.preview.emergentagent.com"
+    base_url = "https://reply-uniqueness.preview.emergentagent.com"
     
     print("🧪 Testing Comment Duplication Fix...")
     

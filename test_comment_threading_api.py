@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class CommentThreadingTester:
-    def __init__(self, base_url: str = "https://duplicate-reply-fix.preview.emergentagent.com"):
+    def __init__(self, base_url: str = "https://reply-uniqueness.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user_data = None
