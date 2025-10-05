@@ -17,711 +17,356 @@ class CommentReplyBugTester:
         self.user_data = None
         self.tests_run = 0
         self.tests_passed = 0
-        self.demo_project_id = None
-        self.demo_task_id = None
-        self.test_comment_ids = []  # Store created comment IDs for cleanup
+        self.test_task_id = None
+        self.test_comment_ids = []
         self.test_results = []
 
-    def log(self, message: str, level: str = "INFO"):
-        """Log test messages with timestamp"""
-        timestamp = datetime.now().strftime("%H:%M:%S")
-        print(f"[{timestamp}] {level}: {message}")
+    def log_result(self, test_name: str, success: bool, details: str = "", response_data: Any = None):
+        """Log test result"""
+        self.tests_run += 1
+        if success:
+            self.tests_passed += 1
+            
+        result = {
+            "test_name": test_name,
+            "success": success,
+            "details": details,
+            "response_data": response_data,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        self.test_results.append(result)
+        
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status} - {test_name}")
+        if details:
+            print(f"    Details: {details}")
 
-    def run_test(self, name: str, method: str, endpoint: str, expected_status: int, 
-                 data: Optional[Dict] = None, headers: Optional[Dict] = None) -> tuple[bool, Dict]:
+    def run_test(self, name: str, method: str, endpoint: str, expected_status: int, data: Dict = None) -> tuple:
         """Run a single API test"""
         url = f"{self.base_url}{endpoint}"
-        test_headers = {'Content-Type': 'application/json'}
+        headers = {'Content-Type': 'application/json'}
         
         if self.token:
-            test_headers['Authorization'] = f'Bearer {self.token}'
-        
-        if headers:
-            test_headers.update(headers)
+            headers['Authorization'] = f'Bearer {self.token}'
 
-        self.tests_run += 1
-        self.log(f"🔍 Testing {name}...")
-        self.log(f"   URL: {url}")
+        print(f"\n🔍 Testing {name}...")
+        print(f"    URL: {url}")
+        print(f"    Method: {method}")
         
         try:
             if method == 'GET':
-                response = requests.get(url, headers=test_headers, timeout=30)
+                response = requests.get(url, headers=headers, timeout=30)
             elif method == 'POST':
-                response = requests.post(url, json=data, headers=test_headers, timeout=30)
+                response = requests.post(url, json=data, headers=headers, timeout=30)
             elif method == 'PUT':
-                response = requests.put(url, json=data, headers=test_headers, timeout=30)
+                response = requests.put(url, json=data, headers=headers, timeout=30)
             elif method == 'DELETE':
-                response = requests.delete(url, headers=test_headers, timeout=30)
-            else:
-                raise ValueError(f"Unsupported method: {method}")
+                response = requests.delete(url, headers=headers, timeout=30)
 
-            success = response.status_code == expected_status
+            print(f"    Response Status: {response.status_code}")
             
-            if success:
-                self.tests_passed += 1
-                self.log(f"✅ PASSED - Status: {response.status_code}")
-            else:
-                self.log(f"❌ FAILED - Expected {expected_status}, got {response.status_code}")
-                if response.text:
-                    self.log(f"   Response: {response.text[:200]}...")
-
+            success = response.status_code == expected_status
+            response_data = {}
+            
             try:
-                response_data = response.json() if response.text else {}
-            except json.JSONDecodeError:
+                response_data = response.json()
+                if success:
+                    print(f"    ✅ Success")
+                else:
+                    print(f"    ❌ Error: {response_data}")
+            except:
                 response_data = {"raw_response": response.text}
+                if not success:
+                    print(f"    Raw Response: {response.text}")
 
+            self.log_result(name, success, f"Status: {response.status_code}", response_data)
             return success, response_data
 
-        except requests.exceptions.Timeout:
-            self.log(f"❌ FAILED - Request timeout after 30 seconds")
-            return False, {"error": "timeout"}
-        except requests.exceptions.ConnectionError as e:
-            self.log(f"❌ FAILED - Connection error: {str(e)}")
-            return False, {"error": "connection_error", "details": str(e)}
         except Exception as e:
-            self.log(f"❌ FAILED - Error: {str(e)}")
-            return False, {"error": str(e)}
+            error_msg = f"Request failed: {str(e)}"
+            print(f"    ❌ Error: {error_msg}")
+            self.log_result(name, False, error_msg)
+            return False, {"error": error_msg}
 
-    def test_health_check(self) -> bool:
-        """Test API health endpoint"""
-        success, response = self.run_test(
-            "API Health Check",
-            "GET",
-            "/api/health",
-            200
-        )
-        
-        if success and response.get("status") == "healthy":
-            self.log("✅ API is healthy and database is connected")
-            return True
-        else:
-            self.log("⚠️ API health check failed or database issues detected")
-            return False
-
-    def test_demo_login(self) -> bool:
+    def test_login(self):
         """Test login with demo credentials"""
-        demo_credentials = {
-            "email": "demo@company.com",
-            "password": "demo123456"
-        }
+        print("\n" + "="*60)
+        print("TESTING AUTHENTICATION")
+        print("="*60)
         
         success, response = self.run_test(
-            "Demo User Login",
+            "User Login",
             "POST",
             "/api/auth/login",
             200,
-            data=demo_credentials
+            data={"email": "demo@company.com", "password": "demo123456"}
         )
         
-        if success and 'tokens' in response and 'user' in response:
+        if success and 'tokens' in response:
             self.token = response['tokens']['access_token']
-            self.user_data = response['user']
-            self.log(f"✅ Login successful for user: {self.user_data.get('email')}")
-            self.log(f"   User role: {self.user_data.get('role')}")
-            self.log(f"   Organization: {self.user_data.get('organization_id')}")
+            self.user_data = response.get('user', {})
+            print(f"    ✅ Login successful, user ID: {self.user_data.get('id')}")
             return True
         else:
-            self.log("❌ Login failed - no tokens or user data received")
+            print(f"    ❌ Login failed")
             return False
 
-    def test_user_profile(self) -> bool:
-        """Test fetching user profile"""
-        if not self.token:
-            self.log("❌ Cannot test user profile - no authentication token")
-            return False
-            
+    def test_get_tasks(self):
+        """Get tasks to find a test task"""
+        print("\n" + "="*60)
+        print("TESTING TASK RETRIEVAL")
+        print("="*60)
+        
         success, response = self.run_test(
-            "User Profile Fetch",
+            "Get Tasks",
             "GET",
-            "/api/auth/me",
+            "/api/tasks?limit=10",
             200
         )
         
-        if success and response.get('email'):
-            self.log(f"✅ User profile retrieved: {response.get('email')}")
+        if success and isinstance(response, list) and len(response) > 0:
+            self.test_task_id = response[0]['id']
+            task_title = response[0].get('title', 'Unknown')
+            print(f"    ✅ Found test task: {task_title} (ID: {self.test_task_id})")
             return True
         else:
-            self.log("❌ Failed to retrieve user profile")
+            print(f"    ❌ No tasks found or invalid response")
             return False
 
-    def test_projects_list(self) -> bool:
-        """Test fetching projects list"""
-        if not self.token:
-            self.log("❌ Cannot test projects - no authentication token")
-            return False
-            
-        success, response = self.run_test(
-            "Projects List",
-            "GET",
-            "/api/projects",
-            200
-        )
-        
-        if success:
-            # Handle both list and dict responses
-            if isinstance(response, list):
-                projects = response
-            else:
-                projects = response.get('projects', [])
-                
-            self.log(f"✅ Projects retrieved: {len(projects)} projects found")
-            
-            # Store first project ID for timeline testing
-            if projects and len(projects) > 0:
-                first_project = projects[0]
-                if isinstance(first_project, dict):
-                    self.demo_project_id = first_project.get('id')
-                    self.log(f"   Using project for timeline tests: {self.demo_project_id}")
-            
-            return True
-        else:
-            self.log("❌ Failed to retrieve projects list")
-            return False
-
-    def test_tasks_list(self) -> bool:
-        """Test tasks list retrieval"""
-        if not self.token:
-            self.log("❌ Cannot test tasks - no authentication token")
-            return False
-            
-        success, response = self.run_test(
-            "Tasks List",
-            "GET",
-            "/api/tasks/",
-            200
-        )
-        
-        if success:
-            # Handle both list and dict responses
-            if isinstance(response, list):
-                tasks = response
-            else:
-                tasks = response.get('tasks', response)
-                
-            self.log(f"✅ Tasks retrieved: {len(tasks)} tasks found")
-            
-            # Store first task ID for time tracking testing
-            if tasks and len(tasks) > 0:
-                first_task = tasks[0]
-                if isinstance(first_task, dict):
-                    self.demo_task_id = first_task.get('id')
-                    self.log(f"   Using task for time tracking tests: {self.demo_task_id}")
-                    self.log(f"   Task title: {first_task.get('title', 'Unknown')}")
-                    
-                    # Check if task has time tracking data
-                    time_tracking = first_task.get('time_tracking', {})
-                    self.log(f"   Current actual hours: {time_tracking.get('actual_hours', 0)}")
-                    self.log(f"   Time entries: {len(time_tracking.get('logged_time', []))}")
-            
-            return True
-        else:
-            self.log("❌ Failed to retrieve tasks list")
-            return False
-
-    def test_create_comment(self) -> bool:
-        """Test creating a new comment"""
-        if not self.token:
-            self.log("❌ Cannot test comment creation - no authentication token")
-            return False
-            
-        if not self.demo_task_id:
-            self.log("❌ Cannot test comment creation - no task ID available")
-            return False
-            
-        # Test creating a comment
+    def test_create_comment(self, content: str, comment_type: str = "comment", parent_id: str = None):
+        """Test comment creation"""
         comment_data = {
-            "content": "This is a test comment for backend API testing",
-            "type": "comment",
+            "content": content,
+            "type": comment_type,
             "entity_type": "task",
-            "entity_id": self.demo_task_id
+            "entity_id": self.test_task_id
         }
         
+        if parent_id:
+            comment_data["parent_id"] = parent_id
+            
+        test_name = f"Create {'Reply' if parent_id else 'Comment'} ({comment_type})"
         success, response = self.run_test(
-            "Create Comment",
+            test_name,
             "POST",
             "/api/comments/",
             201,
             data=comment_data
         )
         
-        if success:
-            self.log(f"✅ Comment creation successful:")
-            comment_id = response.get('id')
-            if comment_id:
-                self.test_comment_ids.append(comment_id)
-                self.log(f"   Comment ID: {comment_id}")
-                self.log(f"   Content: {response.get('content')}")
-                self.log(f"   Type: {response.get('type')}")
-                self.log(f"   Author: {response.get('author_id')}")
-                self.log(f"   Created: {response.get('created_at')}")
-                return True
-            else:
-                self.log("⚠️ No comment ID in response")
-                return False
+        if success and 'id' in response:
+            comment_id = response['id']
+            self.test_comment_ids.append(comment_id)
+            print(f"    ✅ Created comment ID: {comment_id}")
+            return comment_id
         else:
-            self.log("❌ Failed to create comment")
-            return False
+            print(f"    ❌ Failed to create comment")
+            return None
 
-    def test_get_comments(self) -> bool:
-        """Test retrieving comments for a task"""
-        if not self.token:
-            self.log("❌ Cannot test get comments - no authentication token")
-            return False
-            
-        if not self.demo_task_id:
-            self.log("❌ Cannot test get comments - no task ID available")
-            return False
-            
+    def test_get_flat_comments(self):
+        """Test getting flat comments for the task"""
         success, response = self.run_test(
-            f"Get Comments for Task ({self.demo_task_id})",
+            "Get Flat Comments",
             "GET",
-            f"/api/comments/?entity_type=task&entity_id={self.demo_task_id}",
+            f"/api/comments/?entity_type=task&entity_id={self.test_task_id}",
             200
         )
         
         if success:
-            comments = response if isinstance(response, list) else []
-            self.log(f"✅ Comments retrieved: {len(comments)} comments found")
-            
-            if comments:
-                for i, comment in enumerate(comments[:3]):  # Show first 3 comments
-                    self.log(f"   Comment {i+1}:")
-                    self.log(f"     ID: {comment.get('id')}")
-                    self.log(f"     Content: {comment.get('content', '')[:50]}...")
-                    self.log(f"     Type: {comment.get('type')}")
-                    self.log(f"     Author: {comment.get('author_id')}")
-                    self.log(f"     Created: {comment.get('created_at')}")
-                    self.log(f"     Replies: {comment.get('reply_count', 0)}")
-                    self.log(f"     Reactions: {comment.get('reaction_count', 0)}")
-            
-            return True
+            comment_count = len(response) if isinstance(response, list) else 0
+            print(f"    ✅ Retrieved {comment_count} flat comments")
+            return response
         else:
-            self.log("❌ Failed to retrieve comments")
-            return False
+            print(f"    ❌ Failed to get flat comments")
+            return []
 
-    def test_comment_types(self) -> bool:
-        """Test creating different types of comments"""
-        if not self.token:
-            self.log("❌ Cannot test comment types - no authentication token")
-            return False
-            
-        if not self.demo_task_id:
-            self.log("❌ Cannot test comment types - no task ID available")
-            return False
-            
-        comment_types = [
-            ("note", "This is a test note for documentation"),
-            ("review", "This is a review comment with feedback"),
-            ("comment", "This is a regular comment")
-        ]
-        
-        success_count = 0
-        
-        for comment_type, content in comment_types:
-            comment_data = {
-                "content": content,
-                "type": comment_type,
-                "entity_type": "task",
-                "entity_id": self.demo_task_id
-            }
-            
-            success, response = self.run_test(
-                f"Create {comment_type.title()} Comment",
-                "POST",
-                "/api/comments/",
-                201,
-                data=comment_data
-            )
-            
-            if success:
-                comment_id = response.get('id')
-                if comment_id:
-                    self.test_comment_ids.append(comment_id)
-                    self.log(f"   ✅ {comment_type.title()} comment created: {comment_id}")
-                    success_count += 1
-                else:
-                    self.log(f"   ❌ {comment_type.title()} comment missing ID")
-            else:
-                self.log(f"   ❌ Failed to create {comment_type} comment")
-        
-        if success_count == len(comment_types):
-            self.log("✅ All comment types created successfully")
-            return True
-        else:
-            self.log(f"⚠️ Only {success_count}/{len(comment_types)} comment types created")
-            return success_count > 0
-
-    def test_comment_reactions(self) -> bool:
-        """Test adding reactions to comments"""
-        if not self.token:
-            self.log("❌ Cannot test reactions - no authentication token")
-            return False
-            
-        if not self.test_comment_ids:
-            self.log("❌ Cannot test reactions - no comment IDs available")
-            return False
-            
-        comment_id = self.test_comment_ids[0]  # Use first created comment
-        test_emojis = ["👍", "❤️", "😄"]
-        
-        success_count = 0
-        
-        for emoji in test_emojis:
-            success, response = self.run_test(
-                f"Add Reaction ({emoji})",
-                "POST",
-                f"/api/comments/{comment_id}/reactions?emoji={emoji}",
-                200
-            )
-            
-            if success:
-                reactions = response.get('reactions', [])
-                reaction_count = response.get('reaction_count', 0)
-                self.log(f"   ✅ Reaction {emoji} added. Total reactions: {reaction_count}")
-                success_count += 1
-            else:
-                self.log(f"   ❌ Failed to add reaction {emoji}")
-        
-        if success_count == len(test_emojis):
-            self.log("✅ All reactions added successfully")
-            return True
-        else:
-            self.log(f"⚠️ Only {success_count}/{len(test_emojis)} reactions added")
-            return success_count > 0
-
-    def test_comment_replies(self) -> bool:
-        """Test creating replies to comments"""
-        if not self.token:
-            self.log("❌ Cannot test replies - no authentication token")
-            return False
-            
-        if not self.test_comment_ids:
-            self.log("❌ Cannot test replies - no comment IDs available")
-            return False
-            
-        parent_comment_id = self.test_comment_ids[0]  # Use first created comment as parent
-        
-        reply_data = {
-            "content": "This is a reply to the parent comment",
-            "type": "comment",
-            "entity_type": "task",
-            "entity_id": self.demo_task_id,
-            "parent_id": parent_comment_id
-        }
-        
+    def test_get_threaded_comments(self):
+        """Test getting threaded comments for the task - THIS IS THE KEY TEST"""
         success, response = self.run_test(
-            "Create Reply Comment",
-            "POST",
-            "/api/comments/",
-            201,
-            data=reply_data
+            "Get Threaded Comments (Key Test)",
+            "GET",
+            f"/api/comments/threads/task/{self.test_task_id}",
+            200
         )
         
         if success:
-            reply_id = response.get('id')
-            parent_id = response.get('parent_id')
+            thread_count = len(response) if isinstance(response, list) else 0
+            print(f"    ✅ Retrieved {thread_count} comment threads")
             
-            if reply_id and parent_id == parent_comment_id:
-                self.test_comment_ids.append(reply_id)
-                self.log(f"   ✅ Reply created: {reply_id}")
-                self.log(f"   Parent comment: {parent_id}")
-                
-                # Verify parent comment reply count increased
-                success_parent, parent_response = self.run_test(
-                    "Check Parent Comment Reply Count",
-                    "GET",
-                    f"/api/comments/{parent_comment_id}",
-                    200
-                )
-                
-                if success_parent:
-                    reply_count = parent_response.get('reply_count', 0)
-                    self.log(f"   Parent comment reply count: {reply_count}")
-                    return reply_count > 0
-                else:
-                    self.log("   ⚠️ Could not verify parent comment reply count")
-                    return True  # Reply was created successfully
-            else:
-                self.log("   ❌ Reply missing ID or incorrect parent ID")
-                return False
-        else:
-            self.log("❌ Failed to create reply")
-            return False
-
-    def test_comment_conversation_history(self) -> bool:
-        """Test conversation history maintenance"""
-        if not self.token:
-            self.log("❌ Cannot test conversation history - no authentication token")
-            return False
-            
-        if not self.demo_task_id:
-            self.log("❌ Cannot test conversation history - no task ID available")
-            return False
-            
-        # Get comments before adding new ones
-        success_before, response_before = self.run_test(
-            "Get Comments Before",
-            "GET",
-            f"/api/comments/?entity_type=task&entity_id={self.demo_task_id}",
-            200
-        )
-        
-        if not success_before:
-            self.log("❌ Failed to get comments before test")
-            return False
-            
-        comments_before = response_before if isinstance(response_before, list) else []
-        count_before = len(comments_before)
-        
-        # Add multiple comments to test conversation flow
-        conversation_comments = [
-            "Starting a new conversation thread",
-            "Adding to the conversation with more details",
-            "Final comment in this conversation"
-        ]
-        
-        created_comments = []
-        
-        for i, content in enumerate(conversation_comments):
-            comment_data = {
-                "content": content,
-                "type": "comment",
-                "entity_type": "task",
-                "entity_id": self.demo_task_id
-            }
-            
-            success, response = self.run_test(
-                f"Add Conversation Comment {i+1}",
-                "POST",
-                "/api/comments/",
-                201,
-                data=comment_data
-            )
-            
-            if success and response.get('id'):
-                created_comments.append(response)
-                self.test_comment_ids.append(response['id'])
-        
-        # Get comments after adding new ones
-        success_after, response_after = self.run_test(
-            "Get Comments After",
-            "GET",
-            f"/api/comments/?entity_type=task&entity_id={self.demo_task_id}",
-            200
-        )
-        
-        if success_after:
-            comments_after = response_after if isinstance(response_after, list) else []
-            count_after = len(comments_after)
-            
-            self.log(f"   Comments before: {count_before}")
-            self.log(f"   Comments after: {count_after}")
-            self.log(f"   Expected increase: {len(created_comments)}")
-            
-            if count_after >= count_before + len(created_comments):
-                self.log("✅ Conversation history maintained correctly")
-                
-                # Verify chronological order (newest first)
-                if len(comments_after) >= 2:
-                    first_comment = comments_after[0]
-                    second_comment = comments_after[1]
-                    
-                    first_time = datetime.fromisoformat(first_comment['created_at'].replace('Z', '+00:00'))
-                    second_time = datetime.fromisoformat(second_comment['created_at'].replace('Z', '+00:00'))
-                    
-                    if first_time >= second_time:
-                        self.log("   ✅ Comments are in correct chronological order")
-                        return True
-                    else:
-                        self.log("   ⚠️ Comments may not be in correct chronological order")
-                        return True  # Still consider success as comments were added
-                
-                return True
-            else:
-                self.log("❌ Conversation history not maintained properly")
-                return False
-        else:
-            self.log("❌ Failed to get comments after test")
-            return False
-
-    def test_cors_preflight(self) -> bool:
-        """Test CORS preflight request"""
-        try:
-            response = requests.options(
-                f"{self.base_url}/api/auth/login",
-                headers={
-                    'Origin': 'https://comment-reply-bug.preview.emergentagent.com',
-                    'Access-Control-Request-Method': 'POST',
-                    'Access-Control-Request-Headers': 'Content-Type,Authorization'
-                },
-                timeout=10
-            )
-            
-            if response.status_code in [200, 204]:
-                self.log("✅ CORS preflight request successful")
-                cors_headers = {
-                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
-                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
-                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
-                }
-                self.log(f"   CORS headers: {cors_headers}")
-                return True
-            else:
-                self.log(f"❌ CORS preflight failed with status: {response.status_code}")
-                return False
-                
-        except Exception as e:
-            self.log(f"❌ CORS preflight test failed: {str(e)}")
-            return False
-
-    def run_comprehensive_test(self) -> Dict[str, Any]:
-        """Run all tests and return comprehensive results"""
-        self.log("🚀 Starting Comprehensive Comments API Testing")
-        self.log(f"   Base URL: {self.base_url}")
-        self.log(f"   Test time: {datetime.now().isoformat()}")
-        
-        test_results = {
-            "test_summary": {
-                "start_time": datetime.now().isoformat(),
-                "base_url": self.base_url
-            },
-            "test_results": {},
-            "critical_issues": [],
-            "authentication": {"status": "unknown"},
-            "api_endpoints": {"working": [], "failing": []},
-            "comments_functionality": {"status": "unknown"}
-        }
-        
-        # Test sequence
-        tests = [
-            ("health_check", self.test_health_check),
-            ("cors_preflight", self.test_cors_preflight),
-            ("demo_login", self.test_demo_login),
-            ("user_profile", self.test_user_profile),
-            ("projects_list", self.test_projects_list),
-            ("tasks_list", self.test_tasks_list),
-            ("get_comments", self.test_get_comments),
-            ("create_comment", self.test_create_comment),
-            ("comment_types", self.test_comment_types),
-            ("comment_reactions", self.test_comment_reactions),
-            ("comment_replies", self.test_comment_replies),
-            ("comment_conversation_history", self.test_comment_conversation_history)
-        ]
-        
-        for test_name, test_func in tests:
-            try:
-                result = test_func()
-                test_results["test_results"][test_name] = {
-                    "passed": result,
-                    "timestamp": datetime.now().isoformat()
-                }
-                
-                if result:
-                    test_results["api_endpoints"]["working"].append(test_name)
-                else:
-                    test_results["api_endpoints"]["failing"].append(test_name)
-                    
-                    # Mark critical issues
-                    if test_name in ["health_check", "demo_login"]:
-                        test_results["critical_issues"].append({
-                            "test": test_name,
-                            "issue": "Critical functionality not working",
-                            "impact": "High - blocks main functionality"
-                        })
+            # Analyze thread structure in detail
+            if isinstance(response, list):
+                for i, thread in enumerate(response):
+                    if isinstance(thread, dict):
+                        root_comment = thread.get('root_comment', {})
+                        replies = thread.get('replies', [])
+                        total_replies = thread.get('total_replies', 0)
+                        nested_replies = root_comment.get('nested_replies', [])
                         
-            except Exception as e:
-                self.log(f"❌ Test {test_name} crashed: {str(e)}")
-                test_results["test_results"][test_name] = {
-                    "passed": False,
-                    "error": str(e),
-                    "timestamp": datetime.now().isoformat()
-                }
-                test_results["api_endpoints"]["failing"].append(test_name)
-        
-        # Determine authentication status
-        if test_results["test_results"].get("demo_login", {}).get("passed"):
-            test_results["authentication"]["status"] = "working"
-            test_results["authentication"]["credentials"] = "demo@company.com / demo123456"
-        else:
-            test_results["authentication"]["status"] = "failing"
-            test_results["critical_issues"].append({
-                "test": "authentication",
-                "issue": "Cannot authenticate with demo credentials",
-                "impact": "Critical - blocks all functionality"
-            })
-        
-        # Determine comments functionality status
-        comments_tests = ["create_comment", "comment_types", "comment_reactions", "comment_replies", "comment_conversation_history"]
-        comments_working = sum(1 for test in comments_tests 
-                              if test_results["test_results"].get(test, {}).get("passed", False))
-        
-        if comments_working >= 4:
-            test_results["comments_functionality"]["status"] = "working"
-        elif comments_working >= 2:
-            test_results["comments_functionality"]["status"] = "partial"
-        else:
-            test_results["comments_functionality"]["status"] = "failing"
-        
-        # Final summary
-        test_results["test_summary"].update({
-            "end_time": datetime.now().isoformat(),
-            "total_tests": self.tests_run,
-            "passed_tests": self.tests_passed,
-            "success_rate": f"{(self.tests_passed/self.tests_run*100):.1f}%" if self.tests_run > 0 else "0%",
-            "critical_issues_count": len(test_results["critical_issues"])
-        })
-        
-        self.log("📊 Test Summary:")
-        self.log(f"   Total tests: {self.tests_run}")
-        self.log(f"   Passed: {self.tests_passed}")
-        self.log(f"   Success rate: {test_results['test_summary']['success_rate']}")
-        self.log(f"   Critical issues: {len(test_results['critical_issues'])}")
-        
-        if test_results["authentication"]["status"] == "working":
-            self.log("✅ Authentication is working correctly")
-        else:
-            self.log("❌ Authentication is failing")
+                        print(f"    Thread {i+1}:")
+                        print(f"      Root: '{root_comment.get('content', '')[:50]}...'")
+                        print(f"      Replies: {len(replies)} (legacy)")
+                        print(f"      Nested replies: {len(nested_replies)} (new)")
+                        print(f"      Total replies: {total_replies}")
             
-        if test_results["comments_functionality"]["status"] == "working":
-            self.log("✅ Comments functionality is working correctly")
-        elif test_results["comments_functionality"]["status"] == "partial":
-            self.log("⚠️ Comments functionality is partially working")
+            return response
         else:
-            self.log("❌ Comments functionality is failing")
+            print(f"    ❌ Failed to get threaded comments - THIS IS THE BUG!")
+            return []
+
+    def test_comment_workflow(self):
+        """Test complete comment workflow"""
+        print("\n" + "="*60)
+        print("TESTING COMMENT WORKFLOW")
+        print("="*60)
         
-        return test_results
+        if not self.test_task_id:
+            print("❌ No test task available")
+            return False
+            
+        # Create a root comment
+        root_comment_id = self.test_create_comment(
+            "🧪 TEST: Root comment for comment reply bug fix testing. This should appear in Discussion Timeline.",
+            "comment"
+        )
+        
+        if not root_comment_id:
+            return False
+            
+        # Create a reply to the root comment
+        reply_comment_id = self.test_create_comment(
+            "🧪 TEST: This is a reply to the root comment. Threading should work correctly now.",
+            "comment",
+            parent_id=root_comment_id
+        )
+        
+        if not reply_comment_id:
+            return False
+            
+        # Create a nested reply
+        nested_reply_id = self.test_create_comment(
+            "🧪 TEST: Nested reply to test unlimited threading depth.",
+            "comment", 
+            parent_id=reply_comment_id
+        )
+        
+        # Test different comment types
+        note_id = self.test_create_comment(
+            "🧪 TEST: Note type comment for internal tracking.",
+            "note"
+        )
+        
+        review_id = self.test_create_comment(
+            "🧪 TEST: Review comment with feedback on the implementation.",
+            "review"
+        )
+        
+        return True
+
+    def test_comment_retrieval(self):
+        """Test comment retrieval after creation - CRITICAL TEST"""
+        print("\n" + "="*60)
+        print("TESTING COMMENT RETRIEVAL (CRITICAL)")
+        print("="*60)
+        
+        # Test flat comments
+        flat_comments = self.test_get_flat_comments()
+        
+        # Test threaded comments - THIS IS THE KEY TEST FOR THE BUG
+        threaded_comments = self.test_get_threaded_comments()
+        
+        # Verify comments exist and are properly structured
+        flat_count = len(flat_comments) if flat_comments else 0
+        thread_count = len(threaded_comments) if threaded_comments else 0
+        
+        print(f"\n📊 COMMENT RETRIEVAL ANALYSIS:")
+        print(f"    Flat comments retrieved: {flat_count}")
+        print(f"    Comment threads retrieved: {thread_count}")
+        
+        if flat_count > 0 and thread_count > 0:
+            print(f"    ✅ Comments successfully created and retrieved")
+            
+            # Check if threaded structure is correct
+            total_nested_comments = 0
+            for thread in threaded_comments:
+                if isinstance(thread, dict):
+                    root_comment = thread.get('root_comment', {})
+                    nested_replies = root_comment.get('nested_replies', [])
+                    total_nested_comments += len(nested_replies)
+            
+            print(f"    Nested replies in threads: {total_nested_comments}")
+            
+            if total_nested_comments > 0:
+                print(f"    ✅ Threading structure is working correctly")
+                return True
+            else:
+                print(f"    ⚠️ No nested replies found - threading may have issues")
+                return False
+        else:
+            print(f"    ❌ Comments not found after creation - THIS IS THE BUG!")
+            return False
+
+    def run_all_tests(self):
+        """Run all comment API tests"""
+        print("🚀 Starting Comment Reply Bug Testing")
+        print("="*80)
+        
+        # Test authentication
+        if not self.test_login():
+            print("❌ Authentication failed, stopping tests")
+            return False
+            
+        # Get test task
+        if not self.test_get_tasks():
+            print("❌ No tasks available, stopping tests")
+            return False
+            
+        # Test comment workflow
+        if not self.test_comment_workflow():
+            print("❌ Comment workflow failed")
+            return False
+            
+        # Test comment retrieval - CRITICAL TEST
+        retrieval_success = self.test_comment_retrieval()
+        
+        # Print summary
+        print("\n" + "="*80)
+        print("COMMENT REPLY BUG TEST SUMMARY")
+        print("="*80)
+        print(f"Tests run: {self.tests_run}")
+        print(f"Tests passed: {self.tests_passed}")
+        print(f"Success rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
+        
+        if retrieval_success:
+            print("🎉 Comment threading appears to be working!")
+            print("✅ Comments should now display in Discussion Timeline")
+        else:
+            print("❌ Comment threading has issues")
+            print("🐛 Comments may not display properly in Discussion Timeline")
+        
+        return retrieval_success
 
 def main():
     """Main test execution"""
-    print("=" * 80)
-    print("Comments Functionality - Backend API Testing")
-    print("=" * 80)
+    tester = CommentReplyBugTester()
     
-    # Initialize tester with the public endpoint
-    tester = CommentsAPITester()
-    
-    # Run comprehensive tests
-    results = tester.run_comprehensive_test()
-    
-    # Save results to file
-    results_file = f"/app/backend_test_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     try:
-        with open(results_file, 'w') as f:
-            json.dump(results, f, indent=2)
-        print(f"\n📄 Detailed results saved to: {results_file}")
+        success = tester.run_all_tests()
+        
+        # Save test results
+        with open('/app/test_reports/backend_comment_test_results.json', 'w') as f:
+            json.dump({
+                'timestamp': datetime.utcnow().isoformat(),
+                'success': success,
+                'tests_run': tester.tests_run,
+                'tests_passed': tester.tests_passed,
+                'results': tester.test_results,
+                'bug_status': 'FIXED' if success else 'STILL_EXISTS'
+            }, f, indent=2)
+        
+        return 0 if success else 1
+        
     except Exception as e:
-        print(f"⚠️ Could not save results file: {e}")
-    
-    # Return appropriate exit code
-    if results["authentication"]["status"] == "working" and \
-       results["comments_functionality"]["status"] in ["working", "partial"] and \
-       len(results["critical_issues"]) == 0:
-        print("\n🎉 Backend testing completed successfully!")
-        return 0
-    else:
-        print(f"\n⚠️ Backend testing completed with issues:")
-        for issue in results["critical_issues"]:
-            print(f"   - {issue['test']}: {issue['issue']}")
+        print(f"❌ Test execution failed: {str(e)}")
         return 1
 
 if __name__ == "__main__":
