@@ -259,28 +259,53 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     
     try {
       setLoading(true)
-      const url = `${API_URL}/api/comments?entity_type=task&entity_id=${task.id}`
-      console.log('🔍 Fetching comments from:', url)
+      // Use threaded comments endpoint for proper display
+      const threadsUrl = `${API_URL}/api/comments/threads/task/${task.id}`
+      const flatUrl = `${API_URL}/api/comments/?entity_type=task&entity_id=${task.id}`
+      
+      console.log('🔍 Fetching threaded comments from:', threadsUrl)
       console.log('🔍 Task ID:', task.id)
       
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${tokens.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      })
+      // Fetch both threaded and flat comments for compatibility
+      const [threadsResponse, flatResponse] = await Promise.all([
+        fetch(threadsUrl, {
+          headers: {
+            'Authorization': `Bearer ${tokens.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        }),
+        fetch(flatUrl, {
+          headers: {
+            'Authorization': `Bearer ${tokens.access_token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+      ])
       
-      console.log('🔍 Comments API Response Status:', response.status)
+      console.log('🔍 Threads API Response Status:', threadsResponse.status)
+      console.log('🔍 Flat API Response Status:', flatResponse.status)
       
-      if (response.ok) {
-        const commentsData = await response.json()
-        console.log('🔍 Fetched comments data:', commentsData)
-        console.log('🔍 Comments count:', commentsData.length)
-        setComments(commentsData)
+      if (threadsResponse.ok && flatResponse.ok) {
+        const [threadsData, flatData] = await Promise.all([
+          threadsResponse.json(),
+          flatResponse.json()
+        ])
+        
+        console.log('🔍 Fetched threads data:', threadsData)
+        console.log('🔍 Fetched flat comments data:', flatData)
+        console.log('🔍 Threads count:', threadsData.length)
+        console.log('🔍 Comments count:', flatData.length)
+        
+        setCommentThreads(threadsData)
+        setComments(flatData)
       } else {
-        console.error('❌ Failed to fetch comments:', response.status, response.statusText)
-        const errorData = await response.text()
-        console.error('❌ Error details:', errorData)
+        console.error('❌ Failed to fetch comments')
+        if (!threadsResponse.ok) {
+          console.error('❌ Threads error:', threadsResponse.status, threadsResponse.statusText)
+        }
+        if (!flatResponse.ok) {
+          console.error('❌ Flat comments error:', flatResponse.status, flatResponse.statusText)
+        }
       }
     } catch (error) {
       console.error('❌ Error fetching comments:', error)
