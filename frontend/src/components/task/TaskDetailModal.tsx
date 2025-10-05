@@ -113,6 +113,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   const [isEditing, setIsEditing] = useState(false)
   const [activeTab, setActiveTab] = useState<'details' | 'comments' | 'activity' | 'dependencies'>('details')
   const [comments, setComments] = useState<Comment[]>([])
+  const [commentThreads, setCommentThreads] = useState<any[]>([])
   const [activities, setActivities] = useState<TaskActivity[]>([])
   const [loading, setLoading] = useState(false)
   const [newComment, setNewComment] = useState('')
