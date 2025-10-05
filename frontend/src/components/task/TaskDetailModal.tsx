@@ -120,6 +120,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
   const [newComment, setNewComment] = useState('')
   const [timeLogHours, setTimeLogHours] = useState('')
   const [timeLogDescription, setTimeLogDescription] = useState('')
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false)
+  const [isSubmittingReply, setIsSubmittingReply] = useState(false)
 
   // Enhanced task data with user details
   const [taskWithDetails, setTaskWithDetails] = useState<any>(null)
