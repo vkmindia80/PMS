@@ -401,7 +401,29 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       
       if (response.ok) {
         const updatedComment = await response.json()
-        // Update the comment in local state
+        // Update both comment threads and flat comments to maintain consistency
+        setCommentThreads(prev => 
+          prev.map(thread => {
+            const updateCommentInThread = (comment: any): any => {
+              if (comment.id === commentId) {
+                return updatedComment
+              }
+              if (comment.nested_replies) {
+                return {
+                  ...comment,
+                  nested_replies: comment.nested_replies.map(updateCommentInThread)
+                }
+              }
+              return comment
+            }
+            
+            return {
+              ...thread,
+              root_comment: updateCommentInThread(thread.root_comment),
+              replies: thread.replies.map(updateCommentInThread)
+            }
+          })
+        )
         setComments(prev => prev.map(c => c.id === commentId ? updatedComment : c))
         toast.success('Reaction added!')
       } else {
