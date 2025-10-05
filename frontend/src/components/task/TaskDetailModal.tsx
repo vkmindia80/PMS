@@ -434,9 +434,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
       
       if (response.ok) {
         const newReply = await response.json()
-        // Add reply to local state
-        setComments(prev => [newReply, ...prev])
-        // Refetch to ensure proper threading
+        // Only refetch to ensure proper threading and avoid duplicates
         fetchComments()
         toast.success('Reply added!')
       } else {
