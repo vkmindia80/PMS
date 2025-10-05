@@ -533,6 +533,8 @@ const CommentCard: React.FC<{
   const isOldComment = new Date().getTime() - new Date(comment.created_at).getTime() > 7 * 24 * 60 * 60 * 1000 // 7 days
   const [showReplyForm, setShowReplyForm] = useState(false)
   const [replyText, setReplyText] = useState('')
+  const [pickerPosition, setPickerPosition] = useState<'right' | 'left'>('right')
+  const reactButtonRef = useRef<HTMLButtonElement>(null)
 
   const getCommentBorder = () => {
     const baseStyle = depth > 0 ? 'border-l-2' : 'border-l-4'
