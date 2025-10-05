@@ -663,7 +663,59 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
       })
       
       if (response.ok) {
-        await fetchComments() // Refresh comments to show new reply
+        const newReplyData = await response.json()
+        
+        // Optimistic update: Add the new reply immediately to avoid race conditions
+        const optimisticReply: Comment = {
+          ...newReplyData,
+          author_id: user?.id || 'current-user',
+          reactions: [],
+          reply_count: 0,
+          nested_replies: []
+        }
+        
+        // Add to flat comments list
+        setComments(prev => [...prev, optimisticReply])
+        
+        // Add to the appropriate thread's nested replies
+        setCommentThreads(prev => prev.map(thread => {
+          // Check if this is the parent comment
+          if (thread.root_comment.id === parentId) {
+            return {
+              ...thread,
+              root_comment: {
+                ...thread.root_comment,
+                nested_replies: [...(thread.root_comment.nested_replies || []), optimisticReply],
+                reply_count: (thread.root_comment.reply_count || 0) + 1
+              },
+              total_replies: thread.total_replies + 1
+            }
+          }
+          
+          // Check nested replies recursively
+          const updateNestedReplies = (comment: Comment): Comment => {
+            if (comment.id === parentId) {
+              return {
+                ...comment,
+                nested_replies: [...(comment.nested_replies || []), optimisticReply],
+                reply_count: (comment.reply_count || 0) + 1
+              }
+            }
+            if (comment.nested_replies) {
+              return {
+                ...comment,
+                nested_replies: comment.nested_replies.map(updateNestedReplies)
+              }
+            }
+            return comment
+          }
+          
+          return {
+            ...thread,
+            root_comment: updateNestedReplies(thread.root_comment)
+          }
+        }))
+        
         toast.success('Reply added!')
       } else {
         const errorData = await response.json()
