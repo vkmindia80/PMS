@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend API Testing for Comments Functionality
-Tests authentication, comments APIs, reactions, and conversation history
+Backend API Testing for Comment Reply Bug Fix
+Testing comment creation, threading, and display functionality
 """
 
 import requests
@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-class CommentsAPITester:
+class CommentReplyBugTester:
     def __init__(self, base_url: str = "https://comment-reply-bug.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
@@ -20,6 +20,7 @@ class CommentsAPITester:
         self.demo_project_id = None
         self.demo_task_id = None
         self.test_comment_ids = []  # Store created comment IDs for cleanup
+        self.test_results = []
 
     def log(self, message: str, level: str = "INFO"):
         """Log test messages with timestamp"""
