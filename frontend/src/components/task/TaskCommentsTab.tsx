@@ -67,7 +67,9 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
   onAddComment, 
   onAddReaction,
   onReply,
-  availableUsers = [] 
+  availableUsers = [],
+  isSubmittingComment = false,
+  isSubmittingReply = false
 }) => {
   const [commentType, setCommentType] = useState<'comment' | 'note' | 'review'>('comment')
   const [filterType, setFilterType] = useState<'all' | 'comment' | 'note' | 'review' | 'resolved'>('all')
