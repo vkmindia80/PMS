@@ -54,6 +54,8 @@ interface TaskCommentsTabProps {
   onAddReaction?: (commentId: string, emoji: string) => void
   onReply?: (parentId: string, content: string) => void
   availableUsers?: any[]
+  isSubmittingComment?: boolean
+  isSubmittingReply?: boolean
 }
 
 export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({ 
