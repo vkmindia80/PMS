@@ -1134,7 +1134,7 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
             <TaskCommentsTab
               comments={comments}
               commentThreads={commentThreads}
-              loading={loading}
+              loading={commentsLoading}
               newComment={newComment}
               setNewComment={setNewComment}
               onAddComment={handleAddComment}
