@@ -1,7 +1,7 @@
 {
   "test_summary": {
     "start_time": "2025-10-04T22:31:33.589869",
-    "base_url": "https://comment-reply-bug.preview.emergentagent.com",
+    "base_url": "https://duplicate-reply-fix.preview.emergentagent.com",
     "test_entity": "task/test-task-threading-001",
     "end_time": "2025-10-04T22:31:33.800462",
     "total_tests": 3,
