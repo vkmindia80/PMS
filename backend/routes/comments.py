@@ -186,6 +186,16 @@ async def get_comment(
                 detail="Comment not found"
             )
         
+        # Fix reactions field if it's a dict instead of list (data migration issue)
+        if isinstance(comment.get("reactions"), dict):
+            comment["reactions"] = []
+        
+        # Ensure all required fields have default values
+        comment.setdefault("reactions", [])
+        comment.setdefault("reply_count", 0)
+        comment.setdefault("reaction_count", 0)
+        comment.setdefault("is_resolved", False)
+        
         return Comment(**comment)
         
     except Exception as e:
