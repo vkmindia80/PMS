@@ -569,6 +569,31 @@ const CommentCard: React.FC<{
     }
   }
 
+  // Calculate optimal position for emoji picker
+  const calculatePickerPosition = () => {
+    if (reactButtonRef.current) {
+      const rect = reactButtonRef.current.getBoundingClientRect()
+      const viewportWidth = window.innerWidth
+      const pickerWidth = 320 // max-w-[320px] = 320px
+      
+      // If there's not enough space on the right, position on the left
+      if (rect.right + pickerWidth > viewportWidth - 20) {
+        setPickerPosition('left')
+      } else {
+        setPickerPosition('right')
+      }
+    }
+  }
+
+  // Handle emoji picker button click
+  const handleEmojiPickerToggle = () => {
+    const newState = showEmojiPicker === comment.id ? null : comment.id
+    if (newState === comment.id) {
+      calculatePickerPosition()
+    }
+    setShowEmojiPicker(newState)
+  }
+
   return (
     <div className={`rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 ${getCommentBorder()}`}>
       {/* Comment Header */}
