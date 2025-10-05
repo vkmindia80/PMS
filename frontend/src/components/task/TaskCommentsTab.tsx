@@ -750,40 +750,48 @@ const CommentCard: React.FC<{
             </button>
             
             {showEmojiPicker === comment.id && (
-              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] p-4 min-w-[280px] max-w-[320px]">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-gray-800">Pick a reaction</span>
-                  <button
-                    onClick={() => setShowEmojiPicker(null)}
-                    className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
-                    aria-label="Close emoji picker"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-                <div className="grid grid-cols-6 gap-2">
-                  {emojis.map((emoji) => (
+              <>
+                {/* Overlay to close picker when clicking outside */}
+                <div 
+                  className="fixed inset-0 z-[9998]" 
+                  onClick={() => setShowEmojiPicker(null)}
+                />
+                {/* Emoji picker with improved positioning */}
+                <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] p-4 min-w-[280px] max-w-[320px]">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-gray-800">Pick a reaction</span>
                     <button
-                      key={emoji}
-                      onClick={() => {
-                        if (onAddReaction) {
-                          onAddReaction(comment.id, emoji)
-                        }
-                        setShowEmojiPicker(null)
-                      }}
-                      className="p-3 hover:bg-gray-100 rounded-lg text-xl transition-all duration-200 hover:scale-110 transform active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                      title={`React with ${emoji}`}
+                      onClick={() => setShowEmojiPicker(null)}
+                      className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                      aria-label="Close emoji picker"
                     >
-                      {emoji}
+                      <X className="h-4 w-4" />
                     </button>
-                  ))}
+                  </div>
+                  <div className="grid grid-cols-6 gap-2">
+                    {emojis.map((emoji) => (
+                      <button
+                        key={emoji}
+                        onClick={() => {
+                          if (onAddReaction) {
+                            onAddReaction(comment.id, emoji)
+                          }
+                          setShowEmojiPicker(null)
+                        }}
+                        className="p-3 hover:bg-gray-100 rounded-lg text-xl transition-all duration-200 hover:scale-110 transform active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        title={`React with ${emoji}`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <p className="text-xs text-gray-500 text-center">
+                      Click to add your reaction to this comment
+                    </p>
+                  </div>
                 </div>
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-500 text-center">
-                    Click to add your reaction to this comment
-                  </p>
-                </div>
-              </div>
+              </>
             )}
           </div>
         </div>
