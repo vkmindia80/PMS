@@ -628,8 +628,50 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
       })
       
       if (response.ok) {
-        await fetchComments() // Refresh comments to show updated reactions
-        toast.success('Reaction added!')
+        // Optimistic update: Add the reaction immediately to avoid race conditions
+        const currentUserId = user?.id || 'current-user'
+        const newReaction = {
+          user_id: currentUserId,
+          emoji: emoji,
+          timestamp: new Date().toISOString()
+        }
+        
+        // Update both comments and comment threads
+        const updateCommentReaction = (comment: Comment): Comment => {
+          if (comment.id === commentId) {
+            const existingReaction = comment.reactions.find(r => r.user_id === currentUserId && r.emoji === emoji)
+            if (existingReaction) {
+              // Remove existing reaction (toggle)
+              return {
+                ...comment,
+                reactions: comment.reactions.filter(r => !(r.user_id === currentUserId && r.emoji === emoji)),
+                reaction_count: Math.max(0, comment.reaction_count - 1)
+              }
+            } else {
+              // Add new reaction
+              return {
+                ...comment,
+                reactions: [...comment.reactions, newReaction],
+                reaction_count: comment.reaction_count + 1
+              }
+            }
+          }
+          if (comment.nested_replies) {
+            return {
+              ...comment,
+              nested_replies: comment.nested_replies.map(updateCommentReaction)
+            }
+          }
+          return comment
+        }
+        
+        setComments(prev => prev.map(updateCommentReaction))
+        setCommentThreads(prev => prev.map(thread => ({
+          ...thread,
+          root_comment: updateCommentReaction(thread.root_comment)
+        })))
+        
+        toast.success('Reaction updated!')
       } else {
         throw new Error('Failed to add reaction')
       }
