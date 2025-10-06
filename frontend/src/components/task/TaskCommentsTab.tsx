@@ -689,8 +689,8 @@ const CommentCard: React.FC<{
       </div>
 
       {/* Comment Metadata & Actions */}
-      <div className="flex items-center justify-between pl-13">
-        <div className="flex items-center space-x-4 text-sm text-gray-500">
+      <div className="flex items-start justify-between pl-13 pt-2">
+        <div className="flex items-center flex-wrap gap-3 text-sm text-gray-500">
           {/* Reply Button */}
           <button
             onClick={() => setShowReplyForm(!showReplyForm)}
