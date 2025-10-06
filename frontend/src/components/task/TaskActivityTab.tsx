@@ -29,8 +29,88 @@ interface ActivityMetrics {
 export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({ 
   activities, 
   loading, 
-  availableUsers = [] 
+  availableUsers = [],
+  taskId,
+  onRefresh
 }) => {
+  const [metrics, setMetrics] = useState<ActivityMetrics>({
+    total_events: 0,
+    time_entries: 0,
+    updates: 0,
+    active_days: 0
+  })
+  const [metricsLoading, setMetricsLoading] = useState(false)
+  const [autoRefresh, setAutoRefresh] = useState(true)
+
+  // Calculate metrics from activities (fallback)
+  const calculateMetricsFromActivities = (acts: TaskActivity[]): ActivityMetrics => {
+    const timeEntries = acts.filter(a => a.action === 'time_logged').length
+    const updates = acts.filter(a => ['task_updated', 'status_changed', 'priority_changed', 'assignee_changed', 'due_date_changed'].includes(a.action)).length
+    
+    const dates = new Set(
+      acts.map(activity => new Date(activity.timestamp).toDateString())
+    )
+    
+    return {
+      total_events: acts.length,
+      time_entries: timeEntries,
+      updates: updates,
+      active_days: dates.size
+    }
+  }
+
+  // Fetch metrics from backend
+  const fetchMetrics = async () => {
+    if (!taskId) return
+    
+    setMetricsLoading(true)
+    try {
+      const token = localStorage.getItem('access_token')
+      if (!token) return
+
+      const response = await fetch(`${getApiUrlDynamic()}/api/tasks/${taskId}/activity/metrics`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        setMetrics(data.metrics)
+      } else {
+        // Fallback to calculating from activities
+        setMetrics(calculateMetricsFromActivities(activities))
+      }
+    } catch (error) {
+      console.error('Error fetching metrics:', error)
+      // Fallback to calculating from activities
+      setMetrics(calculateMetricsFromActivities(activities))
+    } finally {
+      setMetricsLoading(false)
+    }
+  }
+
+  // Auto-refresh metrics
+  useEffect(() => {
+    fetchMetrics()
+    
+    let interval: NodeJS.Timeout | null = null
+    if (autoRefresh) {
+      interval = setInterval(fetchMetrics, 30000) // Refresh every 30 seconds
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [taskId, activities, autoRefresh])
+
+  const handleManualRefresh = () => {
+    fetchMetrics()
+    if (onRefresh) {
+      onRefresh()
+    }
+  }
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
