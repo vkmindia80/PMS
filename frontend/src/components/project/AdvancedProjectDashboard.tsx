@@ -1,8 +1,8 @@
 import React from 'react'
 import { 
   TrendingUp, TrendingDown, Clock, CheckCircle, AlertCircle, Users, 
-  DollarSign, Target, Calendar, Activity, BarChart3, PieChart, 
-  ArrowUp, ArrowDown, Zap, Eye, ExternalLink
+  Target, Calendar, Activity, BarChart3, PieChart, 
+  Zap, ExternalLink
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
