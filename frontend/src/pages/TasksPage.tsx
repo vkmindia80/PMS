@@ -942,7 +942,14 @@ const TasksList: React.FC<{
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {tasks.map((task) => (
-              <tr key={task.id} className="hover:bg-gray-50">
+              <tr 
+                key={task.id} 
+                className="hover:bg-gray-50 cursor-pointer"
+                onClick={() => {
+                  console.log('🔍 Task row clicked:', task.id, task.title)
+                  onTaskClick(task)
+                }}
+              >
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div>
                     <div 
