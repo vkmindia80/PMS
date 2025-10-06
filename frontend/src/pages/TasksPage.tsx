@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext'
-import { API_URL } from '../utils/config'
+import { getApiUrlDynamic } from '../utils/config'
 import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
 import { EnhancedTaskDetailModal } from '../components/task/EnhancedTaskDetailModal'
 import { EnhancedTaskCreateModal } from '../components/task/EnhancedTaskCreateModal'
