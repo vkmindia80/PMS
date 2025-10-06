@@ -359,20 +359,20 @@ class ProjectDetailsTester:
 
 def main():
     """Main test execution"""
-    tester = TaskActivityTester()
+    tester = ProjectDetailsTester()
     
     try:
         success = tester.run_all_tests()
         
         # Save test results
-        with open('/app/test_reports/backend_activity_test_results.json', 'w') as f:
+        with open('/app/test_reports/backend_project_test_results.json', 'w') as f:
             json.dump({
                 'timestamp': datetime.utcnow().isoformat(),
                 'success': success,
                 'tests_run': tester.tests_run,
                 'tests_passed': tester.tests_passed,
                 'results': tester.test_results,
-                'task_id': tester.test_task_id,
+                'project_id': tester.test_project_id,
                 'functionality_status': 'WORKING' if success else 'ISSUES_FOUND'
             }, f, indent=2)
         
