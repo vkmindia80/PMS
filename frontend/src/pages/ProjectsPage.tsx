@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Plus, Search, Filter, Grid, List, Calendar, BarChart3, Users, Clock, DollarSign, FolderOpen, TrendingUp, Target, CheckCircle, AlertCircle, ChevronDown, SlidersHorizontal, Download, Zap, Eye, Activity } from 'lucide-react'
+import { Plus, Search, Filter, Grid, List, Calendar, BarChart3, Users, Clock, DollarSign, FolderOpen, TrendingUp, Target, CheckCircle, AlertCircle, ChevronDown, SlidersHorizontal, Download, Zap, Eye, Activity, X } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import ProjectCreateModal from '../components/project/ProjectCreateModal'
 import AdvancedProjectCard from '../components/project/AdvancedProjectCard'
