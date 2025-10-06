@@ -38,6 +38,7 @@ export const API_ENDPOINTS = {
   auth: {
     get login() { return `${getApiUrl()}/api/auth/login`; },
     get register() { return `${getApiUrl()}/api/auth/register`; },
+    get refresh() { return `${getApiUrl()}/api/auth/refresh`; },
     get me() { return `${getApiUrl()}/api/auth/me`; },
     get logout() { return `${getApiUrl()}/api/auth/logout`; },
   },
