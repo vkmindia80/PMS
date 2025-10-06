@@ -705,9 +705,9 @@ const CommentCard: React.FC<{
             )}
           </button>
 
-          {/* Existing Reactions Display - Small emojis in one line */}
+          {/* Existing Reactions Display - Improved visibility */}
           {comment.reactions && comment.reactions.length > 0 && (
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center flex-wrap gap-1.5">
               {(() => {
                 // Group reactions by emoji and count them
                 const reactionGroups = comment.reactions.reduce((acc, reaction) => {
@@ -728,16 +728,16 @@ const CommentCard: React.FC<{
                     <button
                       key={emoji}
                       onClick={() => onAddReaction && onAddReaction(comment.id, emoji)}
-                      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 active:scale-95 border ${
+                      className={`inline-flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 border-2 shadow-sm hover:shadow-md ${
                         userHasReacted 
-                          ? 'bg-blue-100 border-blue-300 text-blue-800 hover:bg-blue-200' 
-                          : 'bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-150'
+                          ? 'bg-blue-50 border-blue-400 text-blue-900 hover:bg-blue-100' 
+                          : 'bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400'
                       }`}
                       title={`${data.count} reaction${data.count > 1 ? 's' : ''} • Click to ${userHasReacted ? 'remove' : 'add'} your reaction`}
                       data-testid={`reaction-${emoji}-${comment.id}`}
                     >
-                      <span className="text-sm" role="img" aria-label={`Reaction ${emoji}`}>{emoji}</span>
-                      <span className={`font-semibold ${userHasReacted ? 'text-blue-900' : 'text-gray-600'}`}>
+                      <span className="text-base leading-none" role="img" aria-label={`Reaction ${emoji}`}>{emoji}</span>
+                      <span className={`font-bold text-sm ${userHasReacted ? 'text-blue-900' : 'text-gray-700'}`}>
                         {data.count}
                       </span>
                     </button>
