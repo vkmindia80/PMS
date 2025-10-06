@@ -216,7 +216,10 @@ const ProjectList: React.FC<ProjectListProps> = ({
                   {activeMenu === project.id && (
                     <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
                       <button
-                        onClick={() => {/* TODO: Implement view project */}}
+                        onClick={() => {
+                          navigate(`/projects/${project.id}`)
+                          setActiveMenu(null)
+                        }}
                         className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2"
                         data-testid="view-project-btn"
                       >
