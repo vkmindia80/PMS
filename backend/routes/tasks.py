@@ -123,10 +123,11 @@ async def create_task(
         # Insert task
         await db.tasks.insert_one(task_dict)
         
-        # Log activity
-        await log_task_activity(
-            db, task_id, current_user.id, "task_created",
-            {"title": task_data.title, "status": task_data.status.value if hasattr(task_data.status, 'value') else task_data.status}
+        # Log activity using enhanced service
+        await activity_service.log_activity(
+            task_id, current_user.id, "task_created",
+            {"title": task_data.title, "status": task_data.status.value if hasattr(task_data.status, 'value') else task_data.status},
+            db
         )
         
         # Get created task
