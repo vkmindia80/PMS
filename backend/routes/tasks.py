@@ -679,13 +679,14 @@ async def move_task_on_board(
         await db.tasks.update_one({"id": task_id}, {"$set": update_data})
         
         # Log activity
-        await log_task_activity(
-            db, task_id, current_user.id, "task_moved",
+        await activity_service.log_activity(
+            task_id, current_user.id, "task_moved",
             {
                 "from_status": existing_task["status"],
                 "to_status": new_status.value,
                 "assignee_changed": new_assignee_id != existing_task.get("assignee_id")
-            }
+            },
+            db
         )
         
         # Get updated task
