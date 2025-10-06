@@ -240,54 +240,60 @@ class TaskActivityTester:
             print(f"    ❌ Failed to log time")
             return False
 
-    def test_comment_workflow(self):
-        """Test complete comment workflow"""
+    def test_activity_refresh_cycle(self):
+        """Test activity refresh functionality"""
         print("\n" + "="*60)
-        print("TESTING COMMENT WORKFLOW")
+        print("TESTING ACTIVITY REFRESH CYCLE")
         print("="*60)
         
-        if not self.test_task_id:
-            print("❌ No test task available")
+        # Get initial metrics
+        print("    📊 Getting initial metrics...")
+        initial_metrics = self.test_activity_metrics()
+        
+        if not initial_metrics:
             return False
             
-        # Create a root comment
-        root_comment_id = self.test_create_comment(
-            "🧪 TEST: Root comment for comment reply bug fix testing. This should appear in Discussion Timeline.",
-            "comment"
-        )
+        # Log time to generate new activity
+        print("    ⏰ Generating new activity...")
+        time_logged = self.test_time_logging()
         
-        if not root_comment_id:
+        if not time_logged:
             return False
             
-        # Create a reply to the root comment
-        reply_comment_id = self.test_create_comment(
-            "🧪 TEST: This is a reply to the root comment. Threading should work correctly now.",
-            "comment",
-            parent_id=root_comment_id
+        # Wait a moment for activity to be processed
+        print("    ⏳ Waiting for activity processing...")
+        time.sleep(2)
+        
+        # Get updated metrics
+        print("    📊 Getting updated metrics...")
+        success, response = self.run_test(
+            "Get Updated Activity Metrics",
+            "GET",
+            f"/api/tasks/{self.test_task_id}/activity/metrics",
+            200
         )
         
-        if not reply_comment_id:
-            return False
+        if success and 'metrics' in response:
+            updated_metrics = response['metrics']
             
-        # Create a nested reply
-        nested_reply_id = self.test_create_comment(
-            "🧪 TEST: Nested reply to test unlimited threading depth.",
-            "comment", 
-            parent_id=reply_comment_id
-        )
-        
-        # Test different comment types
-        note_id = self.test_create_comment(
-            "🧪 TEST: Note type comment for internal tracking.",
-            "note"
-        )
-        
-        review_id = self.test_create_comment(
-            "🧪 TEST: Review comment with feedback on the implementation.",
-            "review"
-        )
-        
-        return True
+            initial_total = initial_metrics.get('total_events', 0)
+            updated_total = updated_metrics.get('total_events', 0)
+            initial_time_entries = initial_metrics.get('time_entries', 0)
+            updated_time_entries = updated_metrics.get('time_entries', 0)
+            
+            print(f"    📈 Metrics comparison:")
+            print(f"      Total Events: {initial_total} → {updated_total} (Δ{updated_total - initial_total})")
+            print(f"      Time Entries: {initial_time_entries} → {updated_time_entries} (Δ{updated_time_entries - initial_time_entries})")
+            
+            if updated_total > initial_total:
+                print(f"    ✅ Activity metrics updated correctly")
+                return True
+            else:
+                print(f"    ❌ Activity metrics did not update")
+                return False
+        else:
+            print(f"    ❌ Failed to get updated metrics")
+            return False
 
     def test_comment_retrieval(self):
         """Test comment retrieval after creation - CRITICAL TEST"""
