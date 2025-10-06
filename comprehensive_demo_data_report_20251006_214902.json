@@ -1,0 +1,53 @@
+{
+  "generation_timestamp": "2025-10-06T21:49:02.650968",
+  "status": "completed",
+  "summary": {
+    "users_created": 15,
+    "teams_created": 14,
+    "projects_created": 10,
+    "tasks_created": 110,
+    "comments_created": 22,
+    "files_created": 28,
+    "notifications_created": 150,
+    "resource_allocations_created": 15,
+    "time_entries_created": 158,
+    "project_metrics_created": 10,
+    "total_data_points": 532
+  },
+  "statistics": {
+    "active_projects": 6,
+    "completed_projects": 1,
+    "active_tasks": 66,
+    "completed_tasks": 37,
+    "team_members_total": 16,
+    "tasks_with_dependencies": 68,
+    "tasks_with_multiple_assignees": 0,
+    "total_estimated_hours": 2621,
+    "total_actual_hours": 1333.7181004077224,
+    "teams_by_type": {
+      "development": 10,
+      "operations": 3,
+      "design": 1
+    },
+    "projects_by_category": {
+      "Healthcare AI": 1,
+      "Smart Infrastructure": 1,
+      "Blockchain Logistics": 1,
+      "Financial Technology": 1,
+      "Extended Reality": 1,
+      "Advanced Computing": 1,
+      "Green Technology": 1,
+      "Gaming Entertainment": 1,
+      "Enterprise Security": 1,
+      "Educational Technology": 1
+    },
+    "dependency_completion_rate": "61.8%",
+    "multi_assignee_rate": "0.0%"
+  },
+  "access_information": {
+    "demo_login": "demo@company.com / demo123456",
+    "frontend_url": "http://localhost:3000",
+    "backend_api": "http://localhost:8001",
+    "api_docs": "http://localhost:8001/docs"
+  }
+}
