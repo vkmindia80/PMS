@@ -147,7 +147,10 @@ const ProjectDetailsPage: React.FC = () => {
       setEditedDescription(projectData.description || '')
       
       // Fetch tasks for this project
-      const tasksResponse = await fetch(`${API_ENDPOINTS.tasks.list}?project_id=${projectId}`, {
+      const tasksApiUrl = `${API_ENDPOINTS.tasks.list}?project_id=${projectId}`;
+      console.log('🔍 Tasks API URL being used:', tasksApiUrl);
+      console.log('🔍 API_ENDPOINTS.tasks.list:', API_ENDPOINTS.tasks.list);
+      const tasksResponse = await fetch(tasksApiUrl, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
