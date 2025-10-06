@@ -771,7 +771,7 @@ const CommentCard: React.FC<{
                 <div className={`absolute ${pickerPosition === 'left' ? 'right-full mr-2' : 'right-0'} top-10 bg-white border-2 border-gray-400 rounded-xl shadow-2xl z-[10000] p-4 min-w-[280px] max-w-[320px]`}
                      style={{ boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1)' }}
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-semibold text-gray-800">Pick a reaction</span>
+                    <span className="text-base font-bold text-gray-900">Pick a reaction</span>
                     <button
                       onClick={() => setShowEmojiPicker(null)}
                       className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
