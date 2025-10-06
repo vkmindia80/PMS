@@ -49,13 +49,12 @@ export const getApiUrl = (): string => {
     return apiUrl;
   }
   
-  // For Emergent platform (emergentagent.com), use same domain but with correct protocol
+  // For Emergent platform (emergentagent.com), always use HTTPS
   if (isEmergentagentDomain()) {
-    const protocol = window.location.protocol;
     const hostname = window.location.hostname;
     
-    // Use same protocol as frontend to avoid mixed content errors
-    const url = `${protocol}//${hostname}`;
+    // Always use HTTPS for emergentagent.com domains to avoid mixed content errors
+    const url = `https://${hostname}`;
     console.log('🔧 Emergentagent API URL:', url);
     return url;
   }
