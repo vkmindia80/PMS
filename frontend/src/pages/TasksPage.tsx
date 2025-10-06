@@ -805,7 +805,11 @@ const KanbanBoard: React.FC<{
                   key={task.id}
                   draggable
                   onDragStart={(e) => handleDragStart(e, task)}
-                  className="bg-gray-50 border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow"
+                  onClick={() => {
+                    console.log('🔍 Task card clicked:', task.id, task.title)
+                    onTaskClick(task)
+                  }}
+                  className="bg-gray-50 border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer"
                   data-testid={`task-card-${task.id}`}
                 >
                   <div className="flex items-start justify-between mb-2">
