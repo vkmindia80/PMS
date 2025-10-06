@@ -912,6 +912,29 @@ const EmojiPickerPortal: React.FC<{
 }> = ({ position, emojis, onEmojiSelect, onClose }) => {
   const portalElement = document.body
 
+  // Handle keyboard events
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
+
+  // Prevent body scroll when picker is open
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow
+    // Don't prevent scroll since we want the user to be able to scroll within the modal
+    // document.body.style.overflow = 'hidden'
+    
+    return () => {
+      document.body.style.overflow = originalOverflow
+    }
+  }, [])
+
   return createPortal(
     <>
       {/* Enhanced overlay to close picker when clicking outside */}
