@@ -266,36 +266,33 @@ class ProjectDetailsTester:
             print(f"    ❌ Auth token validation failed")
             return False
 
-    def test_activity_data_integrity(self):
-        """Test activity data integrity and structure"""
+    def test_project_update(self):
+        """Test project update functionality (used by edit features)"""
         print("\n" + "="*60)
-        print("TESTING ACTIVITY DATA INTEGRITY")
+        print("TESTING PROJECT UPDATE FUNCTIONALITY")
         print("="*60)
         
-        # Get activity list
-        activities = self.test_activity_list()
-        
-        if not activities:
+        if not self.test_project_id:
+            print("    ❌ No test project ID available")
             return False
             
-        # Validate activity structure
-        valid_activities = 0
-        required_fields = ['id', 'task_id', 'user_id', 'action', 'timestamp']
+        # Try to update project description
+        test_description = f"Updated description at {datetime.utcnow().isoformat()}"
         
-        for activity in activities:
-            if all(field in activity for field in required_fields):
-                valid_activities += 1
-            else:
-                missing_fields = [field for field in required_fields if field not in activity]
-                print(f"    ⚠️ Activity missing fields: {missing_fields}")
-                
-        print(f"    📊 Valid activities: {valid_activities}/{len(activities)}")
+        success, response = self.run_test(
+            "Update Project Description",
+            "PUT",
+            f"/api/projects/{self.test_project_id}",
+            200,
+            data={"description": test_description}
+        )
         
-        if valid_activities == len(activities):
-            print(f"    ✅ All activities have proper structure")
+        if success and 'id' in response:
+            print(f"    ✅ Project update successful")
+            print(f"    📝 Updated description: {response.get('description', 'Not found')}")
             return True
         else:
-            print(f"    ❌ Some activities have structural issues")
+            print(f"    ❌ Project update failed")
             return False
 
     def run_all_tests(self):
