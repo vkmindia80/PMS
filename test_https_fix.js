@@ -35,7 +35,7 @@ const testEnvironmentDetection = () => {
   // Test 2: API URL generation with HTTPS fix
   const getApiUrl = () => {
     if (typeof window === 'undefined') {
-      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+      let apiUrl = mockEnv.VITE_API_URL || 'http://localhost:8001';
       if (apiUrl.includes('emergentagent.com') && !apiUrl.startsWith('https://')) {
         apiUrl = apiUrl.replace('http://', 'https://');
       }
@@ -47,7 +47,7 @@ const testEnvironmentDetection = () => {
       return `https://${hostname}`;
     }
     
-    let envBackendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+    let envBackendUrl = mockEnv.VITE_API_URL || 'http://localhost:8001';
     
     if (envBackendUrl.includes('emergentagent.com') && !envBackendUrl.startsWith('https://')) {
       envBackendUrl = envBackendUrl.replace('http://', 'https://');
