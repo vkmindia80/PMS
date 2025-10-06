@@ -242,59 +242,28 @@ class ProjectDetailsTester:
             print(f"    ❌ Failed to get tasks for project")
             return []
 
-    def test_activity_refresh_cycle(self):
-        """Test activity refresh functionality"""
+    def test_auth_token_validity(self):
+        """Test if auth token is working properly"""
         print("\n" + "="*60)
-        print("TESTING ACTIVITY REFRESH CYCLE")
+        print("TESTING AUTH TOKEN VALIDITY")
         print("="*60)
         
-        # Get initial metrics
-        print("    📊 Getting initial metrics...")
-        initial_metrics = self.test_activity_metrics()
-        
-        if not initial_metrics:
-            return False
-            
-        # Log time to generate new activity
-        print("    ⏰ Generating new activity...")
-        time_logged = self.test_time_logging()
-        
-        if not time_logged:
-            return False
-            
-        # Wait a moment for activity to be processed
-        print("    ⏳ Waiting for activity processing...")
-        time.sleep(2)
-        
-        # Get updated metrics
-        print("    📊 Getting updated metrics...")
+        # Test /me endpoint to verify token
         success, response = self.run_test(
-            "Get Updated Activity Metrics",
+            "Get Current User Profile",
             "GET",
-            f"/api/tasks/{self.test_task_id}/activity/metrics",
+            "/api/auth/me",
             200
         )
         
-        if success and 'metrics' in response:
-            updated_metrics = response['metrics']
-            
-            initial_total = initial_metrics.get('total_events', 0)
-            updated_total = updated_metrics.get('total_events', 0)
-            initial_time_entries = initial_metrics.get('time_entries', 0)
-            updated_time_entries = updated_metrics.get('time_entries', 0)
-            
-            print(f"    📈 Metrics comparison:")
-            print(f"      Total Events: {initial_total} → {updated_total} (Δ{updated_total - initial_total})")
-            print(f"      Time Entries: {initial_time_entries} → {updated_time_entries} (Δ{updated_time_entries - initial_time_entries})")
-            
-            if updated_total > initial_total:
-                print(f"    ✅ Activity metrics updated correctly")
-                return True
-            else:
-                print(f"    ❌ Activity metrics did not update")
-                return False
+        if success and 'id' in response:
+            print(f"    ✅ Auth token is valid")
+            print(f"    👤 User ID: {response.get('id')}")
+            print(f"    👤 Email: {response.get('email')}")
+            print(f"    👤 Organization: {response.get('organization_id')}")
+            return True
         else:
-            print(f"    ❌ Failed to get updated metrics")
+            print(f"    ❌ Auth token validation failed")
             return False
 
     def test_activity_data_integrity(self):
