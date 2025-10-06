@@ -83,7 +83,7 @@ class TensorFlowService {
       }
 
       const authTokens = JSON.parse(authTokensStr);
-      const response = await fetch(`${this.API_BASE_URL}/api/tensorflow/models`, {
+      const response = await fetch(`${this.getAPI_BASE_URL()}/api/tensorflow/models`, {
         headers: {
           'Authorization': `Bearer ${authTokens.access_token}`,
           'Content-Type': 'application/json'
