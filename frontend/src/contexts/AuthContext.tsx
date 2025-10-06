@@ -109,8 +109,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               userId: parsedUser.id
             })
             
-            // Set auth state immediately to avoid loading indefinitely
+            // Set loading to false immediately since we have valid stored auth
             setIsLoading(false)
+            
+            // Optional: Try to verify in background but don't change loading state
+            fetchUserProfile(parsedTokens.access_token).then(() => {
+              console.log('✅ Background token verification successful')
+            }).catch((verifyError) => {
+              console.log('⚠️ Background token verification failed - will retry on next API call:', verifyError)
+              // Don't clear auth data or change loading state - let the user try to use the app
+            })
           } catch (error) {
             console.error('❌ Failed to initialize auth:', error)
             clearAuthData()
