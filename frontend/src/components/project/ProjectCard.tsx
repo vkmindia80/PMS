@@ -105,7 +105,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow relative" data-testid={`project-card-${project.id}`}>
+    <div 
+      className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow relative cursor-pointer" 
+      data-testid={`project-card-${project.id}`}
+      onClick={() => navigate(`/projects/${project.id}`)}
+    >
       {/* Header */}
       <div className="flex justify-between items-start mb-4">
         <div className="flex-1">
