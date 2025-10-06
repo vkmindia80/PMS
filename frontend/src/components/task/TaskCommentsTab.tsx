@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { 
   MessageSquare, User, Clock, CheckSquare, Paperclip, 
   History, Pin, Reply, ThumbsUp, Heart, Smile,
