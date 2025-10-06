@@ -107,13 +107,31 @@ const ProjectDetailsPage: React.FC = () => {
       console.log('🔍 ProjectDetailsPage Debug:')
       console.log('  - Project ID:', projectId)
       console.log('  - API URL:', apiUrl)
+      console.log('  - Full API_ENDPOINTS object:', API_ENDPOINTS)
+      console.log('  - BACKEND_URL from config:', BACKEND_URL)
       console.log('  - Environment:', typeof window !== 'undefined' ? {
           hostname: window.location.hostname,
           protocol: window.location.protocol,
-          isEmergentagent: window.location.hostname.includes('emergentagent.com')
+          isEmergentagent: window.location.hostname.includes('emergentagent.com'),
+          href: window.location.href
         } : 'SSR')
       console.log('  - Has Token:', tokens?.access_token ? 'Yes' : 'No')
       console.log('  - Token Length:', tokens?.access_token?.length || 0)
+      console.log('  - Token Preview:', tokens?.access_token ? tokens.access_token.substring(0, 50) + '...' : 'None')
+      
+      // Test if we can reach the backend at all
+      console.log('🔍 Testing backend connectivity...')
+      try {
+        const testResponse = await fetch(`${apiUrl.split('/api/projects')[0]}/api/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${tokens?.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        })
+        console.log('🔍 Auth endpoint test:', testResponse.status, testResponse.statusText)
+      } catch (connectError) {
+        console.error('🔍 Backend connectivity test failed:', connectError)
+      }
       
       // Fetch project details with detailed error handling
       console.log('📡 Making API request...')
