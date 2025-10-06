@@ -51,7 +51,7 @@ export default defineConfig({
     // Inject environment-specific API URL
     __API_URL__: JSON.stringify(
       process.env.NODE_ENV === 'production' 
-        ? process.env.VITE_PROD_API_URL || 'https://reply-uniqueness.preview.emergentagent.com'
+        ? process.env.VITE_PROD_API_URL || 'https://react-visibility.preview.emergentagent.com'
         : process.env.VITE_API_URL || 'http://localhost:8001'
     ),
   },
