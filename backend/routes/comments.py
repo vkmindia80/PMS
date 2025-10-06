@@ -348,6 +348,19 @@ async def delete_comment(
                 {"id": entity_id},
                 {"$inc": {"comment_count": -1}}
             )
+            
+            # Log activity for task comment deletion
+            await activity_service.log_activity(
+                entity_id, 
+                current_user.id, 
+                "comment_deleted",
+                {
+                    "comment_id": comment_id,
+                    "content_preview": existing_comment.get("content", "")[:100] + "..." if len(existing_comment.get("content", "")) > 100 else existing_comment.get("content", ""),
+                    "was_reply": existing_comment.get("parent_id") is not None
+                },
+                db
+            )
         
     except Exception as e:
         if isinstance(e, HTTPException):
