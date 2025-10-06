@@ -704,6 +704,109 @@ const CommentCard: React.FC<{
               </span>
             )}
           </button>
+
+          {/* Existing Reactions Display - Small emojis in one line */}
+          {comment.reactions && comment.reactions.length > 0 && (
+            <div className="flex items-center space-x-1">
+              {(() => {
+                // Group reactions by emoji and count them
+                const reactionGroups = comment.reactions.reduce((acc, reaction) => {
+                  if (!acc[reaction.emoji]) {
+                    acc[reaction.emoji] = { count: 0, users: [] }
+                  }
+                  acc[reaction.emoji].count++
+                  acc[reaction.emoji].users.push(reaction.user_id)
+                  return acc
+                }, {} as Record<string, { count: number, users: string[] }>)
+                
+                return Object.entries(reactionGroups).map(([emoji, data]) => {
+                  // Check if current user has reacted with this emoji
+                  const currentUserId = availableUsers.find(u => u.email === 'demo@company.com')?.id || 'demo-user-001' 
+                  const userHasReacted = data.users.includes(currentUserId)
+                  
+                  return (
+                    <button
+                      key={emoji}
+                      onClick={() => onAddReaction && onAddReaction(comment.id, emoji)}
+                      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105 active:scale-95 border ${
+                        userHasReacted 
+                          ? 'bg-blue-100 border-blue-300 text-blue-800 hover:bg-blue-200' 
+                          : 'bg-gray-100 border-gray-200 text-gray-700 hover:bg-gray-150'
+                      }`}
+                      title={`${data.count} reaction${data.count > 1 ? 's' : ''} • Click to ${userHasReacted ? 'remove' : 'add'} your reaction`}
+                      data-testid={`reaction-${emoji}-${comment.id}`}
+                    >
+                      <span className="text-sm" role="img" aria-label={`Reaction ${emoji}`}>{emoji}</span>
+                      <span className={`font-semibold ${userHasReacted ? 'text-blue-900' : 'text-gray-600'}`}>
+                        {data.count}
+                      </span>
+                    </button>
+                  )
+                })
+              })()}
+            </div>
+          )}
+
+          {/* React Button */}
+          <div className="relative">
+            <button
+              ref={reactButtonRef}
+              onClick={handleEmojiPickerToggle}
+              className="flex items-center space-x-1.5 text-sm text-gray-500 hover:text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all duration-200 border border-transparent hover:border-blue-200 font-medium"
+              title="Add reaction"
+              data-testid={`add-reaction-btn-${comment.id}`}
+            >
+              <Smile className="h-4 w-4" />
+              <span className="text-xs">React</span>
+            </button>
+            
+            {showEmojiPicker === comment.id && (
+              <>
+                {/* Overlay to close picker when clicking outside */}
+                <div 
+                  className="fixed inset-0 z-[9998]" 
+                  onClick={() => setShowEmojiPicker(null)}
+                />
+                {/* Emoji picker with smart positioning */}
+                <div className={`absolute ${pickerPosition === 'left' ? 'right-full mr-2' : 'right-0'} top-10 bg-white border border-gray-200 rounded-xl shadow-2xl z-[9999] p-4 min-w-[280px] max-w-[320px]`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-gray-800">Pick a reaction</span>
+                    <button
+                      onClick={() => setShowEmojiPicker(null)}
+                      className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                      aria-label="Close emoji picker"
+                      data-testid="close-emoji-picker"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-6 gap-2">
+                    {emojis.map((emoji) => (
+                      <button
+                        key={emoji}
+                        onClick={() => {
+                          if (onAddReaction) {
+                            onAddReaction(comment.id, emoji)
+                          }
+                          setShowEmojiPicker(null)
+                        }}
+                        className="p-3 hover:bg-gray-100 rounded-lg text-xl transition-all duration-200 hover:scale-110 transform active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        title={`React with ${emoji}`}
+                        data-testid={`emoji-picker-${emoji}`}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <p className="text-xs text-gray-500 text-center">
+                      Click to add your reaction to this comment
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
           
           {/* Attachments */}
           {comment.attachments && comment.attachments.length > 0 && (
