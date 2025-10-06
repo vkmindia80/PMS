@@ -769,8 +769,9 @@ const CommentCard: React.FC<{
               title="Add reaction"
               data-testid={`add-reaction-btn-${comment.id}`}
             >
-              <Smile className="h-4 w-4" />
-              <span className="text-xs font-semibold">React</span>
+              <Smile className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+              <span className="text-xs font-semibold relative z-10">React</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer transition-opacity duration-300"></div>
             </button>
             
             {showEmojiPicker === comment.id && (
