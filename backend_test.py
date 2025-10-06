@@ -135,47 +135,45 @@ class ProjectDetailsTester:
             print(f"    ❌ No projects found or failed to get projects list")
             return False
 
-    def test_activity_metrics(self):
-        """Test activity metrics endpoint - KEY FUNCTIONALITY"""
+    def test_project_details(self):
+        """Test project details endpoint - KEY FUNCTIONALITY"""
         print("\n" + "="*60)
-        print("TESTING ACTIVITY METRICS ENDPOINT")
+        print("TESTING PROJECT DETAILS ENDPOINT")
         print("="*60)
         
+        if not self.test_project_id:
+            print("    ❌ No test project ID available")
+            return None
+            
         success, response = self.run_test(
-            "Get Activity Metrics",
+            "Get Project Details",
             "GET",
-            f"/api/tasks/{self.test_task_id}/activity/metrics",
+            f"/api/projects/{self.test_project_id}",
             200
         )
         
-        if success and 'metrics' in response:
-            metrics = response['metrics']
-            print(f"    ✅ Metrics retrieved successfully")
-            print(f"    📊 Total Events: {metrics.get('total_events', 0)}")
-            print(f"    📊 Time Entries: {metrics.get('time_entries', 0)}")
-            print(f"    📊 Updates: {metrics.get('updates', 0)}")
-            print(f"    📊 Active Days: {metrics.get('active_days', 0)}")
+        if success and 'id' in response:
+            print(f"    ✅ Project details retrieved successfully")
+            print(f"    📋 Project ID: {response.get('id')}")
+            print(f"    📋 Project Name: {response.get('name', 'Unknown')}")
+            print(f"    📋 Status: {response.get('status', 'Unknown')}")
+            print(f"    📋 Priority: {response.get('priority', 'Unknown')}")
+            print(f"    📋 Progress: {response.get('progress_percentage', 0)}%")
+            print(f"    📋 Team Members: {len(response.get('team_members', []))}")
+            print(f"    📋 Task Count: {response.get('task_count', 0)}")
             
-            # Verify expected metrics from main agent's note
-            expected_total = 11
-            expected_time_entries = 4
-            expected_updates = 6
-            expected_active_days = 1
+            # Check required fields for frontend
+            required_fields = ['id', 'name', 'status', 'priority', 'progress_percentage']
+            missing_fields = [field for field in required_fields if field not in response]
             
-            actual_total = metrics.get('total_events', 0)
-            actual_time_entries = metrics.get('time_entries', 0)
-            actual_updates = metrics.get('updates', 0)
-            actual_active_days = metrics.get('active_days', 0)
+            if missing_fields:
+                print(f"    ⚠️ Missing required fields: {missing_fields}")
+            else:
+                print(f"    ✅ All required fields present")
             
-            print(f"\n    🎯 EXPECTED vs ACTUAL:")
-            print(f"    Total Events: {expected_total} vs {actual_total} {'✅' if actual_total == expected_total else '❌'}")
-            print(f"    Time Entries: {expected_time_entries} vs {actual_time_entries} {'✅' if actual_time_entries == expected_time_entries else '❌'}")
-            print(f"    Updates: {expected_updates} vs {actual_updates} {'✅' if actual_updates == expected_updates else '❌'}")
-            print(f"    Active Days: {expected_active_days} vs {actual_active_days} {'✅' if actual_active_days == expected_active_days else '❌'}")
-            
-            return metrics
+            return response
         else:
-            print(f"    ❌ Failed to get activity metrics")
+            print(f"    ❌ Failed to get project details")
             return None
 
     def test_activity_list(self):
