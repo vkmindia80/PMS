@@ -253,7 +253,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     
     try {
       // Fetch all tasks from the same project to show as potential dependencies
-      const response = await fetch(`${API_URL}/api/tasks?project_id=${task.project_id}&limit=1000`, {
+      const response = await fetch(`${API_ENDPOINTS.tasks.list}?project_id=${task.project_id}&limit=1000`, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
