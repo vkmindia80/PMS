@@ -767,21 +767,21 @@ const CommentCard: React.FC<{
                   className="fixed inset-0 bg-black bg-opacity-10 z-[9998]" 
                   onClick={() => setShowEmojiPicker(null)}
                 />
-                {/* Compact and Clear Emoji Picker */}
-                <div className={`absolute ${pickerPosition === 'left' ? 'right-full mr-2' : 'right-0'} top-10 bg-white border-2 border-gray-300 rounded-lg shadow-xl z-[10000] p-3 min-w-[260px] max-w-[280px]`}
+                {/* Compact Single Row Emoji Picker */}
+                <div className={`absolute ${pickerPosition === 'left' ? 'right-full mr-2' : 'right-0'} top-10 bg-white border-2 border-gray-300 rounded-lg shadow-xl z-[10000] p-2 min-w-[380px] max-w-[420px]`}
                      style={{ boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)' }}>
-                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-200">
-                    <span className="text-sm font-bold text-gray-800 bg-blue-50 px-2 py-1 rounded">Pick a reaction</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-gray-700 bg-blue-50 px-2 py-1 rounded">Pick a reaction</span>
                     <button
                       onClick={() => setShowEmojiPicker(null)}
-                      className="text-gray-500 hover:text-gray-700 p-1.5 rounded-md hover:bg-gray-100 transition-colors border border-gray-200 hover:border-gray-300"
+                      className="text-gray-500 hover:text-gray-700 p-1 rounded-md hover:bg-gray-100 transition-colors"
                       aria-label="Close emoji picker"
                       data-testid="close-emoji-picker"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-3 w-3" />
                     </button>
                   </div>
-                  <div className="grid grid-cols-6 gap-2">
+                  <div className="flex items-center justify-center gap-1 overflow-x-auto scrollbar-hide">
                     {emojis.map((emoji) => (
                       <button
                         key={emoji}
@@ -791,18 +791,13 @@ const CommentCard: React.FC<{
                           }
                           setShowEmojiPicker(null)
                         }}
-                        className="p-2.5 hover:bg-blue-50 rounded-lg text-lg transition-all duration-200 hover:scale-110 transform active:scale-95 focus:ring-2 focus:ring-blue-300 focus:outline-none border border-transparent hover:border-blue-200 hover:shadow-sm"
+                        className="p-1.5 hover:bg-blue-50 rounded text-sm transition-all duration-200 hover:scale-110 transform active:scale-95 focus:ring-1 focus:ring-blue-300 focus:outline-none border border-transparent hover:border-blue-200 hover:shadow-sm min-w-[28px] flex-shrink-0"
                         title={`React with ${emoji}`}
                         data-testid={`emoji-picker-${emoji}`}
                       >
                         {emoji}
                       </button>
                     ))}
-                  </div>
-                  <div className="mt-3 pt-2 border-t border-gray-200">
-                    <p className="text-xs text-gray-600 text-center">
-                      Click an emoji to add your reaction
-                    </p>
                   </div>
                 </div>
               </>
