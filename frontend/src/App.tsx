@@ -19,6 +19,7 @@ import SecurityDashboard from './pages/SecurityDashboard'
 import SettingsPage from './pages/SettingsPage'
 import DynamicTimelinePage from './pages/DynamicTimelinePage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import EmojiPickerTest from './components/test/EmojiPickerTest'
 import './App.css'
 
 // Main app content component
