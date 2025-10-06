@@ -799,8 +799,8 @@ const CommentCard: React.FC<{
                       </button>
                     ))}
                   </div>
-                  <div className="mt-3 pt-3 border-t border-gray-100">
-                    <p className="text-xs text-gray-500 text-center">
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <p className="text-sm text-gray-700 text-center font-medium">
                       Click to add your reaction to this comment
                     </p>
                   </div>
