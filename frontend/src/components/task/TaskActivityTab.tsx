@@ -70,7 +70,11 @@ export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({
     
     setMetricsLoading(true)
     try {
-      const token = localStorage.getItem('access_token')
+      const authTokensStr = localStorage.getItem('auth_tokens')
+      if (!authTokensStr) return
+      
+      const authTokens = JSON.parse(authTokensStr)
+      const token = authTokens.access_token
       if (!token) return
 
       const response = await fetch(`${getApiUrlDynamic()}/api/tasks/${taskId}/activity/metrics`, {
