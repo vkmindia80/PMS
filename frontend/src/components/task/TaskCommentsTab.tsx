@@ -774,11 +774,11 @@ const CommentCard: React.FC<{
                     <span className="text-base font-bold text-gray-900">Pick a reaction</span>
                     <button
                       onClick={() => setShowEmojiPicker(null)}
-                      className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                      className="text-gray-600 hover:text-gray-800 p-2 rounded-full hover:bg-gray-100 transition-colors border border-gray-200 hover:border-gray-300"
                       aria-label="Close emoji picker"
                       data-testid="close-emoji-picker"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-5 w-5" />
                     </button>
                   </div>
                   <div className="grid grid-cols-6 gap-3">
