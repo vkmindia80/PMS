@@ -46,12 +46,17 @@ export default defineConfig({
     global: 'globalThis',
     'process.env': JSON.stringify({
       NODE_ENV: process.env.NODE_ENV || 'development',
+      // Always use HTTPS for emergentagent.com domains to prevent mixed content errors
       REACT_APP_BACKEND_URL: process.env.REACT_APP_BACKEND_URL || process.env.VITE_API_URL || 'http://localhost:8001',
     }),
-    // Inject environment-specific API URL
+    // Inject environment-specific API URL - ensure HTTPS for emergentagent.com
     __API_URL__: JSON.stringify(
       process.env.NODE_ENV === 'production' 
-        ? process.env.VITE_PROD_API_URL || 'https://project-404.preview.emergentagent.com'
+        ? process.env.VITE_PROD_API_URL || (
+            process.env.VITE_API_URL?.includes('emergentagent.com') 
+              ? process.env.VITE_API_URL.replace('http:', 'https:')
+              : process.env.VITE_API_URL || 'https://project-404.preview.emergentagent.com'
+          )
         : process.env.VITE_API_URL || 'http://localhost:8001'
     ),
   },
