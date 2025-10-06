@@ -6,7 +6,7 @@ import axios from 'axios'
 
 import { getApiUrl } from '../utils/environment'
 
-const getAPI_BASE_URL = () => getApiUrl()
+const getgetAPI_BASE_URL() = () => getApiUrl()
 
 export interface AIModelRequest {
   prompt: string
@@ -82,7 +82,7 @@ class AIService {
   async generateResponse(request: AIModelRequest): Promise<AIModelResponse> {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/ai-ml/generate`,
+        `${getAPI_BASE_URL()}/api/ai-ml/generate`,
         {
           prompt: request.prompt,
           model: request.model || 'gpt-4o',
@@ -106,7 +106,7 @@ class AIService {
   async compareModels(request: ModelComparisonRequest): Promise<ModelComparison> {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/ai-ml/compare-models`,
+        `${getAPI_BASE_URL()}/api/ai-ml/compare-models`,
         {
           prompt: request.prompt,
           models: request.models || ['gpt-4o', 'claude-3.5-sonnet', 'gemini-2.0-pro'],
@@ -128,7 +128,7 @@ class AIService {
   async getAvailableModels(): Promise<any[]> {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/api/ai-ml/models/available`,
+        `${getAPI_BASE_URL()}/api/ai-ml/models/available`,
         { headers: this.getAuthHeaders() }
       )
       
@@ -145,7 +145,7 @@ class AIService {
   async getOptimalModel(taskType: string, context?: Record<string, any>): Promise<string> {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/ai-ml/optimal-model`,
+        `${getAPI_BASE_URL()}/api/ai-ml/optimal-model`,
         null,
         { 
           headers: this.getAuthHeaders(),
@@ -169,7 +169,7 @@ class AIService {
   ): Promise<TaskDurationPrediction> {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/ai-ml/predict/task-duration`,
+        `${getAPI_BASE_URL()}/api/ai-ml/predict/task-duration`,
         {
           task_data: taskData,
           historical_tasks: historicalTasks || []
@@ -193,7 +193,7 @@ class AIService {
   ): Promise<ComprehensiveInsights> {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/ai-ml/analytics/comprehensive-insights`,
+        `${getAPI_BASE_URL()}/api/ai-ml/analytics/comprehensive-insights`,
         {
           data_context: dataContext,
           analysis_type: analysisType
@@ -218,7 +218,7 @@ class AIService {
   ): Promise<any> {
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/api/ai-ml/analytics/real-time-optimization`,
+        `${getAPI_BASE_URL()}/api/ai-ml/analytics/real-time-optimization`,
         {
           current_state: currentState,
           optimization_goals: optimizationGoals,
@@ -240,7 +240,7 @@ class AIService {
   async healthCheck(): Promise<any> {
     try {
       const response = await axios.get(
-        `${API_BASE_URL}/api/ai-ml/health`,
+        `${getAPI_BASE_URL()}/api/ai-ml/health`,
         { headers: this.getAuthHeaders() }
       )
       
