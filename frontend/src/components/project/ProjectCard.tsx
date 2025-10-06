@@ -128,7 +128,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         
         <div className="relative">
           <button
-            onClick={() => setShowMenu(!showMenu)}
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowMenu(!showMenu)
+            }}
             className="p-1 hover:bg-gray-100 rounded"
             data-testid="project-menu-btn"
           >
