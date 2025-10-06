@@ -91,9 +91,10 @@ export const getEnvironmentInfo = () => {
   };
 };
 
-// Log environment info in development
-if (import.meta.env.DEV) {
+// Log environment info in development and when debugging issues
+if (import.meta.env.DEV || typeof window !== 'undefined' && window.location.hostname.includes('emergentagent.com')) {
   console.log('🌍 Environment Info:', getEnvironmentInfo());
+  console.log('🔗 API URL being used:', getApiUrl());
 }
 
 export default {
