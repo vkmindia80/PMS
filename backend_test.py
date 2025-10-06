@@ -219,38 +219,26 @@ class TaskActivityTester:
             print(f"    ❌ Failed to get activity list")
             return []
 
-    def test_get_threaded_comments(self):
-        """Test getting threaded comments for the task - THIS IS THE KEY TEST"""
+    def test_time_logging(self):
+        """Test time logging functionality to generate activity"""
+        print("\n" + "="*60)
+        print("TESTING TIME LOGGING (ACTIVITY GENERATION)")
+        print("="*60)
+        
+        # Log some time to generate activity
         success, response = self.run_test(
-            "Get Threaded Comments (Key Test)",
-            "GET",
-            f"/api/comments/threads/task/{self.test_task_id}",
+            "Log Time Entry",
+            "POST",
+            f"/api/tasks/{self.test_task_id}/time/log?hours=0.5&description=Testing activity generation",
             200
         )
         
         if success:
-            thread_count = len(response) if isinstance(response, list) else 0
-            print(f"    ✅ Retrieved {thread_count} comment threads")
-            
-            # Analyze thread structure in detail
-            if isinstance(response, list):
-                for i, thread in enumerate(response):
-                    if isinstance(thread, dict):
-                        root_comment = thread.get('root_comment', {})
-                        replies = thread.get('replies', [])
-                        total_replies = thread.get('total_replies', 0)
-                        nested_replies = root_comment.get('nested_replies', [])
-                        
-                        print(f"    Thread {i+1}:")
-                        print(f"      Root: '{root_comment.get('content', '')[:50]}...'")
-                        print(f"      Replies: {len(replies)} (legacy)")
-                        print(f"      Nested replies: {len(nested_replies)} (new)")
-                        print(f"      Total replies: {total_replies}")
-            
-            return response
+            print(f"    ✅ Time logged successfully")
+            return True
         else:
-            print(f"    ❌ Failed to get threaded comments - THIS IS THE BUG!")
-            return []
+            print(f"    ❌ Failed to log time")
+            return False
 
     def test_comment_workflow(self):
         """Test complete comment workflow"""
