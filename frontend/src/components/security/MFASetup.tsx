@@ -46,11 +46,7 @@ const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
       }
 
       const authTokens = JSON.parse(authTokensStr);
-      const backendUrl = import.meta.env.VITE_PROD_API_URL || 
-                        import.meta.env.REACT_APP_BACKEND_URL || 
-                        import.meta.env.VITE_API_URL || 
-                        process.env.REACT_APP_BACKEND_URL ||
-                        'https://project-404.preview.emergentagent.com';
+      const backendUrl = config.apiUrl;
       
       const response = await fetch(`${backendUrl}/api/security/mfa/status`, {
         headers: { 'Authorization': `Bearer ${authTokens.access_token}` }
