@@ -211,26 +211,36 @@ class ProjectDetailsTester:
             print(f"    ❌ Failed to get users list")
             return []
 
-    def test_time_logging(self):
-        """Test time logging functionality to generate activity"""
+    def test_tasks_for_project(self):
+        """Test tasks list for the project (needed for project details page)"""
         print("\n" + "="*60)
-        print("TESTING TIME LOGGING (ACTIVITY GENERATION)")
+        print("TESTING TASKS FOR PROJECT")
         print("="*60)
         
-        # Log some time to generate activity
+        if not self.test_project_id:
+            print("    ❌ No test project ID available")
+            return []
+            
         success, response = self.run_test(
-            "Log Time Entry",
-            "POST",
-            f"/api/tasks/{self.test_task_id}/time/log?hours=0.5&description=Testing activity generation",
+            "Get Tasks for Project",
+            "GET",
+            f"/api/tasks?project_id={self.test_project_id}",
             200
         )
         
-        if success:
-            print(f"    ✅ Time logged successfully")
-            return True
+        if success and isinstance(response, list):
+            task_count = len(response)
+            print(f"    ✅ Retrieved {task_count} tasks for project")
+            
+            if task_count > 0:
+                sample_task = response[0]
+                print(f"    📋 Sample task fields: {list(sample_task.keys())}")
+                print(f"    📋 Sample task: {sample_task.get('title', 'Unknown')}")
+                
+            return response
         else:
-            print(f"    ❌ Failed to log time")
-            return False
+            print(f"    ❌ Failed to get tasks for project")
+            return []
 
     def test_activity_refresh_cycle(self):
         """Test activity refresh functionality"""
