@@ -185,10 +185,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Helper function to store auth data
   const storeAuthData = (tokens: AuthTokens, user: User) => {
+    console.log('🔐 Storing auth data to localStorage...', { userId: user.id, tokenLength: tokens.access_token.length })
     setTokens(tokens)
     setUser(user)
     localStorage.setItem('auth_tokens', JSON.stringify(tokens))
     localStorage.setItem('auth_user', JSON.stringify(user))
+    console.log('✅ Auth data stored successfully')
   }
 
   // Fetch user profile
