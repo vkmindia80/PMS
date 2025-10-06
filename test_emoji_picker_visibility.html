@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emoji Picker Visibility Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .test-container {
+            border: 2px solid #ccc;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .debug-info {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .warning { background-color: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Emoji Picker Visibility Test</h1>
+    <p>This test page helps verify that the emoji picker is working correctly in the comments section.</p>
+
+    <div class="test-container">
+        <h3>Test Instructions:</h3>
+        <ol>
+            <li>Open the main application at <strong>http://localhost:3000</strong></li>
+            <li>Navigate to Tasks → Select any task → Comments tab</li>
+            <li>Click the "React" button under any comment</li>
+            <li>Verify the emoji picker appears as a horizontal row</li>
+        </ol>
+    </div>
+
+    <div class="test-container">
+        <h3>Expected Behavior:</h3>
+        <div class="status success">✅ Emoji picker should appear below the React button</div>
+        <div class="status success">✅ Picker should show emojis in a single horizontal row</div>
+        <div class="status success">✅ Picker should have "Pick a reaction" header</div>
+        <div class="status success">✅ Clicking an emoji should add it as a reaction</div>
+        <div class="status success">✅ React button should highlight when picker is open</div>
+    </div>
+
+    <div class="test-container">
+        <h3>Troubleshooting:</h3>
+        <div class="debug-info">
+            <strong>If picker doesn't appear:</strong>
+            <ul>
+                <li>Check browser console for JavaScript errors</li>
+                <li>Verify z-index isn't being overridden (should be z-[99999])</li>
+                <li>Ensure onAddReaction prop is properly passed</li>
+                <li>Look for console logs starting with "🎯 Emoji picker toggle"</li>
+            </ul>
+        </div>
+        
+        <div class="debug-info">
+            <strong>If picker appears but looks wrong:</strong>
+            <ul>
+                <li>Check if emojis are in single row (flex layout)</li>
+                <li>Verify picker width is 380-420px</li>
+                <li>Ensure horizontal scrolling works if many emojis</li>
+                <li>Check that scrollbars are hidden</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h3>Quick Test Access:</h3>
+        <a href="http://localhost:3000" target="_blank" style="
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 10px 0;
+        ">Open Application</a>
+        
+        <p><em>Note: Make sure the backend and frontend services are running before testing.</em></p>
+    </div>
+
+    <script>
+        // Simple service check
+        async function checkServices() {
+            try {
+                const response = await fetch('http://localhost:3000');
+                if (response.ok) {
+                    document.querySelector('.status').innerHTML = '✅ Frontend service is reachable';
+                }
+            } catch (error) {
+                document.querySelector('.status').innerHTML = '❌ Frontend service not reachable';
+                document.querySelector('.status').className = 'status error';
+            }
+        }
+
+        // Check services on page load
+        window.onload = () => {
+            checkServices();
+        };
+    </script>
+</body>
+</html>
