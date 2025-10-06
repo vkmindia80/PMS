@@ -733,10 +733,10 @@ const CommentCard: React.FC<{
                     <button
                       key={emoji}
                       onClick={() => onAddReaction && onAddReaction(comment.id, emoji)}
-                      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 border-2 shadow-sm hover:shadow-md ${
+                      className={`group inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95 border shadow-sm hover:shadow-lg cursor-pointer ${
                         userHasReacted 
-                          ? 'bg-blue-50 border-blue-400 text-blue-900 hover:bg-blue-100' 
-                          : 'bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400'
+                          ? 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-300 text-blue-800 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-400 shadow-blue-100' 
+                          : 'bg-white border-gray-200 text-gray-600 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 hover:border-blue-200 hover:text-blue-700'
                       }`}
                       title={`${data.count} reaction${data.count > 1 ? 's' : ''} • Click to ${userHasReacted ? 'remove' : 'add'} your reaction`}
                       data-testid={`reaction-${emoji}-${comment.id}`}
