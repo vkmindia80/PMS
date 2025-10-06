@@ -934,9 +934,10 @@ async def bulk_update_tasks(
             
             # Log bulk activity
             for task_id in task_ids:
-                await log_task_activity(
-                    db, task_id, current_user.id, "bulk_updated",
-                    {"fields_updated": list(update_dict.keys())}
+                await activity_service.log_activity(
+                    task_id, current_user.id, "bulk_updated",
+                    {"fields_updated": list(update_dict.keys())},
+                    db
                 )
             
             return {
