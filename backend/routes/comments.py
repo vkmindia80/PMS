@@ -16,6 +16,9 @@ from models.comment import (
 )
 from models.user import User
 
+# Import services
+from services.activity_service import activity_service
+
 router = APIRouter(prefix="/api/comments", tags=["comments"])
 
 @router.post("/", response_model=Comment, status_code=status.HTTP_201_CREATED)
