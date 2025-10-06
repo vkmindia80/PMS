@@ -525,9 +525,10 @@ async def delete_task(
             )
         
         # Log activity
-        await log_task_activity(
-            db, task_id, current_user.id, "task_deleted",
-            {"title": existing_task["title"]}
+        await activity_service.log_activity(
+            task_id, current_user.id, "task_deleted",
+            {"title": existing_task["title"]},
+            db
         )
         
     except Exception as e:
