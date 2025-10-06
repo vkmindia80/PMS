@@ -143,10 +143,15 @@ export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({
       case 'task_updated': return { icon: '✏️', color: 'text-yellow-600', bg: 'bg-yellow-100' }
       case 'time_logged': return { icon: '⏰', color: 'text-purple-600', bg: 'bg-purple-100' }
       case 'task_moved': return { icon: '📋', color: 'text-indigo-600', bg: 'bg-indigo-100' }
-      case 'comment_added': return { icon: '💬', color: 'text-gray-600', bg: 'bg-gray-100' }
+      case 'comment_added': return { icon: '💬', color: 'text-blue-600', bg: 'bg-blue-100' }
+      case 'comment_updated': return { icon: '✏️', color: 'text-yellow-600', bg: 'bg-yellow-100' }
+      case 'comment_deleted': return { icon: '🗑️', color: 'text-red-600', bg: 'bg-red-100' }
       case 'assignee_changed': return { icon: '👤', color: 'text-orange-600', bg: 'bg-orange-100' }
+      case 'assignees_changed': return { icon: '👥', color: 'text-orange-600', bg: 'bg-orange-100' }
       case 'priority_changed': return { icon: '🚨', color: 'text-red-600', bg: 'bg-red-100' }
       case 'due_date_changed': return { icon: '📅', color: 'text-teal-600', bg: 'bg-teal-100' }
+      case 'dependency_added': return { icon: '🔗', color: 'text-cyan-600', bg: 'bg-cyan-100' }
+      case 'dependency_removed': return { icon: '🔓', color: 'text-gray-600', bg: 'bg-gray-100' }
       default: return { icon: '📝', color: 'text-gray-600', bg: 'bg-gray-100' }
     }
   }
