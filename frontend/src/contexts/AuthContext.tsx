@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [tokens, setTokens] = useState<AuthTokens | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [initStarted, setInitStarted] = useState(false)
+  const initStarted = React.useRef(false)
 
   // Initialize auth state from localStorage
   useEffect(() => {
