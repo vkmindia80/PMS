@@ -1082,22 +1082,7 @@ async def get_task_analytics(
             detail=f"Failed to get task analytics: {str(e)}"
         )
 
-# Helper function for activity logging
-async def log_task_activity(db, task_id: str, user_id: str, action: str, details: Dict):
-    """Helper function to log task activity"""
-    activity_entry = {
-        "id": str(uuid.uuid4()),
-        "task_id": task_id,
-        "user_id": user_id,
-        "action": action,
-        "details": details,
-        "timestamp": datetime.utcnow().isoformat()
-    }
-    
-    await db.tasks.update_one(
-        {"id": task_id},
-        {"$push": {"activity_log": activity_entry}}
-    )
+# Activity logging is now handled by the ActivityService
 
 # Task Dependencies Endpoints
 
