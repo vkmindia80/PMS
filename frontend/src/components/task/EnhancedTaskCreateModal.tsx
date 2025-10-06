@@ -167,7 +167,7 @@ export const EnhancedTaskCreateModal: React.FC<EnhancedTaskCreateModalProps> = (
     if (!tokens?.access_token) return
 
     try {
-      const response = await fetch(`${API_URL}/api/tasks/?limit=100`, {
+      const response = await fetch(`${API_ENDPOINTS.tasks.list}?limit=100`, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
