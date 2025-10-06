@@ -57,7 +57,7 @@ const testEnvironmentDetection = () => {
   };
   
   console.log('\n✅ Test 2 - API URL Generation:');
-  console.log('   Original VITE_API_URL:', import.meta.env.VITE_API_URL);
+  console.log('   Original VITE_API_URL:', mockEnv.VITE_API_URL);
   console.log('   Generated API URL:', getApiUrl());
   console.log('   Uses HTTPS:', getApiUrl().startsWith('https://'));
   
