@@ -40,20 +40,32 @@ export const getCurrentSubdomain = (): string | null => {
 export const getApiUrl = (): string => {
   // Server-side rendering fallback
   if (typeof window === 'undefined') {
-    return import.meta.env.VITE_API_URL || 'http://localhost:8001';
+    let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001';
+    // Force HTTPS for emergentagent.com domains even in SSR
+    if (apiUrl.includes('emergentagent.com') && !apiUrl.startsWith('https://')) {
+      apiUrl = apiUrl.replace('http://', 'https://');
+    }
+    return apiUrl;
   }
   
   // For Emergent platform (emergentagent.com), ALWAYS use HTTPS with same domain
   if (isEmergentagentDomain()) {
+    const protocol = window.location.protocol; // Should be 'https:'
     const hostname = window.location.hostname;
-    // Force HTTPS for emergentagent.com to prevent mixed content errors
+    
+    // Always force HTTPS for emergentagent.com to prevent mixed content errors
     return `https://${hostname}`;
   }
   
   // For local development, use configured URL or localhost
-  const envBackendUrl = import.meta.env.VITE_API_URL || 
-                       import.meta.env.REACT_APP_BACKEND_URL || 
-                       'http://localhost:8001';
+  let envBackendUrl = import.meta.env.VITE_API_URL || 
+                      import.meta.env.REACT_APP_BACKEND_URL || 
+                      'http://localhost:8001';
+  
+  // Double-check: if we have an emergentagent.com URL but not HTTPS, force it
+  if (envBackendUrl.includes('emergentagent.com') && !envBackendUrl.startsWith('https://')) {
+    envBackendUrl = envBackendUrl.replace('http://', 'https://');
+  }
   
   return envBackendUrl;
 };
