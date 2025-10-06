@@ -6,7 +6,7 @@ import {
   BarChart3, Plus, Save, X, MoreVertical, FolderOpen
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
-import { API_ENDPOINTS, BACKEND_URL } from '../utils/config'
+import { API_ENDPOINTS, getBACKEND_URL } from '../utils/config'
 import toast from 'react-hot-toast'
 
 interface Project {
