@@ -465,7 +465,7 @@ export class DynamicTimelineService {
     token: string
   ): Promise<DynamicTimelineTask> {
     try {
-      const response = await fetch('/api/tasks', {
+      const response = await fetch(API_ENDPOINTS.tasks.create, {
         method: 'POST',
         headers: this.getAuthHeaders(token),
         body: JSON.stringify({
