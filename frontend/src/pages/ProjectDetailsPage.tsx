@@ -572,11 +572,11 @@ const ProjectDetailsPage: React.FC = () => {
             <CheckCircle className="w-5 h-5 text-green-600" />
           </div>
           <p className="text-3xl font-bold text-gray-900 mb-2" data-testid="milestone-stats">
-            {project.milestones.filter(m => m.completed).length} / {project.milestones.length}
+            {(project.milestones || []).filter(m => m.completed).length} / {(project.milestones || []).length}
           </p>
           <p className="text-sm text-gray-600">
-            {project.milestones.length > 0
-              ? `${Math.round((project.milestones.filter(m => m.completed).length / project.milestones.length) * 100)}% Complete`
+            {(project.milestones || []).length > 0
+              ? `${Math.round(((project.milestones || []).filter(m => m.completed).length / (project.milestones || []).length) * 100)}% Complete`
               : 'No milestones yet'
             }
           </p>
@@ -588,7 +588,7 @@ const ProjectDetailsPage: React.FC = () => {
             <Users className="w-5 h-5 text-purple-600" />
           </div>
           <p className="text-3xl font-bold text-gray-900 mb-2" data-testid="team-size">
-            {project.team_members.length}
+            {(project.team_members || []).length}
           </p>
           <p className="text-sm text-gray-600">Team Members</p>
         </div>
