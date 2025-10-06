@@ -178,21 +178,45 @@ class TaskActivityTester:
             print(f"    ❌ Failed to get activity metrics")
             return None
 
-    def test_get_flat_comments(self):
-        """Test getting flat comments for the task"""
+    def test_activity_list(self):
+        """Test activity list endpoint"""
+        print("\n" + "="*60)
+        print("TESTING ACTIVITY LIST ENDPOINT")
+        print("="*60)
+        
         success, response = self.run_test(
-            "Get Flat Comments",
+            "Get Activity List",
             "GET",
-            f"/api/comments/?entity_type=task&entity_id={self.test_task_id}",
+            f"/api/tasks/{self.test_task_id}/activity",
             200
         )
         
-        if success:
-            comment_count = len(response) if isinstance(response, list) else 0
-            print(f"    ✅ Retrieved {comment_count} flat comments")
+        if success and isinstance(response, list):
+            activity_count = len(response)
+            print(f"    ✅ Retrieved {activity_count} activities")
+            
+            # Analyze activity types
+            activity_types = {}
+            for activity in response:
+                action = activity.get('action', 'unknown')
+                activity_types[action] = activity_types.get(action, 0) + 1
+                
+            print(f"    📋 Activity breakdown:")
+            for action, count in activity_types.items():
+                print(f"      - {action}: {count}")
+                
+            # Check for expected activities
+            expected_activities = ['task_created', 'status_changed', 'time_logged', 'assignee_changed', 'priority_changed']
+            found_activities = set(activity_types.keys())
+            
+            print(f"\n    🔍 Expected activity types found:")
+            for expected in expected_activities:
+                found = expected in found_activities
+                print(f"      - {expected}: {'✅' if found else '❌'}")
+                
             return response
         else:
-            print(f"    ❌ Failed to get flat comments")
+            print(f"    ❌ Failed to get activity list")
             return []
 
     def test_get_threaded_comments(self):
