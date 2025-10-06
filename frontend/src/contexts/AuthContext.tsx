@@ -355,7 +355,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Internal refresh token function
   const refreshTokenInternal = async (refreshTokenValue: string, currentUser: User) => {
-    const response = await fetch(`${API_ENDPOINTS.auth.login}/refresh`, {
+    const response = await fetch(`${API_ENDPOINTS.auth.login.replace('/login', '/refresh')}`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${refreshTokenValue}`,
