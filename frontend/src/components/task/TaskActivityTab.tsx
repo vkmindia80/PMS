@@ -210,7 +210,11 @@ export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({
         }
         return null
       case 'comment_added':
-        return activity.details.preview || activity.details.content?.substring(0, 100) + '...'
+        return activity.details.content_preview || activity.details.preview || activity.details.content?.substring(0, 100) + '...'
+      case 'comment_updated':
+        return activity.details.content_preview || `Updated fields: ${activity.details.fields_changed?.join(', ') || 'content'}`
+      case 'comment_deleted':
+        return activity.details.content_preview || 'Comment was deleted'
       default:
         return null
     }
