@@ -36,7 +36,7 @@ class ActivityTimelineTest:
         
         if response.status_code == 200:
             token_data = response.json()
-            self.token = token_data["access_token"]
+            self.token = token_data["tokens"]["access_token"]
             self.headers = {
                 "Authorization": f"Bearer {self.token}",
                 "Content-Type": "application/json"
