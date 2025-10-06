@@ -872,6 +872,40 @@ async def get_task_activity(
             detail=f"Failed to get task activity: {str(e)}"
         )
 
+@router.get("/{task_id}/activity/metrics", response_model=Dict[str, Any])
+async def get_task_activity_metrics(
+    task_id: str,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get task activity metrics for dashboard"""
+    try:
+        db = await get_database()
+        
+        # Get task
+        task = await db.tasks.find_one({"id": task_id})
+        if not task:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Task not found"
+            )
+        
+        # Get metrics using enhanced service
+        metrics = await activity_service.get_activity_metrics(task_id, db)
+        
+        return {
+            "task_id": task_id,
+            "metrics": metrics,
+            "last_updated": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get activity metrics: {str(e)}"
+        )
+
 # Bulk Operations
 
 @router.post("/bulk/update", response_model=Dict[str, Any])
