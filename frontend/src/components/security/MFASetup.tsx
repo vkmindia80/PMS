@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Shield, Smartphone, Mail, Key, Copy, CheckCircle, AlertCircle, QrCode } from 'lucide-react';
+import { config } from '../../utils/config';
 
 interface MFASetupProps {
   onComplete?: () => void;
