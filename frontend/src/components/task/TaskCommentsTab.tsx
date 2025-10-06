@@ -781,7 +781,7 @@ const CommentCard: React.FC<{
                       <X className="h-4 w-4" />
                     </button>
                   </div>
-                  <div className="grid grid-cols-6 gap-2">
+                  <div className="grid grid-cols-6 gap-3">
                     {emojis.map((emoji) => (
                       <button
                         key={emoji}
@@ -791,7 +791,7 @@ const CommentCard: React.FC<{
                           }
                           setShowEmojiPicker(null)
                         }}
-                        className="p-3 hover:bg-gray-100 rounded-lg text-xl transition-all duration-200 hover:scale-110 transform active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        className="p-4 hover:bg-blue-50 rounded-xl text-2xl transition-all duration-200 hover:scale-110 transform active:scale-95 focus:ring-3 focus:ring-blue-400 focus:outline-none border-2 border-transparent hover:border-blue-300 hover:shadow-lg"
                         title={`React with ${emoji}`}
                         data-testid={`emoji-picker-${emoji}`}
                       >
