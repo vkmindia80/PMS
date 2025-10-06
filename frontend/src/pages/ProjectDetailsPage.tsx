@@ -107,6 +107,11 @@ const ProjectDetailsPage: React.FC = () => {
       console.log('🔍 ProjectDetailsPage Debug:')
       console.log('  - Project ID:', projectId)
       console.log('  - API URL:', apiUrl)
+      console.log('  - Environment:', typeof window !== 'undefined' ? {
+          hostname: window.location.hostname,
+          protocol: window.location.protocol,
+          isEmergentagent: window.location.hostname.includes('emergentagent.com')
+        } : 'SSR')
       console.log('  - Has Token:', tokens?.access_token ? 'Yes' : 'No')
       console.log('  - Token Length:', tokens?.access_token?.length || 0)
       
