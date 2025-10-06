@@ -13,13 +13,9 @@ global.window = {
 };
 
 // Mock import.meta.env
-global.import = {
-  meta: {
-    env: {
-      VITE_API_URL: 'http://project-404.preview.emergentagent.com',  // Intentionally HTTP to test fix
-      DEV: false
-    }
-  }
+const mockEnv = {
+  VITE_API_URL: 'http://project-404.preview.emergentagent.com',  // Intentionally HTTP to test fix
+  DEV: false
 };
 
 // Import the functions (we'll need to adapt this for Node.js)
