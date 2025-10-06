@@ -176,45 +176,39 @@ class ProjectDetailsTester:
             print(f"    ❌ Failed to get project details")
             return None
 
-    def test_activity_list(self):
-        """Test activity list endpoint"""
+    def test_users_list(self):
+        """Test users list endpoint (needed for project details page)"""
         print("\n" + "="*60)
-        print("TESTING ACTIVITY LIST ENDPOINT")
+        print("TESTING USERS LIST ENDPOINT")
         print("="*60)
         
         success, response = self.run_test(
-            "Get Activity List",
+            "Get Users List",
             "GET",
-            f"/api/tasks/{self.test_task_id}/activity",
+            "/api/users",
             200
         )
         
         if success and isinstance(response, list):
-            activity_count = len(response)
-            print(f"    ✅ Retrieved {activity_count} activities")
+            user_count = len(response)
+            print(f"    ✅ Retrieved {user_count} users")
             
-            # Analyze activity types
-            activity_types = {}
-            for activity in response:
-                action = activity.get('action', 'unknown')
-                activity_types[action] = activity_types.get(action, 0) + 1
+            if user_count > 0:
+                sample_user = response[0]
+                print(f"    👤 Sample user fields: {list(sample_user.keys())}")
                 
-            print(f"    📋 Activity breakdown:")
-            for action, count in activity_types.items():
-                print(f"      - {action}: {count}")
+                # Check required fields for project details page
+                required_fields = ['id', 'name', 'email']
+                missing_fields = [field for field in required_fields if field not in sample_user]
                 
-            # Check for expected activities
-            expected_activities = ['task_created', 'status_changed', 'time_logged', 'assignee_changed', 'priority_changed']
-            found_activities = set(activity_types.keys())
-            
-            print(f"\n    🔍 Expected activity types found:")
-            for expected in expected_activities:
-                found = expected in found_activities
-                print(f"      - {expected}: {'✅' if found else '❌'}")
+                if missing_fields:
+                    print(f"    ⚠️ Missing required user fields: {missing_fields}")
+                else:
+                    print(f"    ✅ All required user fields present")
                 
             return response
         else:
-            print(f"    ❌ Failed to get activity list")
+            print(f"    ❌ Failed to get users list")
             return []
 
     def test_time_logging(self):
