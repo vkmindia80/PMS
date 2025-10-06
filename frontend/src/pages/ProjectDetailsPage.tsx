@@ -639,7 +639,7 @@ const ProjectDetailsPage: React.FC = () => {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Team Members</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {project.team_members.map(memberId => {
+          {(project.team_members || []).map(memberId => {
             const user = users.find(u => u.id === memberId)
             return (
               <div key={memberId} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
@@ -653,14 +653,14 @@ const ProjectDetailsPage: React.FC = () => {
               </div>
             )
           })}
-          {project.team_members.length === 0 && (
+          {(project.team_members || []).length === 0 && (
             <p className="text-gray-500 col-span-full">No team members assigned</p>
           )}
         </div>
       </div>
 
       {/* Milestones Section */}
-      {project.milestones.length > 0 && (
+      {(project.milestones || []).length > 0 && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Milestones</h2>
           <div className="space-y-3">
