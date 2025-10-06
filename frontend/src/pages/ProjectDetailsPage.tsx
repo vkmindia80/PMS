@@ -101,12 +101,17 @@ const ProjectDetailsPage: React.FC = () => {
   const fetchProjectData = async () => {
     try {
       setLoading(true)
+      setError(null)
       
       const apiUrl = API_ENDPOINTS.projects.details(projectId!)
-      console.log('Fetching project from:', apiUrl)
-      console.log('With token:', tokens?.access_token ? 'Present' : 'Missing')
+      console.log('🔍 ProjectDetailsPage Debug:')
+      console.log('  - Project ID:', projectId)
+      console.log('  - API URL:', apiUrl)
+      console.log('  - Has Token:', tokens?.access_token ? 'Yes' : 'No')
+      console.log('  - Token Length:', tokens?.access_token?.length || 0)
       
-      // Fetch project details
+      // Fetch project details with detailed error handling
+      console.log('📡 Making API request...')
       const projectResponse = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
@@ -114,17 +119,24 @@ const ProjectDetailsPage: React.FC = () => {
         },
       })
       
+      console.log('📨 Response Status:', projectResponse.status)
+      console.log('📨 Response OK:', projectResponse.ok)
+      
       if (!projectResponse.ok) {
         const errorText = await projectResponse.text()
-        console.error('Project API Error:', projectResponse.status, errorText)
+        console.error('❌ Project API Error:', projectResponse.status, errorText)
         if (projectResponse.status === 404) {
           throw new Error('Project not found. It may have been deleted or archived.')
+        } else if (projectResponse.status === 401) {
+          throw new Error('Authentication failed. Please log in again.')
+        } else if (projectResponse.status === 403) {
+          throw new Error('Access denied. You do not have permission to view this project.')
         }
-        throw new Error(`Failed to fetch project details: ${projectResponse.status}`)
+        throw new Error(`Failed to fetch project details (Status: ${projectResponse.status})`)
       }
       
       const projectData = await projectResponse.json()
-      console.log('Project data loaded:', projectData)
+      console.log('✅ Project data loaded successfully:', projectData.name)
       setProject(projectData)
       setEditedName(projectData.name)
       setEditedDescription(projectData.description || '')
