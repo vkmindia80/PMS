@@ -32,7 +32,7 @@ class ActivityTimelineTest:
             "password": DEMO_CREDENTIALS["password"]
         }
         
-        response = requests.post(f"{API_BASE_URL}/auth/login", data=auth_data)
+        response = requests.post(f"{API_BASE_URL}/auth/login", json=auth_data)
         
         if response.status_code == 200:
             token_data = response.json()
