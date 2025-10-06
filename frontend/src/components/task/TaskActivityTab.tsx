@@ -172,17 +172,27 @@ export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({
       case 'task_moved':
         return `${userName} moved task to "${activity.details.to_status}"`
       case 'comment_added':
-        return `${userName} added a comment`
+        return `${userName} added a comment${activity.details.is_reply ? ' (reply)' : ''}`
+      case 'comment_updated':
+        return `${userName} updated a comment`
+      case 'comment_deleted':
+        return `${userName} deleted a comment${activity.details.was_reply ? ' (reply)' : ''}`
       case 'assignee_changed':
         return activity.details.to 
           ? `${userName} assigned task to ${activity.details.to_name || 'someone'}`
           : `${userName} unassigned the task`
+      case 'assignees_changed':
+        return `${userName} changed task assignees`
       case 'priority_changed':
         return `${userName} changed priority from "${activity.details.from}" to "${activity.details.to}"`
       case 'due_date_changed':
         return activity.details.to 
           ? `${userName} set due date to ${new Date(activity.details.to).toLocaleDateString()}`
           : `${userName} removed due date`
+      case 'dependency_added':
+        return `${userName} added a task dependency`
+      case 'dependency_removed':
+        return `${userName} removed a task dependency`
       default:
         return `${userName} ${activity.action.replace(/_/g, ' ')}`
     }
