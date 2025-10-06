@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class TaskActivityTester:
-    def __init__(self, base_url: str = "https://task-activity-auto.preview.emergentagent.com"):
+    def __init__(self, base_url: str = "https://taskmetrics-fix.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user_data = None
