@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
-  Calendar, Users, Target, MoreVertical, Edit2, Trash2, Eye, TrendingUp, 
-  ArrowUpRight, Clock, CheckCircle, AlertCircle, Star, Zap, Activity,
-  ChevronUp, ChevronDown, Filter
+  Calendar, Target, MoreVertical, Edit2, Trash2, Eye, TrendingUp, 
+  ArrowUpRight, Clock, CheckCircle, AlertCircle, Zap,
+  ChevronUp, ChevronDown, Archive, X
 } from 'lucide-react'
 import { getBACKEND_URL } from '../../utils/config'
 import { useAuth } from '../../contexts/AuthContext'
