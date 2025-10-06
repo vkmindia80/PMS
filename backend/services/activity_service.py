@@ -160,6 +160,17 @@ class ActivityService:
                     "timestamp": created_dt.replace(hour=(created_dt.hour + 2) % 24)
                 }
             ])
+            
+        # 2.5. Add comment activity if task has comments
+        if task.get("comment_count", 0) > 0:
+            activities_to_add.append({
+                "action": "comment_added",
+                "details": {
+                    "content_preview": "Added initial thoughts on the task implementation",
+                    "comment_type": "comment"
+                },
+                "timestamp": created_dt.replace(hour=(created_dt.hour + 1) % 24, minute=30)
+            })
         
         # 3. Add time logging if task has time tracking
         time_tracking = task.get("time_tracking", {})
