@@ -274,6 +274,20 @@ async def update_comment(
                     "$push": {"edit_history": edit_entry}
                 }
             )
+            
+            # Log activity for task comment updates
+            if existing_comment.get("entity_type") == "task":
+                await activity_service.log_activity(
+                    existing_comment["entity_id"], 
+                    current_user.id, 
+                    "comment_updated",
+                    {
+                        "comment_id": comment_id,
+                        "fields_changed": list(update_data.keys()),
+                        "content_preview": update_data.get("content", existing_comment.get("content", ""))[:100] + "..." if len(update_data.get("content", existing_comment.get("content", ""))) > 100 else update_data.get("content", existing_comment.get("content", ""))
+                    },
+                    db
+                )
         
         # Get updated comment
         updated_comment = await db.comments.find_one({"id": comment_id})
