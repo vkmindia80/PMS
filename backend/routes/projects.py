@@ -21,23 +21,45 @@ def serialize_project(project_data: Dict) -> Dict:
     if project_data:
         if "_id" in project_data:
             del project_data["_id"]
-        # Ensure all date and datetime fields are properly serialized
-        for date_field in ["start_date", "due_date", "created_at", "updated_at", "archived_at"]:
+        # Ensure all date fields are properly serialized (date fields only, no time)
+        for date_field in ["start_date", "due_date"]:
             if date_field in project_data and project_data[date_field]:
-                if isinstance(project_data[date_field], date):
-                    project_data[date_field] = project_data[date_field].isoformat()
-                elif isinstance(project_data[date_field], datetime):
+                if isinstance(project_data[date_field], datetime):
+                    # Convert datetime to date (strip time component)
+                    project_data[date_field] = project_data[date_field].date().isoformat()
+                elif isinstance(project_data[date_field], date):
                     project_data[date_field] = project_data[date_field].isoformat()
                 elif hasattr(project_data[date_field], 'isoformat'):
-                    project_data[date_field] = project_data[date_field].isoformat()
+                    # If it's a datetime-like object, convert to date
+                    try:
+                        if hasattr(project_data[date_field], 'date'):
+                            project_data[date_field] = project_data[date_field].date().isoformat()
+                        else:
+                            project_data[date_field] = project_data[date_field].isoformat()
+                    except:
+                        project_data[date_field] = str(project_data[date_field])
+        
+        # Ensure datetime fields are properly serialized (keep time component)
+        for datetime_field in ["created_at", "updated_at", "archived_at"]:
+            if datetime_field in project_data and project_data[datetime_field]:
+                if isinstance(project_data[datetime_field], datetime):
+                    project_data[datetime_field] = project_data[datetime_field].isoformat()
+                elif isinstance(project_data[datetime_field], date):
+                    project_data[datetime_field] = project_data[datetime_field].isoformat()
+                elif hasattr(project_data[datetime_field], 'isoformat'):
+                    project_data[datetime_field] = project_data[datetime_field].isoformat()
+        
         # Handle milestones dates
         if "milestones" in project_data:
             for milestone in project_data["milestones"]:
                 if "due_date" in milestone and milestone["due_date"]:
-                    if isinstance(milestone["due_date"], date):
+                    if isinstance(milestone["due_date"], datetime):
+                        # Convert datetime to date (strip time component)
+                        milestone["due_date"] = milestone["due_date"].date().isoformat()
+                    elif isinstance(milestone["due_date"], date):
                         milestone["due_date"] = milestone["due_date"].isoformat()
-                    elif hasattr(milestone["due_date"], 'isoformat'):
-                        milestone["due_date"] = milestone["due_date"].isoformat()
+                    elif hasattr(milestone["due_date"], 'date'):
+                        milestone["due_date"] = milestone["due_date"].date().isoformat()
                 if "completed_at" in milestone and milestone["completed_at"]:
                     if isinstance(milestone["completed_at"], datetime):
                         milestone["completed_at"] = milestone["completed_at"].isoformat()
