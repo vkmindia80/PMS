@@ -664,7 +664,7 @@ const ProjectDetailsPage: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Milestones</h2>
           <div className="space-y-3">
-            {project.milestones.map(milestone => (
+            {(project.milestones || []).map(milestone => (
               <div 
                 key={milestone.id} 
                 className={`p-4 border-l-4 ${milestone.completed ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-gray-50'} rounded-r-lg`}
