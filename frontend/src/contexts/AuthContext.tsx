@@ -125,6 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         } else {
           console.log('🚫 No stored authentication data found - showing login')
+          setIsLoading(false)
         }
       } catch (error) {
         console.error('❌ Critical auth initialization error:', error)
