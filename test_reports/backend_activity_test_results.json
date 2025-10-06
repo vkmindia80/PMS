@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-10-06T14:01:15.722230",
-  "success": false,
-  "tests_run": 2,
-  "tests_passed": 1,
+  "timestamp": "2025-10-06T14:01:47.597034",
+  "success": true,
+  "tests_run": 8,
+  "tests_passed": 8,
   "results": [
     {
       "test_name": "User Login",
@@ -11,8 +11,8 @@
       "response_data": {
         "message": "Login successful",
         "tokens": {
-          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5NzYxMDc1LCJ0eXBlIjoiYWNjZXNzIn0.fNMkaDKJWnI96yoWWonscycr4Bh292nwJchd09tgW0o",
-          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwMzY0MDc1LCJ0eXBlIjoicmVmcmVzaCJ9.Iwstai4fqNyj-WSVZ2DFvXC9Q2C2FOevMhEovOOVz3M",
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5NzYxMTA1LCJ0eXBlIjoiYWNjZXNzIn0.4LnCWHo_yR-OmH46sjWLR3MnQyGuy56YZxSdWlWXWPA",
+          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwMzY0MTA1LCJ0eXBlIjoicmVmcmVzaCJ9.Eo-uVyt-Wo1_YUQTvEPM0saWDmL1XSDpC8EL7bH7U1o",
           "token_type": "bearer",
           "expires_in": 1800
         },
@@ -30,7 +30,7 @@
           "is_active": true,
           "status": "active",
           "email_verified": true,
-          "last_login": "2025-10-06T14:00:50.657000",
+          "last_login": "2025-10-06T14:01:29.152000",
           "timezone": "UTC",
           "language": "en",
           "theme": "light",
@@ -38,21 +38,265 @@
           "profile_completed": true,
           "onboarding_completed": true,
           "created_at": "2025-10-06T13:41:51.639000",
-          "updated_at": "2025-10-06T14:00:50.657000"
+          "updated_at": "2025-10-06T14:01:29.152000"
         }
       },
-      "timestamp": "2025-10-06T14:01:15.684223"
+      "timestamp": "2025-10-06T14:01:45.280345"
     },
     {
       "test_name": "Get Task Details",
-      "success": false,
-      "details": "Status: 404",
+      "success": true,
+      "details": "Status: 200",
       "response_data": {
-        "detail": "Task not found"
+        "title": "Stakeholder review",
+        "description": "Complete stakeholder review for the Adaptive EdTech Learning Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+        "status": "todo",
+        "priority": "low",
+        "type": "bug",
+        "project_id": "proj-0a17ad81111b",
+        "organization_id": "demo-org-001",
+        "assignee_id": "b8c158d4-5fa7-4aa2-86dc-49e03dc32d9f",
+        "assignee_ids": [
+          "b8c158d4-5fa7-4aa2-86dc-49e03dc32d9f"
+        ],
+        "reporter_id": "b4664961-4bf4-4be3-953b-1d2b732525e7",
+        "parent_task_id": null,
+        "due_date": "2025-12-06T14:00:48.028000",
+        "start_date": "2025-11-26T14:00:48.028000",
+        "completed_at": null,
+        "time_tracking": {
+          "estimated_hours": 14.0,
+          "actual_hours": 0.0,
+          "logged_time": []
+        },
+        "dependencies": [
+          {
+            "task_id": "18062848-ce87-4341-b041-2c03d36c2f9f",
+            "dependency_type": "blocks"
+          }
+        ],
+        "subtasks": [],
+        "tags": [
+          "personalization",
+          "ai"
+        ],
+        "labels": [
+          "Educational Technology"
+        ],
+        "custom_fields": {
+          "complexity": "medium",
+          "business_value": "high",
+          "risk_level": "low"
+        },
+        "progress_percentage": 0.0,
+        "id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+        "created_at": "2025-10-04T14:00:48.052000",
+        "updated_at": "2025-10-06T14:00:48.100000",
+        "subtask_count": 0,
+        "comment_count": 0,
+        "attachment_count": 0
       },
-      "timestamp": "2025-10-06T14:01:15.721375"
+      "timestamp": "2025-10-06T14:01:45.321131"
+    },
+    {
+      "test_name": "Get Activity Metrics",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+        "metrics": {
+          "total_events": 0,
+          "time_entries": 0,
+          "updates": 0,
+          "active_days": 0
+        },
+        "last_updated": "2025-10-06T14:01:45.363063"
+      },
+      "timestamp": "2025-10-06T14:01:45.366190"
+    },
+    {
+      "test_name": "Get Activity List",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": [
+        {
+          "id": "5afae48a-5325-4e14-b851-10518d7629af",
+          "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+          "user_id": "demo-user-001",
+          "action": "status_changed",
+          "details": {
+            "from": "todo",
+            "to": "todo"
+          },
+          "timestamp": "2025-10-04T16:00:48.052000"
+        },
+        {
+          "id": "9e9cc3d2-05a0-4ae1-b052-a030150b351f",
+          "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+          "user_id": "demo-user-001",
+          "action": "task_updated",
+          "details": {
+            "fields": [
+              "description",
+              "priority"
+            ]
+          },
+          "timestamp": "2025-10-04T15:00:48.052000"
+        },
+        {
+          "id": "05de82eb-1e5d-41cc-9967-0a454c936857",
+          "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+          "user_id": "demo-user-001",
+          "action": "task_created",
+          "details": {
+            "title": "Stakeholder review",
+            "status": "todo"
+          },
+          "timestamp": "2025-10-04T14:00:48.052000"
+        }
+      ],
+      "timestamp": "2025-10-06T14:01:45.416689"
+    },
+    {
+      "test_name": "Get Activity List",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": [
+        {
+          "id": "5afae48a-5325-4e14-b851-10518d7629af",
+          "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+          "user_id": "demo-user-001",
+          "action": "status_changed",
+          "details": {
+            "from": "todo",
+            "to": "todo"
+          },
+          "timestamp": "2025-10-04T16:00:48.052000"
+        },
+        {
+          "id": "9e9cc3d2-05a0-4ae1-b052-a030150b351f",
+          "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+          "user_id": "demo-user-001",
+          "action": "task_updated",
+          "details": {
+            "fields": [
+              "description",
+              "priority"
+            ]
+          },
+          "timestamp": "2025-10-04T15:00:48.052000"
+        },
+        {
+          "id": "05de82eb-1e5d-41cc-9967-0a454c936857",
+          "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+          "user_id": "demo-user-001",
+          "action": "task_created",
+          "details": {
+            "title": "Stakeholder review",
+            "status": "todo"
+          },
+          "timestamp": "2025-10-04T14:00:48.052000"
+        }
+      ],
+      "timestamp": "2025-10-06T14:01:45.454800"
+    },
+    {
+      "test_name": "Get Activity Metrics",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+        "metrics": {
+          "total_events": 3,
+          "time_entries": 0,
+          "updates": 2,
+          "active_days": 1
+        },
+        "last_updated": "2025-10-06T14:01:45.489609"
+      },
+      "timestamp": "2025-10-06T14:01:45.492615"
+    },
+    {
+      "test_name": "Log Time Entry",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "title": "Stakeholder review",
+        "description": "Complete stakeholder review for the Adaptive EdTech Learning Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+        "status": "todo",
+        "priority": "low",
+        "type": "bug",
+        "project_id": "proj-0a17ad81111b",
+        "organization_id": "demo-org-001",
+        "assignee_id": "b8c158d4-5fa7-4aa2-86dc-49e03dc32d9f",
+        "assignee_ids": [
+          "b8c158d4-5fa7-4aa2-86dc-49e03dc32d9f"
+        ],
+        "reporter_id": "b4664961-4bf4-4be3-953b-1d2b732525e7",
+        "parent_task_id": null,
+        "due_date": "2025-12-06T14:00:48.028000",
+        "start_date": "2025-11-26T14:00:48.028000",
+        "completed_at": null,
+        "time_tracking": {
+          "estimated_hours": 14.0,
+          "actual_hours": 0.5,
+          "logged_time": [
+            {
+              "id": "2216a344-df17-4fc1-875d-5866402b70fb",
+              "user_id": "demo-user-001",
+              "hours": 0.5,
+              "description": "Testing activity generation",
+              "date": "2025-10-06",
+              "created_at": "2025-10-06T14:01:45.528785"
+            }
+          ]
+        },
+        "dependencies": [
+          {
+            "task_id": "18062848-ce87-4341-b041-2c03d36c2f9f",
+            "dependency_type": "blocks"
+          }
+        ],
+        "subtasks": [],
+        "tags": [
+          "personalization",
+          "ai"
+        ],
+        "labels": [
+          "Educational Technology"
+        ],
+        "custom_fields": {
+          "complexity": "medium",
+          "business_value": "high",
+          "risk_level": "low"
+        },
+        "progress_percentage": 0.0,
+        "id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+        "created_at": "2025-10-04T14:00:48.052000",
+        "updated_at": "2025-10-06T14:01:45.529000",
+        "subtask_count": 0,
+        "comment_count": 0,
+        "attachment_count": 0
+      },
+      "timestamp": "2025-10-06T14:01:45.534368"
+    },
+    {
+      "test_name": "Get Updated Activity Metrics",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+        "metrics": {
+          "total_events": 4,
+          "time_entries": 1,
+          "updates": 2,
+          "active_days": 2
+        },
+        "last_updated": "2025-10-06T14:01:47.592893"
+      },
+      "timestamp": "2025-10-06T14:01:47.596068"
     }
   ],
-  "task_id": "efd610ef-7dae-4168-ae7c-a7cc11acfb1b",
-  "functionality_status": "ISSUES_FOUND"
+  "task_id": "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040",
+  "functionality_status": "WORKING"
 }
