@@ -117,7 +117,10 @@ const ProjectDetailsPage: React.FC = () => {
       if (!projectResponse.ok) {
         const errorText = await projectResponse.text()
         console.error('Project API Error:', projectResponse.status, errorText)
-        throw new Error(`Failed to fetch project details: ${projectResponse.status} ${errorText}`)
+        if (projectResponse.status === 404) {
+          throw new Error('Project not found. It may have been deleted or archived.')
+        }
+        throw new Error(`Failed to fetch project details: ${projectResponse.status}`)
       }
       
       const projectData = await projectResponse.json()
