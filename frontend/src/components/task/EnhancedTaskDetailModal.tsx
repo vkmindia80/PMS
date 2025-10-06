@@ -1149,6 +1149,8 @@ export const EnhancedTaskDetailModal: React.FC<EnhancedTaskDetailModalProps> = (
               activities={activities}
               loading={loading}
               availableUsers={availableUsers}
+              taskId={task.id}
+              onRefresh={fetchActivity}
             />
           )}
           
