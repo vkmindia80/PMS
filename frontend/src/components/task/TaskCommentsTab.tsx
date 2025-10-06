@@ -699,7 +699,7 @@ const CommentCard: React.FC<{
           {/* Reply Button */}
           <button
             onClick={() => setShowReplyForm(!showReplyForm)}
-            className="flex items-center space-x-1.5 text-blue-600 hover:text-blue-800 cursor-pointer px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all duration-200 border border-gray-200 hover:border-blue-300 font-medium shadow-sm hover:shadow-md"
+            className="group flex items-center space-x-1.5 text-blue-600 hover:text-blue-700 cursor-pointer px-3 py-1.5 rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 border border-gray-200 hover:border-blue-300 font-medium shadow-sm hover:shadow-lg relative overflow-hidden"
           >
             <Reply className="h-4 w-4" />
             <span className="text-xs font-semibold">Reply</span>
