@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useProjectFilterContext } from '../../contexts/ProjectFilterContext'
-import { API_URL } from '../../utils/config'
+import { API_ENDPOINTS } from '../../utils/config'
 import toast from 'react-hot-toast'
 
 interface TaskFormData {
