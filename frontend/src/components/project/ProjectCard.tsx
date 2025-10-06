@@ -139,9 +139,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </button>
           
           {showMenu && (
-            <div className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
+            <div 
+              className="absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]"
+              onClick={(e) => e.stopPropagation()}
+            >
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   navigate(`/projects/${project.id}`)
                   setShowMenu(false)
                 }}
@@ -152,7 +156,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 <span>View Details</span>
               </button>
               <button
-                onClick={() => {/* TODO: Implement edit project */}}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  /* TODO: Implement edit project */
+                }}
                 className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2"
                 data-testid="edit-project-btn"
               >
@@ -167,7 +174,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                 {['planning', 'active', 'on_hold', 'completed'].map(status => (
                   <button
                     key={status}
-                    onClick={() => handleStatusChange(status)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleStatusChange(status)
+                    }}
                     className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50"
                     data-testid={`change-status-${status}`}
                   >
@@ -178,7 +188,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               
               <div className="border-t border-gray-100">
                 <button
-                  onClick={handleArchive}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleArchive()
+                  }}
                   className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-red-600 flex items-center space-x-2"
                   data-testid="archive-project-btn"
                 >
