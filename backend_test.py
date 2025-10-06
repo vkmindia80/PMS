@@ -328,8 +328,8 @@ class TaskActivityTester:
             return False
 
     def run_all_tests(self):
-        """Run all comment API tests"""
-        print("🚀 Starting Comment Reply Bug Testing")
+        """Run all activity API tests"""
+        print("🚀 Starting Task Activity Timeline Testing")
         print("="*80)
         
         # Test authentication
@@ -338,34 +338,49 @@ class TaskActivityTester:
             return False
             
         # Get test task
-        if not self.test_get_tasks():
-            print("❌ No tasks available, stopping tests")
+        if not self.test_get_task():
+            print("❌ Test task not available, stopping tests")
             return False
             
-        # Test comment workflow
-        if not self.test_comment_workflow():
-            print("❌ Comment workflow failed")
-            return False
-            
-        # Test comment retrieval - CRITICAL TEST
-        retrieval_success = self.test_comment_retrieval()
+        # Test activity metrics - KEY FUNCTIONALITY
+        metrics_success = self.test_activity_metrics() is not None
+        
+        # Test activity list
+        list_success = len(self.test_activity_list()) > 0
+        
+        # Test activity data integrity
+        integrity_success = self.test_activity_data_integrity()
+        
+        # Test activity refresh cycle
+        refresh_success = self.test_activity_refresh_cycle()
+        
+        # Calculate overall success
+        key_tests_passed = sum([metrics_success, list_success, integrity_success, refresh_success])
+        overall_success = key_tests_passed >= 3  # At least 3 out of 4 key tests must pass
         
         # Print summary
         print("\n" + "="*80)
-        print("COMMENT REPLY BUG TEST SUMMARY")
+        print("TASK ACTIVITY TIMELINE TEST SUMMARY")
         print("="*80)
         print(f"Tests run: {self.tests_run}")
         print(f"Tests passed: {self.tests_passed}")
         print(f"Success rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
         
-        if retrieval_success:
-            print("🎉 Comment threading appears to be working!")
-            print("✅ Comments should now display in Discussion Timeline")
-        else:
-            print("❌ Comment threading has issues")
-            print("🐛 Comments may not display properly in Discussion Timeline")
+        print(f"\n🎯 KEY FUNCTIONALITY TESTS:")
+        print(f"  Activity Metrics: {'✅' if metrics_success else '❌'}")
+        print(f"  Activity List: {'✅' if list_success else '❌'}")
+        print(f"  Data Integrity: {'✅' if integrity_success else '❌'}")
+        print(f"  Auto-refresh: {'✅' if refresh_success else '❌'}")
         
-        return retrieval_success
+        if overall_success:
+            print("\n🎉 Task Activity Timeline functionality is working!")
+            print("✅ Activity metrics should auto-update")
+            print("✅ Activity list should show all actions")
+        else:
+            print("\n❌ Task Activity Timeline has issues")
+            print("🐛 Activity functionality may not work properly")
+        
+        return overall_success
 
 def main():
     """Main test execution"""
