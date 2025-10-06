@@ -97,7 +97,7 @@ const TasksPage: React.FC = () => {
   // Kanban board data
   const [kanbanData, setKanbanData] = useState<Record<string, Task[]>>({})
 
-  const API_BASE = API_URL
+  const API_BASE = getApiUrlDynamic()
 
   // Status configurations
   const statusConfig = {
