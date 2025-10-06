@@ -30,6 +30,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   getStatusColor,
   getPriorityColor,
 }) => {
+  const navigate = useNavigate()
   const { tokens } = useAuth()
   const [showMenu, setShowMenu] = useState(false)
   const [loading, setLoading] = useState(false)
