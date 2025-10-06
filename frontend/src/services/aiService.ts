@@ -6,7 +6,7 @@ import axios from 'axios'
 
 import { getApiUrl } from '../utils/environment'
 
-const getgetAPI_BASE_URL() = () => getApiUrl()
+const getAPI_BASE_URL = () => getApiUrl()
 
 export interface AIModelRequest {
   prompt: string
