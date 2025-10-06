@@ -23,7 +23,14 @@ export default defineConfig({
     ],
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'http://localhost:8001',
+        target: (() => {
+          let targetUrl = process.env.VITE_API_URL || 'http://localhost:8001';
+          // Force HTTPS for emergentagent.com domains to prevent mixed content errors
+          if (targetUrl.includes('emergentagent.com') && !targetUrl.startsWith('https://')) {
+            targetUrl = targetUrl.replace('http://', 'https://');
+          }
+          return targetUrl;
+        })(),
         changeOrigin: true,
         secure: false, // Allow self-signed certificates in development
         rewrite: (path) => path,
