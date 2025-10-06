@@ -212,7 +212,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     if (!tokens?.access_token) return
     
     try {
-      const response = await fetch(`${API_URL}/api/users`, {
+      const response = await fetch(API_ENDPOINTS.users.list, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
