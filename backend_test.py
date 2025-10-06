@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Task Activity Timeline
-Testing activity metrics, auto-refresh, and activity list functionality
+Backend API Testing for Project Details Functionality
+Testing login, projects list, and project details loading - the reported issue
 """
 
 import requests
@@ -11,14 +11,14 @@ import time
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-class TaskActivityTester:
-    def __init__(self, base_url: str = "https://project-viewer-11.preview.emergentagent.com"):
+class ProjectDetailsTester:
+    def __init__(self, base_url: str = "http://localhost:8001"):
         self.base_url = base_url
         self.token = None
         self.user_data = None
         self.tests_run = 0
         self.tests_passed = 0
-        self.test_task_id = "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040"  # Valid task ID from system
+        self.test_project_id = None  # Will be set from projects list
         self.test_results = []
 
     def log_result(self, test_name: str, success: bool, details: str = "", response_data: Any = None):
