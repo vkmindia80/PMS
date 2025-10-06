@@ -17,6 +17,9 @@ from models.task import (
 )
 from models.user import User
 
+# Import services
+from services.activity_service import activity_service
+
 router = APIRouter(prefix="/api/tasks", tags=["tasks"])
 
 def create_task_summary(task: Dict) -> TaskSummary:
