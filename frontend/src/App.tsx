@@ -172,6 +172,10 @@ const AppContent: React.FC = () => {
             } 
           />
           <Route 
+            path="/test-emoji" 
+            element={<EmojiPickerTest />} 
+          />
+          <Route 
             path="/timeline/:projectId" 
             element={
               <ProtectedRoute>
