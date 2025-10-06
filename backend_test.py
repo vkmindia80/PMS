@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Comment Reply Bug Fix
-Testing comment creation, threading, and display functionality
+Backend API Testing for Task Activity Timeline
+Testing activity metrics, auto-refresh, and activity list functionality
 """
 
 import requests
 import sys
 import json
+import time
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-class CommentReplyBugTester:
+class TaskActivityTester:
     def __init__(self, base_url: str = "https://task-activity-auto.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
