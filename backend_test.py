@@ -384,20 +384,21 @@ class TaskActivityTester:
 
 def main():
     """Main test execution"""
-    tester = CommentReplyBugTester()
+    tester = TaskActivityTester()
     
     try:
         success = tester.run_all_tests()
         
         # Save test results
-        with open('/app/test_reports/backend_comment_test_results.json', 'w') as f:
+        with open('/app/test_reports/backend_activity_test_results.json', 'w') as f:
             json.dump({
                 'timestamp': datetime.utcnow().isoformat(),
                 'success': success,
                 'tests_run': tester.tests_run,
                 'tests_passed': tester.tests_passed,
                 'results': tester.test_results,
-                'bug_status': 'FIXED' if success else 'STILL_EXISTS'
+                'task_id': tester.test_task_id,
+                'functionality_status': 'WORKING' if success else 'ISSUES_FOUND'
             }, f, indent=2)
         
         return 0 if success else 1
