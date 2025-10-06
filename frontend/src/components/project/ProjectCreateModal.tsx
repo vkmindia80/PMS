@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { X, Calendar, Users, DollarSign, Tag, FileText, Loader2 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
-import { getgetBACKEND_URL() } from '../../utils/config'
+import { getBACKEND_URL } from '../../utils/config'
 import toast from 'react-hot-toast'
 
 interface ProjectTemplate {
