@@ -694,10 +694,10 @@ const CommentCard: React.FC<{
           {/* Reply Button */}
           <button
             onClick={() => setShowReplyForm(!showReplyForm)}
-            className="flex items-center space-x-1.5 text-blue-600 hover:text-blue-800 cursor-pointer px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all duration-200 border border-transparent hover:border-blue-200 font-medium"
+            className="flex items-center space-x-1.5 text-blue-600 hover:text-blue-800 cursor-pointer px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all duration-200 border border-gray-200 hover:border-blue-300 font-medium shadow-sm hover:shadow-md"
           >
             <Reply className="h-4 w-4" />
-            <span className="text-xs">Reply</span>
+            <span className="text-xs font-semibold">Reply</span>
             {((comment.nested_replies && comment.nested_replies.length > 0) || comment.reply_count > 0) && (
               <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-bold ml-1">
                 {comment.nested_replies?.length || comment.reply_count}
