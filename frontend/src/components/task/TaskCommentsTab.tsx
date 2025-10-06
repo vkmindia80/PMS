@@ -891,11 +891,6 @@ const CommentCard: React.FC<{
             </div>
           )}
         </div>
-
-        <div>
-
-        {/* Reply and Interaction Actions */}
-        <div className="flex items-center space-x-4 text-sm text-gray-500">
       </div>
 
       {/* Reply Form */}
