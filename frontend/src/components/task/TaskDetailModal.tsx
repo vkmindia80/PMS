@@ -384,7 +384,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     
     try {
       setIsSubmittingComment(true)
-      const response = await fetch(`${API_URL}/api/comments/`, {
+      const response = await fetch(API_ENDPOINTS.comments.create, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
@@ -473,7 +473,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     
     try {
       setIsSubmittingReply(true)
-      const response = await fetch(`${API_URL}/api/comments/`, {
+      const response = await fetch(API_ENDPOINTS.comments.create, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
