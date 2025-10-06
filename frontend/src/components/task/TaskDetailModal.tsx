@@ -288,8 +288,8 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     try {
       setIsCommentsLoading(true)
       // Use threaded comments endpoint for proper display
-      const threadsUrl = `${API_URL}/api/comments/threads/task/${task.id}`
-      const flatUrl = `${API_URL}/api/comments/?entity_type=task&entity_id=${task.id}`
+      const threadsUrl = API_ENDPOINTS.comments.threads('task', task.id)
+      const flatUrl = `${API_ENDPOINTS.comments.list}?entity_type=task&entity_id=${task.id}`
       
       console.log('🔍 Fetching threaded comments from:', threadsUrl)
       console.log('🔍 Task ID:', task.id)
