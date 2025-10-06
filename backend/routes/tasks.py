@@ -1221,9 +1221,10 @@ async def remove_task_dependency(
         )
         
         # Log activity
-        await log_task_activity(
-            db, task_id, current_user.id, "dependency_removed",
-            {"dependency_task_id": dependency_task_id}
+        await activity_service.log_activity(
+            task_id, current_user.id, "dependency_removed",
+            {"dependency_task_id": dependency_task_id},
+            db
         )
         
         # Get updated task
