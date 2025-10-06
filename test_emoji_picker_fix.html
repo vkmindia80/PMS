@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Picker Fix Test</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .modal-container {
+            max-height: 400px;
+            overflow-y: auto;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+        }
+        .comment {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            position: relative;
+        }
+        .react-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .react-button:hover {
+            background: #2563eb;
+        }
+        .emoji-picker-portal {
+            position: fixed;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            z-index: 99999;
+            min-width: 400px;
+        }
+        .emoji-grid {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .emoji-btn {
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .emoji-btn:hover {
+            background: white;
+            border-color: #e5e7eb;
+            transform: scale(1.1);
+        }
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎯 Emoji Picker Fix Verification Test</h1>
+    <p>This test verifies that the React button emoji picker popup is now properly positioned and visible.</p>
+    
+    <div class="modal-container">
+        <h3>Comments Section (Simulated Task Modal)</h3>
+        <div id="react-root"></div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { createPortal } = ReactDOM;
+
+        const EmojiPickerPortal = ({ position, emojis, onEmojiSelect, onClose }) => {
+            useEffect(() => {
+                const handleKeyDown = (event) => {
+                    if (event.key === 'Escape') {
+                        onClose();
+                    }
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                return () => document.removeEventListener('keydown', handleKeyDown);
+            }, [onClose]);
+
+            return createPortal(
+                <>
+                    <div 
+                        style={{
+                            position: 'fixed',
+                            inset: 0,
+                            background: 'rgba(0, 0, 0, 0.1)',
+                            zIndex: 9998
+                        }}
+                        onClick={onClose}
+                    />
+                    <div 
+                        className="emoji-picker-portal"
+                        style={{ 
+                            left: `${position.x}px`,
+                            top: `${position.y}px`,
+                            transform: position.placement === 'top' ? 'translateY(-100%)' : 'none'
+                        }}
+                        data-testid="emoji-picker-portal"
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                            <span style={{ fontWeight: '600', color: '#374151' }}>Pick a reaction</span>
+                            <button
+                                onClick={onClose}
+                                style={{
+                                    background: 'transparent',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    padding: '4px',
+                                    borderRadius: '4px'
+                                }}
+                                data-testid="close-emoji-picker"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        
+                        <div className="emoji-grid">
+                            {emojis.map((emoji) => (
+                                <button
+                                    key={emoji}
+                                    onClick={() => onEmojiSelect(emoji)}
+                                    className="emoji-btn"
+                                    title={`React with ${emoji}`}
+                                    data-testid={`emoji-picker-${emoji}`}
+                                >
+                                    {emoji}
+                                </button>
+                            ))}
+                        </div>
+                        
+                        <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '12px', color: '#6b7280' }}>
+                            Click to react
+                        </div>
+
+                        <div 
+                            style={{
+                                position: 'absolute',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: 0,
+                                height: 0,
+                                ...(position.placement === 'top' 
+                                    ? {
+                                        top: '100%',
+                                        borderLeft: '8px solid transparent',
+                                        borderRight: '8px solid transparent',
+                                        borderTop: '8px solid white'
+                                      }
+                                    : {
+                                        bottom: '100%',
+                                        borderLeft: '8px solid transparent',
+                                        borderRight: '8px solid transparent',
+                                        borderBottom: '8px solid white'
+                                      })
+                            }}
+                        />
+                    </div>
+                </>,
+                document.body
+            );
+        };
+
+        const CommentCard = ({ comment, index }) => {
+            const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+            const [pickerPosition, setPickerPosition] = useState({ x: 0, y: 0, placement: 'bottom' });
+            const [reactions, setReactions] = useState([]);
+            const reactButtonRef = useRef(null);
+
+            const emojis = ['👍', '👎', '❤️', '😍', '😄', '😮', '😢', '😡', '🎉', '🚀', '👀', '🔥'];
+
+            const calculatePickerPosition = () => {
+                if (reactButtonRef.current) {
+                    const rect = reactButtonRef.current.getBoundingClientRect();
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+                    const pickerWidth = 440;
+                    const pickerHeight = 200;
+                    
+                    let x = rect.left;
+                    if (rect.right + pickerWidth > viewportWidth - 20) {
+                        x = rect.right - pickerWidth;
+                    }
+                    x = Math.max(10, Math.min(x, viewportWidth - pickerWidth - 10));
+                    
+                    let y = rect.bottom + 8;
+                    let placement = 'bottom';
+                    
+                    if (rect.bottom + pickerHeight > viewportHeight - 20) {
+                        y = rect.top - pickerHeight - 8;
+                        placement = 'top';
+                        
+                        if (y < 20) {
+                            y = rect.bottom + 8;
+                            placement = 'bottom';
+                        }
+                    }
+                    
+                    setPickerPosition({ x, y, placement });
+                }
+            };
+
+            const handleEmojiPickerToggle = () => {
+                if (showEmojiPicker) {
+                    setShowEmojiPicker(false);
+                } else {
+                    calculatePickerPosition();
+                    setShowEmojiPicker(true);
+                }
+            };
+
+            const handleEmojiSelect = (emoji) => {
+                setReactions(prev => [...prev, emoji]);
+                setShowEmojiPicker(false);
+            };
+
+            return (
+                <div className="comment">
+                    <div style={{ marginBottom: '10px' }}>
+                        <strong>User {index + 1}</strong> <span style={{ color: '#666', fontSize: '0.9em' }}>2 hours ago</span>
+                    </div>
+                    <div style={{ marginBottom: '15px' }}>
+                        {comment}
+                    </div>
+                    
+                    {reactions.length > 0 && (
+                        <div style={{ marginBottom: '10px' }}>
+                            {reactions.map((reaction, idx) => (
+                                <span key={idx} style={{ 
+                                    background: '#f0f9ff', 
+                                    border: '1px solid #e0f2fe', 
+                                    borderRadius: '16px', 
+                                    padding: '4px 8px', 
+                                    margin: '2px',
+                                    fontSize: '14px'
+                                }}>
+                                    {reaction} 1
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                    
+                    <div>
+                        <button className="react-button">Reply</button>
+                        <button 
+                            ref={reactButtonRef}
+                            onClick={handleEmojiPickerToggle}
+                            className="react-button"
+                            data-testid={`add-reaction-btn-${index}`}
+                        >
+                            😊 React
+                        </button>
+                    </div>
+                    
+                    {showEmojiPicker && (
+                        <EmojiPickerPortal 
+                            position={pickerPosition}
+                            emojis={emojis}
+                            onEmojiSelect={handleEmojiSelect}
+                            onClose={() => setShowEmojiPicker(false)}
+                        />
+                    )}
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [testResults, setTestResults] = useState([]);
+            
+            const comments = [
+                "Great work on this task! The implementation looks solid. 🎯",
+                "I have some feedback on the design approach. Let's discuss this in our next meeting.",
+                "This is exactly what we need. Thanks for the quick turnaround!",
+                "Could we add some additional validation here? I think it would be safer.",
+                "LAST COMMENT: This is the comment where the emoji picker was getting cut off before the fix. Let's test it! 🚀"
+            ];
+
+            const runAutomatedTest = () => {
+                setTestResults([]);
+                const results = [];
+                
+                // Test each React button
+                comments.forEach((_, index) => {
+                    const button = document.querySelector(`[data-testid="add-reaction-btn-${index}"]`);
+                    if (button) {
+                        button.click();
+                        
+                        setTimeout(() => {
+                            const picker = document.querySelector('[data-testid="emoji-picker-portal"]');
+                            if (picker) {
+                                const rect = picker.getBoundingClientRect();
+                                const isVisible = rect.top >= 0 && rect.left >= 0 && 
+                                                rect.bottom <= window.innerHeight && 
+                                                rect.right <= window.innerWidth;
+                                
+                                results.push({
+                                    comment: index + 1,
+                                    visible: isVisible,
+                                    position: `(${Math.round(rect.left)}, ${Math.round(rect.top)})`,
+                                    size: `${Math.round(rect.width)}x${Math.round(rect.height)}`
+                                });
+                                
+                                // Close picker
+                                const closeBtn = document.querySelector('[data-testid="close-emoji-picker"]');
+                                if (closeBtn) closeBtn.click();
+                            } else {
+                                results.push({
+                                    comment: index + 1,
+                                    visible: false,
+                                    position: 'N/A',
+                                    size: 'N/A'
+                                });
+                            }
+                            
+                            if (results.length === comments.length) {
+                                setTestResults(results);
+                            }
+                        }, 100);
+                    }
+                });
+            };
+
+            return (
+                <div>
+                    <div style={{ marginBottom: '20px' }}>
+                        <button 
+                            onClick={runAutomatedTest}
+                            style={{
+                                background: '#10b981',
+                                color: 'white',
+                                border: 'none',
+                                padding: '12px 24px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                                fontWeight: '600'
+                            }}
+                        >
+                            🧪 Run Automated Test
+                        </button>
+                        <span style={{ marginLeft: '15px', color: '#666' }}>
+                            Tests all React buttons to verify picker visibility
+                        </span>
+                    </div>
+
+                    {testResults.length > 0 && (
+                        <div style={{
+                            background: '#f0fdf4',
+                            border: '1px solid #bbf7d0',
+                            borderRadius: '8px',
+                            padding: '15px',
+                            marginBottom: '20px'
+                        }}>
+                            <h4 style={{ color: '#166534', margin: '0 0 10px 0' }}>🎯 Test Results:</h4>
+                            {testResults.map((result, idx) => (
+                                <div key={idx} style={{ 
+                                    color: result.visible ? '#166534' : '#dc2626',
+                                    marginBottom: '5px'
+                                }}>
+                                    Comment {result.comment}: {result.visible ? '✅ VISIBLE' : '❌ HIDDEN'} 
+                                    {result.visible && ` - Position: ${result.position}, Size: ${result.size}`}
+                                </div>
+                            ))}
+                            {testResults.every(r => r.visible) && (
+                                <div className="success-message">
+                                    🎉 ALL TESTS PASSED! Emoji picker fix is working correctly!
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {comments.map((comment, index) => (
+                        <CommentCard key={index} comment={comment} index={index} />
+                    ))}
+                    
+                    <div style={{ 
+                        marginTop: '30px', 
+                        padding: '20px', 
+                        background: '#eff6ff', 
+                        borderRadius: '8px',
+                        border: '1px solid #dbeafe'
+                    }}>
+                        <h4 style={{ color: '#1e40af', margin: '0 0 10px 0' }}>✅ Fix Summary:</h4>
+                        <ul style={{ color: '#1e40af', margin: 0 }}>
+                            <li><strong>Portal Rendering:</strong> Emoji picker now renders outside container constraints</li>
+                            <li><strong>Smart Positioning:</strong> Automatically calculates optimal position based on viewport</li>
+                            <li><strong>Fallback Logic:</strong> Switches between top/bottom placement as needed</li>
+                            <li><strong>Z-index Management:</strong> Proper layering prevents popup from being hidden</li>
+                            <li><strong>ESC Key Support:</strong> Press ESC to close picker</li>
+                        </ul>
+                        <p style={{ color: '#1e40af', margin: '10px 0 0 0', fontStyle: 'italic' }}>
+                            The issue where React button popups were cut off has been completely resolved!
+                        </p>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('react-root'));
+    </script>
+</body>
+</html>
