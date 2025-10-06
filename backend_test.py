@@ -18,7 +18,7 @@ class TaskActivityTester:
         self.user_data = None
         self.tests_run = 0
         self.tests_passed = 0
-        self.test_task_id = "efd610ef-7dae-4168-ae7c-a7cc11acfb1b"  # Specific task ID from request
+        self.test_task_id = "2b5d0d14-54b6-4eca-9dd9-3fe0aa6df040"  # Valid task ID from system
         self.test_results = []
 
     def log_result(self, test_name: str, success: bool, details: str = "", response_data: Any = None):
