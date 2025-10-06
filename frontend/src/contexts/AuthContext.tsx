@@ -69,11 +69,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Initialize auth state from localStorage
   useEffect(() => {
-    // Prevent multiple initializations
-    if (initStarted) return
+    // Prevent multiple initializations using ref (survives React Strict Mode remounting)
+    if (initStarted.current) return
     
     const initAuth = async () => {
-      setInitStarted(true)
+      initStarted.current = true
       
       try {
         console.log('🚀 Starting authentication initialization...')
