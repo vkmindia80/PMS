@@ -101,17 +101,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               setTimeout(() => reject(new Error('Auth verification timeout')), 15000)
             )
             
-            // Skip token verification during initialization to avoid clearing valid auth
-            // The tokens will be verified when they're actually used for API calls
-            console.log('✅ Authentication initialized successfully (skipping verification)')
-            
-            // Optional: Try to verify in background but don't fail if it doesn't work
-            fetchUserProfile(parsedTokens.access_token).then(() => {
-              console.log('✅ Background token verification successful')
-            }).catch((verifyError) => {
-              console.log('⚠️ Background token verification failed - will retry on next API call:', verifyError)
-              // Don't clear auth data - let the user try to use the app
+            console.log('✅ Authentication initialized successfully from stored data')
+            console.log('🔍 Stored tokens preview:', {
+              hasAccessToken: !!parsedTokens.access_token,
+              tokenLength: parsedTokens.access_token?.length,
+              userEmail: parsedUser.email,
+              userId: parsedUser.id
             })
+            
+            // Set auth state immediately to avoid loading indefinitely
+            setIsLoading(false)
           } catch (error) {
             console.error('❌ Failed to initialize auth:', error)
             clearAuthData()
