@@ -736,7 +736,7 @@ const CommentCard: React.FC<{
                       title={`${data.count} reaction${data.count > 1 ? 's' : ''} • Click to ${userHasReacted ? 'remove' : 'add'} your reaction`}
                       data-testid={`reaction-${emoji}-${comment.id}`}
                     >
-                      <span className="text-base leading-none" role="img" aria-label={`Reaction ${emoji}`}>{emoji}</span>
+                      <span className="text-sm leading-none" role="img" aria-label={`Reaction ${emoji}`}>{emoji}</span>
                       <span className={`font-bold text-sm ${userHasReacted ? 'text-blue-900' : 'text-gray-700'}`}>
                         {data.count}
                       </span>
