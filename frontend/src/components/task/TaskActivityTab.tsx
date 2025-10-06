@@ -200,10 +200,33 @@ export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({
     <div className="p-6">
       {/* Activity Header */}
       <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 mb-6 border border-purple-200">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-          <Activity className="h-6 w-6 mr-3 text-purple-600" />
-          Task Activity Timeline
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold text-gray-900 flex items-center">
+            <Activity className="h-6 w-6 mr-3 text-purple-600" />
+            Task Activity Timeline
+          </h3>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setAutoRefresh(!autoRefresh)}
+              className={`flex items-center px-3 py-1 rounded-full text-sm ${
+                autoRefresh 
+                  ? 'bg-green-100 text-green-800 border border-green-200' 
+                  : 'bg-gray-100 text-gray-600 border border-gray-200'
+              }`}
+            >
+              <RefreshCw className={`h-3 w-3 mr-1 ${autoRefresh ? 'animate-spin' : ''}`} />
+              Auto-refresh {autoRefresh ? 'ON' : 'OFF'}
+            </button>
+            <button
+              onClick={handleManualRefresh}
+              disabled={metricsLoading}
+              className="flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm border border-blue-200 hover:bg-blue-200 transition-colors"
+            >
+              <RefreshCw className={`h-3 w-3 mr-1 ${metricsLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
+        </div>
         
         {/* Activity Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
