@@ -45,7 +45,12 @@ export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({
   // Calculate metrics from activities (fallback)
   const calculateMetricsFromActivities = (acts: TaskActivity[]): ActivityMetrics => {
     const timeEntries = acts.filter(a => a.action === 'time_logged').length
-    const updates = acts.filter(a => ['task_updated', 'status_changed', 'priority_changed', 'assignee_changed', 'due_date_changed'].includes(a.action)).length
+    const updateActions = [
+      'task_updated', 'status_changed', 'priority_changed', 'assignee_changed', 
+      'assignees_changed', 'due_date_changed', 'task_moved', 'dependency_added', 
+      'dependency_removed', 'comment_added', 'comment_updated', 'comment_deleted'
+    ]
+    const updates = acts.filter(a => updateActions.includes(a.action)).length
     
     const dates = new Set(
       acts.map(activity => new Date(activity.timestamp).toDateString())
