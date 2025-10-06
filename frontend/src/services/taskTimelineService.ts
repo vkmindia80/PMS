@@ -45,7 +45,7 @@ export class TaskTimelineService {
   }> {
     try {
       // Fetch regular tasks
-      const tasksResponse = await fetch(`/api/tasks?project_id=${projectId}`, {
+      const tasksResponse = await fetch(`${API_ENDPOINTS.tasks.list}?project_id=${projectId}`, {
         headers: this.getAuthHeaders(token)
       });
 
