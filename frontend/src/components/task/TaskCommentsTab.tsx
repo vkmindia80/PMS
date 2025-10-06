@@ -570,19 +570,42 @@ const CommentCard: React.FC<{
     }
   }
 
-  // Calculate optimal position for emoji picker
+  // Calculate optimal position for emoji picker with better viewport handling
   const calculatePickerPosition = () => {
     if (reactButtonRef.current) {
       const rect = reactButtonRef.current.getBoundingClientRect()
       const viewportWidth = window.innerWidth
-      const pickerWidth = 320 // max-w-[320px] = 320px
+      const viewportHeight = window.innerHeight
+      const pickerWidth = 440 // min-w-[400px] max-w-[440px]
+      const pickerHeight = 200 // Estimated height of picker
       
-      // If there's not enough space on the right, position on the left
+      // Calculate horizontal position
+      let x = rect.left
       if (rect.right + pickerWidth > viewportWidth - 20) {
-        setPickerPosition('left')
-      } else {
-        setPickerPosition('right')
+        // Position to the left if not enough space on right
+        x = rect.right - pickerWidth
       }
+      
+      // Ensure picker doesn't go off screen horizontally
+      x = Math.max(10, Math.min(x, viewportWidth - pickerWidth - 10))
+      
+      // Calculate vertical position - prefer bottom, but use top if not enough space
+      let y = rect.bottom + 8
+      let placement: 'top' | 'bottom' = 'bottom'
+      
+      if (rect.bottom + pickerHeight > viewportHeight - 20) {
+        // Not enough space below, try above
+        y = rect.top - pickerHeight - 8
+        placement = 'top'
+        
+        // If still not enough space above, keep it bottom but adjust
+        if (y < 20) {
+          y = rect.bottom + 8
+          placement = 'bottom'
+        }
+      }
+      
+      setPickerPosition({ x, y, placement })
     }
   }
 
