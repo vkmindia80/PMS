@@ -111,26 +111,25 @@ class TaskActivityTester:
             print(f"    ❌ Login failed")
             return False
 
-    def test_get_tasks(self):
-        """Get tasks to find a test task"""
+    def test_get_task(self):
+        """Get the specific test task"""
         print("\n" + "="*60)
         print("TESTING TASK RETRIEVAL")
         print("="*60)
         
-        # Use a known task ID from existing comments
-        self.test_task_id = "eef9793e-91e1-4e61-850f-673d3d0e94b9"
-        print(f"    ✅ Using known test task ID: {self.test_task_id}")
+        print(f"    🎯 Testing specific task ID: {self.test_task_id}")
         
-        # Verify the task exists by checking if it has comments
+        # Verify the task exists
         success, response = self.run_test(
-            "Verify Task Has Comments",
+            "Get Task Details",
             "GET",
-            f"/api/comments/?entity_type=task&entity_id={self.test_task_id}&limit=1",
+            f"/api/tasks/{self.test_task_id}",
             200
         )
         
-        if success and isinstance(response, list) and len(response) > 0:
-            print(f"    ✅ Task verified - has {len(response)} comment(s)")
+        if success and 'id' in response:
+            print(f"    ✅ Task verified - Title: {response.get('title', 'Unknown')}")
+            print(f"    ✅ Task Status: {response.get('status', 'Unknown')}")
             return True
         else:
             print(f"    ❌ Task verification failed")
