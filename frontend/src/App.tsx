@@ -93,6 +93,14 @@ const AppContent: React.FC = () => {
             } 
           />
           <Route 
+            path="/projects/:projectId" 
+            element={
+              <ProtectedRoute>
+                <ProjectDetailsPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/tasks" 
             element={
               <ProtectedRoute>
