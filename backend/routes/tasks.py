@@ -816,7 +816,7 @@ async def get_task_activity(
     task_id: str,
     current_user: User = Depends(get_current_active_user)
 ):
-    """Get task activity history"""
+    """Get task activity history with enhanced metrics"""
     try:
         db = await get_database()
         
@@ -828,20 +828,39 @@ async def get_task_activity(
                 detail="Task not found"
             )
         
-        # Get activity log
-        activity_log = task.get("activity_log", [])
+        # Get activities using enhanced service
+        activities_data = await activity_service.get_task_activities(task_id, db)
+        
+        # If no activities exist, create some sample activities for existing tasks
+        if not activities_data:
+            print(f"No activities found for task {task_id}, creating sample activities...")
+            await activity_service.create_sample_activities(task_id, current_user.id, db)
+            activities_data = await activity_service.get_task_activities(task_id, db)
         
         # Convert to TaskActivity objects
         activities = []
-        for activity in activity_log:
-            activities.append(TaskActivity(
-                id=activity["id"],
-                task_id=activity["task_id"],
-                user_id=activity["user_id"],
-                action=activity["action"],
-                details=activity.get("details", {}),
-                timestamp=datetime.fromisoformat(activity["timestamp"])
-            ))
+        for activity in activities_data:
+            try:
+                timestamp = activity.get("timestamp", "")
+                if isinstance(timestamp, str):
+                    # Handle ISO format with or without timezone
+                    if timestamp.endswith('Z'):
+                        timestamp = timestamp[:-1] + '+00:00'
+                    timestamp_dt = datetime.fromisoformat(timestamp)
+                else:
+                    timestamp_dt = timestamp
+                    
+                activities.append(TaskActivity(
+                    id=activity["id"],
+                    task_id=activity["task_id"],
+                    user_id=activity["user_id"],
+                    action=activity["action"],
+                    details=activity.get("details", {}),
+                    timestamp=timestamp_dt
+                ))
+            except Exception as e:
+                print(f"Error processing activity {activity.get('id', 'unknown')}: {e}")
+                continue
         
         return activities
         
