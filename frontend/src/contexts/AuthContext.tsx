@@ -108,15 +108,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               ])
               console.log('✅ Authentication initialized successfully')
             } catch (verifyError) {
-              console.log('⚠️ Token verification failed, attempting refresh...')
+              console.log('⚠️ Token verification failed:', verifyError)
               
               // Try to refresh token if we have a refresh token and user data
               if (parsedTokens?.refresh_token && parsedUser?.id) {
-                console.log('🔄 Attempting token refresh during initialization...')
-                await refreshTokenInternal(parsedTokens.refresh_token, parsedUser)
-                console.log('✅ Token refresh successful during initialization')
+                try {
+                  console.log('🔄 Attempting token refresh during initialization...')
+                  await refreshTokenInternal(parsedTokens.refresh_token, parsedUser)
+                  console.log('✅ Token refresh successful during initialization')
+                } catch (refreshError) {
+                  console.error('❌ Token refresh failed:', refreshError)
+                  // Only clear auth data if refresh also fails
+                  throw refreshError
+                }
               } else {
-                throw new Error('No valid refresh token available')
+                // If there's no refresh token, keep the existing auth state for now
+                // Don't immediately clear - let the user try to use the app first
+                console.log('⚠️ Token verification failed but no refresh token available - keeping current state')
+                // Don't throw error here - let the authentication state persist
               }
             }
           } catch (error) {
