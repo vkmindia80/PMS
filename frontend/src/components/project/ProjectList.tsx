@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Calendar, Users, Target, MoreVertical, Edit2, Trash2, Eye, TrendingUp } from 'lucide-react'
 import { BACKEND_URL } from '../../utils/config'
 import { useAuth } from '../../contexts/AuthContext'
