@@ -5,7 +5,7 @@ import { Plus, Users, BarChart3, Settings as SettingsIcon, Brain, Filter } from 
 import ProjectCreateModal from '../components/project/ProjectCreateModal'
 import GlobalProjectFilter from '../components/common/GlobalProjectFilter'
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext'
-import { API_URL as API_URL_CONFIG } from '../utils/config'
+import { API_URL as API_URL_CONFIG, API_ENDPOINTS } from '../utils/config'
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate()
