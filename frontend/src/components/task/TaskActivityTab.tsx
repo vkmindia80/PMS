@@ -230,26 +230,40 @@ export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({
         
         {/* Activity Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
-            <div className="text-2xl font-bold text-purple-600">{activities.length}</div>
+          <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100 relative">
+            {metricsLoading && (
+              <div className="absolute top-1 right-1">
+                <RefreshCw className="h-3 w-3 animate-spin text-gray-400" />
+              </div>
+            )}
+            <div className="text-2xl font-bold text-purple-600">{metrics.total_events}</div>
             <div className="text-sm text-gray-600">Total Events</div>
           </div>
-          <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
-            <div className="text-2xl font-bold text-blue-600">
-              {activities.filter(a => a.action === 'time_logged').length}
-            </div>
+          <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100 relative">
+            {metricsLoading && (
+              <div className="absolute top-1 right-1">
+                <RefreshCw className="h-3 w-3 animate-spin text-gray-400" />
+              </div>
+            )}
+            <div className="text-2xl font-bold text-blue-600">{metrics.time_entries}</div>
             <div className="text-sm text-gray-600">Time Entries</div>
           </div>
-          <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
-            <div className="text-2xl font-bold text-green-600">
-              {activities.filter(a => a.action === 'task_updated').length}
-            </div>
+          <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100 relative">
+            {metricsLoading && (
+              <div className="absolute top-1 right-1">
+                <RefreshCw className="h-3 w-3 animate-spin text-gray-400" />
+              </div>
+            )}
+            <div className="text-2xl font-bold text-green-600">{metrics.updates}</div>
             <div className="text-sm text-gray-600">Updates</div>
           </div>
-          <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100">
-            <div className="text-2xl font-bold text-orange-600">
-              {Object.keys(groupedActivities).length}
-            </div>
+          <div className="text-center bg-white rounded-lg p-3 shadow-sm border border-gray-100 relative">
+            {metricsLoading && (
+              <div className="absolute top-1 right-1">
+                <RefreshCw className="h-3 w-3 animate-spin text-gray-400" />
+              </div>
+            )}
+            <div className="text-2xl font-bold text-orange-600">{metrics.active_days}</div>
             <div className="text-sm text-gray-600">Active Days</div>
           </div>
         </div>
