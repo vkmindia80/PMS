@@ -701,8 +701,9 @@ const CommentCard: React.FC<{
             onClick={() => setShowReplyForm(!showReplyForm)}
             className="group flex items-center space-x-1.5 text-blue-600 hover:text-blue-700 cursor-pointer px-3 py-1.5 rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 border border-gray-200 hover:border-blue-300 font-medium shadow-sm hover:shadow-lg relative overflow-hidden"
           >
-            <Reply className="h-4 w-4" />
-            <span className="text-xs font-semibold">Reply</span>
+            <Reply className="h-4 w-4 group-hover:scale-110 transition-transform duration-200" />
+            <span className="text-xs font-semibold relative z-10">Reply</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer transition-opacity duration-300"></div>
             {((comment.nested_replies && comment.nested_replies.length > 0) || comment.reply_count > 0) && (
               <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-bold ml-1">
                 {comment.nested_replies?.length || comment.reply_count}
