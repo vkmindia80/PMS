@@ -195,7 +195,14 @@
             const [reactions, setReactions] = useState([]);
             const reactButtonRef = useRef(null);
 
-            const emojis = ['👍', '👎', '❤️', '😍', '😄', '😮', '😢', '😡', '🎉', '🚀', '👀', '🔥'];
+            // Work-focused emoji reactions for professional communication
+            const emojis = [
+                '👍', // Approve/Agree - Basic approval and agreement
+                '✅', // Done/Completed - Task completion and checkoffs
+                '💡', // Great Idea - Innovation and smart suggestions
+                '👏', // Well Done - Recognition and applause
+                '🎯'  // Goal Achieved - Target and milestone completion
+            ];
 
             const calculatePickerPosition = () => {
                 if (reactButtonRef.current) {
