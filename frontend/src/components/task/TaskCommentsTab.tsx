@@ -89,6 +89,20 @@ export const TaskCommentsTab: React.FC<TaskCommentsTabProps> = ({
     }
   }, [comments, commentThreads, availableUsers])
 
+  // Handle ESC key to close emoji picker
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showEmojiPicker) {
+        setShowEmojiPicker(null)
+      }
+    }
+
+    if (showEmojiPicker) {
+      document.addEventListener('keydown', handleEscKey)
+      return () => document.removeEventListener('keydown', handleEscKey)
+    }
+  }, [showEmojiPicker, setShowEmojiPicker])
+
   // Helper function to filter comments recursively including nested replies
   const filterCommentRecursive = (comment: Comment): boolean => {
     const matchesType = filterType === 'all' || 
