@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { X, Calendar, Users, DollarSign, Tag, FileText, Loader2 } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
-import { getBACKEND_URL } from '../../utils/config'
+import { getgetBACKEND_URL() } from '../../utils/config'
 import toast from 'react-hot-toast'
 
 interface ProjectTemplate {
@@ -89,7 +89,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
 
   const fetchTemplates = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/projects/templates/`, {
+      const response = await fetch(`${getBACKEND_URL()}/api/projects/templates/`, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/users/`, {
+      const response = await fetch(`${getBACKEND_URL()}/api/users/`, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
@@ -123,7 +123,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
 
   const fetchTeams = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/teams/`, {
+      const response = await fetch(`${getBACKEND_URL()}/api/teams/`, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
@@ -217,7 +217,7 @@ const ProjectCreateModal: React.FC<ProjectCreateModalProps> = ({
         }))
       }
 
-      const response = await fetch(`${BACKEND_URL}/api/projects/`, {
+      const response = await fetch(`${getBACKEND_URL()}/api/projects/`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
