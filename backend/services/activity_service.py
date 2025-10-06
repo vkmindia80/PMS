@@ -76,19 +76,30 @@ class ActivityService:
         
         # Count different types of activities
         time_entries = len([a for a in activities if a.get("action") == "time_logged"])
-        updates = len([a for a in activities if a.get("action") in [
+        
+        # Updates include various task modification actions
+        update_actions = [
             "task_updated", "status_changed", "priority_changed", 
-            "assignee_changed", "due_date_changed"
-        ]])
+            "assignee_changed", "assignees_changed", "due_date_changed",
+            "task_moved", "dependency_added", "dependency_removed",
+            "comment_added", "comment_updated", "comment_deleted"
+        ]
+        updates = len([a for a in activities if a.get("action") in update_actions])
         
         # Calculate active days (unique dates)
         dates = set()
         for activity in activities:
             if activity.get("timestamp"):
                 try:
-                    date = datetime.fromisoformat(activity["timestamp"].replace("Z", "+00:00")).date()
+                    # Handle both string and datetime timestamps
+                    if isinstance(activity["timestamp"], str):
+                        timestamp_str = activity["timestamp"].replace("Z", "+00:00")
+                        date = datetime.fromisoformat(timestamp_str).date()
+                    else:
+                        date = activity["timestamp"].date()
                     dates.add(date.isoformat())
-                except:
+                except Exception as e:
+                    print(f"Error processing timestamp {activity.get('timestamp')}: {e}")
                     pass
         
         return {
