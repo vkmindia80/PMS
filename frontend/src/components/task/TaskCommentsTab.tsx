@@ -762,9 +762,9 @@ const CommentCard: React.FC<{
             
             {showEmojiPicker === comment.id && (
               <>
-                {/* Overlay to close picker when clicking outside */}
+                {/* Enhanced overlay to close picker when clicking outside */}
                 <div 
-                  className="fixed inset-0 z-[9998]" 
+                  className="fixed inset-0 bg-black bg-opacity-10 z-[9998]" 
                   onClick={() => setShowEmojiPicker(null)}
                 />
                 {/* Emoji picker with enhanced visibility */}
