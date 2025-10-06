@@ -5,6 +5,7 @@ import {
   AlertCircle, CheckCircle, Loader
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { config } from '../../utils/config'
 
 interface InviteEmail {
   id: string
