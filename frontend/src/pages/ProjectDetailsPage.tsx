@@ -111,10 +111,13 @@ const ProjectDetailsPage: React.FC = () => {
       })
       
       if (!projectResponse.ok) {
-        throw new Error('Failed to fetch project details')
+        const errorText = await projectResponse.text()
+        console.error('Project API Error:', projectResponse.status, errorText)
+        throw new Error(`Failed to fetch project details: ${projectResponse.status} ${errorText}`)
       }
       
       const projectData = await projectResponse.json()
+      console.log('Project data loaded:', projectData)
       setProject(projectData)
       setEditedName(projectData.name)
       setEditedDescription(projectData.description || '')
