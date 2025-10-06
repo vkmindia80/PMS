@@ -757,7 +757,11 @@ const CommentCard: React.FC<{
             <button
               ref={reactButtonRef}
               onClick={handleEmojiPickerToggle}
-              className="flex items-center space-x-1.5 text-sm text-gray-600 hover:text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all duration-200 border border-gray-200 hover:border-blue-300 font-medium shadow-sm hover:shadow-md"
+              className={`flex items-center space-x-1.5 text-sm px-3 py-1.5 rounded-lg transition-all duration-200 border font-medium shadow-sm hover:shadow-md ${
+                showEmojiPicker === comment.id 
+                  ? 'text-blue-700 bg-blue-100 border-blue-400' 
+                  : 'text-gray-600 hover:text-blue-600 bg-white hover:bg-blue-50 border-gray-200 hover:border-blue-300'
+              }`}
               title="Add reaction"
               data-testid={`add-reaction-btn-${comment.id}`}
             >
