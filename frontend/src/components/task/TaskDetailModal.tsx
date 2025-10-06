@@ -190,7 +190,7 @@ export const TaskDetailModal: React.FC<TaskDetailModalProps> = ({
     
     try {
       setLoading(true)
-      const response = await fetch(`${API_URL}/api/tasks/${task.id}/detailed`, {
+      const response = await fetch(API_ENDPOINTS.tasks.details(task.id), {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
