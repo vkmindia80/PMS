@@ -108,7 +108,7 @@ const ProjectDetailsPage: React.FC = () => {
       console.log('  - Project ID:', projectId)
       console.log('  - API URL:', apiUrl)
       console.log('  - Full API_ENDPOINTS object:', API_ENDPOINTS)
-      console.log('  - BACKEND_URL from config:', BACKEND_URL)
+      console.log('  - BACKEND_URL from config:', getBACKEND_URL())
       console.log('  - Environment:', typeof window !== 'undefined' ? {
           hostname: window.location.hostname,
           protocol: window.location.protocol,
