@@ -33,14 +33,8 @@ const InviteMembersModal: React.FC<InviteMembersModalProps> = ({
   const [inviteMessage, setInviteMessage] = useState('')
 
   const getApiUrl = () => {
-    const isPreview = window.location.hostname.includes('emergentagent.com')
-    const isProd = import.meta.env.PROD || isPreview
-    
-    if (isProd || isPreview) {
-      return import.meta.env.VITE_PROD_API_URL || 'https://project-404.preview.emergentagent.com'
-    }
-    
-    return import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8001'
+    // Use the centralized environment utility to get proper API URL
+    return config.apiUrl;
   }
 
   const roles = [
