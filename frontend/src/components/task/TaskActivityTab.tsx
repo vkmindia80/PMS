@@ -15,6 +15,15 @@ interface TaskActivityTabProps {
   activities: TaskActivity[]
   loading: boolean
   availableUsers?: any[]
+  taskId: string
+  onRefresh?: () => void
+}
+
+interface ActivityMetrics {
+  total_events: number
+  time_entries: number
+  updates: number
+  active_days: number
 }
 
 export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({ 
