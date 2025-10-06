@@ -101,33 +101,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               setTimeout(() => reject(new Error('Auth verification timeout')), 15000)
             )
             
-            try {
-              await Promise.race([
-                fetchUserProfile(parsedTokens.access_token),
-                timeoutPromise
-              ])
-              console.log('✅ Authentication initialized successfully')
-            } catch (verifyError) {
-              console.log('⚠️ Token verification failed:', verifyError)
-              
-              // Try to refresh token if we have a refresh token and user data
-              if (parsedTokens?.refresh_token && parsedUser?.id) {
-                try {
-                  console.log('🔄 Attempting token refresh during initialization...')
-                  await refreshTokenInternal(parsedTokens.refresh_token, parsedUser)
-                  console.log('✅ Token refresh successful during initialization')
-                } catch (refreshError) {
-                  console.error('❌ Token refresh failed:', refreshError)
-                  // Only clear auth data if refresh also fails
-                  throw refreshError
-                }
-              } else {
-                // If there's no refresh token, keep the existing auth state for now
-                // Don't immediately clear - let the user try to use the app first
-                console.log('⚠️ Token verification failed but no refresh token available - keeping current state')
-                // Don't throw error here - let the authentication state persist
-              }
-            }
+            // Skip token verification during initialization to avoid clearing valid auth
+            // The tokens will be verified when they're actually used for API calls
+            console.log('✅ Authentication initialized successfully (skipping verification)')
+            
+            // Optional: Try to verify in background but don't fail if it doesn't work
+            fetchUserProfile(parsedTokens.access_token).then(() => {
+              console.log('✅ Background token verification successful')
+            }).catch((verifyError) => {
+              console.log('⚠️ Background token verification failed - will retry on next API call:', verifyError)
+              // Don't clear auth data - let the user try to use the app
+            })
           } catch (error) {
             console.error('❌ Failed to initialize auth:', error)
             clearAuthData()
