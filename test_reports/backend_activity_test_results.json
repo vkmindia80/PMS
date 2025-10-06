@@ -1,0 +1,58 @@
+{
+  "timestamp": "2025-10-06T14:01:15.722230",
+  "success": false,
+  "tests_run": 2,
+  "tests_passed": 1,
+  "results": [
+    {
+      "test_name": "User Login",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "message": "Login successful",
+        "tokens": {
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5NzYxMDc1LCJ0eXBlIjoiYWNjZXNzIn0.fNMkaDKJWnI96yoWWonscycr4Bh292nwJchd09tgW0o",
+          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwMzY0MDc1LCJ0eXBlIjoicmVmcmVzaCJ9.Iwstai4fqNyj-WSVZ2DFvXC9Q2C2FOevMhEovOOVz3M",
+          "token_type": "bearer",
+          "expires_in": 1800
+        },
+        "user": {
+          "id": "demo-user-001",
+          "email": "demo@company.com",
+          "username": "demo_user",
+          "first_name": "Demo",
+          "last_name": "User",
+          "phone": "+1-555-0123",
+          "bio": "Demo user for testing the Enterprise Portfolio Management system",
+          "avatar_url": null,
+          "role": "admin",
+          "organization_id": "demo-org-001",
+          "is_active": true,
+          "status": "active",
+          "email_verified": true,
+          "last_login": "2025-10-06T14:00:50.657000",
+          "timezone": "UTC",
+          "language": "en",
+          "theme": "light",
+          "notifications_enabled": true,
+          "profile_completed": true,
+          "onboarding_completed": true,
+          "created_at": "2025-10-06T13:41:51.639000",
+          "updated_at": "2025-10-06T14:00:50.657000"
+        }
+      },
+      "timestamp": "2025-10-06T14:01:15.684223"
+    },
+    {
+      "test_name": "Get Task Details",
+      "success": false,
+      "details": "Status: 404",
+      "response_data": {
+        "detail": "Task not found"
+      },
+      "timestamp": "2025-10-06T14:01:15.721375"
+    }
+  ],
+  "task_id": "efd610ef-7dae-4168-ae7c-a7cc11acfb1b",
+  "functionality_status": "ISSUES_FOUND"
+}
