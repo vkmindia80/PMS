@@ -28,7 +28,7 @@ class ActivityTimelineTest:
         print("🔐 Authenticating...")
         
         auth_data = {
-            "username": DEMO_CREDENTIALS["email"],
+            "email": DEMO_CREDENTIALS["email"],
             "password": DEMO_CREDENTIALS["password"]
         }
         
