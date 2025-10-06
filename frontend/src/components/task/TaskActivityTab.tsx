@@ -388,6 +388,12 @@ export const TaskActivityTab: React.FC<TaskActivityTabProps> = ({
                                 activity.action === 'status_changed' ? 'bg-blue-100 text-blue-800' :
                                 activity.action === 'time_logged' ? 'bg-purple-100 text-purple-800' :
                                 activity.action === 'task_updated' ? 'bg-yellow-100 text-yellow-800' :
+                                activity.action === 'comment_added' ? 'bg-blue-100 text-blue-800' :
+                                activity.action === 'comment_updated' ? 'bg-yellow-100 text-yellow-800' :
+                                activity.action === 'comment_deleted' ? 'bg-red-100 text-red-800' :
+                                activity.action.includes('assignee') ? 'bg-orange-100 text-orange-800' :
+                                activity.action.includes('priority') ? 'bg-red-100 text-red-800' :
+                                activity.action.includes('dependency') ? 'bg-cyan-100 text-cyan-800' :
                                 'bg-gray-100 text-gray-800'
                               }`}>
                                 {activity.action.replace(/_/g, ' ')}
