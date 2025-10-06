@@ -444,12 +444,13 @@ async def update_task(
             
             # Log status changes
             if "status" in update_data and update_data["status"] != existing_task["status"]:
-                await log_task_activity(
-                    db, task_id, current_user.id, "status_changed",
+                await activity_service.log_activity(
+                    task_id, current_user.id, "status_changed",
                     {
                         "from": existing_task["status"],
                         "to": update_data["status"].value if hasattr(update_data["status"], 'value') else update_data["status"]
-                    }
+                    },
+                    db
                 )
             
             # Log assignee changes
