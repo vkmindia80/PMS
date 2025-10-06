@@ -4,7 +4,9 @@
  */
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
+import { getApiUrl } from '../utils/environment'
+
+const getAPI_BASE_URL = () => getApiUrl()
 
 export interface AIModelRequest {
   prompt: string
