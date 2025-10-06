@@ -135,34 +135,47 @@ class TaskActivityTester:
             print(f"    ❌ Task verification failed")
             return False
 
-    def test_create_comment(self, content: str, comment_type: str = "comment", parent_id: str = None):
-        """Test comment creation"""
-        comment_data = {
-            "content": content,
-            "type": comment_type,
-            "entity_type": "task",
-            "entity_id": self.test_task_id
-        }
+    def test_activity_metrics(self):
+        """Test activity metrics endpoint - KEY FUNCTIONALITY"""
+        print("\n" + "="*60)
+        print("TESTING ACTIVITY METRICS ENDPOINT")
+        print("="*60)
         
-        if parent_id:
-            comment_data["parent_id"] = parent_id
-            
-        test_name = f"Create {'Reply' if parent_id else 'Comment'} ({comment_type})"
         success, response = self.run_test(
-            test_name,
-            "POST",
-            "/api/comments/",
-            201,
-            data=comment_data
+            "Get Activity Metrics",
+            "GET",
+            f"/api/tasks/{self.test_task_id}/activity/metrics",
+            200
         )
         
-        if success and 'id' in response:
-            comment_id = response['id']
-            self.test_comment_ids.append(comment_id)
-            print(f"    ✅ Created comment ID: {comment_id}")
-            return comment_id
+        if success and 'metrics' in response:
+            metrics = response['metrics']
+            print(f"    ✅ Metrics retrieved successfully")
+            print(f"    📊 Total Events: {metrics.get('total_events', 0)}")
+            print(f"    📊 Time Entries: {metrics.get('time_entries', 0)}")
+            print(f"    📊 Updates: {metrics.get('updates', 0)}")
+            print(f"    📊 Active Days: {metrics.get('active_days', 0)}")
+            
+            # Verify expected metrics from main agent's note
+            expected_total = 11
+            expected_time_entries = 4
+            expected_updates = 6
+            expected_active_days = 1
+            
+            actual_total = metrics.get('total_events', 0)
+            actual_time_entries = metrics.get('time_entries', 0)
+            actual_updates = metrics.get('updates', 0)
+            actual_active_days = metrics.get('active_days', 0)
+            
+            print(f"\n    🎯 EXPECTED vs ACTUAL:")
+            print(f"    Total Events: {expected_total} vs {actual_total} {'✅' if actual_total == expected_total else '❌'}")
+            print(f"    Time Entries: {expected_time_entries} vs {actual_time_entries} {'✅' if actual_time_entries == expected_time_entries else '❌'}")
+            print(f"    Updates: {expected_updates} vs {actual_updates} {'✅' if actual_updates == expected_updates else '❌'}")
+            print(f"    Active Days: {expected_active_days} vs {actual_active_days} {'✅' if actual_active_days == expected_active_days else '❌'}")
+            
+            return metrics
         else:
-            print(f"    ❌ Failed to create comment")
+            print(f"    ❌ Failed to get activity metrics")
             return None
 
     def test_get_flat_comments(self):
