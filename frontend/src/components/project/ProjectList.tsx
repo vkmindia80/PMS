@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Calendar, Users, Target, MoreVertical, Edit2, Trash2, Eye, TrendingUp } from 'lucide-react'
-import { getBACKEND_URL } from '../../utils/config'
+import { getgetBACKEND_URL() } from '../../utils/config'
 import { useAuth } from '../../contexts/AuthContext'
 import toast from 'react-hot-toast'
 
@@ -48,7 +48,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
   const handleStatusChange = async (projectId: string, newStatus: string) => {
     setLoading(projectId)
     try {
-      const response = await fetch(`${BACKEND_URL}/api/projects/${projectId}`, {
+      const response = await fetch(`${getBACKEND_URL()}/api/projects/${projectId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
@@ -75,7 +75,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
     if (window.confirm('Are you sure you want to archive this project?')) {
       setLoading(projectId)
       try {
-        const response = await fetch(`${BACKEND_URL}/api/projects/${projectId}`, {
+        const response = await fetch(`${getBACKEND_URL()}/api/projects/${projectId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${tokens?.access_token}`,
