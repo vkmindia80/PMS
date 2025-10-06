@@ -70,85 +70,64 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Initialize auth state from localStorage
   useEffect(() => {
     // Prevent multiple initializations using ref (survives React Strict Mode remounting)
-    if (initStarted.current) return
+    if (initStarted.current) {
+      console.log('🚫 Skipping auth init - already started')
+      return
+    }
     
-    const initAuth = async () => {
-      initStarted.current = true
+    console.log('🚀 Starting authentication initialization...')
+    initStarted.current = true
+    
+    try {
+      const storedTokens = localStorage.getItem('auth_tokens')
+      const storedUser = localStorage.getItem('auth_user')
       
-      try {
-        console.log('🚀 Starting authentication initialization...')
-        
-        const storedTokens = localStorage.getItem('auth_tokens')
-        const storedUser = localStorage.getItem('auth_user')
+      console.log('🔍 Checking stored auth data:', {
+        hasTokens: !!storedTokens,
+        hasUser: !!storedUser
+      })
 
-        if (storedTokens && storedUser) {
-          try {
-            console.log('🔍 Found stored auth data, validating...')
-            
-            const parsedTokens = JSON.parse(storedTokens) as AuthTokens
-            const parsedUser = JSON.parse(storedUser) as User
-            
-            // Basic validation of stored data
-            if (!parsedTokens.access_token || !parsedUser.id) {
-              throw new Error('Invalid stored auth data structure')
-            }
-            
-            setTokens(parsedTokens)
-            setUser(parsedUser)
-            
-            // Verify token is still valid with timeout (increased timeout)
-            const timeoutPromise = new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Auth verification timeout')), 15000)
-            )
-            
-            console.log('✅ Authentication initialized successfully from stored data')
-            console.log('🔍 Stored tokens preview:', {
-              hasAccessToken: !!parsedTokens.access_token,
-              tokenLength: parsedTokens.access_token?.length,
-              userEmail: parsedUser.email,
-              userId: parsedUser.id
-            })
-            
-            // Set loading to false immediately since we have valid stored auth
-            setIsLoading(false)
-            
-            // Optional: Try to verify in background but don't change loading state
-            fetchUserProfile(parsedTokens.access_token).then(() => {
-              console.log('✅ Background token verification successful')
-            }).catch((verifyError) => {
-              console.log('⚠️ Background token verification failed - will retry on next API call:', verifyError)
-              // Don't clear auth data or change loading state - let the user try to use the app
-            })
-          } catch (error) {
-            console.error('❌ Failed to initialize auth:', error)
-            clearAuthData()
+      if (storedTokens && storedUser) {
+        try {
+          console.log('🔍 Found stored auth data, parsing...')
+          
+          const parsedTokens = JSON.parse(storedTokens) as AuthTokens
+          const parsedUser = JSON.parse(storedUser) as User
+          
+          console.log('🔍 Parsed auth data:', {
+            hasAccessToken: !!parsedTokens.access_token,
+            tokenLength: parsedTokens.access_token?.length,
+            userEmail: parsedUser.email,
+            userId: parsedUser.id
+          })
+          
+          // Basic validation of stored data
+          if (!parsedTokens.access_token || !parsedUser.id) {
+            throw new Error('Invalid stored auth data structure')
           }
-        } else {
-          console.log('🚫 No stored authentication data found - showing login')
+          
+          console.log('✅ Setting auth state from stored data...')
+          setTokens(parsedTokens)
+          setUser(parsedUser)
+          setIsLoading(false)
+          
+          console.log('✅ Authentication initialized successfully from stored data')
+          
+        } catch (error) {
+          console.error('❌ Failed to parse stored auth:', error)
+          clearAuthData()
           setIsLoading(false)
         }
-      } catch (error) {
-        console.error('❌ Critical auth initialization error:', error)
-        clearAuthData()
-      } finally {
+      } else {
+        console.log('🚫 No stored authentication data found - showing login')
         setIsLoading(false)
-        console.log('🏁 Auth initialization complete')
       }
-    }
-
-    // Use a longer delay to prevent React strict mode issues
-    const timeoutId = setTimeout(initAuth, 200)
-    
-    // Safety timeout - force loading to false after 15 seconds maximum
-    const safetyTimeout = setTimeout(() => {
-      console.warn('⚠️ Auth initialization taking too long, forcing completion')
+    } catch (error) {
+      console.error('❌ Critical auth initialization error:', error)
       setIsLoading(false)
-    }, 15000)
-    
-    return () => {
-      clearTimeout(timeoutId)
-      clearTimeout(safetyTimeout)
     }
+    
+    console.log('🏁 Auth initialization complete')
   }, [])
 
   // Helper function to clear auth data
