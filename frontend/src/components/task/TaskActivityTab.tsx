@@ -1,5 +1,6 @@
-import React from 'react'
-import { History, User, Clock, Activity, TrendingUp, GitCommit } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { History, User, Clock, Activity, TrendingUp, GitCommit, RefreshCw } from 'lucide-react'
+import { getApiUrlDynamic } from '../../utils/config'
 
 interface TaskActivity {
   id: string
