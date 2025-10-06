@@ -186,8 +186,16 @@ const ProjectDetailsPage: React.FC = () => {
       
       setError(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch project data')
-      toast.error('Failed to load project details')
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch project data'
+      console.error('❌ Error in fetchProjectData:', err)
+      console.error('❌ Error details:', {
+        message: errorMessage,
+        stack: err instanceof Error ? err.stack : undefined,
+        type: typeof err,
+        err: err
+      })
+      setError(errorMessage)
+      toast.error(`Failed to load project details: ${errorMessage}`)
     } finally {
       setLoading(false)
     }
