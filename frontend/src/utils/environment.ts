@@ -45,6 +45,7 @@ export const getApiUrl = (): string => {
     if (apiUrl.includes('emergentagent.com') && !apiUrl.startsWith('https://')) {
       apiUrl = apiUrl.replace('http://', 'https://');
     }
+    console.log('🔧 SSR API URL:', apiUrl);
     return apiUrl;
   }
   
@@ -54,10 +55,12 @@ export const getApiUrl = (): string => {
     const hostname = window.location.hostname;
     
     // Use same protocol as frontend to avoid mixed content errors
-    return `${protocol}//${hostname}`;
+    const url = `${protocol}//${hostname}`;
+    console.log('🔧 Emergentagent API URL:', url);
+    return url;
   }
   
-  // For local development, use configured URL or localhost
+  // For local development, use configured URL or localhost with debugging
   let envBackendUrl = import.meta.env.VITE_API_URL || 
                       import.meta.env.REACT_APP_BACKEND_URL || 
                       'http://localhost:8001';
@@ -66,6 +69,13 @@ export const getApiUrl = (): string => {
   if (envBackendUrl.includes('emergentagent.com') && !envBackendUrl.startsWith('https://')) {
     envBackendUrl = envBackendUrl.replace('http://', 'https://');
   }
+  
+  console.log('🔧 Local Development API URL:', envBackendUrl);
+  console.log('🔧 Environment variables:', {
+    VITE_API_URL: import.meta.env.VITE_API_URL,
+    REACT_APP_BACKEND_URL: import.meta.env.REACT_APP_BACKEND_URL,
+    NODE_ENV: import.meta.env.NODE_ENV
+  });
   
   return envBackendUrl;
 };
