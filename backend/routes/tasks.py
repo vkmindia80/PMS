@@ -1158,9 +1158,10 @@ async def add_task_dependency(
         )
         
         # Log activity
-        await log_task_activity(
-            db, task_id, current_user.id, "dependency_added",
-            {"dependency_task_id": dependency_task_id, "type": dependency_type}
+        await activity_service.log_activity(
+            task_id, current_user.id, "dependency_added",
+            {"dependency_task_id": dependency_task_id, "type": dependency_type},
+            db
         )
         
         # Get updated task
