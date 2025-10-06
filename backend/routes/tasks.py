@@ -779,9 +779,10 @@ async def log_time_entry(
         )
         
         # Log activity
-        await log_task_activity(
-            db, task_id, current_user.id, "time_logged",
-            {"hours": hours, "description": description}
+        await activity_service.log_activity(
+            task_id, current_user.id, "time_logged",
+            {"hours": hours, "description": description},
+            db
         )
         
         # Get updated task
