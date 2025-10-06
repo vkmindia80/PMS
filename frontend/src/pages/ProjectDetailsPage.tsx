@@ -102,8 +102,12 @@ const ProjectDetailsPage: React.FC = () => {
     try {
       setLoading(true)
       
+      const apiUrl = API_ENDPOINTS.projects.details(projectId!)
+      console.log('Fetching project from:', apiUrl)
+      console.log('With token:', tokens?.access_token ? 'Present' : 'Missing')
+      
       // Fetch project details
-      const projectResponse = await fetch(API_ENDPOINTS.projects.details(projectId!), {
+      const projectResponse = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
           'Content-Type': 'application/json',
