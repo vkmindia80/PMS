@@ -96,9 +96,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setTokens(parsedTokens)
             setUser(parsedUser)
             
-            // Verify token is still valid with timeout
+            // Verify token is still valid with timeout (increased timeout)
             const timeoutPromise = new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Auth verification timeout')), 8000)
+              setTimeout(() => reject(new Error('Auth verification timeout')), 15000)
             )
             
             try {
