@@ -111,28 +111,28 @@ class ProjectDetailsTester:
             print(f"    ❌ Login failed")
             return False
 
-    def test_get_task(self):
-        """Get the specific test task"""
+    def test_get_projects_list(self):
+        """Get projects list to find a test project"""
         print("\n" + "="*60)
-        print("TESTING TASK RETRIEVAL")
+        print("TESTING PROJECTS LIST")
         print("="*60)
         
-        print(f"    🎯 Testing specific task ID: {self.test_task_id}")
-        
-        # Verify the task exists
         success, response = self.run_test(
-            "Get Task Details",
+            "Get Projects List",
             "GET",
-            f"/api/tasks/{self.test_task_id}",
+            "/api/projects",
             200
         )
         
-        if success and 'id' in response:
-            print(f"    ✅ Task verified - Title: {response.get('title', 'Unknown')}")
-            print(f"    ✅ Task Status: {response.get('status', 'Unknown')}")
+        if success and isinstance(response, list) and len(response) > 0:
+            # Get the first project for testing
+            self.test_project_id = response[0].get('id')
+            print(f"    ✅ Found {len(response)} projects")
+            print(f"    🎯 Using project ID for testing: {self.test_project_id}")
+            print(f"    📋 Project name: {response[0].get('name', 'Unknown')}")
             return True
         else:
-            print(f"    ❌ Task verification failed")
+            print(f"    ❌ No projects found or failed to get projects list")
             return False
 
     def test_activity_metrics(self):
