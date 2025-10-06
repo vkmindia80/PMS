@@ -162,6 +162,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Helper function to clear auth data
   const clearAuthData = () => {
     console.log('🧹 Clearing authentication data')
+    console.trace('clearAuthData called from:') // This will show us where it's being called from
     setUser(null)
     setTokens(null)
     
@@ -178,6 +179,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       }
       keysToRemove.forEach(key => localStorage.removeItem(key))
+      console.log('🗑️ Cleared localStorage auth keys')
     } catch (error) {
       console.error('Error clearing localStorage:', error)
     }
