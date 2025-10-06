@@ -742,10 +742,10 @@ const ProjectDetailsPage: React.FC = () => {
                           <span>{formatDate(task.due_date)}</span>
                         </span>
                       )}
-                      {task.assigned_to.length > 0 && (
+                      {(task.assigned_to || []).length > 0 && (
                         <span className="flex items-center space-x-1">
                           <Users className="w-4 h-4" />
-                          <span>{task.assigned_to.length} assigned</span>
+                          <span>{(task.assigned_to || []).length} assigned</span>
                         </span>
                       )}
                     </div>
