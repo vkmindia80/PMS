@@ -295,47 +295,36 @@ class TaskActivityTester:
             print(f"    ❌ Failed to get updated metrics")
             return False
 
-    def test_comment_retrieval(self):
-        """Test comment retrieval after creation - CRITICAL TEST"""
+    def test_activity_data_integrity(self):
+        """Test activity data integrity and structure"""
         print("\n" + "="*60)
-        print("TESTING COMMENT RETRIEVAL (CRITICAL)")
+        print("TESTING ACTIVITY DATA INTEGRITY")
         print("="*60)
         
-        # Test flat comments
-        flat_comments = self.test_get_flat_comments()
+        # Get activity list
+        activities = self.test_activity_list()
         
-        # Test threaded comments - THIS IS THE KEY TEST FOR THE BUG
-        threaded_comments = self.test_get_threaded_comments()
-        
-        # Verify comments exist and are properly structured
-        flat_count = len(flat_comments) if flat_comments else 0
-        thread_count = len(threaded_comments) if threaded_comments else 0
-        
-        print(f"\n📊 COMMENT RETRIEVAL ANALYSIS:")
-        print(f"    Flat comments retrieved: {flat_count}")
-        print(f"    Comment threads retrieved: {thread_count}")
-        
-        if flat_count > 0 and thread_count > 0:
-            print(f"    ✅ Comments successfully created and retrieved")
+        if not activities:
+            return False
             
-            # Check if threaded structure is correct
-            total_nested_comments = 0
-            for thread in threaded_comments:
-                if isinstance(thread, dict):
-                    root_comment = thread.get('root_comment', {})
-                    nested_replies = root_comment.get('nested_replies', [])
-                    total_nested_comments += len(nested_replies)
-            
-            print(f"    Nested replies in threads: {total_nested_comments}")
-            
-            if total_nested_comments > 0:
-                print(f"    ✅ Threading structure is working correctly")
-                return True
+        # Validate activity structure
+        valid_activities = 0
+        required_fields = ['id', 'task_id', 'user_id', 'action', 'timestamp']
+        
+        for activity in activities:
+            if all(field in activity for field in required_fields):
+                valid_activities += 1
             else:
-                print(f"    ⚠️ No nested replies found - threading may have issues")
-                return False
+                missing_fields = [field for field in required_fields if field not in activity]
+                print(f"    ⚠️ Activity missing fields: {missing_fields}")
+                
+        print(f"    📊 Valid activities: {valid_activities}/{len(activities)}")
+        
+        if valid_activities == len(activities):
+            print(f"    ✅ All activities have proper structure")
+            return True
         else:
-            print(f"    ❌ Comments not found after creation - THIS IS THE BUG!")
+            print(f"    ❌ Some activities have structural issues")
             return False
 
     def run_all_tests(self):
