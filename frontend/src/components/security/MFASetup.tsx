@@ -49,7 +49,7 @@ const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
                         import.meta.env.REACT_APP_BACKEND_URL || 
                         import.meta.env.VITE_API_URL || 
                         process.env.REACT_APP_BACKEND_URL ||
-                        'https://taskmetrics-fix.preview.emergentagent.com';
+                        'https://project-vista-4.preview.emergentagent.com';
       
       const response = await fetch(`${backendUrl}/api/security/mfa/status`, {
         headers: { 'Authorization': `Bearer ${authTokens.access_token}` }
@@ -84,7 +84,7 @@ const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
                         import.meta.env.REACT_APP_BACKEND_URL || 
                         import.meta.env.VITE_API_URL || 
                         process.env.REACT_APP_BACKEND_URL ||
-                        'https://taskmetrics-fix.preview.emergentagent.com';
+                        'https://project-vista-4.preview.emergentagent.com';
       
       const setupData: any = { method: selectedMethod };
       
@@ -140,7 +140,7 @@ const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
                         import.meta.env.REACT_APP_BACKEND_URL || 
                         import.meta.env.VITE_API_URL || 
                         process.env.REACT_APP_BACKEND_URL ||
-                        'https://taskmetrics-fix.preview.emergentagent.com';
+                        'https://project-vista-4.preview.emergentagent.com';
       
       const response = await fetch(`${backendUrl}/api/security/mfa/verify`, {
         method: 'POST',
