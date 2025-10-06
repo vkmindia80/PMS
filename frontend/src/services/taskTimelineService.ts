@@ -170,7 +170,7 @@ export class TaskTimelineService {
       }
 
       // Update the task via regular tasks API
-      const response = await fetch(`/api/tasks/${taskId}`, {
+      const response = await fetch(API_ENDPOINTS.tasks.details(taskId), {
         method: 'PUT',
         headers: this.getAuthHeaders(token),
         body: JSON.stringify(taskUpdates)
