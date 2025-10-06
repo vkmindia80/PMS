@@ -728,7 +728,7 @@ const CommentCard: React.FC<{
                     <button
                       key={emoji}
                       onClick={() => onAddReaction && onAddReaction(comment.id, emoji)}
-                      className={`inline-flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 border-2 shadow-sm hover:shadow-md ${
+                      className={`inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 border-2 shadow-sm hover:shadow-md ${
                         userHasReacted 
                           ? 'bg-blue-50 border-blue-400 text-blue-900 hover:bg-blue-100' 
                           : 'bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-gray-400'
