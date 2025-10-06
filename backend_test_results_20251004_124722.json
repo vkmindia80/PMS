@@ -1,7 +1,7 @@
 {
   "test_summary": {
     "start_time": "2025-10-04T12:47:22.145818",
-    "base_url": "https://react-visibility.preview.emergentagent.com",
+    "base_url": "https://fix-reaction-ui.preview.emergentagent.com",
     "end_time": "2025-10-04T12:47:22.903564",
     "total_tests": 15,
     "passed_tests": 8,
