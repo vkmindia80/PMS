@@ -458,12 +458,13 @@ async def update_task(
                 old_assignees = set(existing_task.get("assignee_ids", []))
                 new_assignees = set(update_data["assignee_ids"])
                 if old_assignees != new_assignees:
-                    await log_task_activity(
-                        db, task_id, current_user.id, "assignees_changed",
+                    await activity_service.log_activity(
+                        task_id, current_user.id, "assignees_changed",
                         {
                             "old_assignees": list(old_assignees),
                             "new_assignees": list(new_assignees)
-                        }
+                        },
+                        db
                     )
             
             # Update task
