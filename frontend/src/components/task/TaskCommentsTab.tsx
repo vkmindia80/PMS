@@ -588,6 +588,11 @@ const CommentCard: React.FC<{
   // Handle emoji picker button click
   const handleEmojiPickerToggle = () => {
     const newState = showEmojiPicker === comment.id ? null : comment.id
+    console.log('🎯 Emoji picker toggle:', { 
+      currentState: showEmojiPicker, 
+      newState, 
+      commentId: comment.id 
+    })
     if (newState === comment.id) {
       calculatePickerPosition()
     }
