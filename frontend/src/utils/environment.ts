@@ -43,11 +43,11 @@ export const getApiUrl = (): string => {
     return import.meta.env.VITE_API_URL || 'http://localhost:8001';
   }
   
-  // For Emergent platform (emergentagent.com), use the same domain with HTTPS
+  // For Emergent platform (emergentagent.com), ALWAYS use HTTPS with same domain
   if (isEmergentagentDomain()) {
-    const protocol = window.location.protocol;
     const hostname = window.location.hostname;
-    return `${protocol}//${hostname}`;
+    // Force HTTPS for emergentagent.com to prevent mixed content errors
+    return `https://${hostname}`;
   }
   
   // For local development, use configured URL or localhost
