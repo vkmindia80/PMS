@@ -120,8 +120,8 @@ const Dashboard: React.FC = () => {
 
       // Fetch tasks count with project filtering
       const tasksUrl = projectParam 
-        ? `${API_URL}/api/tasks?${projectParam}` 
-        : `${API_URL}/api/tasks`
+        ? `${API_ENDPOINTS.tasks.list}?${projectParam}` 
+        : API_ENDPOINTS.tasks.list
       const tasksResponse = await fetch(tasksUrl, { headers })
       let tasksCount = 0  
       if (tasksResponse.ok) {
