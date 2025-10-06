@@ -768,8 +768,8 @@ const CommentCard: React.FC<{
                   onClick={() => setShowEmojiPicker(null)}
                 />
                 {/* Compact Single Row Emoji Picker */}
-                <div className={`absolute ${pickerPosition === 'left' ? 'right-full mr-2' : 'right-0'} top-10 bg-white border-2 border-gray-300 rounded-lg shadow-xl z-[10000] p-2 min-w-[380px] max-w-[420px]`}
-                     style={{ boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.1)' }}>
+                <div className={`absolute ${pickerPosition === 'left' ? 'right-0' : 'left-0'} top-12 bg-white border-2 border-gray-400 rounded-lg shadow-xl z-[99999] p-3 min-w-[380px] max-w-[420px]`}
+                     style={{ boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)' }}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold text-gray-700 bg-blue-50 px-2 py-1 rounded">Pick a reaction</span>
                     <button
