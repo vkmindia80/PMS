@@ -93,6 +93,20 @@ async def create_comment(
                 {"id": comment_data.entity_id},
                 {"$inc": {"comment_count": 1}}
             )
+            
+            # Log activity for task comments
+            await activity_service.log_activity(
+                comment_data.entity_id, 
+                current_user.id, 
+                "comment_added",
+                {
+                    "comment_id": comment_id,
+                    "comment_type": str(comment_data.type),
+                    "content_preview": comment_data.content[:100] + "..." if len(comment_data.content) > 100 else comment_data.content,
+                    "is_reply": comment_data.parent_id is not None
+                },
+                db
+            )
         
         # Get created comment
         created_comment = await db.comments.find_one({"id": comment_id})
