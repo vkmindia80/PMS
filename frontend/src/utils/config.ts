@@ -19,8 +19,15 @@ export const config = {
 
 // Export dynamic API URL getters instead of static values
 export const getApiUrlDynamic = () => getApiUrl();
-export const API_URL = getApiUrl(); // Keep for backward compatibility but will be replaced
-export const BACKEND_URL = getApiUrl(); // Alias for compatibility  
+export const getApiUrl_DEPRECATED = getApiUrl; // Use API_ENDPOINTS instead
+export const BACKEND_URL = getApiUrl(); // Alias for compatibility
+
+// DEPRECATED: Use API_ENDPOINTS instead of API_URL
+// This ensures HTTPS enforcement and consistent configuration
+export const API_URL = (() => {
+  console.warn('⚠️ API_URL is deprecated. Use API_ENDPOINTS for proper HTTPS enforcement.');
+  return getApiUrl();
+})();  
 export const APP_NAME = config.appName;
 export const APP_VERSION = config.appVersion;
 
