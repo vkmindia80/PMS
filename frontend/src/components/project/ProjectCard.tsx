@@ -48,7 +48,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const handleStatusChange = async (newStatus: string) => {
     setLoading(true)
     try {
-      const response = await fetch(`${BACKEND_URL}/api/projects/${project.id}`, {
+      const response = await fetch(`${getBACKEND_URL()}/api/projects/${project.id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${tokens?.access_token}`,
@@ -75,7 +75,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     if (window.confirm('Are you sure you want to archive this project?')) {
       setLoading(true)
       try {
-        const response = await fetch(`${BACKEND_URL}/api/projects/${project.id}`, {
+        const response = await fetch(`${getBACKEND_URL()}/api/projects/${project.id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${tokens?.access_token}`,
