@@ -453,6 +453,28 @@ async def update_task(
                     db
                 )
             
+            # Log priority changes
+            if "priority" in update_data and update_data["priority"] != existing_task.get("priority"):
+                await activity_service.log_activity(
+                    task_id, current_user.id, "priority_changed",
+                    {
+                        "from": existing_task.get("priority"),
+                        "to": update_data["priority"].value if hasattr(update_data["priority"], 'value') else update_data["priority"]
+                    },
+                    db
+                )
+            
+            # Log due date changes
+            if "due_date" in update_data and update_data["due_date"] != existing_task.get("due_date"):
+                await activity_service.log_activity(
+                    task_id, current_user.id, "due_date_changed",
+                    {
+                        "from": existing_task.get("due_date"),
+                        "to": update_data["due_date"].isoformat() if update_data["due_date"] else None
+                    },
+                    db
+                )
+            
             # Log assignee changes
             if "assignee_ids" in update_data:
                 old_assignees = set(existing_task.get("assignee_ids", []))
@@ -466,6 +488,17 @@ async def update_task(
                         },
                         db
                     )
+            
+            # Log general task updates for other fields
+            other_fields = [key for key in update_data.keys() if key not in ["status", "priority", "due_date", "assignee_ids", "assignee_id", "updated_at"]]
+            if other_fields:
+                await activity_service.log_activity(
+                    task_id, current_user.id, "task_updated",
+                    {
+                        "fields_updated": other_fields
+                    },
+                    db
+                )
             
             # Update task
             await db.tasks.update_one({"id": task_id}, {"$set": update_data})
