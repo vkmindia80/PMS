@@ -613,6 +613,19 @@ async def get_available_integrations(current_user: dict = Depends(get_current_us
                     "Meeting scheduling"
                 ],
                 "setup_required": ["domain", "service_account_key"]
+            },
+            "s3_storage": {
+                "name": "AWS S3 Storage",
+                "description": "Secure cloud file storage and management",
+                "features": [
+                    "File upload and storage",
+                    "File versioning",
+                    "Lifecycle policies",
+                    "Secure access control",
+                    "Project-based organization",
+                    "File type validation"
+                ],
+                "setup_required": ["bucket_name", "access_key_id", "secret_access_key", "region"]
             }
         }
         
