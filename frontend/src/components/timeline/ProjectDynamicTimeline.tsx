@@ -43,6 +43,112 @@ interface GanttChartProps {
   users: any[];
 }
 
+// Add Task Button Component
+const AddTaskButton: React.FC<{ onAddTask: (task: Partial<DynamicTimelineTask>) => void }> = ({ onAddTask }) => {
+  const [showForm, setShowForm] = useState(false);
+  
+  return (
+    <>
+      <button
+        onClick={() => setShowForm(true)}
+        className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+      >
+        <Plus className="h-4 w-4" />
+        <span>Add Task</span>
+      </button>
+      
+      {showForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <h3 className="text-lg font-semibold mb-4">Create New Task</h3>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const startDate = new Date(formData.get('start_date') as string);
+              const duration = parseInt(formData.get('duration') as string || '8');
+              const endDate = new Date(startDate.getTime() + (duration * 60 * 60 * 1000));
+              
+              onAddTask({
+                name: formData.get('name') as string,
+                description: formData.get('description') as string,
+                start_date: startDate.toISOString(),
+                finish_date: endDate.toISOString(),
+                duration,
+                percent_complete: 0,
+                assignee_ids: [],
+                critical: formData.get('critical') === 'on'
+              });
+              setShowForm(false);
+            }}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Task Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Description</label>
+                  <textarea
+                    name="description"
+                    rows={2}
+                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                    <input
+                      type="date"
+                      name="start_date"
+                      defaultValue={new Date().toISOString().split('T')[0]}
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Duration (hours)</label>
+                    <input
+                      type="number"
+                      name="duration"
+                      min="1"
+                      defaultValue="8"
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="flex items-center">
+                    <input type="checkbox" name="critical" className="mr-2" />
+                    <span className="text-sm font-medium text-gray-700">Critical Task</span>
+                  </label>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Create Task
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 // Enhanced Gantt Chart Component
 const EnhancedGanttChart: React.FC<GanttChartProps> = ({
   tasks,
