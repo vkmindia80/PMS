@@ -670,12 +670,13 @@ async def integrations_health_check():
     try:
         health_status = {
             "status": "healthy",
-            "integrations_available": 4,
+            "integrations_available": 5,
             "services": {
                 "slack": "available",
                 "teams": "available", 
                 "github": "available",
-                "google_workspace": "available"
+                "google_workspace": "available",
+                "s3_storage": "available"
             },
             "timestamp": datetime.utcnow()
         }
