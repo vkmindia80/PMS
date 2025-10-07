@@ -279,12 +279,21 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
                   <MessageSquare className="w-4 h-4" />
                   <span>Send Message</span>
                 </button>
-                <button className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 rounded flex items-center space-x-2">
+                <button 
+                  onClick={() => {
+                    // TODO: Implement role editing functionality
+                    toast.info('Role editing coming soon')
+                  }}
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 rounded flex items-center space-x-2"
+                >
                   <Edit2 className="w-4 h-4" />
                   <span>Edit Role</span>
                 </button>
                 {!isOwner && (
-                  <button className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 rounded flex items-center space-x-2 text-red-600">
+                  <button 
+                    onClick={() => handleRemoveMember(member.user_id)}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 rounded flex items-center space-x-2 text-red-600"
+                  >
                     <UserX className="w-4 h-4" />
                     <span>Remove from Project</span>
                   </button>
