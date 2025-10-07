@@ -406,7 +406,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value: AuthContextType = {
     user,
     tokens,
-    isAuthenticated: !!user && !!tokens,
+    isAuthenticated: !isLoading && !!user && !!tokens,
     isLoading,
     login,
     register,
