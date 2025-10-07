@@ -374,9 +374,10 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
         
         <button
           onClick={() => setShowAddMember(true)}
-          className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          className="flex items-center space-x-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-md font-semibold"
+          data-testid="add-team-member-button"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-5 h-5" />
           <span>Add Member</span>
         </button>
       </div>
