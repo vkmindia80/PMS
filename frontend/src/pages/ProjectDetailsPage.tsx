@@ -627,6 +627,7 @@ const ProjectDetailsPage: React.FC = () => {
             formatDate={formatDate}
             getUserName={getUserName}
             users={users}
+            fetchProjectData={fetchProjectData}
           />
         )}
 
