@@ -477,15 +477,15 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
         </div>
       </div>
 
-      {/* Timeline Content */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        {filteredTasks.length === 0 ? (
+      {/* Gantt Chart Timeline */}
+      {filteredTasks.length === 0 ? (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Calendar className="h-16 w-16 text-gray-300 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No Tasks Available</h3>
             <p className="text-gray-600 mb-6">
               {timelineTasks.length === 0 
-                ? 'This project doesn\'t have any tasks yet.' 
+                ? 'This project doesn\'t have any tasks yet. Create your first task to see it on the timeline.' 
                 : 'No tasks match the current filter settings.'
               }
             </p>
@@ -497,22 +497,47 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
               <span>Create First Task</span>
             </button>
           </div>
-        ) : (
+        </div>
+      ) : (
+        <div style={{ height: '600px' }}>
+          <GanttChart
+            tasks={filteredTasks}
+            users={users}
+            onTaskUpdate={(taskId, updates) => handleTaskUpdate(taskId, updates)}
+            onTaskClick={(taskId) => setSelectedTask(taskId)}
+            projectStartDate={project.start_date || undefined}
+            projectEndDate={project.due_date || undefined}
+          />
+        </div>
+      )}
+
+      {/* Task List View (Alternative) */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
+              <ListFilter className="w-5 h-5 text-gray-600" />
+              <span>Task List View</span>
+            </h3>
+            <span className="text-sm text-gray-600">{filteredTasks.length} tasks</span>
+          </div>
+        </div>
+        {filteredTasks.length > 0 && (
           <div className="p-6">
             <div className="space-y-4">
               {filteredTasks.map((task) => (
                 <div
                   key={task.id}
                   className={`border rounded-lg p-4 cursor-pointer transition-all ${
-                    selectedTask === task.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                    selectedTask === task.id ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
                   }`}
                   onClick={() => setSelectedTask(selectedTask === task.id ? null : task.id)}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-3 mb-2">
                         <h4 className="font-medium text-gray-900">{task.title}</h4>
-                        <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(task.status)}`}>
+                        <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(task.status)}`}>
                           {task.status.replace('_', ' ').toUpperCase()}
                         </span>
                         <span className={`text-xs font-medium ${getPriorityColor(task.priority)}`}>
@@ -520,37 +545,37 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
                         </span>
                       </div>
                       
-                      <div className="mt-2 flex items-center space-x-4 text-sm text-gray-600">
-                        <span>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                        <span className="flex items-center">
                           <Users className="inline w-4 h-4 mr-1" />
-                          {getUserName(task.assignee_id || '')}
+                          {getUserName(task.assignee_id || task.assignee_ids?.[0] || '')}
                         </span>
-                        <span>
+                        <span className="flex items-center">
                           <Calendar className="inline w-4 h-4 mr-1" />
                           {formatDate(task.start_date)} - {formatDate(task.due_date)}
                         </span>
-                        <span>
+                        <span className="flex items-center">
                           <Clock className="inline w-4 h-4 mr-1" />
-                          {task.time_tracking?.estimated_hours || 0}h
+                          {task.time_tracking?.estimated_hours || 0}h estimated
                         </span>
                       </div>
 
                       {/* Progress Bar */}
                       <div className="mt-3">
-                        <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-sm mb-1">
                           <span className="text-gray-600">Progress</span>
-                          <span className="font-medium">{task.progress_percentage}%</span>
+                          <span className="font-medium text-gray-900">{task.progress_percentage}%</span>
                         </div>
-                        <div className="mt-1 w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
                           <div
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                            className="bg-gradient-to-r from-blue-500 to-blue-600 h-2.5 rounded-full transition-all duration-300"
                             style={{ width: `${task.progress_percentage}%` }}
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 ml-4">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
