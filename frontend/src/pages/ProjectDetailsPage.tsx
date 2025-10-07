@@ -946,7 +946,7 @@ import EnhancedAnalyticsTab from '../components/project/EnhancedAnalyticsTab'
 import EnhancedTeamTab from '../components/project/EnhancedTeamTab'
 import EnhancedFilesTab from '../components/project/EnhancedFilesTab'
 import MilestonesManager from '../components/project/MilestonesManager'
-import ProjectTimelineTab from '../components/project/ProjectTimelineTab'
+import AdvancedTimelineTab from '../components/project/AdvancedTimelineTab'
 
 // Activity Tab Component
 const ActivityTab: React.FC<any> = ({ activities, comments, newComment, setNewComment, handleAddComment, formatDateTime }) => (
