@@ -354,6 +354,7 @@ const EnhancedGanttChart: React.FC<GanttChartProps> = ({
 
   // Handle task double-click for editing
   const handleTaskDoubleClick = useCallback((task: DynamicTimelineTask) => {
+    console.log('Double-clicking task:', task.name);
     setEditingTask(task);
     setShowTaskEditModal(true);
   }, []);
