@@ -65,8 +65,8 @@ export const API_ENDPOINTS = {
     details: (id: string) => `${getApiUrl()}/api/projects/${id}`,
   },
   tasks: {
-    get list() { return `${getApiUrl()}/api/tasks`; },
-    get create() { return `${getApiUrl()}/api/tasks`; },
+    get list() { return `${getApiUrl()}/api/tasks/`; },
+    get create() { return `${getApiUrl()}/api/tasks/`; },
     details: (id: string) => `${getApiUrl()}/api/tasks/${id}`,
   },
   timeline: {
