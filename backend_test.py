@@ -444,8 +444,8 @@ class ProjectDetailsTester:
         comments_success = self.test_comments_endpoint()
         
         # Calculate overall success
-        key_tests_passed = sum([project_details_success, users_success, tasks_success, update_success, demo_data_success, comments_success])
-        overall_success = key_tests_passed >= 4  # At least 4 out of 6 key tests must pass
+        key_tests_passed = sum([project_details_success, users_success, tasks_success, update_success, demo_data_success, comments_success, specific_project_success])
+        overall_success = key_tests_passed >= 5  # At least 5 out of 7 key tests must pass
         
         # Print summary
         print("\n" + "="*80)
