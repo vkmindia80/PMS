@@ -1,7 +1,7 @@
 {
   "test_summary": {
     "start_time": "2025-10-04T11:21:14.659536",
-    "base_url": "https://project-tasks-view.preview.emergentagent.com",
+    "base_url": "https://task-display-repair.preview.emergentagent.com",
     "end_time": "2025-10-04T11:21:15.024898",
     "total_tests": 6,
     "passed_tests": 5,

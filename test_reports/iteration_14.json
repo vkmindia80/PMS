@@ -45,7 +45,7 @@
       {
         "issue": "Frontend accessible at localhost:3000 and production URL, but browser automation tool redirects to localhost:8001",
         "affected_screen": ["all pages"],
-        "details": "Production URL: https://project-tasks-view.preview.emergentagent.com works correctly"
+        "details": "Production URL: https://task-display-repair.preview.emergentagent.com works correctly"
       }
     ]
   },
