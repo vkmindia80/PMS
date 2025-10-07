@@ -493,7 +493,12 @@ const EnhancedGanttChart: React.FC<GanttChartProps> = ({
                   onMouseDown={(e) => handleMouseDown(e, task, 'move')}
                   onMouseEnter={() => setHoveredTask(task.id)}
                   onMouseLeave={() => setHoveredTask(null)}
-                  onDoubleClick={() => handleTaskDoubleClick(task)}
+                  onDoubleClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Task double-clicked:', task.name);
+                    handleTaskDoubleClick(task);
+                  }}
                   title={`${task.name} (${task.percent_complete}%)\n${new Date(task.start_date).toLocaleDateString()} - ${new Date(task.finish_date).toLocaleDateString()}`}
                 >
                   {/* Progress Fill */}
