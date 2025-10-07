@@ -8,7 +8,7 @@ import {
   TrendingUp, TrendingDown, Layers
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { ProjectDynamicTimeline } from '../timeline/ProjectDynamicTimeline';
+import ProjectDynamicTimeline from '../timeline/ProjectDynamicTimeline';
 import { 
   DynamicTimelineService, 
   DynamicTimelineTask, 
