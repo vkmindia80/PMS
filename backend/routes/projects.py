@@ -702,3 +702,258 @@ async def get_project_templates(
     ]
     
     return templates
+
+# Team Management Endpoints
+
+@router.post("/{project_id}/team/add", response_model=Dict[str, Any])
+async def add_team_member(
+    project_id: str,
+    member_data: Dict[str, Any],
+    current_user: User = Depends(get_current_user)
+):
+    """Add a team member to a project"""
+    try:
+        db = await get_database()
+        
+        # Check project access and permissions
+        project = await db.projects.find_one({"id": project_id})
+        if not project:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found"
+            )
+        
+        if project["organization_id"] != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied to this project"
+            )
+        
+        # Check if user has permission to manage team
+        if current_user.role not in ["super_admin", "admin", "manager", "team_lead"] and current_user.id != project["owner_id"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Insufficient permissions to manage project team"
+            )
+        
+        user_id = member_data.get("user_id")
+        role = member_data.get("role", "member")
+        
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User ID is required"
+            )
+        
+        # Verify user exists and is in same organization
+        user = await db.users.find_one({"id": user_id})
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        if user["organization_id"] != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot add user from different organization"
+            )
+        
+        # Check if user is already a team member
+        current_members = project.get("team_members", [])
+        if user_id in current_members:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="User is already a team member"
+            )
+        
+        # Add user to team members
+        await db.projects.update_one(
+            {"id": project_id},
+            {
+                "$push": {"team_members": user_id},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        # Update user's project assignments (if field exists)
+        await db.users.update_one(
+            {"id": user_id},
+            {
+                "$addToSet": {"assigned_projects": project_id},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        return {
+            "message": "Team member added successfully",
+            "user_id": user_id,
+            "role": role,
+            "project_id": project_id
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to add team member: {str(e)}"
+        )
+
+@router.delete("/{project_id}/team/{user_id}", response_model=Dict[str, Any])
+async def remove_team_member(
+    project_id: str,
+    user_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Remove a team member from a project"""
+    try:
+        db = await get_database()
+        
+        # Check project access and permissions
+        project = await db.projects.find_one({"id": project_id})
+        if not project:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found"
+            )
+        
+        if project["organization_id"] != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied to this project"
+            )
+        
+        # Check if user has permission to manage team
+        if current_user.role not in ["super_admin", "admin", "manager", "team_lead"] and current_user.id != project["owner_id"]:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Insufficient permissions to manage project team"
+            )
+        
+        # Cannot remove project owner
+        if user_id == project["owner_id"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot remove project owner from team"
+            )
+        
+        # Check if user is actually a team member
+        current_members = project.get("team_members", [])
+        if user_id not in current_members:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User is not a team member"
+            )
+        
+        # Remove user from team members
+        await db.projects.update_one(
+            {"id": project_id},
+            {
+                "$pull": {"team_members": user_id},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        # Remove project from user's assignments (if field exists)
+        await db.users.update_one(
+            {"id": user_id},
+            {
+                "$pull": {"assigned_projects": project_id},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        # Unassign user from all tasks in this project
+        await db.tasks.update_many(
+            {"project_id": project_id, "assigned_to": user_id},
+            {
+                "$pull": {"assigned_to": user_id},
+                "$set": {"updated_at": datetime.utcnow()}
+            }
+        )
+        
+        return {
+            "message": "Team member removed successfully",
+            "user_id": user_id,
+            "project_id": project_id
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to remove team member: {str(e)}"
+        )
+
+@router.get("/{project_id}/team", response_model=List[Dict[str, Any]])
+async def get_project_team(
+    project_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get detailed information about project team members"""
+    try:
+        db = await get_database()
+        
+        # Check project access
+        project = await db.projects.find_one({"id": project_id})
+        if not project:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found"
+            )
+        
+        if project["organization_id"] != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied to this project"
+            )
+        
+        team_members = project.get("team_members", [])
+        if not team_members:
+            return []
+        
+        # Get detailed user information for team members
+        team_details = []
+        users_cursor = db.users.find({"id": {"$in": team_members}})
+        users = await users_cursor.to_list(length=None)
+        
+        for user in users:
+            # Get user's tasks in this project for performance metrics
+            user_tasks = await db.tasks.find({"project_id": project_id, "assigned_to": user["id"]}).to_list(length=None)
+            completed_tasks = [t for t in user_tasks if t.get("status") == "completed"]
+            
+            # Calculate performance metrics
+            completion_rate = (len(completed_tasks) / len(user_tasks) * 100) if user_tasks else 0
+            
+            # Determine user's role in project
+            role = "owner" if user["id"] == project["owner_id"] else "member"
+            
+            team_details.append({
+                "user_id": user["id"],
+                "name": user.get("name", f"{user.get('first_name', '')} {user.get('last_name', '')}").strip() or "Unknown User",
+                "email": user["email"],
+                "role": role,
+                "joined_at": user.get("created_at"),  # For now, use user creation date
+                "permissions": ["read", "write"] if role == "member" else ["read", "write", "admin"],
+                "performance": {
+                    "total_tasks": len(user_tasks),
+                    "completed_tasks": len(completed_tasks),
+                    "completion_rate": completion_rate,
+                    "workload": min(100, len(user_tasks) * 10),  # Simple workload calculation
+                    "utilization": min(100, completion_rate + 20),  # Simple utilization calculation
+                },
+                "metadata": user.get("metadata", {}),
+                "recent_activity": f"{len([t for t in user_tasks if t.get('updated_at') and (datetime.utcnow() - datetime.fromisoformat(t['updated_at'].replace('Z', '+00:00'))).days < 7])} tasks updated this week"
+            })
+        
+        return team_details
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get project team: {str(e)}"
+        )
