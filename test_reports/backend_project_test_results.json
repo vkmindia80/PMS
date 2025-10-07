@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-10-07T09:11:25.340579",
+  "timestamp": "2025-10-07T09:39:15.302309",
   "success": true,
   "tests_run": 10,
   "tests_passed": 8,
@@ -11,8 +11,8 @@
       "response_data": {
         "message": "Login successful",
         "tokens": {
-          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5ODMwMDgxLCJ0eXBlIjoiYWNjZXNzIn0.7CzIYC6-FVP4OUMKNpfTBvdvQY3lCIGFAy330z79vDY",
-          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwNDMzMDgxLCJ0eXBlIjoicmVmcmVzaCJ9.iZN_1WBQ962JteybzpXI8UANxuIvPNsa0EGmLUxLK-0",
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5ODMxNzUxLCJ0eXBlIjoiYWNjZXNzIn0.ff1dVrIsKYfP-0TXD5UnZYinaQ5Lo8HLIJ3CiytFnKM",
+          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwNDM0NzUxLCJ0eXBlIjoicmVmcmVzaCJ9.J67nxQWFXHa6fjJC5zbKzJm2kK4u4ONzmxO9ktiEsYA",
           "token_type": "bearer",
           "expires_in": 1800
         },
@@ -30,7 +30,7 @@
           "is_active": true,
           "status": "active",
           "email_verified": true,
-          "last_login": "2025-10-07T09:10:04.487000",
+          "last_login": "2025-10-07T09:38:53.554000",
           "timezone": "UTC",
           "language": "en",
           "theme": "light",
@@ -38,10 +38,10 @@
           "profile_completed": true,
           "onboarding_completed": true,
           "created_at": "2025-10-07T08:53:08.112000",
-          "updated_at": "2025-10-07T09:10:04.487000"
+          "updated_at": "2025-10-07T09:38:53.554000"
         }
       },
-      "timestamp": "2025-10-07T09:11:21.469165"
+      "timestamp": "2025-10-07T09:39:11.401094"
     },
     {
       "test_name": "Get Current User Profile",
@@ -61,7 +61,7 @@
         "is_active": true,
         "status": "active",
         "email_verified": true,
-        "last_login": "2025-10-07T09:11:21.465000",
+        "last_login": "2025-10-07T09:39:11.397000",
         "timezone": "UTC",
         "language": "en",
         "theme": "light",
@@ -69,9 +69,9 @@
         "profile_completed": true,
         "onboarding_completed": true,
         "created_at": "2025-10-07T08:53:08.112000",
-        "updated_at": "2025-10-07T09:11:21.465000"
+        "updated_at": "2025-10-07T09:39:11.397000"
       },
-      "timestamp": "2025-10-07T09:11:21.507657"
+      "timestamp": "2025-10-07T09:39:11.441761"
     },
     {
       "test_name": "Get Projects List",
@@ -79,117 +79,117 @@
       "details": "Status: 200",
       "response_data": [
         {
-          "id": "proj-40222413a467",
+          "id": "proj-f05d31720576",
           "name": "AI-Powered Medical Diagnosis Platform",
           "status": "active",
           "priority": "critical",
-          "progress_percentage": 80,
-          "due_date": "2026-03-15",
-          "owner_id": "9e85e573-4de7-4f9f-a9f8-0c65b6e71f93",
-          "task_count": 9,
+          "progress_percentage": 66,
+          "due_date": "2025-11-26",
+          "owner_id": "4661bb1c-6dc8-4ec8-b5f7-2037137fcbb7",
+          "task_count": 8,
           "team_member_count": 2
         },
         {
-          "id": "proj-023d704c967e",
+          "id": "proj-2a846fcb2d53",
           "name": "Smart City IoT Traffic Management System",
           "status": "planning",
           "priority": "high",
-          "progress_percentage": 9,
-          "due_date": "2026-06-09",
-          "owner_id": "9e85e573-4de7-4f9f-a9f8-0c65b6e71f93",
-          "task_count": 9,
+          "progress_percentage": 1,
+          "due_date": "2026-06-16",
+          "owner_id": "61438537-e3ad-4b0a-af55-0803eb866488",
+          "task_count": 11,
           "team_member_count": 1
         },
         {
-          "id": "proj-e3c7f6d27f14",
+          "id": "proj-9b4102b58371",
           "name": "Blockchain-Based Supply Chain Tracker",
           "status": "active",
           "priority": "medium",
-          "progress_percentage": 51,
-          "due_date": "2025-12-03",
-          "owner_id": "1646ff73-191b-47f7-9005-72f031edf5ba",
-          "task_count": 8,
+          "progress_percentage": 27,
+          "due_date": "2025-10-30",
+          "owner_id": "025d20ff-f5fe-4be4-9404-8efff031ce98",
+          "task_count": 14,
           "team_member_count": 1
         },
         {
-          "id": "proj-b3685da44515",
+          "id": "proj-3a0b13c6ed0d",
           "name": "Real-Time Financial Trading Platform",
           "status": "active",
           "priority": "critical",
-          "progress_percentage": 58,
-          "due_date": "2026-05-02",
-          "owner_id": "a0bea4c9-f184-4b28-b7fa-55d2a15ca40f",
+          "progress_percentage": 48,
+          "due_date": "2026-02-20",
+          "owner_id": "1a73bae2-55a2-4bd6-a1fb-6ea73546a4c1",
+          "task_count": 14,
+          "team_member_count": 1
+        },
+        {
+          "id": "proj-668643d9b731",
+          "name": "AR/VR Corporate Training Ecosystem",
+          "status": "planning",
+          "priority": "medium",
+          "progress_percentage": 12,
+          "due_date": "2026-04-07",
+          "owner_id": "4661bb1c-6dc8-4ec8-b5f7-2037137fcbb7",
+          "task_count": 8,
+          "team_member_count": 3
+        },
+        {
+          "id": "proj-6e26a1baaf36",
+          "name": "Quantum Computing Research Platform",
+          "status": "active",
+          "priority": "high",
+          "progress_percentage": 29,
+          "due_date": "2026-04-02",
+          "owner_id": "64afa697-58ec-480c-86cd-dc588d7b247b",
           "task_count": 12,
           "team_member_count": 1
         },
         {
-          "id": "proj-a9a731137c3e",
-          "name": "AR/VR Corporate Training Ecosystem",
-          "status": "planning",
-          "priority": "medium",
-          "progress_percentage": 14,
-          "due_date": "2026-04-07",
-          "owner_id": "744c5807-c669-4bcc-8405-ed405d6a19d0",
-          "task_count": 11,
-          "team_member_count": 3
-        },
-        {
-          "id": "proj-70ca9e40f954",
-          "name": "Quantum Computing Research Platform",
-          "status": "active",
-          "priority": "high",
-          "progress_percentage": 75,
-          "due_date": "2025-12-30",
-          "owner_id": "744c5807-c669-4bcc-8405-ed405d6a19d0",
-          "task_count": 8,
-          "team_member_count": 1
-        },
-        {
-          "id": "proj-db50bfa1ace9",
+          "id": "proj-052b0f91c750",
           "name": "Sustainable Energy Management System",
           "status": "active",
           "priority": "high",
-          "progress_percentage": 50,
-          "due_date": "2025-11-06",
-          "owner_id": "a0bea4c9-f184-4b28-b7fa-55d2a15ca40f",
-          "task_count": 13,
+          "progress_percentage": 76,
+          "due_date": "2026-01-08",
+          "owner_id": "025d20ff-f5fe-4be4-9404-8efff031ce98",
+          "task_count": 14,
           "team_member_count": 1
         },
         {
-          "id": "proj-31a0fb6b167a",
+          "id": "proj-635179252cb8",
           "name": "Next-Gen Gaming Platform with Social Features",
           "status": "completed",
           "priority": "medium",
           "progress_percentage": 100,
-          "due_date": "2026-05-07",
-          "owner_id": "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
-          "task_count": 8,
+          "due_date": "2026-04-06",
+          "owner_id": "64afa697-58ec-480c-86cd-dc588d7b247b",
+          "task_count": 14,
           "team_member_count": 2
         },
         {
-          "id": "proj-1f103538360f",
+          "id": "proj-a1edd02b4e0c",
           "name": "AI-Driven Cybersecurity Threat Detection",
           "status": "active",
           "priority": "critical",
-          "progress_percentage": 79,
-          "due_date": "2025-10-15",
-          "owner_id": "b0cb95b3-490d-46b5-9c54-89af682af6e1",
-          "task_count": 10,
+          "progress_percentage": 54,
+          "due_date": "2026-02-05",
+          "owner_id": "abad4807-dc55-44c5-8122-59c75e273a03",
+          "task_count": 8,
           "team_member_count": 1
         },
         {
-          "id": "proj-fe8a411235eb",
+          "id": "proj-d418319aa2c7",
           "name": "Adaptive EdTech Learning Platform",
           "status": "planning",
           "priority": "medium",
-          "progress_percentage": 2,
-          "due_date": "2026-03-10",
-          "owner_id": "6fe31fb0-599e-4afe-9004-72388da64403",
-          "task_count": 11,
+          "progress_percentage": 10,
+          "due_date": "2026-02-17",
+          "owner_id": "61438537-e3ad-4b0a-af55-0803eb866488",
+          "task_count": 15,
           "team_member_count": 2
         }
       ],
-      "timestamp": "2025-10-07T09:11:21.548293"
+      "timestamp": "2025-10-07T09:39:11.480448"
     },
     {
       "test_name": "Get Project Details",
@@ -201,81 +201,81 @@
         "status": "active",
         "priority": "critical",
         "visibility": "team",
-        "start_date": "2025-08-31",
-        "due_date": "2026-03-15",
+        "start_date": "2025-05-14",
+        "due_date": "2025-11-26",
         "organization_id": "demo-org-001",
-        "owner_id": "9e85e573-4de7-4f9f-a9f8-0c65b6e71f93",
+        "owner_id": "4661bb1c-6dc8-4ec8-b5f7-2037137fcbb7",
         "team_members": [
-          "b0cb95b3-490d-46b5-9c54-89af682af6e1",
-          "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96"
+          "df66b1e7-be1a-4634-90ae-bd0bcdd256a5",
+          "61438537-e3ad-4b0a-af55-0803eb866488"
         ],
         "budget": {
           "total_budget": 850000.0,
-          "spent_amount": 568826.6196206164,
+          "spent_amount": 584933.4622086057,
           "currency": "USD"
         },
         "milestones": [
           {
-            "id": "milestone-b2690ea0",
+            "id": "milestone-4f36c111",
             "title": "Regulatory Requirements Analysis & Clinical Research",
             "description": "Complete regulatory requirements analysis & clinical research for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-09-24",
+            "due_date": "2025-06-07",
             "completed": true,
-            "completed_at": "2025-09-24T09:08:32.459000"
+            "completed_at": "2025-06-07T09:38:51.226000"
           },
           {
-            "id": "milestone-b66b51b3",
+            "id": "milestone-1ca80274",
             "title": "AI Model Architecture Design & Data Pipeline Setup",
             "description": "Complete ai model architecture design & data pipeline setup for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-10-18",
+            "due_date": "2025-07-01",
             "completed": true,
-            "completed_at": "2025-10-18T09:08:32.459000"
+            "completed_at": "2025-07-01T09:38:51.226000"
           },
           {
-            "id": "milestone-f4850d68",
+            "id": "milestone-a05a47db",
             "title": "Medical Image Processing Development & Algorithm Training",
             "description": "Complete medical image processing development & algorithm training for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-11-11",
+            "due_date": "2025-07-25",
             "completed": true,
-            "completed_at": "2025-11-11T09:08:32.459000"
+            "completed_at": "2025-07-25T09:38:51.226000"
           },
           {
-            "id": "milestone-6f3090f6",
+            "id": "milestone-8cb9f958",
             "title": "Clinical Validation & FDA Pre-submission Preparation",
             "description": "Complete clinical validation & fda pre-submission preparation for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-12-05",
-            "completed": true,
-            "completed_at": "2025-12-05T09:08:32.459000"
+            "due_date": "2025-08-18",
+            "completed": false,
+            "completed_at": null
           },
           {
-            "id": "milestone-bc519faa",
+            "id": "milestone-6175f698",
             "title": "Integration Testing & DICOM/HL7 FHIR Compliance",
             "description": "Complete integration testing & dicom/hl7 fhir compliance for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-12-29",
+            "due_date": "2025-09-11",
             "completed": false,
             "completed_at": null
           },
           {
-            "id": "milestone-f8107d82",
+            "id": "milestone-4cc7386e",
             "title": "Clinical Trial Coordination & Performance Validation",
             "description": "Complete clinical trial coordination & performance validation for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2026-01-22",
+            "due_date": "2025-10-05",
             "completed": false,
             "completed_at": null
           },
           {
-            "id": "milestone-e2e0e28a",
+            "id": "milestone-2aafa595",
             "title": "FDA 510k Submission & Regulatory Review Process",
             "description": "Complete fda 510k submission & regulatory review process for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2026-02-15",
+            "due_date": "2025-10-29",
             "completed": false,
             "completed_at": null
           },
           {
-            "id": "milestone-3b1f9948",
+            "id": "milestone-9a01eb58",
             "title": "Production Deployment & Clinical Workflow Integration",
             "description": "Complete production deployment & clinical workflow integration for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2026-03-11",
+            "due_date": "2025-11-22",
             "completed": false,
             "completed_at": null
           }
@@ -299,14 +299,14 @@
           "compliance"
         ],
         "category": "Healthcare AI",
-        "progress_percentage": 80.0,
-        "id": "proj-40222413a467",
-        "created_at": "2025-08-18T09:08:32.459000",
-        "updated_at": "2025-10-07T09:08:32.464000",
-        "task_count": 9,
-        "completed_task_count": 7
+        "progress_percentage": 66.0,
+        "id": "proj-f05d31720576",
+        "created_at": "2025-04-29T09:38:51.226000",
+        "updated_at": "2025-10-07T09:38:51.231000",
+        "task_count": 8,
+        "completed_task_count": 5
       },
-      "timestamp": "2025-10-07T09:11:21.590414"
+      "timestamp": "2025-10-07T09:39:11.517330"
     },
     {
       "test_name": "Get Users List",
@@ -315,7 +315,7 @@
       "response_data": {
         "detail": "Not authenticated"
       },
-      "timestamp": "2025-10-07T09:11:21.640626"
+      "timestamp": "2025-10-07T09:39:11.570569"
     },
     {
       "test_name": "Get Tasks for Project",
@@ -323,227 +323,204 @@
       "details": "Status: 200",
       "response_data": [
         {
-          "id": "3eeb5756-696b-4228-bd85-032103620ebc",
-          "title": "Technical specification",
-          "status": "completed",
-          "priority": "critical",
-          "type": "bug",
-          "project_id": "proj-40222413a467",
-          "organization_id": "demo-org-001",
-          "assignee_id": "b0cb95b3-490d-46b5-9c54-89af682af6e1",
-          "assignee_ids": [
-            "b0cb95b3-490d-46b5-9c54-89af682af6e1",
-            "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96"
-          ],
-          "due_date": "2025-11-06T09:08:32.459000",
-          "start_date": "2025-10-28T09:08:32.459000",
-          "created_at": "2025-10-06T09:08:32.462000",
-          "updated_at": "2025-10-07T09:08:32.486000",
-          "progress_percentage": 100.0,
-          "time_tracking": {
-            "estimated_hours": 40.0,
-            "actual_hours": 45.044106063044666,
-            "logged_time": []
-          },
-          "subtask_count": 0
-        },
-        {
-          "id": "b54adffc-8715-4900-800a-5de1ecdabefd",
-          "title": "Stakeholder review",
-          "status": "completed",
-          "priority": "critical",
-          "type": "task",
-          "project_id": "proj-40222413a467",
-          "organization_id": "demo-org-001",
-          "assignee_id": "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
-          "assignee_ids": [
-            "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
-            "b0cb95b3-490d-46b5-9c54-89af682af6e1"
-          ],
-          "due_date": "2025-09-04T09:08:32.459000",
-          "start_date": "2025-08-31T09:08:32.459000",
-          "created_at": "2025-10-05T09:08:32.462000",
-          "updated_at": "2025-10-07T09:08:32.462000",
-          "progress_percentage": 100.0,
-          "time_tracking": {
-            "estimated_hours": 16.0,
-            "actual_hours": 12.89492145471639,
-            "logged_time": []
-          },
-          "subtask_count": 0
-        },
-        {
-          "id": "0496411a-9597-4763-8b02-d2bd6ec04bc6",
-          "title": "Final deployment",
-          "status": "completed",
-          "priority": "low",
-          "type": "task",
-          "project_id": "proj-40222413a467",
-          "organization_id": "demo-org-001",
-          "assignee_id": "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
-          "assignee_ids": [
-            "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96"
-          ],
-          "due_date": "2025-09-27T09:08:32.459000",
-          "start_date": "2025-09-19T09:08:32.459000",
-          "created_at": "2025-10-04T09:08:32.462000",
-          "updated_at": "2025-10-07T09:08:32.487000",
-          "progress_percentage": 100.0,
-          "time_tracking": {
-            "estimated_hours": 11.0,
-            "actual_hours": 9.493409191716195,
-            "logged_time": []
-          },
-          "subtask_count": 0
-        },
-        {
-          "id": "87269423-4e60-49c9-af65-e5f77d0a647c",
+          "id": "a690b2d1-b161-4615-b937-79a19fc487b7",
           "title": "Design and mockups",
+          "status": "in_progress",
+          "priority": "critical",
+          "type": "feature",
+          "project_id": "proj-f05d31720576",
+          "organization_id": "demo-org-001",
+          "assignee_id": "df66b1e7-be1a-4634-90ae-bd0bcdd256a5",
+          "assignee_ids": [
+            "df66b1e7-be1a-4634-90ae-bd0bcdd256a5"
+          ],
+          "due_date": "2025-09-07T09:38:51.226000",
+          "start_date": "2025-09-01T09:38:51.226000",
+          "created_at": "2025-10-05T09:38:51.230000",
+          "updated_at": "2025-10-07T09:38:51.258000",
+          "progress_percentage": 21.0,
+          "time_tracking": {
+            "estimated_hours": 27.0,
+            "actual_hours": 9.22440203591084,
+            "logged_time": []
+          },
+          "subtask_count": 0
+        },
+        {
+          "id": "1a9efb0d-5eb5-4c71-a323-25602a3d9a58",
+          "title": "Technical specification",
+          "status": "todo",
+          "priority": "high",
+          "type": "task",
+          "project_id": "proj-f05d31720576",
+          "organization_id": "demo-org-001",
+          "assignee_id": "61438537-e3ad-4b0a-af55-0803eb866488",
+          "assignee_ids": [
+            "61438537-e3ad-4b0a-af55-0803eb866488",
+            "df66b1e7-be1a-4634-90ae-bd0bcdd256a5"
+          ],
+          "due_date": "2025-10-21T09:38:51.226000",
+          "start_date": "2025-10-15T09:38:51.226000",
+          "created_at": "2025-10-04T09:38:51.231000",
+          "updated_at": "2025-10-07T09:38:51.259000",
+          "progress_percentage": 0.0,
+          "time_tracking": {
+            "estimated_hours": 27.0,
+            "actual_hours": 0.0,
+            "logged_time": []
+          },
+          "subtask_count": 0
+        },
+        {
+          "id": "5bd5c84f-3cbb-47f6-8718-55cb3b799c06",
+          "title": "Project planning and scoping",
           "status": "completed",
           "priority": "high",
-          "type": "feature",
-          "project_id": "proj-40222413a467",
+          "type": "bug",
+          "project_id": "proj-f05d31720576",
           "organization_id": "demo-org-001",
-          "assignee_id": "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
+          "assignee_id": "61438537-e3ad-4b0a-af55-0803eb866488",
           "assignee_ids": [
-            "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
-            "b0cb95b3-490d-46b5-9c54-89af682af6e1"
+            "61438537-e3ad-4b0a-af55-0803eb866488",
+            "df66b1e7-be1a-4634-90ae-bd0bcdd256a5"
           ],
-          "due_date": "2025-12-16T09:08:32.459000",
-          "start_date": "2025-12-07T09:08:32.459000",
-          "created_at": "2025-09-30T09:08:32.463000",
-          "updated_at": "2025-10-07T09:08:32.486000",
+          "due_date": "2025-08-19T09:38:51.226000",
+          "start_date": "2025-08-10T09:38:51.226000",
+          "created_at": "2025-09-25T09:38:51.230000",
+          "updated_at": "2025-10-07T09:38:51.258000",
           "progress_percentage": 100.0,
           "time_tracking": {
-            "estimated_hours": 8.0,
-            "actual_hours": 10.077803957754277,
+            "estimated_hours": 7.0,
+            "actual_hours": 7.6807325976695076,
             "logged_time": []
           },
           "subtask_count": 0
         },
         {
-          "id": "a6a871f9-5418-4f3c-b403-1cec6a4fb4bc",
-          "title": "Project planning and scoping",
-          "status": "in_review",
+          "id": "e8a79581-ab92-439f-a836-e3eff6208eca",
+          "title": "Requirements gathering",
+          "status": "todo",
+          "priority": "high",
+          "type": "improvement",
+          "project_id": "proj-f05d31720576",
+          "organization_id": "demo-org-001",
+          "assignee_id": "df66b1e7-be1a-4634-90ae-bd0bcdd256a5",
+          "assignee_ids": [
+            "df66b1e7-be1a-4634-90ae-bd0bcdd256a5",
+            "61438537-e3ad-4b0a-af55-0803eb866488"
+          ],
+          "due_date": "2025-09-29T09:38:51.226000",
+          "start_date": "2025-09-23T09:38:51.226000",
+          "created_at": "2025-09-13T09:38:51.230000",
+          "updated_at": "2025-10-07T09:38:51.259000",
+          "progress_percentage": 0.0,
+          "time_tracking": {
+            "estimated_hours": 24.0,
+            "actual_hours": 0.0,
+            "logged_time": []
+          },
+          "subtask_count": 0
+        },
+        {
+          "id": "b4b056cb-7989-4f8d-8822-855dbc3db7c5",
+          "title": "Final deployment",
+          "status": "completed",
           "priority": "critical",
-          "type": "bug",
-          "project_id": "proj-40222413a467",
-          "organization_id": "demo-org-001",
-          "assignee_id": "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
-          "assignee_ids": [
-            "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96"
-          ],
-          "due_date": "2026-02-10T09:08:32.459000",
-          "start_date": "2026-02-03T09:08:32.459000",
-          "created_at": "2025-09-22T09:08:32.463000",
-          "updated_at": "2025-10-07T09:08:32.487000",
-          "progress_percentage": 80.0,
-          "time_tracking": {
-            "estimated_hours": 30.0,
-            "actual_hours": 27.75146633261775,
-            "logged_time": []
-          },
-          "subtask_count": 0
-        },
-        {
-          "id": "e04a2d03-c9e6-4fb2-aa64-7317c206dd73",
-          "title": "Bug fixes and improvements",
-          "status": "in_progress",
-          "priority": "low",
           "type": "feature",
-          "project_id": "proj-40222413a467",
+          "project_id": "proj-f05d31720576",
           "organization_id": "demo-org-001",
-          "assignee_id": "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
+          "assignee_id": "df66b1e7-be1a-4634-90ae-bd0bcdd256a5",
           "assignee_ids": [
-            "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96"
+            "df66b1e7-be1a-4634-90ae-bd0bcdd256a5"
           ],
-          "due_date": "2026-01-27T09:08:32.459000",
-          "start_date": "2026-01-15T09:08:32.459000",
-          "created_at": "2025-09-21T09:08:32.463000",
-          "updated_at": "2025-10-07T09:08:32.463000",
-          "progress_percentage": 50.0,
+          "due_date": "2025-07-08T09:38:51.226000",
+          "start_date": "2025-06-27T09:38:51.226000",
+          "created_at": "2025-09-11T09:38:51.230000",
+          "updated_at": "2025-10-07T09:38:51.257000",
+          "progress_percentage": 100.0,
           "time_tracking": {
-            "estimated_hours": 11.0,
-            "actual_hours": 1.6043611579569277,
+            "estimated_hours": 15.0,
+            "actual_hours": 16.556406274473503,
             "logged_time": []
           },
           "subtask_count": 0
         },
         {
-          "id": "47b9c2f8-a3ac-40fa-8c04-d0668e119e86",
+          "id": "a1347082-42b8-4165-9513-e87b13cc4c11",
           "title": "Development implementation",
           "status": "completed",
           "priority": "low",
-          "type": "bug",
-          "project_id": "proj-40222413a467",
+          "type": "improvement",
+          "project_id": "proj-f05d31720576",
           "organization_id": "demo-org-001",
-          "assignee_id": "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
+          "assignee_id": "61438537-e3ad-4b0a-af55-0803eb866488",
           "assignee_ids": [
-            "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
-            "b0cb95b3-490d-46b5-9c54-89af682af6e1"
+            "61438537-e3ad-4b0a-af55-0803eb866488",
+            "df66b1e7-be1a-4634-90ae-bd0bcdd256a5"
           ],
-          "due_date": "2026-01-07T09:08:32.459000",
-          "start_date": "2025-12-26T09:08:32.459000",
-          "created_at": "2025-09-15T09:08:32.463000",
-          "updated_at": "2025-10-07T09:08:32.463000",
+          "due_date": "2025-07-30T09:38:51.226000",
+          "start_date": "2025-07-19T09:38:51.226000",
+          "created_at": "2025-09-11T09:38:51.230000",
+          "updated_at": "2025-10-07T09:38:51.257000",
           "progress_percentage": 100.0,
           "time_tracking": {
-            "estimated_hours": 13.0,
-            "actual_hours": 11.403105977445772,
+            "estimated_hours": 17.0,
+            "actual_hours": 14.109550198785774,
             "logged_time": []
           },
           "subtask_count": 0
         },
         {
-          "id": "73993e6c-4f95-4ff9-9ca5-03b224e481d9",
-          "title": "Requirements gathering",
+          "id": "0048b4a6-575c-4977-9889-25504ed17615",
+          "title": "Documentation creation",
           "status": "completed",
-          "priority": "medium",
+          "priority": "critical",
           "type": "task",
-          "project_id": "proj-40222413a467",
+          "project_id": "proj-f05d31720576",
           "organization_id": "demo-org-001",
-          "assignee_id": "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96",
+          "assignee_id": "df66b1e7-be1a-4634-90ae-bd0bcdd256a5",
           "assignee_ids": [
-            "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96"
+            "df66b1e7-be1a-4634-90ae-bd0bcdd256a5"
           ],
-          "due_date": "2025-10-16T09:08:32.459000",
-          "start_date": "2025-10-09T09:08:32.459000",
-          "created_at": "2025-09-15T09:08:32.462000",
-          "updated_at": "2025-10-07T09:08:32.486000",
+          "due_date": "2025-05-24T09:38:51.226000",
+          "start_date": "2025-05-14T09:38:51.226000",
+          "created_at": "2025-09-10T09:38:51.229000",
+          "updated_at": "2025-10-07T09:38:51.256000",
           "progress_percentage": 100.0,
           "time_tracking": {
-            "estimated_hours": 30.0,
-            "actual_hours": 28.41797427758056,
+            "estimated_hours": 18.0,
+            "actual_hours": 15.87543068621163,
             "logged_time": []
           },
           "subtask_count": 0
         },
         {
-          "id": "d5af4cae-d046-4a9e-8b72-4e3785c7bf02",
-          "title": "Testing and quality assurance",
+          "id": "b2defd4b-9563-41a3-8714-1e6d675a7757",
+          "title": "Stakeholder review",
           "status": "completed",
-          "priority": "medium",
-          "type": "feature",
-          "project_id": "proj-40222413a467",
+          "priority": "high",
+          "type": "task",
+          "project_id": "proj-f05d31720576",
           "organization_id": "demo-org-001",
-          "assignee_id": "b0cb95b3-490d-46b5-9c54-89af682af6e1",
+          "assignee_id": "df66b1e7-be1a-4634-90ae-bd0bcdd256a5",
           "assignee_ids": [
-            "b0cb95b3-490d-46b5-9c54-89af682af6e1"
+            "df66b1e7-be1a-4634-90ae-bd0bcdd256a5",
+            "61438537-e3ad-4b0a-af55-0803eb866488"
           ],
-          "due_date": "2025-11-27T09:08:32.459000",
-          "start_date": "2025-11-17T09:08:32.459000",
-          "created_at": "2025-09-08T09:08:32.463000",
-          "updated_at": "2025-10-07T09:08:32.486000",
+          "due_date": "2025-06-11T09:38:51.226000",
+          "start_date": "2025-06-05T09:38:51.226000",
+          "created_at": "2025-09-10T09:38:51.229000",
+          "updated_at": "2025-10-07T09:38:51.257000",
           "progress_percentage": 100.0,
           "time_tracking": {
-            "estimated_hours": 20.0,
-            "actual_hours": 24.902550152746446,
+            "estimated_hours": 4.0,
+            "actual_hours": 3.423168331884467,
             "logged_time": []
           },
           "subtask_count": 0
         }
       ],
-      "timestamp": "2025-10-07T09:11:21.684364"
+      "timestamp": "2025-10-07T09:39:11.609054"
     },
     {
       "test_name": "Get Specific Project Details",
@@ -552,7 +529,7 @@
       "response_data": {
         "detail": "Project not found"
       },
-      "timestamp": "2025-10-07T09:11:21.720878"
+      "timestamp": "2025-10-07T09:39:11.645605"
     },
     {
       "test_name": "Update Project Description",
@@ -560,85 +537,85 @@
       "details": "Status: 200",
       "response_data": {
         "name": "AI-Powered Medical Diagnosis Platform",
-        "description": "Updated description at 2025-10-07T09:11:21.721360",
+        "description": "Updated description at 2025-10-07T09:39:11.646197",
         "status": "active",
         "priority": "critical",
         "visibility": "team",
-        "start_date": "2025-08-31",
-        "due_date": "2026-03-15",
+        "start_date": "2025-05-14",
+        "due_date": "2025-11-26",
         "organization_id": "demo-org-001",
-        "owner_id": "9e85e573-4de7-4f9f-a9f8-0c65b6e71f93",
+        "owner_id": "4661bb1c-6dc8-4ec8-b5f7-2037137fcbb7",
         "team_members": [
-          "b0cb95b3-490d-46b5-9c54-89af682af6e1",
-          "149e3c81-8bf0-4eb8-8e80-b1ac9c66de96"
+          "df66b1e7-be1a-4634-90ae-bd0bcdd256a5",
+          "61438537-e3ad-4b0a-af55-0803eb866488"
         ],
         "budget": {
           "total_budget": 850000.0,
-          "spent_amount": 568826.6196206164,
+          "spent_amount": 584933.4622086057,
           "currency": "USD"
         },
         "milestones": [
           {
-            "id": "milestone-b2690ea0",
+            "id": "milestone-4f36c111",
             "title": "Regulatory Requirements Analysis & Clinical Research",
             "description": "Complete regulatory requirements analysis & clinical research for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-09-24",
+            "due_date": "2025-06-07",
             "completed": true,
-            "completed_at": "2025-09-24T09:08:32.459000"
+            "completed_at": "2025-06-07T09:38:51.226000"
           },
           {
-            "id": "milestone-b66b51b3",
+            "id": "milestone-1ca80274",
             "title": "AI Model Architecture Design & Data Pipeline Setup",
             "description": "Complete ai model architecture design & data pipeline setup for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-10-18",
+            "due_date": "2025-07-01",
             "completed": true,
-            "completed_at": "2025-10-18T09:08:32.459000"
+            "completed_at": "2025-07-01T09:38:51.226000"
           },
           {
-            "id": "milestone-f4850d68",
+            "id": "milestone-a05a47db",
             "title": "Medical Image Processing Development & Algorithm Training",
             "description": "Complete medical image processing development & algorithm training for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-11-11",
+            "due_date": "2025-07-25",
             "completed": true,
-            "completed_at": "2025-11-11T09:08:32.459000"
+            "completed_at": "2025-07-25T09:38:51.226000"
           },
           {
-            "id": "milestone-6f3090f6",
+            "id": "milestone-8cb9f958",
             "title": "Clinical Validation & FDA Pre-submission Preparation",
             "description": "Complete clinical validation & fda pre-submission preparation for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-12-05",
-            "completed": true,
-            "completed_at": "2025-12-05T09:08:32.459000"
+            "due_date": "2025-08-18",
+            "completed": false,
+            "completed_at": null
           },
           {
-            "id": "milestone-bc519faa",
+            "id": "milestone-6175f698",
             "title": "Integration Testing & DICOM/HL7 FHIR Compliance",
             "description": "Complete integration testing & dicom/hl7 fhir compliance for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2025-12-29",
+            "due_date": "2025-09-11",
             "completed": false,
             "completed_at": null
           },
           {
-            "id": "milestone-f8107d82",
+            "id": "milestone-4cc7386e",
             "title": "Clinical Trial Coordination & Performance Validation",
             "description": "Complete clinical trial coordination & performance validation for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2026-01-22",
+            "due_date": "2025-10-05",
             "completed": false,
             "completed_at": null
           },
           {
-            "id": "milestone-e2e0e28a",
+            "id": "milestone-2aafa595",
             "title": "FDA 510k Submission & Regulatory Review Process",
             "description": "Complete fda 510k submission & regulatory review process for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2026-02-15",
+            "due_date": "2025-10-29",
             "completed": false,
             "completed_at": null
           },
           {
-            "id": "milestone-3b1f9948",
+            "id": "milestone-9a01eb58",
             "title": "Production Deployment & Clinical Workflow Integration",
             "description": "Complete production deployment & clinical workflow integration for AI-Powered Medical Diagnosis Platform",
-            "due_date": "2026-03-11",
+            "due_date": "2025-11-22",
             "completed": false,
             "completed_at": null
           }
@@ -662,14 +639,14 @@
           "compliance"
         ],
         "category": "Healthcare AI",
-        "progress_percentage": 80.0,
-        "id": "proj-40222413a467",
-        "created_at": "2025-08-18T09:08:32.459000",
-        "updated_at": "2025-10-07T09:11:21.756000",
-        "task_count": 9,
-        "completed_task_count": 7
+        "progress_percentage": 66.0,
+        "id": "proj-f05d31720576",
+        "created_at": "2025-04-29T09:38:51.226000",
+        "updated_at": "2025-10-07T09:39:11.683000",
+        "task_count": 8,
+        "completed_task_count": 5
       },
-      "timestamp": "2025-10-07T09:11:21.760659"
+      "timestamp": "2025-10-07T09:39:11.687155"
     },
     {
       "test_name": "Generate Demo Data",
@@ -679,17 +656,17 @@
         "success": true,
         "message": "Comprehensive demo data generated successfully!",
         "details": {
-          "total_data_points": 382,
+          "total_data_points": 450,
           "users_created": 15,
           "teams_created": 14,
           "projects_created": 10,
-          "tasks_created": 108,
-          "comments_created": 24,
-          "files_created": 25,
-          "tasks_with_dependencies": 66,
+          "tasks_created": 115,
+          "comments_created": 25,
+          "files_created": 28,
+          "tasks_with_dependencies": 65,
           "tasks_with_multiple_assignees": 0,
-          "total_estimated_hours": 2166,
-          "dependency_rate": "61.1%",
+          "total_estimated_hours": 2455,
+          "dependency_rate": "56.5%",
           "multi_assignee_rate": "0.0%",
           "success_rate": 100,
           "access_info": {
@@ -702,27 +679,27 @@
             "\ud83d\udc65 15 Professional Users with Skills & Roles",
             "\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d\udc66 14 Specialized Teams (AI, Blockchain, IoT, FinTech, etc.)",
             "\ud83d\udcc1 10 Diverse Enterprise Projects with Budgets & Timelines",
-            "\u2705 108 Enhanced Tasks with Start/End Dates",
-            "\ud83d\udd17 66 Tasks with Dependencies (61.1%)",
+            "\u2705 115 Enhanced Tasks with Start/End Dates",
+            "\ud83d\udd17 65 Tasks with Dependencies (56.5%)",
             "\ud83d\udc65 0 Multi-Assignee Tasks (0.0%)",
-            "\u23f1\ufe0f 2,166 Hours of Time Tracking Data",
-            "\ud83d\udcac 24 Comments & Discussions",
-            "\ud83d\udcce 25 File Attachments",
+            "\u23f1\ufe0f 2,455 Hours of Time Tracking Data",
+            "\ud83d\udcac 25 Comments & Discussions",
+            "\ud83d\udcce 28 File Attachments",
             "\ud83e\udd16 AI Training Records and Integration Configurations",
             "\ud83d\udcca Complete Analytics and Resource Management Data"
           ]
         }
       },
-      "timestamp": "2025-10-07T09:11:25.303642"
+      "timestamp": "2025-10-07T09:39:15.260925"
     },
     {
       "test_name": "Get Project Comments",
       "success": true,
       "details": "Status: 200",
       "response_data": [],
-      "timestamp": "2025-10-07T09:11:25.339801"
+      "timestamp": "2025-10-07T09:39:15.301539"
     }
   ],
-  "project_id": "proj-40222413a467",
+  "project_id": "proj-f05d31720576",
   "functionality_status": "WORKING"
 }
