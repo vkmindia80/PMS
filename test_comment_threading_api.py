@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class CommentThreadingTester:
-    def __init__(self, base_url: str = "https://full-tabs-system.preview.emergentagent.com"):
+    def __init__(self, base_url: str = "https://project-tasks-view.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user_data = None
