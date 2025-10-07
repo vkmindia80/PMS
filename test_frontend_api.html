@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { margin: 10px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #results { margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 4px; }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>Frontend API Test</h1>
+    <p>Testing the same API calls that the frontend makes:</p>
+    
+    <button onclick="testGenerateDemoData()">Test Generate Demo Data</button>
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8001';
+        
+        function log(message, isError = false) {
+            const results = document.getElementById('results');
+            const p = document.createElement('p');
+            p.className = isError ? 'error' : 'success';
+            p.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            results.appendChild(p);
+        }
+
+        async function testGenerateDemoData() {
+            log('🔄 Starting Generate Demo Data test...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/system/generate-demo-data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                log(`📨 Response status: ${response.status}`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const result = await response.json();
+                log(`✅ Demo data generation successful! Created ${result.details?.total_data_points || 0} data points`);
+                
+            } catch (error) {
+                log(`❌ Demo data generation failed: ${error.message}`, true);
+            }
+        }
+
+        async function testLogin() {
+            log('🔄 Starting Login test...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'demo@company.com',
+                        password: 'demo123456'
+                    })
+                });
+                
+                log(`📨 Response status: ${response.status}`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const result = await response.json();
+                log(`✅ Login successful! User: ${result.user.email}, Role: ${result.user.role}`);
+                
+            } catch (error) {
+                log(`❌ Login failed: ${error.message}`, true);
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
