@@ -394,7 +394,15 @@ const ProjectDetailsPage: React.FC = () => {
 
   const getUserName = (userId: string) => {
     const user = users.find(u => u.id === userId)
-    return user?.name || 'Unknown User'
+    if (user) {
+      // Handle both name field and first_name/last_name fields
+      if (user.name) {
+        return user.name
+      } else if (user.first_name || user.last_name) {
+        return `${user.first_name || ''} ${user.last_name || ''}`.trim()
+      }
+    }
+    return 'Unknown User'
   }
 
   const tabs = [
