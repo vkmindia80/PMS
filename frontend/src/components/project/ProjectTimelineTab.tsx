@@ -5,11 +5,12 @@ import {
   Download, Upload, Share2, Filter, Search, Plus, BarChart3,
   Maximize2, Minimize2, RefreshCw, Settings2, GitBranch, Eye,
   Play, Pause, Square, CheckCircle2, XCircle, AlertCircle2,
-  TrendingUp, TrendingDown, Layers, Edit2, Trash2, Link2
+  TrendingUp, TrendingDown, Layers, Edit2, Trash2, Link2, ListFilter
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { API_ENDPOINTS } from '../../utils/config';
 import toast from 'react-hot-toast';
+import GanttChart from './GanttChart';
 
 interface ProjectTimelineTabProps {
   project: any;
