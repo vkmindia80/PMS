@@ -42,7 +42,7 @@ __all__ = [
     # Comment models
     "Comment", "CommentCreate", "CommentUpdate", "CommentInDB",
     # File models
-    "File", "FileCreate", "FileUpdate", "FileInDB",
+    "File", "FileCreate", "FileUpdate", "FileInDB", "FileSummary",
     # Notification models
     "Notification", "NotificationCreate", "NotificationUpdate", "NotificationInDB",
     # Role and Permission models
