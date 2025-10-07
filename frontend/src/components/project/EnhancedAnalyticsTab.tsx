@@ -82,20 +82,36 @@ const EnhancedAnalyticsTab: React.FC<EnhancedAnalyticsTabProps> = ({
     const startDate = new Date()
     startDate.setDate(startDate.getDate() - daysInRange)
 
-    const dailyProgress = Array.from({ length: daysInRange }, (_, i) => {
+    // Calculate daily progress based on task completions
+    const dailyProgress = Array.from({ length: Math.min(daysInRange, 7) }, (_, i) => {
       const date = new Date(startDate)
-      date.setDate(date.getDate() + i)
+      date.setDate(date.getDate() + (i * Math.floor(daysInRange / 7)))
       
-      // Mock progress data - in real app, this would come from actual task completion data
-      const baseProgress = (i / daysInRange) * project.progress_percentage
-      const variance = (Math.random() - 0.5) * 10
-      const progress = Math.max(0, Math.min(100, baseProgress + variance))
+      // Calculate tasks completed up to this date
+      const tasksCompletedByDate = tasks.filter(task => {
+        if (task.status !== 'completed' || !task.updated_at) return false
+        const taskCompletedDate = new Date(task.updated_at)
+        return taskCompletedDate <= date
+      }).length
+      
+      // Calculate progress as percentage of total tasks completed
+      const progress = tasks.length > 0 ? Math.min(100, (tasksCompletedByDate / tasks.length) * 100) : 0
+      
+      // Calculate velocity (tasks completed in this period)
+      const prevDate = new Date(date)
+      prevDate.setDate(prevDate.getDate() - Math.floor(daysInRange / 7))
+      
+      const tasksCompletedInPeriod = tasks.filter(task => {
+        if (task.status !== 'completed' || !task.updated_at) return false
+        const taskCompletedDate = new Date(task.updated_at)
+        return taskCompletedDate > prevDate && taskCompletedDate <= date
+      }).length
       
       return {
         date: date.toISOString().split('T')[0],
         progress,
-        tasksCompleted: Math.floor(Math.random() * 5) + 1,
-        velocity: Math.random() * 3 + 1
+        tasksCompleted: tasksCompletedInPeriod,
+        velocity: tasksCompletedInPeriod / (daysInRange / 7) // tasks per day in this period
       }
     })
 
