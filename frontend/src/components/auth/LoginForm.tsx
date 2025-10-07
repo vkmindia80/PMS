@@ -95,6 +95,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
         duration: 0 // Keep showing until we dismiss it
       })
       
+      console.log('🚀 Starting demo data generation...');
       const result = await systemService.generateDemoData()
       
       if (result.success) {
@@ -112,14 +113,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
           }
         )
       } else {
+        console.error('❌ Demo data generation failed:', result);
         toast.error(`Failed to generate demo data: ${result.message}`, {
           id: 'demo-generation',
           duration: 4000
         })
       }
     } catch (error) {
-      console.error('Demo data generation error:', error)
-      toast.error('Failed to generate demo data. Please try again.', {
+      console.error('❌ Demo data generation error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      toast.error(`Failed to generate demo data: ${errorMessage}`, {
         id: 'demo-generation',
         duration: 4000
       })
