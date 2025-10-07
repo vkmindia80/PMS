@@ -456,9 +456,14 @@ async def get_project_file_stats(
                 }
             },
             {
+                "$addFields": {
+                    "file_size_unified": {"$ifNull": ["$size", {"$ifNull": ["$file_size", 0]}]}
+                }
+            },
+            {
                 "$group": {
                     "_id": None,
-                    "total_size": {"$sum": "$size"}
+                    "total_size": {"$sum": "$file_size_unified"}
                 }
             }
         ])
