@@ -415,7 +415,7 @@ async def get_project_file_stats(
         db = await get_database()
         await verify_project_access(project_id, current_user, db)
         
-        # Get stats from database
+        # Get stats from database (handle both size and file_size fields)
         pipeline = [
             {
                 "$match": {
@@ -425,10 +425,15 @@ async def get_project_file_stats(
                 }
             },
             {
+                "$addFields": {
+                    "file_size_unified": {"$ifNull": ["$size", {"$ifNull": ["$file_size", 0]}]}
+                }
+            },
+            {
                 "$group": {
                     "_id": "$file_type",
                     "count": {"$sum": 1},
-                    "total_size": {"$sum": "$size"}
+                    "total_size": {"$sum": "$file_size_unified"}
                 }
             }
         ]
