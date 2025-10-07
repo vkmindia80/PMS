@@ -910,49 +910,11 @@ const OverviewTab: React.FC<any> = ({
         </div>
       )}
 
-      {/* Milestones Section */}
-      {(project.milestones || []).length > 0 && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Project Milestones</h2>
-          <div className="space-y-4">
-            {(project.milestones || []).map(milestone => (
-              <div 
-                key={milestone.id} 
-                className={`p-6 border-l-4 rounded-r-xl transition-colors ${
-                  milestone.completed 
-                    ? 'border-green-500 bg-green-50' 
-                    : 'border-gray-300 bg-gray-50'
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-2">
-                      {milestone.completed && <CheckCircle className="w-5 h-5 text-green-600" />}
-                      <h3 className="font-semibold text-gray-900">{milestone.title}</h3>
-                    </div>
-                    {milestone.description && (
-                      <p className="text-sm text-gray-600 mb-3">{milestone.description}</p>
-                    )}
-                    <div className="flex items-center space-x-4 text-sm text-gray-500">
-                      {milestone.due_date && (
-                        <span className="flex items-center space-x-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>Due: {formatDate(milestone.due_date)}</span>
-                        </span>
-                      )}
-                      {milestone.completed_at && (
-                        <span className="text-green-600 font-medium">
-                          Completed: {formatDate(milestone.completed_at)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Milestones Manager */}
+      <MilestonesManager 
+        project={project}
+        onMilestonesUpdate={fetchProjectData}
+      />
     </div>
   )
 }
