@@ -36,7 +36,14 @@ def get_auth_token():
         if response.status_code == 200:
             data = response.json()
             print("✅ Authentication successful")
-            return data.get("access_token")
+            print("Response data:", json.dumps(data, indent=2))
+            # Try different possible token field names
+            token = data.get("access_token") or data.get("token") or data.get("access")
+            if token:
+                return token
+            else:
+                print("❌ No access token found in response")
+                return None
         else:
             print("❌ Authentication failed:", response.status_code, response.text)
             return None
