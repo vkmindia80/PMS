@@ -198,6 +198,30 @@ const IntegrationsPage: React.FC = () => {
     forms_integration: false
   })
 
+  const [s3Config, setS3Config] = useState({
+    bucket_name: '',
+    access_key_id: '',
+    secret_access_key: '',
+    region: 'us-east-1',
+    max_file_size_mb: 50,
+    versioning_enabled: true,
+    lifecycle_policies_enabled: true,
+    allowed_file_types: [
+      'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',  // Images
+      'pdf', 'doc', 'docx', 'txt', 'rtf',           // Documents
+      'xls', 'xlsx', 'csv',                        // Spreadsheets
+      'ppt', 'pptx',                              // Presentations
+      'zip', 'tar', 'gz', 'rar',                  // Archives
+      'mp3', 'wav', 'ogg',                        // Audio
+      'mp4', 'avi', 'mov', 'mkv',                 // Video
+      'json', 'xml', 'yaml', 'yml'                // Data files
+    ],
+    transition_to_ia_days: 30,
+    transition_to_glacier_days: 90,
+    expire_old_versions_days: 365,
+    delete_incomplete_multipart_days: 7
+  })
+
   useEffect(() => {
     loadIntegrations()
   }, [])
