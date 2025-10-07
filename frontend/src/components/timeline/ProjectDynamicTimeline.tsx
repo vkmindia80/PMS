@@ -854,20 +854,7 @@ const ProjectDynamicTimeline: React.FC<ProjectDynamicTimelineProps> = ({
           </div>
 
           {/* Add Task Button */}
-          <button
-            onClick={() => onTaskCreate({
-              name: 'New Task',
-              description: '',
-              start_date: new Date().toISOString(),
-              finish_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-              duration: 8,
-              percent_complete: 0
-            })}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add Task</span>
-          </button>
+          <AddTaskButton onAddTask={onTaskCreate} />
         </div>
       </div>
 
