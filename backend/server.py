@@ -237,7 +237,7 @@ def dynamic_cors_origin():
 app.add_middleware(
     CORSMiddleware,
     allow_origin_regex=r'https?://[\w-]+\.(preview\.)?emergentagent\.com',
-    allow_origins=origins + ["*"],  # Temporarily allow all for debugging
+    allow_origins=origins + ["*", "file://"],  # Allow file:// for testing and all origins for debugging
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
     allow_headers=["*"],
