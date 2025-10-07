@@ -499,8 +499,8 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
           </div>
         </div>
       ) : (
-        <div style={{ height: '600px' }}>
-          <GanttChart
+        <div style={{ height: '700px' }}>
+          <EnhancedGanttChart
             tasks={filteredTasks}
             users={users}
             onTaskUpdate={(taskId, updates) => handleTaskUpdate(taskId, updates)}
