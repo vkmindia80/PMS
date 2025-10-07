@@ -254,8 +254,8 @@ class S3FileService:
         
         try:
             # Upload to S3
-            self.s3_client.put_object(
-                Bucket=self.config.bucket_name,
+            s3_client.put_object(
+                Bucket=bucket_name,
                 Key=file_path,
                 Body=content,
                 ContentType=content_type,
