@@ -372,7 +372,7 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
       console.log('Starting auto-scheduling for project:', project.id);
       
       // First validate we have tasks to schedule
-      if (tasks.length === 0) {
+      if (timelineTasks.length === 0) {
         toast.warning('No tasks available to auto-schedule. Please create some tasks first.');
         return;
       }
