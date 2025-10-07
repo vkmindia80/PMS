@@ -364,7 +364,8 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
         </div>
       </div>
     </div>
-  )
+    )
+  }
 
   return (
     <div className="space-y-6">
