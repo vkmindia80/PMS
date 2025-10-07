@@ -2,7 +2,7 @@
 
 ## Problem Identified
 The application was experiencing Mixed Content Security Errors where:
-- Frontend was served over HTTPS: `https://proj-showcase.preview.emergentagent.com`
+- Frontend was served over HTTPS: `https://full-tabs-system.preview.emergentagent.com`
 - API calls were being made to HTTP: `http://project-404.preview.emergentagent.com/api/`
 - Browsers block HTTP requests from HTTPS pages for security reasons
 
@@ -29,7 +29,7 @@ The application was experiencing Mixed Content Security Errors where:
 - `/app/frontend/src/components/security/MFASetup.tsx`
 
 **Changes:**
-- Replaced hardcoded `https://proj-showcase.preview.emergentagent.com` fallbacks
+- Replaced hardcoded `https://full-tabs-system.preview.emergentagent.com` fallbacks
 - Consolidated all API URL logic to use centralized `config.apiUrl`
 - Added proper imports for config utility
 

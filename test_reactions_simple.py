@@ -9,7 +9,7 @@ import json
 def test_reactions():
     # Login first
     login_response = requests.post(
-        "https://proj-showcase.preview.emergentagent.com/api/auth/login",
+        "https://full-tabs-system.preview.emergentagent.com/api/auth/login",
         json={"email": "demo@company.com", "password": "demo123456"}
     )
     
@@ -24,7 +24,7 @@ def test_reactions():
     comment_id = "d9a56972-845a-43da-a439-3b7932b99779"  # Root comment from threading test
     
     reaction_response = requests.post(
-        f"https://proj-showcase.preview.emergentagent.com/api/comments/{comment_id}/reactions?emoji=👍",
+        f"https://full-tabs-system.preview.emergentagent.com/api/comments/{comment_id}/reactions?emoji=👍",
         headers=headers
     )
     
