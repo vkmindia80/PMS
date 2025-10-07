@@ -273,163 +273,39 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
     });
   }, [timelineTasks, showCompleted]);
 
-  // Fetch real-time statistics
-  const fetchRealtimeStats = useCallback(async () => {
-    if (!tokens?.access_token || !project?.id) return;
-    
-    try {
-      const stats = await dynamicService.getRealtimeStats(project.id, tokens.access_token);
-      setRealtimeStats(stats);
-    } catch (error) {
-      console.error('Failed to fetch real-time stats:', error);
-    }
-  }, [project?.id, tokens?.access_token, dynamicService]);
-
-  // Handle task updates with drag support
-  const handleTimelineTaskUpdate = useCallback(async (taskId: string, updates: Partial<DynamicTimelineTask>) => {
-    try {
-      // Try timeline-tasks integration first for better drag support
-      try {
-        const response = await fetch(`/api/timeline-tasks/task/${taskId}/timeline-sync`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${tokens?.access_token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(updates)
-        });
-
-        if (response.ok) {
-          const updatedTask = await response.json();
-          setTimelineTasks(prev => prev.map(task => 
-            task.id === taskId ? { ...task, ...updatedTask } : task
-          ));
-          
-          // Broadcast update via WebSocket
-          if (notificationsEnabled) {
-            toast.success(`Task "${updates.name || 'Task'}" updated successfully!`);
-          }
-          onTaskUpdate();
-          return;
-        }
-      } catch (integrationError) {
-        console.log('Using fallback update method');
-      }
-
-      // Fallback to taskTimelineService
-      await taskTimelineService.updateTaskFromTimeline(taskId, updates, tokens?.access_token || '');
-      
-      // Update local state optimistically
-      setTimelineTasks(prev => prev.map(task => 
-        task.id === taskId ? { ...task, ...updates } : task
-      ));
-      
-      if (notificationsEnabled) {
-        toast.success(`Task "${updates.name || 'Task'}" updated successfully!`);
-      }
-      onTaskUpdate();
-    } catch (error) {
-      console.error('Error updating task:', error);
-      toast.error('Failed to update task');
-    }
-  }, [tokens?.access_token, notificationsEnabled, onTaskUpdate]);
-
-  // Handle task creation
-  const handleTimelineTaskCreate = useCallback(async (task: Partial<DynamicTimelineTask>) => {
-    try {
-      const taskData = {
-        ...task,
-        project_id: project.id
-      };
-      const createdTask = await taskTimelineService.createTimelineTask(taskData, tokens?.access_token || '');
-      setTimelineTasks(prev => [...prev, createdTask]);
-      toast.success('Task created successfully');
-      onTaskCreate();
-    } catch (error) {
-      console.error('Error creating task:', error);
-      toast.error('Failed to create task');
-    }
-  }, [tokens?.access_token, project?.id, onTaskCreate]);
-
-  // Handle dependency creation
-  const handleDependencyCreate = useCallback(async (dependency: any) => {
-    try {
-      await dynamicService.createDependency({...dependency, project_id: project.id}, tokens?.access_token || '');
-      toast.success('Dependency created successfully');
-      fetchTimelineData(); // Refresh to show new dependency
-    } catch (error) {
-      console.error('Error creating dependency:', error);
-      toast.error('Failed to create dependency');
-    }
-  }, [dynamicService, tokens?.access_token, project?.id, fetchTimelineData]);
-
-  // Auto-schedule handler with better error handling
-  const handleAutoSchedule = useCallback(async () => {
-    if (!project?.id || !tokens?.access_token) return;
-
-    try {
-      setIsAutoScheduling(true);
-      console.log('Starting auto-scheduling for project:', project.id);
-      
-      // First validate we have tasks to schedule
-      if (timelineTasks.length === 0) {
-        toast.warning('No tasks available to auto-schedule. Please create some tasks first.');
-        return;
-      }
-      
-      const result = await dynamicService.autoScheduleTasks(project.id, tokens.access_token);
-      console.log('Auto-schedule result:', result);
-      
-      if (result.scheduled_tasks && result.scheduled_tasks.length > 0) {
-        // Show success notification with details
-        toast.success(`Auto-scheduling completed! ${result.scheduled_tasks.length} tasks rescheduled, ${result.conflicts_resolved || 0} conflicts resolved.`);
-        
-        // Refresh timeline data to ensure consistency
-        await fetchTimelineData();
-        onTaskUpdate();
-        
-        // Additional refresh after a short delay to ensure all updates are reflected
-        setTimeout(() => {
-          fetchTimelineData();
-        }, 1000);
-      } else {
-        toast.warning('Auto-scheduling completed but no tasks were rescheduled. Tasks may already be optimally scheduled.');
-      }
-    } catch (error) {
-      console.error('Auto-scheduling failed:', error);
-      toast.error(`Auto-scheduling failed: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again or check your task dependencies.`);
-    } finally {
-      setIsAutoScheduling(false);
-    }
-  }, [project?.id, tokens?.access_token, dynamicService, fetchTimelineData, onTaskUpdate, tasks.length]);
-
-  // View configuration handlers
-  const handleViewConfigChange = useCallback((config: Partial<TimelineViewConfig>) => {
-    setViewConfig(prev => ({ ...prev, ...config }));
+  // Task form handling
+  const handleNewTask = useCallback(() => {
+    setShowTaskForm(true);
   }, []);
 
-  const handleFilterChange = useCallback((filterUpdates: Partial<TimelineFilter>) => {
-    setFilter(prev => ({ ...prev, ...filterUpdates }));
+  const handleTaskEdit = useCallback((task: TimelineTask) => {
+    setEditingTask(task);
   }, []);
 
-  // Load data when project changes
-  useEffect(() => {
-    if (project?.id) {
-      fetchTimelineData();
-      fetchRealtimeStats();
-    }
-  }, [fetchTimelineData, fetchRealtimeStats, project?.id]);
+  const handleTaskFormSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    
+    const taskData = {
+      title: formData.get('title') as string,
+      priority: formData.get('priority') as string,
+      status: formData.get('status') as string,
+      due_date: formData.get('due_date') as string || null,
+      start_date: formData.get('start_date') as string || null,
+      progress_percentage: parseInt(formData.get('progress') as string) || 0,
+      time_tracking: {
+        estimated_hours: parseInt(formData.get('estimated_hours') as string) || 0
+      }
+    };
 
-  // Calculate progress from tasks
-  const taskProgress = useMemo(() => {
-    if (!timelineTasks.length) return { completed: 0, total: 0, percentage: 0 };
-    
-    const completed = timelineTasks.filter(task => task.percent_complete >= 100).length;
-    const total = timelineTasks.length;
-    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-    
-    return { completed, total, percentage };
-  }, [timelineTasks]);
+    if (editingTask) {
+      await handleTaskUpdate(editingTask.id, taskData);
+      setEditingTask(null);
+    } else {
+      await handleTaskCreate(taskData);
+      setShowTaskForm(false);
+    }
+  }, [editingTask, handleTaskUpdate, handleTaskCreate]);
 
   if (loading) {
     return (
