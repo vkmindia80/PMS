@@ -102,7 +102,60 @@ class S3FileService:
                 )
         return self._s3_client
     
-    def _validate_file(self, file: UploadFile, content: bytes) -> None:
+    def get_s3_client_for_organization(self, organization_id: str = None):
+        """Get S3 client with organization-specific configuration"""
+        if not organization_id:
+            # Fallback to default client
+            return self.s3_client
+        
+        # Check if we have cached client for this organization
+        if organization_id in self._integration_configs:
+            config = self._integration_configs[organization_id]
+            return boto3.client(
+                's3',
+                aws_access_key_id=config["access_key_id"],
+                aws_secret_access_key=config["secret_access_key"],
+                region_name=config["region"]
+            )
+        
+        # Fallback to default client if no org-specific config
+        return self.s3_client
+    
+    async def load_integration_config(self, organization_id: str):
+        """Load S3 integration configuration from database"""
+        try:
+            from database import get_database
+            
+            db = await get_database()
+            s3_integration = await db.integrations.find_one({
+                "organization_id": organization_id,
+                "type": "s3_storage",
+                "status": "active"
+            })
+            
+            if s3_integration:
+                self._integration_configs[organization_id] = {
+                    "access_key_id": s3_integration["access_key_id"],
+                    "secret_access_key": s3_integration["secret_access_key"],
+                    "region": s3_integration["region"],
+                    "bucket_name": s3_integration["bucket_name"],
+                    "max_file_size_mb": s3_integration.get("max_file_size_mb", 50),
+                    "allowed_file_types": s3_integration.get("allowed_file_types", []),
+                    "versioning_enabled": s3_integration.get("versioning_enabled", False),
+                    "lifecycle_policies_enabled": s3_integration.get("lifecycle_policies_enabled", False)
+                }
+                return True
+            return False
+            
+        except Exception as e:
+            logger.error(f"Error loading S3 integration config: {e}")
+            return False
+    
+    def get_organization_config(self, organization_id: str):
+        """Get cached organization configuration"""
+        return self._integration_configs.get(organization_id)
+    
+    def _validate_file(self, file: UploadFile, content: bytes, organization_config=None) -> None:
         """Validate file before upload"""
         if not file.filename:
             raise HTTPException(status_code=400, detail="No filename provided")
