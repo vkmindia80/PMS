@@ -107,6 +107,15 @@ export const API_ENDPOINTS = {
   hierarchy: {
     organization: (orgId: string) => `${getApiUrl()}/api/hierarchy/organization/${orgId}`,
     teamStructure: (orgId: string) => `${getApiUrl()}/api/hierarchy/team-structure/${orgId}`,
+  },
+  files: {
+    upload: (projectId: string) => `${getApiUrl()}/api/files/projects/${projectId}/upload`,
+    list: (projectId: string) => `${getApiUrl()}/api/files/projects/${projectId}`,
+    download: (projectId: string, fileId: string) => `${getApiUrl()}/api/files/projects/${projectId}/${fileId}/download`,
+    downloadUrl: (projectId: string, fileId: string) => `${getApiUrl()}/api/files/projects/${projectId}/${fileId}/download-url`,
+    delete: (projectId: string, fileId: string) => `${getApiUrl()}/api/files/projects/${projectId}/${fileId}`,
+    details: (projectId: string, fileId: string) => `${getApiUrl()}/api/files/projects/${projectId}/${fileId}`,
+    stats: (projectId: string) => `${getApiUrl()}/api/files/projects/${projectId}/stats`,
   }
 };
 
