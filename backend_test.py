@@ -431,6 +431,9 @@ class ProjectDetailsTester:
         # Test tasks for project (needed for project details page)
         tasks_success = len(self.test_tasks_for_project()) >= 0  # Allow empty list
         
+        # Test specific project task count issue
+        specific_project_success = self.test_specific_project_task_count()
+        
         # Test project update functionality
         update_success = self.test_project_update()
         
