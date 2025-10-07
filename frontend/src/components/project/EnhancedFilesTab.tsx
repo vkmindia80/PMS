@@ -651,8 +651,8 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
                 className="hidden"
                 id="file-upload"
                 onChange={(e) => {
-                  if (e.target.files && onFileUpload) {
-                    onFileUpload(e.target.files)
+                  if (e.target.files) {
+                    handleFileUpload(e.target.files)
                   }
                 }}
               />
