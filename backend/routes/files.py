@@ -58,7 +58,8 @@ async def upload_file(
             file=file,
             project_id=project_id,
             uploaded_by=current_user.id,
-            description=description
+            description=description,
+            organization_id=current_user.organization_id
         )
         
         # Store file metadata in database
