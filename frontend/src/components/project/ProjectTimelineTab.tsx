@@ -76,6 +76,10 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
 
   // Fetch timeline data from tasks API
   const fetchTimelineData = useCallback(async () => {
+    console.log('=== TIMELINE DEBUG: fetchTimelineData called ===');
+    console.log('Project:', project);
+    console.log('Tokens:', tokens?.access_token ? 'Present' : 'Missing');
+    
     if (!project?.id || !tokens?.access_token) {
       console.warn('Missing project ID or access token');
       setError('Authentication required. Please log in to view timeline data.');
@@ -87,21 +91,27 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
       setError(null);
       
       console.log(`Fetching timeline data for project: ${project.id}`);
+      const url = `${API_ENDPOINTS.tasks.list}?project_id=${project.id}`;
+      console.log('API URL:', url);
       
       // Fetch tasks for this project
-      const response = await fetch(`${API_ENDPOINTS.tasks.list}?project_id=${project.id}`, {
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${tokens.access_token}`,
           'Content-Type': 'application/json'
         }
       });
 
+      console.log('Response status:', response.status);
+      
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText);
         throw new Error(`Failed to fetch tasks: ${response.status} ${response.statusText}`);
       }
 
       const tasks: TimelineTask[] = await response.json();
-      console.log(`Fetched ${tasks.length} tasks for timeline`);
+      console.log(`Fetched ${tasks.length} tasks for timeline:`, tasks.slice(0, 2));
       
       setTimelineTasks(tasks);
       
@@ -113,12 +123,15 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
         return new Date(t.due_date) < new Date() && t.status !== 'completed';
       }).length;
       
-      setStats({
+      const newStats = {
         total_tasks: tasks.length,
         completed_tasks: completedTasks,
         in_progress_tasks: inProgressTasks,
         overdue_tasks: overdueTasks
-      });
+      };
+      
+      console.log('Calculated stats:', newStats);
+      setStats(newStats);
       
     } catch (err) {
       console.error('Error fetching timeline data:', err);
@@ -127,6 +140,7 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
       toast.error(`Timeline Error: ${errorMessage}`);
     } finally {
       setLoading(false);
+      console.log('=== TIMELINE DEBUG: fetchTimelineData completed ===');
     }
   }, [project?.id, tokens?.access_token]);
 
