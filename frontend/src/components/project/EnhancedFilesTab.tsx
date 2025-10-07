@@ -6,6 +6,8 @@ import {
   FolderPlus, Folder, ChevronRight, ArrowUpDown, X
 } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../contexts/AuthContext'
+import { API_ENDPOINTS } from '../../utils/config'
 
 interface ProjectFile {
   id: string
