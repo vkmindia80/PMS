@@ -1,7 +1,7 @@
 {
   "test_summary": {
     "start_time": "2025-10-04T22:15:09.436153",
-    "base_url": "https://test-data-forge-1.preview.emergentagent.com",
+    "base_url": "https://timeline-enhance.preview.emergentagent.com",
     "test_entity": "task/test-task-threading-001",
     "end_time": "2025-10-04T22:15:09.621581",
     "total_tests": 3,
