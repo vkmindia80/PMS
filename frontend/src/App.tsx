@@ -42,7 +42,7 @@ const AppContent: React.FC = () => {
   }
 
   // Show auth page if not authenticated
-  if (!isAuthenticated || !tokens || !user) {
+  if (!isAuthenticated) {
     return <AuthPage />
   }
 
