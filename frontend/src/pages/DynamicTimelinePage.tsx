@@ -561,6 +561,14 @@ export const DynamicTimelinePage: React.FC = () => {
                 <Target className="h-4 w-4" />
                 <span>{isAutoScheduling ? 'Scheduling...' : 'Auto Schedule'}</span>
               </button>
+              
+              <button
+                onClick={() => setShowAdvancedFeatures(!showAdvancedFeatures)}
+                className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium"
+              >
+                <Settings2 className="h-4 w-4" />
+                <span>Advanced Features</span>
+              </button>
             </div>
           </div>
         </div>
