@@ -115,8 +115,15 @@ const EnhancedAnalyticsTab: React.FC<EnhancedAnalyticsTabProps> = ({
       }
     })
 
-    const totalEstimated = tasks.reduce((sum, task) => sum + (task.estimated_hours || 0), 0)
+    const totalEstimated = tasks.reduce((sum, task) => sum + (task.estimated_hours || 8), 0) // Default 8 hours per task
     const totalActual = tasks.reduce((sum, task) => sum + (task.actual_hours || 0), 0)
+    
+    // Calculate velocity trend based on recent performance
+    const recentPeriods = dailyProgress.slice(-2)
+    const velocityTrend = recentPeriods.length >= 2 && recentPeriods[1].velocity > recentPeriods[0].velocity ? 'up' : 'down'
+    const velocityChange = recentPeriods.length >= 2 
+      ? Math.abs(((recentPeriods[1].velocity - recentPeriods[0].velocity) / (recentPeriods[0].velocity || 1)) * 100)
+      : 0
 
     return {
       tasksByStatus,
@@ -125,12 +132,12 @@ const EnhancedAnalyticsTab: React.FC<EnhancedAnalyticsTabProps> = ({
       dailyProgress,
       totalEstimated,
       totalActual,
-      velocityTrend: Math.random() > 0.5 ? 'up' : 'down',
-      velocityChange: Math.random() * 20 + 5,
+      velocityTrend,
+      velocityChange,
       burndownData: dailyProgress.map(day => ({
         date: day.date,
-        planned: Math.max(0, totalEstimated - (day.progress / 100) * totalEstimated),
-        actual: Math.max(0, totalEstimated - totalActual * (day.progress / 100))
+        planned: Math.max(0, totalEstimated * (1 - day.progress / 100)),
+        actual: Math.max(0, totalEstimated - (day.tasksCompleted * (totalEstimated / tasks.length || 8)))
       }))
     }
   }, [tasks, users, project.progress_percentage, timeRange])
