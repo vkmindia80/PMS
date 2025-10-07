@@ -378,9 +378,15 @@ class ProjectDetailsTester:
         # Test project update functionality
         update_success = self.test_project_update()
         
+        # Test demo data generation
+        demo_data_success = self.test_generate_demo_data()
+        
+        # Test comments endpoint
+        comments_success = self.test_comments_endpoint()
+        
         # Calculate overall success
-        key_tests_passed = sum([project_details_success, users_success, tasks_success, update_success])
-        overall_success = key_tests_passed >= 3  # At least 3 out of 4 key tests must pass
+        key_tests_passed = sum([project_details_success, users_success, tasks_success, update_success, demo_data_success, comments_success])
+        overall_success = key_tests_passed >= 4  # At least 4 out of 6 key tests must pass
         
         # Print summary
         print("\n" + "="*80)
