@@ -8,7 +8,7 @@ from .project import (
 from .task import Task, TaskCreate, TaskUpdate, TaskInDB, TaskStatus, TaskPriority
 from .team import Team, TeamCreate, TeamUpdate, TeamInDB
 from .comment import Comment, CommentCreate, CommentUpdate, CommentInDB
-from .file import File, FileCreate, FileUpdate, FileInDB
+from .file import File, FileCreate, FileUpdate, FileInDB, FileSummary
 from .notification import Notification, NotificationCreate, NotificationUpdate, NotificationInDB
 from .role import (
     Permission, PermissionCategory, CustomRole, CustomRoleCreate, CustomRoleUpdate, CustomRoleInDB,
