@@ -490,11 +490,15 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Select User
                 </label>
-                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                <select 
+                  value={selectedUserId}
+                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
                   <option value="">Choose a user...</option>
                   {availableUsers.map(user => (
                     <option key={user.id} value={user.id}>
-                      {user.name} ({user.email})
+                      {user.name || `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Unknown'} ({user.email})
                     </option>
                   ))}
                 </select>
@@ -504,7 +508,11 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Role
                 </label>
-                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                <select 
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
                   <option value="member">Member</option>
                   <option value="admin">Admin</option>
                   <option value="viewer">Viewer</option>
@@ -514,12 +522,17 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
               <div className="flex space-x-3 pt-4">
                 <button
                   onClick={() => setShowAddMember(false)}
-                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                  disabled={loading}
+                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50 transition-colors"
                 >
                   Cancel
                 </button>
-                <button className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-                  Add Member
+                <button 
+                  onClick={handleAddMember}
+                  disabled={loading || !selectedUserId}
+                  className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
+                >
+                  {loading ? 'Adding...' : 'Add Member'}
                 </button>
               </div>
             </div>
