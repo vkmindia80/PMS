@@ -645,13 +645,13 @@ export class DynamicTimelineService {
   }> {
     try {
       // Use dynamic timeline endpoint for better stats calculation
-      let response = await fetch(`/api/dynamic-timeline/stats/${projectId}/realtime`, {
+      let response = await fetch(`${API_ENDPOINTS.base}/dynamic-timeline/stats/${projectId}/realtime`, {
         headers: this.getAuthHeaders(token)
       });
 
       // Fallback to regular stats if realtime not available
       if (!response.ok && response.status === 404) {
-        response = await fetch(`/api/dynamic-timeline/stats/${projectId}`, {
+        response = await fetch(`${API_ENDPOINTS.base}/dynamic-timeline/stats/${projectId}`, {
           headers: this.getAuthHeaders(token)
         });
       }
@@ -660,7 +660,7 @@ export class DynamicTimelineService {
       if (!response.ok && response.status === 404) {
         // For project-specific stats using analytics endpoint
         if (projectId !== "all") {
-          response = await fetch(`/api/analytics/dashboard/summary?project_id=${projectId}`, {
+          response = await fetch(`${API_ENDPOINTS.base}/analytics/dashboard/summary?project_id=${projectId}`, {
             headers: this.getAuthHeaders(token)
           });
           
@@ -681,7 +681,7 @@ export class DynamicTimelineService {
           }
         } else {
           // For overall stats
-          response = await fetch(`/api/analytics/dashboard/summary`, {
+          response = await fetch(`${API_ENDPOINTS.base}/analytics/dashboard/summary`, {
             headers: this.getAuthHeaders(token)
           });
           
