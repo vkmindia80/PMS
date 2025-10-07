@@ -271,6 +271,7 @@ app.include_router(timeline_enhancements_router)
 app.include_router(dynamic_timeline_router)
 app.include_router(timeline_tasks_integration_router)
 app.include_router(files_router)
+app.include_router(advanced_timeline_router)
 
 # Health check endpoint
 @app.get("/api/health")
