@@ -1,7 +1,7 @@
 {
   "test_summary": {
     "start_time": "2025-10-04T22:13:50.552145",
-    "base_url": "https://timeline-overhaul.preview.emergentagent.com",
+    "base_url": "https://code-connect-10.preview.emergentagent.com",
     "end_time": "2025-10-04T22:13:51.459054",
     "total_tests": 20,
     "passed_tests": 20,
