@@ -654,6 +654,7 @@ const ProjectDetailsPage: React.FC = () => {
             project={project}
             tasks={tasks}
             users={users}
+            budgetUtilization={budgetUtilization}
           />
         )}
 
