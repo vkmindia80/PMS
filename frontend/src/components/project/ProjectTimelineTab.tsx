@@ -321,7 +321,17 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
     }
   }, [editingTask, handleTaskUpdate, handleTaskCreate]);
 
+  // Debug logging for render
+  console.log('=== TIMELINE RENDER DEBUG ===');
+  console.log('Loading:', loading);
+  console.log('Error:', error);
+  console.log('Timeline tasks length:', timelineTasks.length);
+  console.log('Filtered tasks length:', filteredTasks.length);
+  console.log('Stats:', stats);
+  console.log('Project ID:', project?.id);
+
   if (loading) {
+    console.log('Rendering loading state');
     return (
       <div className="flex items-center justify-center py-12" data-testid="timeline-loading">
         <div className="text-center">
@@ -335,6 +345,7 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
 
   // Show error state with retry option
   if (error) {
+    console.log('Rendering error state:', error);
     return (
       <div className="flex items-center justify-center py-12" data-testid="timeline-error">
         <div className="text-center max-w-md">
@@ -360,6 +371,7 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
     );
   }
 
+  console.log('Rendering main timeline content');
   return (
     <div className="space-y-6" data-testid="project-timeline-tab">
       {/* Timeline Header with Stats */}
