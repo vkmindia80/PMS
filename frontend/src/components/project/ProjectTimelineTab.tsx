@@ -10,7 +10,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { API_ENDPOINTS } from '../../utils/config';
 import toast from 'react-hot-toast';
-import GanttChart from './GanttChart';
+import EnhancedGanttChart from './EnhancedGanttChart';
 
 interface ProjectTimelineTabProps {
   project: any;
