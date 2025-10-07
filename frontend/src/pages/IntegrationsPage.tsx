@@ -251,6 +251,13 @@ const IntegrationsPage: React.FC = () => {
           { id: 'services', title: 'Enable Services', description: 'Choose Google Workspace services', completed: false },
           { id: 'test', title: 'Test & Validate', description: 'Test Google Workspace connection', completed: false }
         ]
+      case 's3_storage':
+        return [
+          { id: 'credentials', title: 'AWS Credentials', description: 'Configure AWS access credentials', completed: false },
+          { id: 'bucket', title: 'Bucket Setup', description: 'Configure S3 bucket and region', completed: false },
+          { id: 'features', title: 'Storage Features', description: 'Configure versioning and lifecycle policies', completed: false },
+          { id: 'test', title: 'Test & Validate', description: 'Test S3 storage connection', completed: false }
+        ]
       default:
         return []
     }
