@@ -462,6 +462,7 @@ class ProjectDetailsTester:
         print(f"  Project Update: {'✅' if update_success else '❌'}")
         print(f"  Demo Data Generation: {'✅' if demo_data_success else '❌'}")
         print(f"  Comments Endpoint: {'✅' if comments_success else '❌'}")
+        print(f"  Specific Project Task Count: {'✅' if specific_project_success else '❌'}")
         
         if overall_success:
             print("\n🎉 Project Details functionality is working!")
