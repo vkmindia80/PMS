@@ -51,6 +51,22 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
   const [showAddMember, setShowAddMember] = useState(false)
   const [roleFilter, setRoleFilter] = useState('all')
   const [selectedMember, setSelectedMember] = useState<string | null>(null)
+  const [selectedUserId, setSelectedUserId] = useState('')
+  const [selectedRole, setSelectedRole] = useState('member')
+  const [loading, setLoading] = useState(false)
+  const [detailedTeamMembers, setDetailedTeamMembers] = useState<any[]>([])
+  
+  // Import necessary dependencies
+  const [tokens, setTokens] = useState<any>(null)
+  
+  // Get tokens from auth context (you might need to import useAuth)
+  React.useEffect(() => {
+    // This is a placeholder - you should import useAuth from your auth context
+    const storedTokens = localStorage.getItem('tokens')
+    if (storedTokens) {
+      setTokens(JSON.parse(storedTokens))
+    }
+  }, [])
 
   // Get team members with user details
   const enrichedTeamMembers = (project.team_members || []).map((memberId: string) => {
