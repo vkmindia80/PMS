@@ -346,27 +346,45 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
     }
   }, [dynamicService, tokens?.access_token, project?.id, fetchTimelineData]);
 
-  // Handle auto-scheduling
+  // Auto-schedule handler with better error handling
   const handleAutoSchedule = useCallback(async () => {
     if (!project?.id || !tokens?.access_token) return;
 
     try {
       setIsAutoScheduling(true);
+      console.log('Starting auto-scheduling for project:', project.id);
+      
+      // First validate we have tasks to schedule
+      if (tasks.length === 0) {
+        toast.warning('No tasks available to auto-schedule. Please create some tasks first.');
+        return;
+      }
+      
       const result = await dynamicService.autoScheduleTasks(project.id, tokens.access_token);
+      console.log('Auto-schedule result:', result);
       
-      toast.success(`Auto-scheduling completed! ${result.conflicts_resolved} conflicts resolved.`);
-      
-      // Refresh timeline data
-      await fetchTimelineData();
-      onTaskUpdate();
-      
+      if (result.scheduled_tasks && result.scheduled_tasks.length > 0) {
+        // Show success notification with details
+        toast.success(`Auto-scheduling completed! ${result.scheduled_tasks.length} tasks rescheduled, ${result.conflicts_resolved || 0} conflicts resolved.`);
+        
+        // Refresh timeline data to ensure consistency
+        await fetchTimelineData();
+        onTaskUpdate();
+        
+        // Additional refresh after a short delay to ensure all updates are reflected
+        setTimeout(() => {
+          fetchTimelineData();
+        }, 1000);
+      } else {
+        toast.warning('Auto-scheduling completed but no tasks were rescheduled. Tasks may already be optimally scheduled.');
+      }
     } catch (error) {
       console.error('Auto-scheduling failed:', error);
-      toast.error('Auto-scheduling failed');
+      toast.error(`Auto-scheduling failed: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again or check your task dependencies.`);
     } finally {
       setIsAutoScheduling(false);
     }
-  }, [project?.id, tokens?.access_token, dynamicService, fetchTimelineData, onTaskUpdate]);
+  }, [project?.id, tokens?.access_token, dynamicService, fetchTimelineData, onTaskUpdate, tasks.length]);
 
   // View configuration handlers
   const handleViewConfigChange = useCallback((config: Partial<TimelineViewConfig>) => {
