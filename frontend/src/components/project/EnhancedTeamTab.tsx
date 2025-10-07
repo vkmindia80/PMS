@@ -59,17 +59,101 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
   const [loading, setLoading] = useState(false)
   const [detailedTeamMembers, setDetailedTeamMembers] = useState<any[]>([])
   
-  // Import necessary dependencies
-  const [tokens, setTokens] = useState<any>(null)
-  
-  // Get tokens from auth context (you might need to import useAuth)
-  React.useEffect(() => {
-    // This is a placeholder - you should import useAuth from your auth context
-    const storedTokens = localStorage.getItem('tokens')
-    if (storedTokens) {
-      setTokens(JSON.parse(storedTokens))
+  const { tokens } = useAuth()
+
+  // Fetch detailed team member information
+  const fetchTeamDetails = async () => {
+    if (!tokens?.access_token) return
+    
+    try {
+      setLoading(true)
+      const response = await fetch(API_ENDPOINTS.projects.team(project.id), {
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      
+      if (response.ok) {
+        const teamData = await response.json()
+        setDetailedTeamMembers(teamData)
+      }
+    } catch (error) {
+      console.error('Failed to fetch team details:', error)
+    } finally {
+      setLoading(false)
     }
-  }, [])
+  }
+
+  useEffect(() => {
+    fetchTeamDetails()
+  }, [project.id, tokens])
+
+  // Add team member
+  const handleAddMember = async () => {
+    if (!selectedUserId || !tokens?.access_token) return
+    
+    try {
+      setLoading(true)
+      const response = await fetch(`${API_ENDPOINTS.projects.details(project.id)}/team/add`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: selectedUserId,
+          role: selectedRole
+        }),
+      })
+      
+      if (response.ok) {
+        toast.success('Team member added successfully')
+        setShowAddMember(false)
+        setSelectedUserId('')
+        setSelectedRole('member')
+        await fetchTeamDetails()
+        if (onAddMember) onAddMember(selectedUserId, selectedRole)
+      } else {
+        const error = await response.json()
+        toast.error(error.detail || 'Failed to add team member')
+      }
+    } catch (error) {
+      toast.error('Failed to add team member')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Remove team member
+  const handleRemoveMember = async (userId: string) => {
+    if (!tokens?.access_token) return
+    
+    if (!window.confirm('Are you sure you want to remove this team member?')) return
+    
+    try {
+      setLoading(true)
+      const response = await fetch(`${API_ENDPOINTS.projects.details(project.id)}/team/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+        },
+      })
+      
+      if (response.ok) {
+        toast.success('Team member removed successfully')
+        await fetchTeamDetails()
+        if (onRemoveMember) onRemoveMember(userId)
+      } else {
+        const error = await response.json()
+        toast.error(error.detail || 'Failed to remove team member')
+      }
+    } catch (error) {
+      toast.error('Failed to remove team member')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   // Get team members with user details
   const enrichedTeamMembers = (project.team_members || []).map((memberId: string) => {
