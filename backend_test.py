@@ -295,6 +295,57 @@ class ProjectDetailsTester:
             print(f"    ❌ Project update failed")
             return False
 
+    def test_generate_demo_data(self):
+        """Test generate demo data functionality"""
+        print("\n" + "="*60)
+        print("TESTING GENERATE DEMO DATA FUNCTIONALITY")
+        print("="*60)
+        
+        success, response = self.run_test(
+            "Generate Demo Data",
+            "POST",
+            "/api/system/generate-demo-data",
+            200
+        )
+        
+        if success and response.get('success'):
+            print(f"    ✅ Demo data generation successful")
+            details = response.get('details', {})
+            print(f"    📊 Total data points: {details.get('total_data_points', 0)}")
+            print(f"    👥 Users created: {details.get('users_created', 0)}")
+            print(f"    👨‍👩‍👧‍👦 Teams created: {details.get('teams_created', 0)}")
+            print(f"    📁 Projects created: {details.get('projects_created', 0)}")
+            print(f"    ✅ Tasks created: {details.get('tasks_created', 0)}")
+            return True
+        else:
+            print(f"    ❌ Demo data generation failed")
+            return False
+
+    def test_comments_endpoint(self):
+        """Test comments endpoint for project activity"""
+        print("\n" + "="*60)
+        print("TESTING COMMENTS ENDPOINT")
+        print("="*60)
+        
+        if not self.test_project_id:
+            print("    ❌ No test project ID available")
+            return False
+            
+        success, response = self.run_test(
+            "Get Project Comments",
+            "GET",
+            f"/api/comments/threads/project/{self.test_project_id}",
+            200
+        )
+        
+        if success and isinstance(response, list):
+            comment_count = len(response)
+            print(f"    ✅ Retrieved {comment_count} comments for project")
+            return True
+        else:
+            print(f"    ❌ Failed to get project comments")
+            return False
+
     def run_all_tests(self):
         """Run all project details API tests"""
         print("🚀 Starting Project Details Functionality Testing")
