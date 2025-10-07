@@ -63,6 +63,8 @@ const EnhancedGanttChart: React.FC<GanttChartProps> = ({
   } | null>(null);
   const [hoveredTask, setHoveredTask] = useState<string | null>(null);
   const [showTaskForm, setShowTaskForm] = useState(false);
+  const [showTaskEditModal, setShowTaskEditModal] = useState(false);
+  const [editingTask, setEditingTask] = useState<DynamicTimelineTask | null>(null);
   const ganttRef = useRef<HTMLDivElement>(null);
 
   // Calculate timeline bounds
