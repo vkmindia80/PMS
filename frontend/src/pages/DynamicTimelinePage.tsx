@@ -90,6 +90,7 @@ export const DynamicTimelinePage: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [isAutoScheduling, setIsAutoScheduling] = useState(false);
   const [showStats, setShowStats] = useState(true);
+  const [showAdvancedFeatures, setShowAdvancedFeatures] = useState(false);
   
   // Initialize dynamic timeline service
   const dynamicService = useMemo(() => new DynamicTimelineService(), []);
