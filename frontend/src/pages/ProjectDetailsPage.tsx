@@ -659,6 +659,17 @@ const ProjectDetailsPage: React.FC = () => {
           />
         )}
 
+        {activeTab === 'timeline' && (
+          <ProjectTimelineTab 
+            project={project}
+            users={users}
+            tasks={tasks}
+            onTaskUpdate={fetchProjectData}
+            onTaskCreate={fetchProjectData}
+            onTaskDelete={fetchProjectData}
+          />
+        )}
+
         {activeTab === 'analytics' && (
           <EnhancedAnalyticsTab 
             project={project}
