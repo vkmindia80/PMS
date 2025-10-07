@@ -409,6 +409,7 @@ const ProjectDetailsPage: React.FC = () => {
 
   const tabs = [
     { id: 'overview', name: 'Overview', icon: Eye, count: null },
+    { id: 'milestones', name: 'Milestones', icon: Flag, count: (project?.milestones || []).length },
     { id: 'tasks', name: 'Tasks', icon: Target, count: tasks.length },
     { id: 'team', name: 'Team', icon: Users, count: project?.team_members?.length || 0 },
     { id: 'analytics', name: 'Analytics', icon: BarChart3, count: null },
