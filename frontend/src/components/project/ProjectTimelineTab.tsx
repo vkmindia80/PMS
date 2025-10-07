@@ -57,45 +57,22 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
   const { tokens } = useAuth();
   
   // Core timeline data
-  const [timelineTasks, setTimelineTasks] = useState<DynamicTimelineTask[]>([]);
-  const [dependencies, setDependencies] = useState<any[]>([]);
-  const [conflicts, setConflicts] = useState<TaskConflict[]>([]);
+  const [timelineTasks, setTimelineTasks] = useState<TimelineTask[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTask, setSelectedTask] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
+  const [showCompleted, setShowCompleted] = useState(true);
+  const [editingTask, setEditingTask] = useState<TimelineTask | null>(null);
+  const [showTaskForm, setShowTaskForm] = useState(false);
 
-  // Real-time features
-  const [isWebSocketConnected, setIsWebSocketConnected] = useState(false);
-  const [activeUsers, setActiveUsers] = useState<ActiveUser[]>([]);
-  const [realtimeStats, setRealtimeStats] = useState<TimelineStats | null>(null);
-  const [notifications, setNotifications] = useState<WebSocketMessage[]>([]);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-
-  // View configuration
-  const [viewConfig, setViewConfig] = useState<TimelineViewConfig>({
-    mode: 'week',
-    zoom_level: 1.0,
-    group_by: 'status',
-    sort_by: 'start_date',
-    sort_order: 'asc',
-    show_dependencies: true,
-    show_critical_path: true,
-    show_resource_conflicts: true
+  // Timeline stats
+  const [stats, setStats] = useState<TimelineStats>({
+    total_tasks: 0,
+    completed_tasks: 0,
+    in_progress_tasks: 0,
+    overdue_tasks: 0
   });
-
-  // Filtering and search
-  const [filter, setFilter] = useState<TimelineFilter>({
-    show_completed: true,
-    show_critical_only: false
-  });
-
-  // UI state
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [isAutoScheduling, setIsAutoScheduling] = useState(false);
-  const [showStats, setShowStats] = useState(true);
-  const [timelineView, setTimelineView] = useState<'gantt' | 'timeline' | 'calendar'>('gantt');
-  
-  // Initialize dynamic timeline service
-  const dynamicService = useMemo(() => new DynamicTimelineService(), []);
 
   // Set up WebSocket connection and event listeners
   useEffect(() => {
