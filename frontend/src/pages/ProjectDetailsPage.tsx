@@ -621,12 +621,11 @@ const ProjectDetailsPage: React.FC = () => {
 
         {activeTab === 'tasks' && (
           <EnhancedTasksTab 
-            tasks={tasks}
-            project={project}
+            project={{ id: project.id, name: project.name }}
             users={users}
-            onTaskUpdate={() => fetchTasks()}
-            onTaskCreate={() => fetchTasks()}
-            onTaskDelete={() => fetchTasks()}
+            onTaskUpdate={() => fetchProjectData()}
+            onTaskCreate={() => fetchProjectData()}
+            onTaskDelete={() => fetchProjectData()}
           />
         )}
 
