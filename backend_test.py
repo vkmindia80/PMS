@@ -185,7 +185,7 @@ class ProjectDetailsTester:
         success, response = self.run_test(
             "Get Users List",
             "GET",
-            "/api/users",
+            "/api/users/",
             200
         )
         
