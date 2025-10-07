@@ -429,12 +429,14 @@ const EnhancedAnalyticsTab: React.FC<EnhancedAnalyticsTabProps> = ({
         />
         
         <MetricCard
-          title="Budget Health"
-          value={`${(100 - budgetUtilization).toFixed(0)}%`}
-          change={budgetUtilization > 80 ? -15 : 8}
-          trend={budgetUtilization > 80 ? 'down' : 'up'}
+          title="Budget Utilization"
+          value={`${budgetUtilization.toFixed(1)}%`}
+          change={budgetUtilization > 80 ? 15 : -8}
+          trend={budgetUtilization > 80 ? 'up' : 'down'}
           icon={DollarSign}
-          color="bg-gradient-to-br from-purple-500 to-purple-600"
+          color={budgetUtilization > 90 ? "bg-gradient-to-br from-red-500 to-red-600" : 
+                 budgetUtilization > 70 ? "bg-gradient-to-br from-yellow-500 to-yellow-600" : 
+                 "bg-gradient-to-br from-green-500 to-green-600"}
         />
         
         <MetricCard
