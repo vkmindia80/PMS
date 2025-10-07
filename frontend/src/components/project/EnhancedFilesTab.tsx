@@ -47,8 +47,11 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [selectedFolder, setSelectedFolder] = useState<string>('')
   const [showUploadModal, setShowUploadModal] = useState(false)
+  const [showNewFolderModal, setShowNewFolderModal] = useState(false)
+  const [newFolderName, setNewFolderName] = useState('')
   const [dragOver, setDragOver] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState<string[]>([])
+  const [uploadedFiles, setUploadedFiles] = useState<ProjectFile[]>([])
 
   // Mock file data for demonstration
   const mockFiles: ProjectFile[] = [
