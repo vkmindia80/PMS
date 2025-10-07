@@ -313,7 +313,7 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading project timeline...</p>
-          <p className="text-sm text-gray-500 mt-2">Fetching tasks and dependencies</p>
+          <p className="text-sm text-gray-500 mt-2">Fetching tasks and timeline data</p>
         </div>
       </div>
     );
@@ -348,10 +348,10 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
 
   return (
     <div className="space-y-6" data-testid="project-timeline-tab">
-      {/* Timeline Header with Project-Specific Stats */}
+      {/* Timeline Header with Stats */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
-          {/* Left side - Title and connection status */}
+          {/* Left side - Title */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <GitBranch className="h-6 w-6 text-blue-600 flex-shrink-0" />
@@ -360,38 +360,9 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
                   Project Timeline
                 </h2>
                 <p className="text-sm text-gray-600">
-                  Interactive Gantt chart with real-time collaboration
+                  Interactive timeline view for project tasks
                 </p>
               </div>
-            </div>
-
-            {/* Connection Status */}
-            <div className="flex items-center space-x-2">
-              <div className={`flex items-center space-x-2 px-3 py-1 rounded-full text-xs ${
-                isWebSocketConnected ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-              }`}>
-                {isWebSocketConnected ? (
-                  <>
-                    <Wifi className="h-3 w-3" />
-                    <span>Live</span>
-                  </>
-                ) : (
-                  <>
-                    <WifiOff className="h-3 w-3" />
-                    <span>Offline</span>
-                  </>
-                )}
-              </div>
-
-              {/* Active Users */}
-              {activeUsers.length > 0 && (
-                <div className="flex items-center space-x-1">
-                  <Users className="h-3 w-3 text-gray-500" />
-                  <span className="text-xs text-gray-600">
-                    {activeUsers.length} active
-                  </span>
-                </div>
-              )}
             </div>
           </div>
 
@@ -400,178 +371,305 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
             {/* View Mode Toggle */}
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <button
-                onClick={() => setTimelineView('gantt')}
+                onClick={() => setViewMode('week')}
                 className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                  timelineView === 'gantt' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'
+                  viewMode === 'week' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'
                 }`}
               >
-                Gantt
+                Week
               </button>
               <button
-                onClick={() => setTimelineView('timeline')}
+                onClick={() => setViewMode('month')}
                 className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                  timelineView === 'timeline' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'
+                  viewMode === 'month' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600'
                 }`}
               >
-                Timeline
+                Month
               </button>
             </div>
 
-            {/* Quick Actions */}
-            <div className="flex items-center space-x-1">
-              <button
-                onClick={() => setNotificationsEnabled(!notificationsEnabled)}
-                className={`p-2 rounded-lg transition-colors ${
-                  notificationsEnabled 
-                    ? 'bg-blue-100 text-blue-600' 
-                    : 'bg-gray-100 text-gray-500'
-                }`}
-                title="Toggle Notifications"
-              >
-                {notificationsEnabled ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
-              </button>
+            {/* Show Completed Toggle */}
+            <label className="flex items-center space-x-2 text-sm text-gray-600">
+              <input
+                type="checkbox"
+                checked={showCompleted}
+                onChange={(e) => setShowCompleted(e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span>Show completed</span>
+            </label>
 
-              <button
-                onClick={() => setShowStats(!showStats)}
-                className={`p-2 rounded-lg transition-colors ${
-                  showStats ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'
-                }`}
-                title="Toggle Statistics"
-              >
-                <BarChart3 className="h-4 w-4" />
-              </button>
+            {/* Actions */}
+            <button
+              onClick={fetchTimelineData}
+              className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600"
+              title="Refresh Data"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </button>
 
-              <button
-                onClick={fetchTimelineData}
-                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600"
-                title="Refresh Data"
-              >
-                <RefreshCw className="h-4 w-4" />
-              </button>
-
-              <button
-                onClick={handleAutoSchedule}
-                disabled={isAutoScheduling}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-              >
-                <Target className="h-4 w-4" />
-                <span>{isAutoScheduling ? 'Scheduling...' : 'Auto Schedule'}</span>
-              </button>
-            </div>
+            <button
+              onClick={handleNewTask}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+            >
+              <Plus className="h-4 w-4" />
+              <span>New Task</span>
+            </button>
           </div>
         </div>
 
-        {/* Project-Specific Statistics Dashboard */}
-        {showStats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
-              <div className="text-2xl font-bold text-blue-700">
-                {taskProgress.percentage}%
-              </div>
-              <div className="text-sm text-blue-600">Progress</div>
-              <div className="text-xs text-blue-500 mt-1">
-                {taskProgress.completed}/{taskProgress.total} tasks
-              </div>
+        {/* Statistics Dashboard */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+            <div className="text-2xl font-bold text-blue-700">
+              {stats.total_tasks}
             </div>
-
-            <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
-              <div className="text-2xl font-bold text-green-700">
-                {realtimeStats?.in_progress_tasks || 0}
-              </div>
-              <div className="text-sm text-green-600">In Progress</div>
-            </div>
-
-            <div className="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl border border-yellow-200">
-              <div className="text-2xl font-bold text-yellow-700">
-                {realtimeStats?.overdue_tasks || 0}
-              </div>
-              <div className="text-sm text-yellow-600">Overdue</div>
-            </div>
-
-            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
-              <div className={`text-2xl font-bold ${
-                (realtimeStats?.timeline_health_score || 0) >= 80 ? 'text-green-600' :
-                (realtimeStats?.timeline_health_score || 0) >= 60 ? 'text-yellow-600' : 'text-red-600'
-              }`}>
-                {realtimeStats?.timeline_health_score || 0}%
-              </div>
-              <div className="text-sm text-purple-600">Health Score</div>
-            </div>
+            <div className="text-sm text-blue-600">Total Tasks</div>
           </div>
-        )}
 
-        {/* Conflicts Alert */}
-        {conflicts.length > 0 && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <div className="flex items-center space-x-2">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <span className="text-sm font-medium text-red-800">
-                {conflicts.length} conflict{conflicts.length !== 1 ? 's' : ''} detected in timeline
-              </span>
-              <button className="text-xs text-red-600 underline hover:text-red-800">
-                View Details
-              </button>
+          <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
+            <div className="text-2xl font-bold text-green-700">
+              {stats.completed_tasks}
             </div>
+            <div className="text-sm text-green-600">Completed</div>
           </div>
-        )}
+
+          <div className="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl border border-yellow-200">
+            <div className="text-2xl font-bold text-yellow-700">
+              {stats.in_progress_tasks}
+            </div>
+            <div className="text-sm text-yellow-600">In Progress</div>
+          </div>
+
+          <div className="text-center p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-xl border border-red-200">
+            <div className="text-2xl font-bold text-red-700">
+              {stats.overdue_tasks}
+            </div>
+            <div className="text-sm text-red-600">Overdue</div>
+          </div>
+        </div>
       </div>
 
-      {/* Dynamic Timeline Component */}
+      {/* Timeline Content */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        {timelineTasks.length === 0 && !loading && !error ? (
+        {filteredTasks.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Calendar className="h-16 w-16 text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No Timeline Data Available</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Tasks Available</h3>
             <p className="text-gray-600 mb-6">
-              This project doesn't have any tasks with timeline data yet.
+              {timelineTasks.length === 0 
+                ? 'This project doesn\'t have any tasks yet.' 
+                : 'No tasks match the current filter settings.'
+              }
             </p>
-            <div className="space-y-4">
-              <button
-                onClick={fetchTimelineData}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <RefreshCw className="h-4 w-4" />
-                <span>Refresh Timeline</span>
-              </button>
-              <p className="text-sm text-gray-500">
-                Tasks with due dates and time estimates will appear here automatically.
-              </p>
-            </div>
+            <button
+              onClick={handleNewTask}
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Create First Task</span>
+            </button>
           </div>
         ) : (
-          <ProjectDynamicTimeline
-            projectId={project.id}
-            projectName={project.name}
-            tasks={timelineTasks}
-            dependencies={dependencies}
-            conflicts={conflicts}
-            onTaskUpdate={handleTimelineTaskUpdate}
-            onTaskCreate={handleTimelineTaskCreate}
-            onDependencyCreate={handleDependencyCreate}
-            viewConfig={viewConfig}
-            onViewConfigChange={handleViewConfigChange}
-            filter={filter}
-            onFilterChange={handleFilterChange}
-            isRealTimeConnected={isWebSocketConnected}
-            users={users}
-            showAdvancedFilters={showAdvancedFilters}
-            onToggleAdvancedFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
-          />
+          <div className="p-6">
+            <div className="space-y-4">
+              {filteredTasks.map((task) => (
+                <div
+                  key={task.id}
+                  className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                    selectedTask === task.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => setSelectedTask(selectedTask === task.id ? null : task.id)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3">
+                        <h4 className="font-medium text-gray-900">{task.title}</h4>
+                        <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(task.status)}`}>
+                          {task.status.replace('_', ' ').toUpperCase()}
+                        </span>
+                        <span className={`text-xs font-medium ${getPriorityColor(task.priority)}`}>
+                          {task.priority.toUpperCase()}
+                        </span>
+                      </div>
+                      
+                      <div className="mt-2 flex items-center space-x-4 text-sm text-gray-600">
+                        <span>
+                          <Users className="inline w-4 h-4 mr-1" />
+                          {getUserName(task.assignee_id || '')}
+                        </span>
+                        <span>
+                          <Calendar className="inline w-4 h-4 mr-1" />
+                          {formatDate(task.start_date)} - {formatDate(task.due_date)}
+                        </span>
+                        <span>
+                          <Clock className="inline w-4 h-4 mr-1" />
+                          {task.time_tracking?.estimated_hours || 0}h
+                        </span>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="mt-3">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-600">Progress</span>
+                          <span className="font-medium">{task.progress_percentage}%</span>
+                        </div>
+                        <div className="mt-1 w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${task.progress_percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTaskEdit(task);
+                        }}
+                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Edit Task"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTaskDelete(task.id);
+                        }}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete Task"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 
-      {/* Quick Actions Footer */}
-      <div className="flex items-center justify-between text-sm text-gray-500">
-        <div className="flex items-center space-x-4">
-          <span>Last updated: {new Date().toLocaleTimeString()}</span>
-          {realtimeStats?.estimated_completion && (
-            <span>Est. completion: {realtimeStats.estimated_completion}</span>
-          )}
+      {/* Task Form Modal */}
+      {(showTaskForm || editingTask) && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
+            <h3 className="text-lg font-semibold mb-4">
+              {editingTask ? 'Edit Task' : 'Create New Task'}
+            </h3>
+            <form onSubmit={handleTaskFormSubmit}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Task Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    required
+                    defaultValue={editingTask?.title || ''}
+                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Priority</label>
+                    <select
+                      name="priority"
+                      defaultValue={editingTask?.priority || 'medium'}
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                      <option value="critical">Critical</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Status</label>
+                    <select
+                      name="status"
+                      defaultValue={editingTask?.status || 'todo'}
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="todo">To Do</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="in_review">In Review</option>
+                      <option value="completed">Completed</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                    <input
+                      type="date"
+                      name="start_date"
+                      defaultValue={editingTask?.start_date ? new Date(editingTask.start_date).toISOString().split('T')[0] : ''}
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Due Date</label>
+                    <input
+                      type="date"
+                      name="due_date"
+                      defaultValue={editingTask?.due_date ? new Date(editingTask.due_date).toISOString().split('T')[0] : ''}
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Progress (%)</label>
+                    <input
+                      type="number"
+                      name="progress"
+                      min="0"
+                      max="100"
+                      defaultValue={editingTask?.progress_percentage || 0}
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Est. Hours</label>
+                    <input
+                      type="number"
+                      name="estimated_hours"
+                      min="0"
+                      defaultValue={editingTask?.time_tracking?.estimated_hours || 0}
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowTaskForm(false);
+                    setEditingTask(null);
+                  }}
+                  className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  {editingTask ? 'Update Task' : 'Create Task'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <span>Keyboard shortcuts: Drag to reschedule, Double-click to edit</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
