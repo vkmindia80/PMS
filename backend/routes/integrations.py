@@ -534,6 +534,508 @@ async def schedule_google_calendar_meeting(
         logger.error(f"Google Calendar scheduling error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# AWS S3 Storage Integration Endpoints
+
+@router.post("/s3_storage/setup", response_model=IntegrationResponse)
+async def setup_s3_integration(
+    request: S3IntegrationRequest,
+    current_user: dict = Depends(get_current_user)
+):
+    """Setup AWS S3 Storage integration"""
+    try:
+        db = await get_database()
+        
+        # Validate S3 configuration by attempting to connect
+        validation_result = await validate_s3_credentials(
+            request.access_key_id,
+            request.secret_access_key,
+            request.region,
+            request.bucket_name
+        )
+        
+        if not validation_result["valid"]:
+            return IntegrationResponse(
+                success=False,
+                integration_type="s3_storage",
+                error=validation_result.get("error", "Invalid S3 configuration"),
+                timestamp=datetime.utcnow()
+            )
+        
+        integration_config = {
+            "type": "s3_storage",
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+            "bucket_name": request.bucket_name,
+            "access_key_id": request.access_key_id,
+            "secret_access_key": request.secret_access_key,  # In production, encrypt this
+            "region": request.region,
+            "max_file_size_mb": request.max_file_size_mb,
+            "versioning_enabled": request.versioning_enabled,
+            "lifecycle_policies_enabled": request.lifecycle_policies_enabled,
+            "allowed_file_types": request.allowed_file_types,
+            "settings": request.settings or {},
+            "status": "active",
+            "created_at": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+        
+        # Store in database
+        await db.integrations.update_one(
+            {
+                "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+                "type": "s3_storage"
+            },
+            {"$set": integration_config},
+            upsert=True
+        )
+        
+        # Apply S3 configuration (versioning, lifecycle policies)
+        await configure_s3_features(request)
+        
+        logger.info(f"S3 integration configured for organization {getattr(current_user, 'organization_id', 'demo-org-001')}")
+        
+        return IntegrationResponse(
+            success=True,
+            integration_type="s3_storage",
+            data={
+                "bucket_name": request.bucket_name,
+                "region": request.region,
+                "versioning_enabled": request.versioning_enabled,
+                "lifecycle_policies_enabled": request.lifecycle_policies_enabled,
+                "max_file_size_mb": request.max_file_size_mb,
+                "allowed_file_types_count": len(request.allowed_file_types),
+                "status": "configured",
+                "features": [
+                    "Secure file storage",
+                    "Project-based organization",
+                    "File versioning" if request.versioning_enabled else None,
+                    "Lifecycle policies" if request.lifecycle_policies_enabled else None,
+                    "File type validation",
+                    "Access control"
+                ]
+            },
+            timestamp=datetime.utcnow()
+        )
+        
+    except Exception as e:
+        logger.error(f"S3 integration setup error: {str(e)}")
+        return IntegrationResponse(
+            success=False,
+            integration_type="s3_storage",
+            error=str(e),
+            timestamp=datetime.utcnow()
+        )
+
+@router.post("/s3_storage/test-upload")
+async def test_s3_upload(
+    current_user: dict = Depends(get_current_user)
+):
+    """Test S3 file upload capability"""
+    try:
+        db = await get_database()
+        
+        # Get S3 configuration
+        s3_config = await db.integrations.find_one({
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+            "type": "s3_storage"
+        })
+        
+        if not s3_config:
+            raise HTTPException(status_code=404, detail="S3 integration not configured")
+        
+        # Test S3 connection and permissions
+        test_result = await test_s3_permissions(s3_config)
+        
+        return {
+            "success": test_result["success"],
+            "bucket_accessible": test_result.get("bucket_accessible", False),
+            "permissions": test_result.get("permissions", []),
+            "versioning_status": test_result.get("versioning_status", "Unknown"),
+            "lifecycle_policies": test_result.get("lifecycle_policies", []),
+            "test_timestamp": datetime.utcnow(),
+            "message": test_result.get("message", "S3 test completed")
+        }
+        
+    except Exception as e:
+        logger.error(f"S3 test error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/s3_storage/bucket-stats")
+async def get_s3_bucket_stats(
+    current_user: dict = Depends(get_current_user)
+):
+    """Get S3 bucket statistics and usage"""
+    try:
+        db = await get_database()
+        
+        # Get S3 configuration
+        s3_config = await db.integrations.find_one({
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+            "type": "s3_storage"
+        })
+        
+        if not s3_config:
+            raise HTTPException(status_code=404, detail="S3 integration not configured")
+        
+        # Get bucket statistics
+        stats = await get_bucket_statistics(s3_config)
+        
+        return {
+            "bucket_name": s3_config["bucket_name"],
+            "region": s3_config["region"],
+            "total_objects": stats.get("total_objects", 0),
+            "total_size_bytes": stats.get("total_size_bytes", 0),
+            "total_size_mb": round(stats.get("total_size_bytes", 0) / (1024 * 1024), 2),
+            "projects_with_files": stats.get("projects_with_files", 0),
+            "file_types": stats.get("file_types", {}),
+            "versioning_enabled": s3_config.get("versioning_enabled", False),
+            "lifecycle_policies_count": len(stats.get("lifecycle_policies", [])),
+            "last_updated": datetime.utcnow()
+        }
+        
+    except Exception as e:
+        logger.error(f"S3 stats error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/s3_storage/lifecycle-policies")
+async def update_lifecycle_policies(
+    policies: List[Dict[str, Any]],
+    current_user: dict = Depends(get_current_user)
+):
+    """Update S3 bucket lifecycle policies"""
+    try:
+        db = await get_database()
+        
+        # Get S3 configuration
+        s3_config = await db.integrations.find_one({
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+            "type": "s3_storage"
+        })
+        
+        if not s3_config:
+            raise HTTPException(status_code=404, detail="S3 integration not configured")
+        
+        # Apply lifecycle policies to S3
+        result = await apply_lifecycle_policies(s3_config, policies)
+        
+        if result["success"]:
+            # Update integration config
+            await db.integrations.update_one(
+                {
+                    "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+                    "type": "s3_storage"
+                },
+                {
+                    "$set": {
+                        "lifecycle_policies": policies,
+                        "updated_at": datetime.utcnow()
+                    }
+                }
+            )
+        
+        return {
+            "success": result["success"],
+            "policies_applied": len(policies),
+            "message": result.get("message", "Lifecycle policies updated"),
+            "policies": policies
+        }
+        
+    except Exception as e:
+        logger.error(f"Lifecycle policies update error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Helper functions for S3 integration
+
+async def validate_s3_credentials(access_key_id: str, secret_access_key: str, region: str, bucket_name: str) -> Dict[str, Any]:
+    """Validate S3 credentials and bucket access"""
+    try:
+        import boto3
+        from botocore.exceptions import ClientError, NoCredentialsError
+        
+        # Create S3 client with provided credentials
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=access_key_id,
+            aws_secret_access_key=secret_access_key,
+            region_name=region
+        )
+        
+        # Test bucket access
+        try:
+            s3_client.head_bucket(Bucket=bucket_name)
+            bucket_exists = True
+        except ClientError as e:
+            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            if error_code == '404':
+                bucket_exists = False
+            else:
+                return {
+                    "valid": False,
+                    "error": f"Bucket access error: {error_code}"
+                }
+        
+        # Test basic permissions
+        try:
+            s3_client.list_objects_v2(Bucket=bucket_name, MaxKeys=1)
+            can_list = True
+        except ClientError:
+            can_list = False
+        
+        return {
+            "valid": True,
+            "bucket_exists": bucket_exists,
+            "can_list_objects": can_list,
+            "region": region
+        }
+        
+    except NoCredentialsError:
+        return {
+            "valid": False,
+            "error": "Invalid AWS credentials"
+        }
+    except Exception as e:
+        return {
+            "valid": False,
+            "error": f"Connection error: {str(e)}"
+        }
+
+async def configure_s3_features(request: S3IntegrationRequest) -> Dict[str, Any]:
+    """Configure S3 bucket features like versioning and lifecycle policies"""
+    try:
+        import boto3
+        
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=request.access_key_id,
+            aws_secret_access_key=request.secret_access_key,
+            region_name=request.region
+        )
+        
+        results = {}
+        
+        # Configure versioning
+        if request.versioning_enabled:
+            try:
+                s3_client.put_bucket_versioning(
+                    Bucket=request.bucket_name,
+                    VersioningConfiguration={'Status': 'Enabled'}
+                )
+                results["versioning"] = "enabled"
+            except Exception as e:
+                logger.warning(f"Failed to enable versioning: {e}")
+                results["versioning"] = "failed"
+        
+        # Configure default lifecycle policies
+        if request.lifecycle_policies_enabled:
+            try:
+                default_policies = [
+                    {
+                        'ID': 'portfolio-files-lifecycle',
+                        'Status': 'Enabled',
+                        'Filter': {'Prefix': 'projects/'},
+                        'Transitions': [
+                            {
+                                'Days': 30,
+                                'StorageClass': 'STANDARD_WEBP'
+                            },
+                            {
+                                'Days': 90,
+                                'StorageClass': 'GLACIER'
+                            }
+                        ],
+                        'NoncurrentVersionTransitions': [
+                            {
+                                'NoncurrentDays': 30,
+                                'StorageClass': 'STANDARD_WEBP'
+                            }
+                        ],
+                        'NoncurrentVersionExpiration': {
+                            'NoncurrentDays': 365
+                        }
+                    }
+                ]
+                
+                s3_client.put_bucket_lifecycle_configuration(
+                    Bucket=request.bucket_name,
+                    LifecycleConfiguration={'Rules': default_policies}
+                )
+                results["lifecycle_policies"] = "enabled"
+            except Exception as e:
+                logger.warning(f"Failed to set lifecycle policies: {e}")
+                results["lifecycle_policies"] = "failed"
+        
+        return {"success": True, "results": results}
+        
+    except Exception as e:
+        logger.error(f"S3 configuration error: {e}")
+        return {"success": False, "error": str(e)}
+
+async def test_s3_permissions(s3_config: Dict[str, Any]) -> Dict[str, Any]:
+    """Test S3 permissions and capabilities"""
+    try:
+        import boto3
+        from botocore.exceptions import ClientError
+        
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=s3_config["access_key_id"],
+            aws_secret_access_key=s3_config["secret_access_key"],
+            region_name=s3_config["region"]
+        )
+        
+        bucket_name = s3_config["bucket_name"]
+        permissions = []
+        
+        # Test read permission
+        try:
+            s3_client.list_objects_v2(Bucket=bucket_name, MaxKeys=1)
+            permissions.append("read")
+        except ClientError:
+            pass
+        
+        # Test write permission (create a test object)
+        try:
+            test_key = f"test-permissions-{datetime.utcnow().timestamp()}.txt"
+            s3_client.put_object(
+                Bucket=bucket_name,
+                Key=test_key,
+                Body=b"Permission test file"
+            )
+            permissions.append("write")
+            
+            # Clean up test file
+            s3_client.delete_object(Bucket=bucket_name, Key=test_key)
+            permissions.append("delete")
+            
+        except ClientError:
+            pass
+        
+        # Check versioning status
+        try:
+            versioning = s3_client.get_bucket_versioning(Bucket=bucket_name)
+            versioning_status = versioning.get('Status', 'Suspended')
+        except ClientError:
+            versioning_status = "Unknown"
+        
+        # Check lifecycle policies
+        try:
+            lifecycle = s3_client.get_bucket_lifecycle_configuration(Bucket=bucket_name)
+            lifecycle_policies = lifecycle.get('Rules', [])
+        except ClientError:
+            lifecycle_policies = []
+        
+        return {
+            "success": True,
+            "bucket_accessible": len(permissions) > 0,
+            "permissions": permissions,
+            "versioning_status": versioning_status,
+            "lifecycle_policies": lifecycle_policies,
+            "message": f"S3 test completed. Permissions: {', '.join(permissions)}"
+        }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "message": "S3 permission test failed"
+        }
+
+async def get_bucket_statistics(s3_config: Dict[str, Any]) -> Dict[str, Any]:
+    """Get comprehensive bucket statistics"""
+    try:
+        import boto3
+        from botocore.exceptions import ClientError
+        
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=s3_config["access_key_id"],
+            aws_secret_access_key=s3_config["secret_access_key"],
+            region_name=s3_config["region"]
+        )
+        
+        bucket_name = s3_config["bucket_name"]
+        
+        # List all objects in the projects/ prefix
+        paginator = s3_client.get_paginator('list_objects_v2')
+        page_iterator = paginator.paginate(
+            Bucket=bucket_name,
+            Prefix='projects/'
+        )
+        
+        total_objects = 0
+        total_size = 0
+        file_types = {}
+        projects_set = set()
+        
+        for page in page_iterator:
+            for obj in page.get('Contents', []):
+                total_objects += 1
+                total_size += obj['Size']
+                
+                # Extract project ID from path
+                path_parts = obj['Key'].split('/')
+                if len(path_parts) >= 2:
+                    projects_set.add(path_parts[1])
+                
+                # Count file types
+                filename = obj['Key'].split('/')[-1]
+                if '.' in filename:
+                    ext = filename.split('.')[-1].lower()
+                    file_types[ext] = file_types.get(ext, 0) + 1
+        
+        return {
+            "total_objects": total_objects,
+            "total_size_bytes": total_size,
+            "projects_with_files": len(projects_set),
+            "file_types": file_types
+        }
+        
+    except Exception as e:
+        logger.error(f"Error getting bucket statistics: {e}")
+        return {
+            "total_objects": 0,
+            "total_size_bytes": 0,
+            "projects_with_files": 0,
+            "file_types": {}
+        }
+
+async def apply_lifecycle_policies(s3_config: Dict[str, Any], policies: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Apply lifecycle policies to S3 bucket"""
+    try:
+        import boto3
+        
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=s3_config["access_key_id"],
+            aws_secret_access_key=s3_config["secret_access_key"],
+            region_name=s3_config["region"]
+        )
+        
+        bucket_name = s3_config["bucket_name"]
+        
+        if policies:
+            s3_client.put_bucket_lifecycle_configuration(
+                Bucket=bucket_name,
+                LifecycleConfiguration={'Rules': policies}
+            )
+        else:
+            # Delete lifecycle configuration if no policies
+            try:
+                s3_client.delete_bucket_lifecycle(Bucket=bucket_name)
+            except:
+                pass  # Ignore error if no lifecycle configuration exists
+        
+        return {
+            "success": True,
+            "message": f"Applied {len(policies)} lifecycle policies"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error applying lifecycle policies: {e}")
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
 # General Integration Management
 
 @router.get("/status")
