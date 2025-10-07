@@ -74,44 +74,68 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
     overdue_tasks: 0
   });
 
-  // Set up WebSocket connection and event listeners
-  useEffect(() => {
-    if (!project?.id || !tokens?.access_token) return;
+  // Fetch timeline data from tasks API
+  const fetchTimelineData = useCallback(async () => {
+    if (!project?.id || !tokens?.access_token) {
+      console.warn('Missing project ID or access token');
+      setError('Authentication required. Please log in to view timeline data.');
+      return;
+    }
 
-    const initializeRealtime = async () => {
-      try {
-        await dynamicService.initializeWebSocket(project.id, tokens.access_token);
-        setIsWebSocketConnected(true);
-        
-        // Set up event listeners
-        dynamicService.on('task_updated', handleTaskUpdated);
-        dynamicService.on('task_created', handleTaskCreated);
-        dynamicService.on('task_deleted', handleTaskDeleted);
-        dynamicService.on('dependency_updated', handleDependencyUpdated);
-        dynamicService.on('user_joined', handleUserJoined);
-        dynamicService.on('user_left', handleUserLeft);
-        dynamicService.on('conflict_detected', handleConflictDetected);
+    try {
+      setLoading(true);
+      setError(null);
+      
+      console.log(`Fetching timeline data for project: ${project.id}`);
+      
+      // Fetch tasks for this project
+      const response = await fetch(`${API_ENDPOINTS.tasks.list}?project_id=${project.id}`, {
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
 
-        // Start periodic stats updates
-        const statsInterval = setInterval(() => {
-          fetchRealtimeStats();
-        }, 30000); // Update every 30 seconds
-
-        return () => clearInterval(statsInterval);
-        
-      } catch (error) {
-        console.error('Failed to initialize real-time features:', error);
-        setIsWebSocketConnected(false);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch tasks: ${response.status} ${response.statusText}`);
       }
-    };
 
-    initializeRealtime();
-    
-    return () => {
-      dynamicService.disconnect();
-      setIsWebSocketConnected(false);
-    };
+      const tasks: TimelineTask[] = await response.json();
+      console.log(`Fetched ${tasks.length} tasks for timeline`);
+      
+      setTimelineTasks(tasks);
+      
+      // Calculate stats
+      const completedTasks = tasks.filter(t => t.status === 'completed').length;
+      const inProgressTasks = tasks.filter(t => t.status === 'in_progress').length;
+      const overdueTasks = tasks.filter(t => {
+        if (!t.due_date) return false;
+        return new Date(t.due_date) < new Date() && t.status !== 'completed';
+      }).length;
+      
+      setStats({
+        total_tasks: tasks.length,
+        completed_tasks: completedTasks,
+        in_progress_tasks: inProgressTasks,
+        overdue_tasks: overdueTasks
+      });
+      
+    } catch (err) {
+      console.error('Error fetching timeline data:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load timeline data';
+      setError(errorMessage);
+      toast.error(`Timeline Error: ${errorMessage}`);
+    } finally {
+      setLoading(false);
+    }
   }, [project?.id, tokens?.access_token]);
+
+  // Load data when project changes
+  useEffect(() => {
+    if (project?.id) {
+      fetchTimelineData();
+    }
+  }, [fetchTimelineData, project?.id]);
 
   // WebSocket event handlers
   const handleTaskUpdated = useCallback((message: WebSocketMessage) => {
