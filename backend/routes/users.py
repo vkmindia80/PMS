@@ -17,15 +17,18 @@ router = APIRouter(prefix="/api/users", tags=["Users"])
 
 def check_user_management_permissions(user: User, target_user_id: str = None):
     """Check if user can manage other users"""
-    if user.role in [UserRole.SUPER_ADMIN, UserRole.ADMIN]:
+    # Handle both string and enum values for role comparison
+    user_role = user.role.value if hasattr(user.role, 'value') else user.role
+    
+    if user_role in [UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value]:
         return True
     
     # Managers can manage users in their organization (except admins)
-    if user.role == UserRole.MANAGER:
+    if user_role == UserRole.MANAGER.value:
         return True
     
     # Team leads can view team members
-    if user.role == UserRole.TEAM_LEAD:
+    if user_role == UserRole.TEAM_LEAD.value:
         return True
         
     # Users can only manage themselves
