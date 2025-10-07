@@ -120,6 +120,65 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
 
   const allFiles = [...files, ...mockFiles, ...uploadedFiles]
 
+  // Handle file upload
+  const handleFileUpload = (fileList: FileList) => {
+    const newFiles: ProjectFile[] = Array.from(fileList).map((file, index) => {
+      // Determine file type based on extension
+      const extension = file.name.split('.').pop()?.toLowerCase() || ''
+      let fileType: ProjectFile['type'] = 'other'
+      
+      if (['pdf', 'doc', 'docx', 'txt', 'ppt', 'pptx'].includes(extension)) {
+        fileType = 'document'
+      } else if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(extension)) {
+        fileType = 'image'
+      } else if (['mp4', 'avi', 'mov', 'mkv'].includes(extension)) {
+        fileType = 'video'
+      } else if (['mp3', 'wav', 'ogg'].includes(extension)) {
+        fileType = 'audio'
+      } else if (['zip', 'rar', 'tar', 'gz'].includes(extension)) {
+        fileType = 'archive'
+      } else if (['js', 'ts', 'jsx', 'tsx', 'py', 'java', 'cpp', 'c', 'html', 'css'].includes(extension)) {
+        fileType = 'code'
+      }
+
+      return {
+        id: `uploaded-${Date.now()}-${index}`,
+        name: file.name,
+        type: fileType,
+        size: file.size,
+        uploaded_by: 'current-user',
+        uploaded_at: new Date().toISOString(),
+        modified_at: new Date().toISOString(),
+        version: 1,
+        description: `Uploaded file: ${file.name}`,
+        tags: [],
+        folder: selectedFolder || 'Root',
+        is_public: false,
+        download_count: 0
+      }
+    })
+
+    setUploadedFiles([...uploadedFiles, ...newFiles])
+    setShowUploadModal(false)
+    toast.success(`${newFiles.length} file(s) uploaded successfully!`)
+    
+    if (onFileUpload) {
+      onFileUpload(fileList)
+    }
+  }
+
+  // Handle new folder creation
+  const handleCreateFolder = () => {
+    if (!newFolderName.trim()) {
+      toast.error('Please enter a folder name')
+      return
+    }
+
+    toast.success(`Folder "${newFolderName}" created successfully!`)
+    setNewFolderName('')
+    setShowNewFolderModal(false)
+  }
+
   const getFileIcon = (type: string) => {
     const icons = {
       document: FileText,
