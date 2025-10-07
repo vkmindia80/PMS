@@ -81,6 +81,7 @@ class S3FileService:
     def __init__(self):
         self.config = S3Config()
         self._s3_client = None
+        self._integration_configs = {}  # Cache for integration-specific configs
         
     @property
     def s3_client(self):
