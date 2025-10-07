@@ -188,7 +188,8 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
       })
 
   const filteredMembers = enrichedTeamMembers.filter(member => {
-    if (searchTerm && !member.user.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+    const memberName = member.user?.name || `${member.user?.first_name || ''} ${member.user?.last_name || ''}`.trim() || 'Unknown User'
+    if (searchTerm && !memberName.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false
     }
     if (roleFilter !== 'all' && member.role !== roleFilter) {
