@@ -20,24 +20,30 @@ interface ProjectTimelineTabProps {
   onTaskDelete: () => void;
 }
 
+interface TimelineTask {
+  id: string;
+  title: string;
+  status: string;
+  priority: string;
+  project_id: string;
+  assignee_id?: string;
+  assignee_ids: string[];
+  due_date?: string;
+  start_date?: string;
+  progress_percentage: number;
+  time_tracking?: {
+    estimated_hours?: number;
+    actual_hours?: number;
+  };
+  created_at: string;
+  updated_at: string;
+}
+
 interface TimelineStats {
   total_tasks: number;
   completed_tasks: number;
   in_progress_tasks: number;
   overdue_tasks: number;
-  critical_path_length: number;
-  resource_utilization: number;
-  timeline_health_score: number;
-  estimated_completion: string;
-  conflicts_count: number;
-}
-
-interface ActiveUser {
-  id: string;
-  name: string;
-  avatar?: string;
-  current_task?: string;
-  last_seen: string;
 }
 
 const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
