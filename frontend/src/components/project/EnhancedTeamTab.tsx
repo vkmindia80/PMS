@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { 
   Plus, Search, Users, Crown, Shield, Star, Mail, Phone, 
   Calendar, Clock, BarChart3, Target, Award, Settings,
   MoreVertical, Edit2, UserX, MessageSquare, X
 } from 'lucide-react'
+import { useAuth } from '../../contexts/AuthContext'
+import { API_ENDPOINTS } from '../../utils/config'
+import toast from 'react-hot-toast'
 
 interface User {
   id: string
