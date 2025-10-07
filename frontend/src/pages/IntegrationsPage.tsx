@@ -1343,6 +1343,322 @@ const IntegrationsPage: React.FC = () => {
           </div>
         )
 
+      // AWS S3 Storage Wizard Steps
+      case 's3_storage-credentials':
+        return (
+          <div className="space-y-4">
+            <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+              <div className="flex items-center mb-2">
+                <Key className="w-5 h-5 text-purple-600 mr-2" />
+                <h4 className="font-semibold text-purple-900">Configure AWS Credentials</h4>
+              </div>
+              <p className="text-purple-800 text-sm mb-4">
+                Set up your AWS access credentials for secure S3 storage integration.
+              </p>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Access Key ID</label>
+                  <input
+                    type="text"
+                    value={s3Config.access_key_id}
+                    onChange={(e) => setS3Config({ ...s3Config, access_key_id: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                    placeholder="AKIAIOSFODNN7EXAMPLE"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Secret Access Key</label>
+                  <div className="relative">
+                    <input
+                      type={showCredentials.s3 ? 'text' : 'password'}
+                      value={s3Config.secret_access_key}
+                      onChange={(e) => setS3Config({ ...s3Config, secret_access_key: e.target.value })}
+                      className="w-full p-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                      placeholder="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCredentials({ ...showCredentials, s3: !showCredentials.s3 })}
+                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    >
+                      {showCredentials.s3 ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
+                  <select
+                    value={s3Config.region}
+                    onChange={(e) => setS3Config({ ...s3Config, region: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="us-east-1">US East (N. Virginia)</option>
+                    <option value="us-east-2">US East (Ohio)</option>
+                    <option value="us-west-1">US West (N. California)</option>
+                    <option value="us-west-2">US West (Oregon)</option>
+                    <option value="eu-west-1">Europe (Ireland)</option>
+                    <option value="eu-central-1">Europe (Frankfurt)</option>
+                    <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                    <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+                  </select>
+                </div>
+                <div className="bg-yellow-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-yellow-900 mb-2">Security Note:</h5>
+                  <p className="text-sm text-yellow-800">
+                    Your credentials are encrypted and stored securely. For production use, consider using IAM roles with minimal required permissions.
+                  </p>
+                </div>
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-blue-900 mb-2">Required S3 Permissions:</h5>
+                  <div className="grid grid-cols-2 gap-2 text-sm text-blue-800">
+                    <span>• s3:GetObject</span>
+                    <span>• s3:PutObject</span>
+                    <span>• s3:DeleteObject</span>
+                    <span>• s3:ListBucket</span>
+                    <span>• s3:PutBucketVersioning</span>
+                    <span>• s3:PutLifecycleConfiguration</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 's3_storage-bucket':
+        return (
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <div className="flex items-center mb-2">
+                <Database className="w-5 h-5 text-blue-600 mr-2" />
+                <h4 className="font-semibold text-blue-900">Configure S3 Bucket</h4>
+              </div>
+              <p className="text-blue-800 text-sm mb-4">
+                Set up your S3 bucket for storing project files and documents.
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Bucket Name</label>
+                  <input
+                    type="text"
+                    value={s3Config.bucket_name}
+                    onChange={(e) => setS3Config({ ...s3Config, bucket_name: e.target.value })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="your-portfolio-files-bucket"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Bucket name must be globally unique and follow AWS naming conventions
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Maximum File Size (MB)</label>
+                  <input
+                    type="number"
+                    value={s3Config.max_file_size_mb}
+                    onChange={(e) => setS3Config({ ...s3Config, max_file_size_mb: parseInt(e.target.value) || 50 })}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    min="1"
+                    max="500"
+                  />
+                </div>
+                <div className="bg-green-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-green-900 mb-2">File Organization:</h5>
+                  <code className="text-sm text-green-800 bg-green-100 p-2 rounded block">
+                    projects/{'{'}<span className="text-green-600">project_id</span>{'}'}/files/{'{'}<span className="text-green-600">filename</span>{'}'}
+                  </code>
+                  <p className="text-sm text-green-800 mt-2">
+                    Files will be organized by project for easy management and access control.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 's3_storage-features':
+        return (
+          <div className="space-y-4">
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="flex items-center mb-2">
+                <Settings className="w-5 h-5 text-green-600 mr-2" />
+                <h4 className="font-semibold text-green-900">Configure Storage Features</h4>
+              </div>
+              <p className="text-green-800 text-sm mb-4">
+                Enable advanced S3 features for better file management and cost optimization.
+              </p>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={s3Config.versioning_enabled}
+                      onChange={(e) => setS3Config({ ...s3Config, versioning_enabled: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <Clock className="w-4 h-4 mr-2 text-blue-600" />
+                      <div>
+                        <span className="text-sm font-medium">File Versioning</span>
+                        <p className="text-xs text-gray-500">Keep multiple versions of files</p>
+                      </div>
+                    </div>
+                  </label>
+                  <label className="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={s3Config.lifecycle_policies_enabled}
+                      onChange={(e) => setS3Config({ ...s3Config, lifecycle_policies_enabled: e.target.checked })}
+                      className="mr-3"
+                    />
+                    <div className="flex items-center">
+                      <Activity className="w-4 h-4 mr-2 text-green-600" />
+                      <div>
+                        <span className="text-sm font-medium">Lifecycle Policies</span>
+                        <p className="text-xs text-gray-500">Auto-transition to cheaper storage</p>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                {s3Config.lifecycle_policies_enabled && (
+                  <div className="bg-white p-4 rounded-lg border border-gray-200">
+                    <h5 className="font-medium text-gray-900 mb-3">Lifecycle Policy Settings</h5>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Transition to Infrequent Access (days)
+                        </label>
+                        <input
+                          type="number"
+                          value={s3Config.transition_to_ia_days}
+                          onChange={(e) => setS3Config({ ...s3Config, transition_to_ia_days: parseInt(e.target.value) || 30 })}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                          min="1"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Transition to Glacier (days)
+                        </label>
+                        <input
+                          type="number"
+                          value={s3Config.transition_to_glacier_days}
+                          onChange={(e) => setS3Config({ ...s3Config, transition_to_glacier_days: parseInt(e.target.value) || 90 })}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                          min="1"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Delete Old Versions (days)
+                        </label>
+                        <input
+                          type="number"
+                          value={s3Config.expire_old_versions_days}
+                          onChange={(e) => setS3Config({ ...s3Config, expire_old_versions_days: parseInt(e.target.value) || 365 })}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                          min="1"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Delete Incomplete Uploads (days)
+                        </label>
+                        <input
+                          type="number"
+                          value={s3Config.delete_incomplete_multipart_days}
+                          onChange={(e) => setS3Config({ ...s3Config, delete_incomplete_multipart_days: parseInt(e.target.value) || 7 })}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                          min="1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="bg-blue-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-blue-900 mb-2">Supported File Types:</h5>
+                  <div className="grid grid-cols-4 gap-2 text-sm text-blue-800">
+                    {s3Config.allowed_file_types.map(type => (
+                      <span key={type} className="bg-blue-100 px-2 py-1 rounded text-xs">.{type}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 's3_storage-test':
+        return (
+          <div className="space-y-4">
+            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+              <div className="flex items-center mb-2">
+                <CheckCircle className="w-5 h-5 text-yellow-600 mr-2" />
+                <h4 className="font-semibold text-yellow-900">Test S3 Storage Connection</h4>
+              </div>
+              <p className="text-yellow-800 text-sm mb-4">
+                Validate your S3 configuration and test file upload capabilities.
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={() => testIntegration('s3_storage')}
+                  disabled={!s3Config.access_key_id || !s3Config.secret_access_key || !s3Config.bucket_name}
+                  className="w-full px-6 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 flex items-center justify-center"
+                >
+                  <PlayCircle className="w-4 h-4 mr-2" />
+                  Test S3 Connection
+                </button>
+                {testResults.s3_storage && (
+                  <div className={`p-3 rounded-lg ${testResults.s3_storage.success ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    <div className="flex items-center mb-2">
+                      {testResults.s3_storage.success ? 
+                        <CheckCircle className="w-4 h-4 mr-2" /> : 
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                      }
+                      <span className="font-medium">
+                        {testResults.s3_storage.success ? 'S3 Storage Connection Successful!' : 'Connection Failed'}
+                      </span>
+                    </div>
+                    {testResults.s3_storage.message && (
+                      <p className="text-sm mt-1">{testResults.s3_storage.message}</p>
+                    )}
+                    {testResults.s3_storage.permissions && (
+                      <p className="text-sm mt-1">
+                        Permissions: {testResults.s3_storage.permissions.join(', ')}
+                      </p>
+                    )}
+                  </div>
+                )}
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <h5 className="font-medium text-gray-900 mb-2">Configuration Summary:</h5>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <div className="flex justify-between">
+                      <span>Bucket:</span>
+                      <span className="font-medium">{s3Config.bucket_name || 'Not configured'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Region:</span>
+                      <span className="font-medium">{s3Config.region}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Max File Size:</span>
+                      <span className="font-medium">{s3Config.max_file_size_mb}MB</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Versioning:</span>
+                      <span className="font-medium">{s3Config.versioning_enabled ? 'Enabled' : 'Disabled'}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Lifecycle Policies:</span>
+                      <span className="font-medium">{s3Config.lifecycle_policies_enabled ? 'Enabled' : 'Disabled'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
       default:
         return (
           <div className="text-center py-8">
