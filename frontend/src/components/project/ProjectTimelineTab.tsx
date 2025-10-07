@@ -5,20 +5,10 @@ import {
   Download, Upload, Share2, Filter, Search, Plus, BarChart3,
   Maximize2, Minimize2, RefreshCw, Settings2, GitBranch, Eye,
   Play, Pause, Square, CheckCircle2, XCircle, AlertCircle2,
-  TrendingUp, TrendingDown, Layers
+  TrendingUp, TrendingDown, Layers, Edit2, Trash2, Link2
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { getBACKEND_URL } from '../../utils/config';
-import ProjectDynamicTimeline from '../timeline/ProjectDynamicTimeline';
-import { 
-  DynamicTimelineService, 
-  DynamicTimelineTask, 
-  TaskConflict, 
-  TimelineFilter, 
-  TimelineViewConfig,
-  WebSocketMessage 
-} from '../../services/dynamicTimelineService';
-import { taskTimelineService } from '../../services/taskTimelineService';
+import { API_ENDPOINTS } from '../../utils/config';
 import toast from 'react-hot-toast';
 
 interface ProjectTimelineTabProps {
