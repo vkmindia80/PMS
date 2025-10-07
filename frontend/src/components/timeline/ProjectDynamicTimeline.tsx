@@ -50,8 +50,12 @@ const AddTaskButton: React.FC<{ onAddTask: (task: Partial<DynamicTimelineTask>) 
   return (
     <>
       <button
-        onClick={() => setShowForm(true)}
+        onClick={() => {
+          console.log('Add Task button clicked');
+          setShowForm(true);
+        }}
         className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        data-testid="add-task-button"
       >
         <Plus className="h-4 w-4" />
         <span>Add Task</span>
