@@ -99,19 +99,40 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
       const result = await systemService.generateDemoData()
       
       if (result.success) {
-        toast.success(
-          `🎉 Enhanced demo data generated successfully!\n` +
-          `📊 ${result.details?.total_data_points || 0}+ comprehensive data points\n` +
-          `👥 ${result.details?.users_created || 0} users, ${result.details?.teams_created || 0} teams, ${result.details?.projects_created || 0} projects\n` +
-          `✅ ${result.details?.tasks_created || 0} tasks with dates, dependencies & team members`,
-          { 
-            id: 'demo-generation',
-            duration: 5000,
-            style: {
-              maxWidth: '500px',
+        // Check if it's async (202 status) or completed
+        if (result.status === 'processing') {
+          toast.success(
+            `🎉 Demo data generation started!\n` +
+            `⏳ This will take 10-30 seconds to complete.\n` +
+            `💡 You can login now and refresh the page in a moment to see all the data.\n\n` +
+            `📧 Login: demo@company.com\n` +
+            `🔑 Password: demo123456`,
+            { 
+              id: 'demo-generation',
+              duration: 8000,
+              style: {
+                maxWidth: '550px',
+              }
             }
-          }
-        )
+          )
+        } else {
+          // Completed immediately
+          toast.success(
+            `🎉 Enhanced demo data generated successfully!\n` +
+            `📊 ${result.details?.total_data_points || 0}+ comprehensive data points\n` +
+            `👥 ${result.details?.users_created || 0} users, ${result.details?.teams_created || 0} teams, ${result.details?.projects_created || 0} projects\n` +
+            `✅ ${result.details?.tasks_created || 0} tasks with dates, dependencies & team members\n\n` +
+            `📧 Login: demo@company.com\n` +
+            `🔑 Password: demo123456`,
+            { 
+              id: 'demo-generation',
+              duration: 8000,
+              style: {
+                maxWidth: '550px',
+              }
+            }
+          )
+        }
       } else {
         console.error('❌ Demo data generation failed:', result);
         toast.error(`Failed to generate demo data: ${result.message}`, {
@@ -122,10 +143,40 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
     } catch (error) {
       console.error('❌ Demo data generation error:', error)
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      toast.error(`Failed to generate demo data: ${errorMessage}`, {
-        id: 'demo-generation',
-        duration: 4000
-      })
+      
+      // Provide helpful error messages
+      if (errorMessage.includes('502')) {
+        toast.error(
+          `⚠️ Server timeout - but generation may still be running!\n` +
+          `💡 Wait 30 seconds and try logging in.\n` +
+          `📧 demo@company.com / 🔑 demo123456`,
+          {
+            id: 'demo-generation',
+            duration: 8000,
+            style: {
+              maxWidth: '500px',
+            }
+          }
+        )
+      } else if (errorMessage.includes('timeout')) {
+        toast.error(
+          `⏳ Generation is taking longer than expected.\n` +
+          `💡 Please wait and try logging in shortly.\n` +
+          `📧 demo@company.com / 🔑 demo123456`,
+          {
+            id: 'demo-generation',
+            duration: 6000,
+            style: {
+              maxWidth: '500px',
+            }
+          }
+        )
+      } else {
+        toast.error(`Failed to generate demo data: ${errorMessage}`, {
+          id: 'demo-generation',
+          duration: 4000
+        })
+      }
     } finally {
       setIsGeneratingDemo(false)
     }
