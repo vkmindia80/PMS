@@ -1923,6 +1923,10 @@ const IntegrationsPage: React.FC = () => {
           config = googleConfig
           endpoint = 'google-workspace/setup'
           break
+        case 's3_storage':
+          config = s3Config
+          endpoint = 's3_storage/setup'
+          break
         default:
           throw new Error('Unknown integration type')
       }
