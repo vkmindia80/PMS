@@ -694,7 +694,7 @@ const ProjectDetailsPage: React.FC = () => {
 // Overview Tab Component
 const OverviewTab: React.FC<any> = ({
   project, isEditingDescription, setIsEditingDescription, editedDescription, 
-  setEditedDescription, handleSaveDescription, formatDate, getUserName, users
+  setEditedDescription, handleSaveDescription, formatDate, getUserName, users, fetchProjectData
 }) => {
   const budgetUtilization = project.budget.total_budget 
     ? (project.budget.spent_amount / project.budget.total_budget) * 100 
