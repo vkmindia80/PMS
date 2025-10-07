@@ -51,7 +51,11 @@ const EnhancedAnalyticsTab: React.FC<EnhancedAnalyticsTabProps> = ({
     const teamMembers = users.filter(user => teamMemberIds.includes(user.id))
     
     const teamPerformance = teamMembers.map(user => {
-      const userTasks = tasks.filter(task => task.assigned_to && task.assigned_to.includes(user.id))
+      const userTasks = tasks.filter(task => {
+        // Check both assignee_ids (new format) and assigned_to (legacy format) 
+        const assignees = task.assignee_ids || task.assigned_to || []
+        return assignees.includes(user.id)
+      })
       const completedTasks = userTasks.filter(task => task.status === 'completed')
       const overdueTasks = userTasks.filter(task => 
         task.due_date && new Date(task.due_date) < now && task.status !== 'completed'
