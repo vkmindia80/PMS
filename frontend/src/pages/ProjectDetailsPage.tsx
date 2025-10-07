@@ -660,7 +660,7 @@ const ProjectDetailsPage: React.FC = () => {
         )}
 
         {activeTab === 'timeline' && (
-          <ProjectTimelineTab 
+          <AdvancedTimelineTab 
             project={project}
             users={users}
             tasks={tasks}
