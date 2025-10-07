@@ -158,9 +158,9 @@ async def list_project_files(
                 "id": file_doc["id"],
                 "name": file_doc["name"],
                 "description": file_doc.get("description", ""),
-                "file_type": file_doc["file_type"],
-                "mime_type": file_doc["mime_type"],
-                "size": file_doc["size"],
+                "file_type": file_doc.get("file_type", "other"),
+                "mime_type": file_doc.get("mime_type", "application/octet-stream"),
+                "size": file_doc.get("size") or file_doc.get("file_size", 0),  # Handle both schemas
                 "uploaded_by": file_doc["uploaded_by"],
                 "download_count": file_doc.get("download_count", 0),
                 "created_at": file_doc["created_at"].isoformat() if isinstance(file_doc["created_at"], datetime) else file_doc["created_at"],
