@@ -30,19 +30,29 @@ class SystemService {
     details?: any
   }> {
     try {
-      const response = await fetch(`${getApiUrl()}/api/system/generate-demo-data`, {
+      console.log('🔄 Generating demo data...');
+      const apiUrl = `${getApiUrl()}/api/system/generate-demo-data`;
+      console.log('📡 API URL:', apiUrl);
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: this.getAuthHeaders()
       })
 
+      console.log('📨 Response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        const errorText = await response.text();
+        console.error('❌ Error response:', errorText);
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
-      return await response.json()
+      const result = await response.json();
+      console.log('✅ Demo data generation result:', result);
+      return result;
     } catch (error) {
-      console.error('Error generating demo data:', error)
-      throw error
+      console.error('❌ Error generating demo data:', error);
+      throw error;
     }
   }
 
