@@ -155,23 +155,37 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
     }
   }
 
-  // Get team members with user details
-  const enrichedTeamMembers = (project.team_members || []).map((memberId: string) => {
-    const user = users.find(u => u.id === memberId)
-    const memberInfo = teamMembers.find(tm => tm.user_id === memberId) || {
-      user_id: memberId,
-      role: 'member' as const,
-      joined_at: new Date().toISOString(),
-      permissions: ['read', 'write'],
-      workload: Math.random() * 100,
-      utilization: Math.random() * 100,
-      recent_activity: `${Math.floor(Math.random() * 24)} hours ago`
-    }
-    return {
-      ...memberInfo,
-      user: user || { id: memberId, name: 'Unknown User', email: 'unknown@example.com' }
-    }
-  })
+  // Use detailed team members if available, fallback to basic data
+  const enrichedTeamMembers = detailedTeamMembers.length > 0 
+    ? detailedTeamMembers.map(member => ({
+        user_id: member.user_id,
+        user: {
+          id: member.user_id,
+          name: member.name,
+          email: member.email,
+          metadata: member.metadata
+        },
+        role: member.role,
+        joined_at: member.joined_at,
+        permissions: member.permissions,
+        workload: member.performance?.workload || 0,
+        utilization: member.performance?.utilization || 0,
+        recent_activity: member.recent_activity,
+        performance: member.performance
+      }))
+    : (project.team_members || []).map((memberId: string) => {
+        const user = users.find(u => u.id === memberId)
+        return {
+          user_id: memberId,
+          user: user || { id: memberId, name: 'Unknown User', email: 'unknown@example.com' },
+          role: memberId === project.owner_id ? 'owner' : 'member',
+          joined_at: new Date().toISOString(),
+          permissions: ['read', 'write'],
+          workload: Math.random() * 100,
+          utilization: Math.random() * 100,
+          recent_activity: `${Math.floor(Math.random() * 24)} hours ago`
+        }
+      })
 
   const filteredMembers = enrichedTeamMembers.filter(member => {
     if (searchTerm && !member.user.name.toLowerCase().includes(searchTerm.toLowerCase())) {
