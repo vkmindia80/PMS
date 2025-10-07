@@ -320,6 +320,10 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
     }
   }, [filteredTasks, viewConfig?.mode, viewConfig?.zoom_level, isMobile, containerWidth]);
 
+  // Track double-click timing
+  const lastClickTime = useRef(0);
+  const lastClickedTask = useRef<string | null>(null);
+
   // Enhanced drag and drop handlers
   const handleMouseDown = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
     if (!timelineMetrics || !canvasRef.current) return;
@@ -337,6 +341,23 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
       const taskPosition = getTaskPosition(task, taskIndex);
       
       if (taskPosition && x >= taskPosition.x && x <= taskPosition.x + taskPosition.width) {
+        // Check for double-click
+        const currentTime = Date.now();
+        const timeSinceLastClick = currentTime - lastClickTime.current;
+        
+        if (timeSinceLastClick < 300 && lastClickedTask.current === task.id) {
+          // Double-click detected
+          console.log('Double-click detected on task:', task.name);
+          onTaskDoubleClick?.(task);
+          lastClickTime.current = 0; // Reset to prevent triple-click
+          lastClickedTask.current = null;
+          return;
+        }
+        
+        // Update click tracking
+        lastClickTime.current = currentTime;
+        lastClickedTask.current = task.id;
+
         // Determine drag type based on cursor position
         const leftHandle = taskPosition.x + 5;
         const rightHandle = taskPosition.x + taskPosition.width - 5;
@@ -354,26 +375,31 @@ export const EnhancedDragDropGantt: React.FC<EnhancedDragDropGanttProps> = ({
           canvas.style.cursor = 'grabbing';
         }
         
-        setDragState({
-          isDragging: true,
-          taskId: task.id,
-          dragType,
-          startX: x,
-          startY: y,
-          currentX: x,
-          currentY: y,
-          originalStartDate: task.start_date,
-          originalFinishDate: task.finish_date,
-          originalDuration: task.duration
-        });
-        
-        setSelectedTask(task.id);
-        
-        // Show drag feedback
-        toast.loading(`Dragging: ${task.name}`, { id: 'drag-feedback' });
+        // Add a small delay for single-click actions to allow double-click detection
+        setTimeout(() => {
+          if (lastClickTime.current !== 0 && lastClickedTask.current === task.id) {
+            setDragState({
+              isDragging: true,
+              taskId: task.id,
+              dragType,
+              startX: x,
+              startY: y,
+              currentX: x,
+              currentY: y,
+              originalStartDate: task.start_date,
+              originalFinishDate: task.finish_date,
+              originalDuration: task.duration
+            });
+            
+            setSelectedTask(task.id);
+            
+            // Show drag feedback
+            toast.loading(`Dragging: ${task.name}`, { id: 'drag-feedback' });
+          }
+        }, 150);
       }
     }
-  }, [timelineMetrics, filteredTasks]);
+  }, [timelineMetrics, filteredTasks, onTaskDoubleClick]);
 
   const handleMouseMove = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
     if (!timelineMetrics || !canvasRef.current) return;
