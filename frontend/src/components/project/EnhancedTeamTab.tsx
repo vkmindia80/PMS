@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { 
   Plus, Search, Users, Crown, Shield, Star, Mail, Phone, 
   Calendar, Clock, BarChart3, Target, Award, Settings,
-  MoreVertical, Edit2, UserX, MessageSquare
+  MoreVertical, Edit2, UserX, MessageSquare, X
 } from 'lucide-react'
 
 interface User {
