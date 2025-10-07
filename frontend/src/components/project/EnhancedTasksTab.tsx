@@ -718,7 +718,7 @@ const ProjectTasksTab: React.FC<ProjectTasksTabProps> = ({
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onSubmit={handleCreateTask}
-        defaultProjectId={project.id}
+        initialProjectId={project.id}
       />
 
       {showTimeModal && selectedTask && (
