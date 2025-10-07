@@ -224,7 +224,7 @@ class ProjectDetailsTester:
         success, response = self.run_test(
             "Get Tasks for Project",
             "GET",
-            f"/api/tasks?project_id={self.test_project_id}",
+            f"/api/tasks/?project_id={self.test_project_id}",
             200
         )
         
@@ -241,6 +241,62 @@ class ProjectDetailsTester:
         else:
             print(f"    ❌ Failed to get tasks for project")
             return []
+
+    def test_specific_project_task_count(self):
+        """Test the specific project mentioned in the bug report: proj-4bee725235ee"""
+        print("\n" + "="*60)
+        print("TESTING SPECIFIC PROJECT TASK COUNT (proj-4bee725235ee)")
+        print("="*60)
+        
+        specific_project_id = "proj-4bee725235ee"
+        
+        # First get project details
+        success, project_response = self.run_test(
+            "Get Specific Project Details",
+            "GET",
+            f"/api/projects/{specific_project_id}",
+            200
+        )
+        
+        if success and 'id' in project_response:
+            project_task_count = project_response.get('task_count', 0)
+            print(f"    📋 Project task_count field: {project_task_count}")
+            
+            # Now get actual tasks for this project
+            success, tasks_response = self.run_test(
+                "Get Tasks for Specific Project",
+                "GET",
+                f"/api/tasks/?project_id={specific_project_id}",
+                200
+            )
+            
+            if success and isinstance(tasks_response, list):
+                actual_task_count = len(tasks_response)
+                print(f"    📋 Actual tasks returned: {actual_task_count}")
+                
+                # Check if there's a mismatch
+                if project_task_count != actual_task_count:
+                    print(f"    ⚠️ TASK COUNT MISMATCH DETECTED!")
+                    print(f"    ⚠️ Project.task_count: {project_task_count}")
+                    print(f"    ⚠️ Actual tasks: {actual_task_count}")
+                    print(f"    ⚠️ This explains the navigation tab showing 0 instead of {actual_task_count}")
+                    
+                    # Log some task details
+                    if actual_task_count > 0:
+                        print(f"    📋 Sample tasks:")
+                        for i, task in enumerate(tasks_response[:3]):  # Show first 3 tasks
+                            print(f"      {i+1}. {task.get('title', 'Unknown')} (ID: {task.get('id', 'Unknown')})")
+                    
+                    return False
+                else:
+                    print(f"    ✅ Task counts match: {actual_task_count}")
+                    return True
+            else:
+                print(f"    ❌ Failed to get tasks for specific project")
+                return False
+        else:
+            print(f"    ❌ Failed to get specific project details")
+            return False
 
     def test_auth_token_validity(self):
         """Test if auth token is working properly"""
