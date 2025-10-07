@@ -430,7 +430,7 @@ export class DynamicTimelineService {
     suggestions: string[];
   }> {
     try {
-      const response = await fetch(`/api/dynamic-timeline/projects/${projectId}/auto-schedule`, {
+      const response = await fetch(`${API_ENDPOINTS.base}/dynamic-timeline/projects/${projectId}/auto-schedule`, {
         method: 'POST',
         headers: this.getAuthHeaders(token)
       });
