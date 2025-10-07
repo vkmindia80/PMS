@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { 
   ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Calendar, 
-  Settings, Download, Maximize2, GitBranch, Link2, Edit2, Trash2
+  Settings, Download, Maximize2, GitBranch, Link2, Edit2, Trash2,
+  Info, Clock, User, Flag, TrendingUp, AlertCircle, Save, X, Plus,
+  Move, Resize, Eye, EyeOff, Grid, List as ListIcon
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -15,6 +17,11 @@ interface Task {
   priority: string;
   assigned_to?: string[];
   dependencies?: string[];
+  description?: string;
+  time_tracking?: {
+    estimated_hours?: number;
+    actual_hours?: number;
+  };
 }
 
 interface User {
@@ -35,6 +42,20 @@ interface GanttChartProps {
 }
 
 type ViewMode = 'day' | 'week' | 'month' | 'quarter';
+
+interface DragState {
+  taskId: string;
+  startX: number;
+  startDate: Date;
+  mode: 'move' | 'resize-left' | 'resize-right' | null;
+}
+
+interface TooltipState {
+  visible: boolean;
+  x: number;
+  y: number;
+  task: Task | null;
+}
 
 const GanttChart: React.FC<GanttChartProps> = ({
   tasks,
