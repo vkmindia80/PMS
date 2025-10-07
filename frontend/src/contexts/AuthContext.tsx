@@ -210,6 +210,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (data: LoginData) => {
     try {
       console.log('🔑 Attempting login for:', data.email)
+      console.log('📡 Login URL:', API_ENDPOINTS.auth.login)
       
       // Add timeout to login request
       const controller = new AbortController()
@@ -226,18 +227,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       clearTimeout(timeoutId)
 
+      console.log('📨 Login response status:', response.status);
+      
       if (!response.ok) {
         let errorDetail = `HTTP ${response.status}: ${response.statusText}`
         try {
           const errorData = await response.json()
+          console.error('❌ Login error data:', errorData);
           errorDetail = errorData.detail || errorDetail
-        } catch {
+        } catch (parseError) {
+          console.error('❌ Failed to parse error response:', parseError);
           // If can't parse error JSON, use default message
         }
         throw new Error(errorDetail)
       }
 
       const result = await response.json()
+      console.log('✅ Login response received:', { hasTokens: !!result.tokens, hasUser: !!result.user });
       
       // Validate response structure
       if (!result.tokens || !result.user) {
