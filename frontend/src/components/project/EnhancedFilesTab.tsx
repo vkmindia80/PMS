@@ -3,7 +3,7 @@ import {
   Upload, Search, Filter, Grid, List, Download, Eye, 
   Trash2, Share, Star, Clock, User, File, FileText, 
   Image, Video, Archive, Code, Plus, MoreVertical,
-  FolderPlus, Folder, ChevronRight, ArrowUpDown, X
+  FolderPlus, Folder, ChevronRight, ArrowUpDown, X, Loader
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../../contexts/AuthContext'
@@ -12,23 +12,26 @@ import { API_ENDPOINTS } from '../../utils/config'
 interface ProjectFile {
   id: string
   name: string
-  type: 'document' | 'image' | 'video' | 'audio' | 'archive' | 'code' | 'other'
-  size: number
-  url?: string
-  uploaded_by: string
-  uploaded_at: string
-  modified_at: string
-  version: number
   description?: string
-  tags?: string[]
-  folder?: string
-  is_public: boolean
+  file_type: 'document' | 'image' | 'video' | 'audio' | 'archive' | 'code' | 'other'
+  mime_type: string
+  size: number
+  uploaded_by: string
   download_count: number
+  created_at: string
+  updated_at: string
+}
+
+interface FileStats {
+  project_id: string
+  total_files: number
+  total_size: number
+  total_size_mb: number
+  file_type_breakdown: Record<string, { count: number; size: number }>
 }
 
 interface EnhancedFilesTabProps {
   project: any
-  files?: ProjectFile[]
   users: any[]
   onFileUpload?: (files: FileList) => void
   onFileDelete?: (fileId: string) => void
@@ -37,148 +40,187 @@ interface EnhancedFilesTabProps {
 
 const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
   project,
-  files = [],
   users,
   onFileUpload,
   onFileDelete,
   onFileShare
 }) => {
+  const { tokens } = useAuth()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [searchTerm, setSearchTerm] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
   const [sortBy, setSortBy] = useState<'name' | 'date' | 'size' | 'type'>('date')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
-  const [selectedFolder, setSelectedFolder] = useState<string>('')
   const [showUploadModal, setShowUploadModal] = useState(false)
-  const [showNewFolderModal, setShowNewFolderModal] = useState(false)
-  const [newFolderName, setNewFolderName] = useState('')
   const [dragOver, setDragOver] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState<string[]>([])
-  const [uploadedFiles, setUploadedFiles] = useState<ProjectFile[]>([])
+  const [uploading, setUploading] = useState(false)
 
-  // Mock file data for demonstration
-  const mockFiles: ProjectFile[] = [
-    {
-      id: 'file-1',
-      name: 'Project Requirements.pdf',
-      type: 'document',
-      size: 2456789,
-      uploaded_by: 'demo-user-001',
-      uploaded_at: '2024-12-01T10:30:00Z',
-      modified_at: '2024-12-01T10:30:00Z',
-      version: 1,
-      description: 'Initial project requirements document',
-      tags: ['requirements', 'specifications'],
-      folder: 'Documents',
-      is_public: false,
-      download_count: 12
-    },
-    {
-      id: 'file-2',
-      name: 'Architecture Diagram.png',
-      type: 'image',
-      size: 1234567,
-      uploaded_by: 'demo-user-001',
-      uploaded_at: '2024-12-02T14:15:00Z',
-      modified_at: '2024-12-02T14:15:00Z',
-      version: 2,
-      description: 'System architecture overview',
-      tags: ['architecture', 'design'],
-      folder: 'Design',
-      is_public: true,
-      download_count: 8
-    },
-    {
-      id: 'file-3',
-      name: 'Demo Presentation.pptx',
-      type: 'document',
-      size: 5678901,
-      uploaded_by: 'demo-user-001',
-      uploaded_at: '2024-12-03T09:45:00Z',
-      modified_at: '2024-12-03T16:20:00Z',
-      version: 3,
-      description: 'Client presentation materials',
-      tags: ['presentation', 'demo'],
-      folder: 'Presentations',
-      is_public: false,
-      download_count: 25
-    },
-    {
-      id: 'file-4',
-      name: 'source-code.zip',
-      type: 'archive',
-      size: 12345678,
-      uploaded_by: 'demo-user-001',
-      uploaded_at: '2024-12-04T11:20:00Z',
-      modified_at: '2024-12-04T11:20:00Z',
-      version: 1,
-      description: 'Latest source code backup',
-      tags: ['code', 'backup'],
-      folder: 'Development',
-      is_public: false,
-      download_count: 5
-    }
-  ]
+  // Real data state
+  const [files, setFiles] = useState<ProjectFile[]>([])
+  const [stats, setStats] = useState<FileStats | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
 
-  const allFiles = [...files, ...mockFiles, ...uploadedFiles]
-
-  // Handle file upload
-  const handleFileUpload = (fileList: FileList) => {
-    const newFiles: ProjectFile[] = Array.from(fileList).map((file, index) => {
-      // Determine file type based on extension
-      const extension = file.name.split('.').pop()?.toLowerCase() || ''
-      let fileType: ProjectFile['type'] = 'other'
+  // Fetch files from API
+  const fetchFiles = async () => {
+    try {
+      setLoading(true)
+      const params = new URLSearchParams({
+        skip: ((page - 1) * 20).toString(),
+        limit: '20'
+      })
       
-      if (['pdf', 'doc', 'docx', 'txt', 'ppt', 'pptx'].includes(extension)) {
-        fileType = 'document'
-      } else if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'].includes(extension)) {
-        fileType = 'image'
-      } else if (['mp4', 'avi', 'mov', 'mkv'].includes(extension)) {
-        fileType = 'video'
-      } else if (['mp3', 'wav', 'ogg'].includes(extension)) {
-        fileType = 'audio'
-      } else if (['zip', 'rar', 'tar', 'gz'].includes(extension)) {
-        fileType = 'archive'
-      } else if (['js', 'ts', 'jsx', 'tsx', 'py', 'java', 'cpp', 'c', 'html', 'css'].includes(extension)) {
-        fileType = 'code'
+      if (typeFilter !== 'all') {
+        params.append('file_type', typeFilter)
+      }
+      
+      if (searchTerm) {
+        params.append('search', searchTerm)
       }
 
-      return {
-        id: `uploaded-${Date.now()}-${index}`,
-        name: file.name,
-        type: fileType,
-        size: file.size,
-        uploaded_by: 'current-user',
-        uploaded_at: new Date().toISOString(),
-        modified_at: new Date().toISOString(),
-        version: 1,
-        description: `Uploaded file: ${file.name}`,
-        tags: [],
-        folder: selectedFolder || 'Root',
-        is_public: false,
-        download_count: 0
-      }
-    })
+      const response = await fetch(`${API_ENDPOINTS.files.list(project.id)}?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      })
 
-    setUploadedFiles([...uploadedFiles, ...newFiles])
-    setShowUploadModal(false)
-    toast.success(`${newFiles.length} file(s) uploaded successfully!`)
-    
-    if (onFileUpload) {
-      onFileUpload(fileList)
+      if (!response.ok) {
+        throw new Error('Failed to fetch files')
+      }
+
+      const data = await response.json()
+      setFiles(data.files || [])
+      setTotalPages(data.total_pages || 1)
+      setError(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load files')
+      console.error('Failed to fetch files:', err)
+    } finally {
+      setLoading(false)
     }
   }
 
-  // Handle new folder creation
-  const handleCreateFolder = () => {
-    if (!newFolderName.trim()) {
-      toast.error('Please enter a folder name')
+  // Fetch file statistics
+  const fetchStats = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.files.stats(project.id), {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setStats(data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch file stats:', err)
+    }
+  }
+
+  useEffect(() => {
+    if (project?.id && tokens?.access_token) {
+      fetchFiles()
+      fetchStats()
+    }
+  }, [project?.id, tokens?.access_token, page, typeFilter, searchTerm])
+
+  // Handle file upload
+  const handleFileUpload = async (fileList: FileList) => {
+    if (!fileList.length) return
+
+    setUploading(true)
+    const uploadPromises = Array.from(fileList).map(async (file) => {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('description', `Uploaded file: ${file.name}`)
+
+      try {
+        const response = await fetch(API_ENDPOINTS.files.upload(project.id), {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${tokens?.access_token}`,
+          },
+          body: formData,
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.detail || 'Upload failed')
+        }
+
+        return await response.json()
+      } catch (error) {
+        console.error(`Failed to upload ${file.name}:`, error)
+        throw error
+      }
+    })
+
+    try {
+      await Promise.all(uploadPromises)
+      toast.success(`${fileList.length} file(s) uploaded successfully!`)
+      setShowUploadModal(false)
+      fetchFiles()
+      fetchStats()
+      
+      if (onFileUpload) {
+        onFileUpload(fileList)
+      }
+    } catch (error) {
+      toast.error('Some files failed to upload')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  // Handle file deletion
+  const handleDeleteFile = async (fileId: string, fileName: string) => {
+    if (!window.confirm(`Are you sure you want to delete "${fileName}"?`)) {
       return
     }
 
-    toast.success(`Folder "${newFolderName}" created successfully!`)
-    setNewFolderName('')
-    setShowNewFolderModal(false)
+    try {
+      const response = await fetch(API_ENDPOINTS.files.delete(project.id, fileId), {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+        },
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Delete failed')
+      }
+
+      toast.success('File deleted successfully')
+      fetchFiles()
+      fetchStats()
+      
+      if (onFileDelete) {
+        onFileDelete(fileId)
+      }
+    } catch (error) {
+      console.error('Failed to delete file:', error)
+      toast.error('Failed to delete file')
+    }
+  }
+
+  // Handle file download
+  const handleDownloadFile = (fileId: string, fileName: string) => {
+    const downloadUrl = API_ENDPOINTS.files.download(project.id, fileId)
+    
+    // Create a temporary link and click it
+    const link = document.createElement('a')
+    link.href = `${downloadUrl}?Authorization=${encodeURIComponent(`Bearer ${tokens?.access_token}`)}`
+    link.download = fileName
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   const getFileIcon = (type: string) => {
@@ -227,20 +269,16 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
 
   const getUserName = (userId: string) => {
     const user = users.find(u => u.id === userId)
-    return user?.name || 'Unknown User'
+    return user?.name || user?.first_name + ' ' + user?.last_name || 'Unknown User'
   }
 
-  const folders = [...new Set(allFiles.map(file => file.folder).filter(Boolean))]
-
-  const filteredFiles = allFiles
+  // Sort and filter files
+  const filteredFiles = files
     .filter(file => {
       if (searchTerm && !file.name.toLowerCase().includes(searchTerm.toLowerCase())) {
         return false
       }
-      if (typeFilter !== 'all' && file.type !== typeFilter) {
-        return false
-      }
-      if (selectedFolder && file.folder !== selectedFolder) {
+      if (typeFilter !== 'all' && file.file_type !== typeFilter) {
         return false
       }
       return true
@@ -252,13 +290,13 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
           comparison = a.name.localeCompare(b.name)
           break
         case 'date':
-          comparison = new Date(a.uploaded_at).getTime() - new Date(b.uploaded_at).getTime()
+          comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
           break
         case 'size':
           comparison = a.size - b.size
           break
         case 'type':
-          comparison = a.type.localeCompare(b.type)
+          comparison = a.file_type.localeCompare(b.file_type)
           break
       }
       return sortOrder === 'desc' ? -comparison : comparison
@@ -284,23 +322,28 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
   }
 
   const FileCard: React.FC<{ file: ProjectFile }> = ({ file }) => {
-    const FileIcon = getFileIcon(file.type)
+    const FileIcon = getFileIcon(file.file_type)
     return (
       <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow group">
         <div className="flex items-start justify-between mb-3">
-          <div className={`p-3 rounded-lg ${getFileTypeColor(file.type)}`}>
+          <div className={`p-3 rounded-lg ${getFileTypeColor(file.file_type)}`}>
             <FileIcon className="w-6 h-6" />
           </div>
           
           <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button className="p-1 hover:bg-gray-100 rounded">
-              <Eye className="w-4 h-4 text-gray-500" />
-            </button>
-            <button className="p-1 hover:bg-gray-100 rounded">
+            <button 
+              onClick={() => handleDownloadFile(file.id, file.name)}
+              className="p-1 hover:bg-gray-100 rounded"
+              title="Download"
+            >
               <Download className="w-4 h-4 text-gray-500" />
             </button>
-            <button className="p-1 hover:bg-gray-100 rounded">
-              <MoreVertical className="w-4 h-4 text-gray-500" />
+            <button 
+              onClick={() => handleDeleteFile(file.id, file.name)}
+              className="p-1 hover:bg-gray-100 rounded"
+              title="Delete"
+            >
+              <Trash2 className="w-4 h-4 text-red-500" />
             </button>
           </div>
         </div>
@@ -322,20 +365,17 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
         </div>
         
         <div className="flex items-center justify-between text-xs text-gray-500">
-          <span>{formatDate(file.uploaded_at)}</span>
+          <span>{formatDate(file.created_at)}</span>
           <div className="flex items-center space-x-1">
-            {file.is_public && <Share className="w-3 h-3" />}
-            <span>v{file.version}</span>
+            <span>{file.download_count} downloads</span>
           </div>
         </div>
         
-        {file.tags && file.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
-            {file.tags.slice(0, 2).map(tag => (
-              <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                {tag}
-              </span>
-            ))}
+        {file.description && (
+          <div className="mt-2">
+            <p className="text-xs text-gray-600 truncate" title={file.description}>
+              {file.description}
+            </p>
           </div>
         )}
       </div>
@@ -343,7 +383,7 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
   }
 
   const FileListItem: React.FC<{ file: ProjectFile }> = ({ file }) => {
-    const FileIcon = getFileIcon(file.type)
+    const FileIcon = getFileIcon(file.file_type)
     return (
       <div className="bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
         <div className="flex items-center space-x-4">
@@ -360,7 +400,7 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
             className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
           />
           
-          <div className={`p-2 rounded-lg ${getFileTypeColor(file.type)}`}>
+          <div className={`p-2 rounded-lg ${getFileTypeColor(file.file_type)}`}>
             <FileIcon className="w-5 h-5" />
           </div>
           
@@ -373,26 +413,49 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
           
           <div className="text-sm text-gray-500 text-right">
             <div>{formatFileSize(file.size)}</div>
-            <div className="text-xs">{formatDate(file.uploaded_at)}</div>
+            <div className="text-xs">{formatDate(file.created_at)}</div>
           </div>
           
           <div className="flex items-center space-x-2 text-sm text-gray-500">
-            <span>v{file.version}</span>
-            <span>•</span>
             <span>{file.download_count} downloads</span>
           </div>
           
           <div className="flex items-center space-x-1">
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <Eye className="w-4 h-4 text-gray-500" />
-            </button>
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button 
+              onClick={() => handleDownloadFile(file.id, file.name)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Download"
+            >
               <Download className="w-4 h-4 text-gray-500" />
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <MoreVertical className="w-4 h-4 text-gray-500" />
+            <button 
+              onClick={() => handleDeleteFile(file.id, file.name)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Delete"
+            >
+              <Trash2 className="w-4 h-4 text-red-500" />
             </button>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-12">
+          <div className="text-red-600 mb-4">
+            <X className="w-16 h-16 mx-auto" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Error Loading Files</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={fetchFiles}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     )
@@ -404,26 +467,22 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">
-            Project Files ({filteredFiles.length})
+            Project Files ({stats?.total_files || 0})
           </h2>
-          <p className="text-gray-600 mt-1">Manage project documents and assets</p>
+          <p className="text-gray-600 mt-1">
+            Manage project documents and assets
+            {stats && ` • ${formatFileSize(stats.total_size)} total`}
+          </p>
         </div>
         
         <div className="flex items-center space-x-3">
-          <button 
-            onClick={() => setShowNewFolderModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-          >
-            <FolderPlus className="w-4 h-4" />
-            <span>New Folder</span>
-          </button>
-          
           <button
             onClick={() => setShowUploadModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            disabled={uploading}
+            className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
           >
-            <Upload className="w-4 h-4" />
-            <span>Upload Files</span>
+            {uploading ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            <span>{uploading ? 'Uploading...' : 'Upload Files'}</span>
           </button>
         </div>
       </div>
@@ -501,132 +560,95 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
         </div>
       </div>
 
-      {/* Folders */}
-      {folders.length > 0 && (
-        <div className="flex items-center space-x-2 overflow-x-auto">
-          <button
-            onClick={() => setSelectedFolder('')}
-            className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
-              selectedFolder === '' ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            <Folder className="w-4 h-4" />
-            <span>All Files</span>
-          </button>
-          
-          {folders.map(folder => (
-            <button
-              key={folder}
-              onClick={() => setSelectedFolder(folder)}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors whitespace-nowrap ${
-                selectedFolder === folder ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              <Folder className="w-4 h-4" />
-              <span>{folder}</span>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Bulk Actions */}
-      {selectedFiles.length > 0 && (
-        <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-primary-900">
-              {selectedFiles.length} file(s) selected
-            </span>
-            <div className="flex items-center space-x-2">
-              <button className="px-3 py-1 text-sm text-primary-700 hover:text-primary-900 transition-colors">
-                Download
-              </button>
-              <button className="px-3 py-1 text-sm text-primary-700 hover:text-primary-900 transition-colors">
-                Move
-              </button>
-              <button className="px-3 py-1 text-sm text-red-600 hover:text-red-800 transition-colors">
-                Delete
-              </button>
-            </div>
-          </div>
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-12">
+          <Loader className="w-8 h-8 animate-spin mx-auto text-primary-600 mb-4" />
+          <p className="text-gray-600">Loading files...</p>
         </div>
       )}
 
       {/* Files Content */}
-      <div
-        className={`${dragOver ? 'border-primary-500 bg-primary-50' : 'border-transparent'} border-2 border-dashed rounded-lg transition-colors`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        {filteredFiles.length > 0 ? (
-          viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredFiles.map(file => (
-                <FileCard key={file.id} file={file} />
-              ))}
-            </div>
+      {!loading && (
+        <div
+          className={`${dragOver ? 'border-primary-500 bg-primary-50' : 'border-transparent'} border-2 border-dashed rounded-lg transition-colors`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          {filteredFiles.length > 0 ? (
+            viewMode === 'grid' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {filteredFiles.map(file => (
+                  <FileCard key={file.id} file={file} />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {filteredFiles.map(file => (
+                  <FileListItem key={file.id} file={file} />
+                ))}
+              </div>
+            )
           ) : (
-            <div className="space-y-2">
-              {filteredFiles.map(file => (
-                <FileListItem key={file.id} file={file} />
-              ))}
+            <div className="text-center py-16">
+              <Upload className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {searchTerm || typeFilter !== 'all'
+                  ? 'No files match your criteria'
+                  : 'No files uploaded yet'}
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {dragOver
+                  ? 'Drop files here to upload'
+                  : 'Upload files by clicking the button above or dragging them here'}
+              </p>
+              {!searchTerm && typeFilter === 'all' && (
+                <button
+                  onClick={() => setShowUploadModal(true)}
+                  disabled={uploading}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 transition-colors"
+                >
+                  Upload Your First File
+                </button>
+              )}
             </div>
-          )
-        ) : (
-          <div className="text-center py-16">
-            <Upload className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {searchTerm || typeFilter !== 'all' || selectedFolder
-                ? 'No files match your criteria'
-                : 'No files uploaded yet'}
-            </h3>
-            <p className="text-gray-600 mb-6">
-              {dragOver
-                ? 'Drop files here to upload'
-                : 'Upload files by clicking the button above or dragging them here'}
-            </p>
-            {!searchTerm && typeFilter === 'all' && !selectedFolder && (
-              <button
-                onClick={() => setShowUploadModal(true)}
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                Upload Your First File
-              </button>
-            )}
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* File Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-gray-900 mb-1">
-            {allFiles.length}
+      {stats && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+            <div className="text-2xl font-bold text-gray-900 mb-1">
+              {stats.total_files}
+            </div>
+            <div className="text-sm text-gray-600">Total Files</div>
           </div>
-          <div className="text-sm text-gray-600">Total Files</div>
-        </div>
-        
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-blue-600 mb-1">
-            {formatFileSize(allFiles.reduce((sum, file) => sum + file.size, 0))}
+          
+          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+            <div className="text-2xl font-bold text-blue-600 mb-1">
+              {stats.total_size_mb}MB
+            </div>
+            <div className="text-sm text-gray-600">Total Size</div>
           </div>
-          <div className="text-sm text-gray-600">Total Size</div>
-        </div>
-        
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-green-600 mb-1">
-            {allFiles.filter(f => f.is_public).length}
+          
+          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+            <div className="text-2xl font-bold text-green-600 mb-1">
+              {Object.values(stats.file_type_breakdown).reduce((sum, type) => sum + type.count, 0)}
+            </div>
+            <div className="text-sm text-gray-600">File Types</div>
           </div>
-          <div className="text-sm text-gray-600">Public Files</div>
-        </div>
-        
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-purple-600 mb-1">
-            {allFiles.reduce((sum, file) => sum + file.download_count, 0)}
+          
+          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+            <div className="text-2xl font-bold text-purple-600 mb-1">
+              {files.reduce((sum, file) => sum + file.download_count, 0)}
+            </div>
+            <div className="text-sm text-gray-600">Total Downloads</div>
           </div>
-          <div className="text-sm text-gray-600">Downloads</div>
         </div>
-      </div>
+      )}
 
       {/* Upload Modal */}
       {showUploadModal && (
@@ -636,7 +658,8 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
               <h3 className="text-lg font-semibold text-gray-900">Upload Files</h3>
               <button
                 onClick={() => setShowUploadModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                disabled={uploading}
+                className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -657,73 +680,16 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
                     handleFileUpload(e.target.files)
                   }
                 }}
+                disabled={uploading}
               />
               <label
                 htmlFor="file-upload"
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors cursor-pointer inline-block"
+                className={`px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors cursor-pointer inline-block ${
+                  uploading ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
               >
-                Select Files
+                {uploading ? 'Uploading...' : 'Select Files'}
               </label>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* New Folder Modal */}
-      {showNewFolderModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Create New Folder</h3>
-              <button
-                onClick={() => {
-                  setShowNewFolderModal(false)
-                  setNewFolderName('')
-                }}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Folder Name
-                </label>
-                <input
-                  type="text"
-                  value={newFolderName}
-                  onChange={(e) => setNewFolderName(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      handleCreateFolder()
-                    }
-                  }}
-                  placeholder="Enter folder name..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  autoFocus
-                />
-              </div>
-              
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => {
-                    setShowNewFolderModal(false)
-                    setNewFolderName('')
-                  }}
-                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCreateFolder}
-                  disabled={!newFolderName.trim()}
-                  className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Create Folder
-                </button>
-              </div>
             </div>
           </div>
         </div>
