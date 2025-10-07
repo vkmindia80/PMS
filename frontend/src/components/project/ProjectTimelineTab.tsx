@@ -217,70 +217,61 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
     }
   }, [tokens?.access_token, fetchTimelineData, onTaskDelete]);
 
-  // Fetch timeline data from project tasks
-  const fetchTimelineData = useCallback(async () => {
-    if (!project?.id || !tokens?.access_token) {
-      console.warn('Missing project ID or access token for timeline data fetch');
-      setError('Authentication required. Please log in to view timeline data.');
-      return;
+  // Utility functions
+  const getUserName = useCallback((userId: string) => {
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      return user.first_name && user.last_name 
+        ? `${user.first_name} ${user.last_name}`.trim()
+        : user.name || user.email || 'Unknown User';
     }
+    return 'Unassigned';
+  }, [users]);
 
-    try {
-      setLoading(true);
-      setError(null);
+  const getStatusColor = useCallback((status: string) => {
+    const colors = {
+      todo: 'bg-gray-100 text-gray-700 border-gray-200',
+      in_progress: 'bg-blue-100 text-blue-700 border-blue-200',
+      in_review: 'bg-purple-100 text-purple-700 border-purple-200',
+      completed: 'bg-green-100 text-green-700 border-green-200',
+      cancelled: 'bg-red-100 text-red-700 border-red-200'
+    };
+    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-700 border-gray-200';
+  }, []);
 
-      // Try to fetch from timeline-tasks integration first with better error handling
-      try {
-        console.log(`Fetching timeline data for project: ${project.id}`);
-        const apiUrl = `${getBACKEND_URL()}/api/timeline-tasks/project/${project.id}/timeline?include_completed=${filter.show_completed !== false}`;
-        
-        const response = await fetch(apiUrl, {
-          headers: {
-            'Authorization': `Bearer ${tokens.access_token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+  const getPriorityColor = useCallback((priority: string) => {
+    const colors = {
+      low: 'text-green-600',
+      medium: 'text-yellow-600',
+      high: 'text-orange-600',
+      critical: 'text-red-600'
+    };
+    return colors[priority as keyof typeof colors] || 'text-gray-600';
+  }, []);
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Successfully fetched timeline data from integration:', data);
-          setTimelineTasks(data.tasks || []);
-          setDependencies(data.dependencies || []);
-          setConflicts(data.conflicts || []);
-          return;
-        } else {
-          console.warn(`Timeline integration API returned ${response.status}, falling back to regular tasks`);
-        }
-      } catch (integrationError) {
-        console.log('Timeline integration not available, using regular tasks fallback:', integrationError);
-      }
+  const formatDate = useCallback((dateString: string | null) => {
+    if (!dateString) return 'Not set';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  }, []);
 
-      // Fallback to taskTimelineService with better error handling
-      try {
-        console.log('Using taskTimelineService fallback for timeline data');
-        const data = await taskTimelineService.fetchTasksAsTimeline(
-          project.id, 
-          tokens.access_token
-        );
-        
-        console.log('Successfully fetched timeline data from fallback service:', data);
-        setTimelineTasks(data.tasks || []);
-        setDependencies(data.dependencies || []);
-        setConflicts([]);
-      } catch (fallbackError) {
-        console.error('Fallback timeline service also failed:', fallbackError);
-        throw fallbackError;
-      }
-      
-    } catch (err) {
-      console.error('Error fetching timeline data:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load timeline data';
-      setError(errorMessage);
-      toast.error(`Timeline Error: ${errorMessage}`);
-    } finally {
-      setLoading(false);
+  // Filter tasks based on view settings
+  const filteredTasks = useMemo(() => {
+    let filtered = [...timelineTasks];
+    
+    if (!showCompleted) {
+      filtered = filtered.filter(task => task.status !== 'completed');
     }
-  }, [project?.id, tokens?.access_token, filter, dynamicService]);
+    
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.start_date || a.created_at);
+      const dateB = new Date(b.start_date || b.created_at);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }, [timelineTasks, showCompleted]);
 
   // Fetch real-time statistics
   const fetchRealtimeStats = useCallback(async () => {
