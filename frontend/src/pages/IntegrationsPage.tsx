@@ -2112,6 +2112,38 @@ const IntegrationsPage: React.FC = () => {
           )
           result = googleResult.data
           break
+
+        case 's3_storage':
+          // First setup the S3 integration with current config
+          const s3SetupResult = await axios.post(
+            `${getApiBaseUrl()}/api/integrations/s3_storage/setup`,
+            s3Config,
+            { headers: getAuthHeaders() }
+          )
+          
+          if (s3SetupResult.data.success) {
+            // Test S3 upload capabilities
+            const s3TestResult = await axios.post(
+              `${getApiBaseUrl()}/api/integrations/s3_storage/test-upload`,
+              {},
+              { headers: getAuthHeaders() }
+            )
+            result = {
+              ...s3TestResult.data,
+              setup: s3SetupResult.data,
+              success: true,
+              message: 'S3 storage integration configured and tested successfully!'
+            }
+            setConnectionStatus(prev => ({ ...prev, [type]: 'success' }))
+          } else {
+            result = {
+              success: false,
+              error: s3SetupResult.data.error || 'S3 setup failed',
+              message: 'Failed to configure S3 storage integration'
+            }
+            setConnectionStatus(prev => ({ ...prev, [type]: 'failed' }))
+          }
+          break
       }
 
       setTestResults({ ...testResults, [type]: result })
