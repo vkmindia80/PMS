@@ -160,17 +160,31 @@ class S3FileService:
         if not file.filename:
             raise HTTPException(status_code=400, detail="No filename provided")
         
+        # Use organization config if available, otherwise use default config
+        config = organization_config if organization_config else self.config
+        
         # Check file extension
         file_ext = os.path.splitext(file.filename)[1].lower()
-        if file_ext not in self.config.allowed_extensions:
+        allowed_extensions = getattr(config, 'allowed_extensions', self.config.allowed_extensions)
+        
+        # Handle organization config format (list of strings vs set of extensions with dots)
+        if isinstance(allowed_extensions, list):
+            # Convert list of extensions (without dots) to set with dots
+            allowed_extensions = {f".{ext.lstrip('.')}" for ext in allowed_extensions}
+        
+        if file_ext not in allowed_extensions:
             raise HTTPException(
                 status_code=400,
                 detail=f"File type '{file_ext}' is not allowed"
             )
         
         # Check file size
-        if len(content) > self.config.max_file_size:
-            max_size_mb = self.config.max_file_size // (1024 * 1024)
+        max_file_size = getattr(config, 'max_file_size_mb', getattr(config, 'max_file_size', self.config.max_file_size))
+        if isinstance(max_file_size, int) and max_file_size < 1000:  # Assume it's in MB
+            max_file_size = max_file_size * 1024 * 1024  # Convert MB to bytes
+        
+        if len(content) > max_file_size:
+            max_size_mb = max_file_size // (1024 * 1024)
             raise HTTPException(
                 status_code=400,
                 detail=f"File size exceeds maximum limit of {max_size_mb}MB"
