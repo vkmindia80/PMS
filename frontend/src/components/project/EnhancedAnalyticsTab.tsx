@@ -46,22 +46,34 @@ const EnhancedAnalyticsTab: React.FC<EnhancedAnalyticsTabProps> = ({
       return acc
     }, {} as Record<string, number>)
 
-    // Team performance metrics
-    const teamPerformance = users.map(user => {
-      const userTasks = tasks.filter(task => task.assigned_to.includes(user.id))
+    // Team performance metrics - only include team members
+    const teamMemberIds = project.team_members || []
+    const teamMembers = users.filter(user => teamMemberIds.includes(user.id))
+    
+    const teamPerformance = teamMembers.map(user => {
+      const userTasks = tasks.filter(task => task.assigned_to && task.assigned_to.includes(user.id))
       const completedTasks = userTasks.filter(task => task.status === 'completed')
       const overdueTasks = userTasks.filter(task => 
         task.due_date && new Date(task.due_date) < now && task.status !== 'completed'
       )
+      
+      // Calculate efficiency based on completion rate and time performance
+      const completionRate = userTasks.length > 0 ? (completedTasks.length / userTasks.length) * 100 : 0
+      const overdueRate = userTasks.length > 0 ? (overdueTasks.length / userTasks.length) * 100 : 0
+      const efficiency = Math.max(0, Math.min(100, completionRate - overdueRate + 50))
+      
+      // Calculate workload based on active tasks
+      const activeTasks = userTasks.filter(task => ['in_progress', 'review'].includes(task.status))
+      const workload = Math.min(100, activeTasks.length * 15) // Assume 15% per active task
       
       return {
         user,
         totalTasks: userTasks.length,
         completedTasks: completedTasks.length,
         overdueTasks: overdueTasks.length,
-        completionRate: userTasks.length > 0 ? (completedTasks.length / userTasks.length) * 100 : 0,
-        efficiency: Math.random() * 40 + 60, // Mock efficiency score
-        workload: Math.random() * 50 + 25 // Mock workload percentage
+        completionRate,
+        efficiency,
+        workload
       }
     })
 
