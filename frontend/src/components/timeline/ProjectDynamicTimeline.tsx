@@ -567,6 +567,124 @@ const EnhancedGanttChart: React.FC<GanttChartProps> = ({
           </div>
         </div>
       )}
+
+      {/* Task Edit Modal */}
+      {showTaskEditModal && editingTask && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
+            <h3 className="text-lg font-semibold mb-4">Edit Task</h3>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const startDate = new Date(formData.get('start_date') as string);
+              const duration = parseInt(formData.get('duration') as string || '8');
+              const endDate = new Date(startDate.getTime() + (duration * 60 * 60 * 1000));
+              
+              onTaskUpdate(editingTask.id, {
+                name: formData.get('name') as string,
+                description: formData.get('description') as string,
+                start_date: startDate.toISOString(),
+                finish_date: endDate.toISOString(),
+                duration,
+                percent_complete: parseInt(formData.get('progress') as string || '0'),
+                critical: formData.get('critical') === 'on'
+              });
+              setShowTaskEditModal(false);
+              setEditingTask(null);
+            }}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Task Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    defaultValue={editingTask.name}
+                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Description</label>
+                  <textarea
+                    name="description"
+                    rows={3}
+                    defaultValue={editingTask.description || ''}
+                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                    <input
+                      type="date"
+                      name="start_date"
+                      defaultValue={new Date(editingTask.start_date).toISOString().split('T')[0]}
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Duration (hours)</label>
+                    <input
+                      type="number"
+                      name="duration"
+                      min="1"
+                      defaultValue={editingTask.duration}
+                      className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Progress (%)</label>
+                  <input
+                    type="range"
+                    name="progress"
+                    min="0"
+                    max="100"
+                    defaultValue={editingTask.percent_complete}
+                    className="mt-1 w-full"
+                    onChange={(e) => {
+                      const progressText = document.getElementById('progress-text');
+                      if (progressText) progressText.textContent = `${e.target.value}%`;
+                    }}
+                  />
+                  <div className="text-center text-sm text-gray-600 mt-1">
+                    <span id="progress-text">{editingTask.percent_complete}%</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      name="critical" 
+                      defaultChecked={editingTask.critical} 
+                      className="mr-2" 
+                    />
+                    <span className="text-sm font-medium text-gray-700">Critical Task</span>
+                  </label>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowTaskEditModal(false);
+                    setEditingTask(null);
+                  }}
+                  className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Update Task
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
