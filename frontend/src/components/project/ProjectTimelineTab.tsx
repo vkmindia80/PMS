@@ -137,73 +137,85 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
     }
   }, [fetchTimelineData, project?.id]);
 
-  // WebSocket event handlers
-  const handleTaskUpdated = useCallback((message: WebSocketMessage) => {
-    const updatedTask = message.data;
-    setTimelineTasks(prev => prev.map(task => 
-      task.id === updatedTask.id ? { ...task, ...updatedTask } : task
-    ));
-    
-    if (notificationsEnabled && message.user_id !== tokens?.user_id) {
-      toast.success(`Task "${updatedTask.name}" updated by ${message.user_id}`);
-    }
-    onTaskUpdate();
-  }, [notificationsEnabled, tokens?.user_id, onTaskUpdate]);
-
-  const handleTaskCreated = useCallback((message: WebSocketMessage) => {
-    const newTask = message.data;
-    setTimelineTasks(prev => [...prev, newTask]);
-    
-    if (notificationsEnabled && message.user_id !== tokens?.user_id) {
-      toast.success(`New task "${newTask.name}" created`);
-    }
-    onTaskCreate();
-  }, [notificationsEnabled, tokens?.user_id, onTaskCreate]);
-
-  const handleTaskDeleted = useCallback((message: WebSocketMessage) => {
-    const deletedTaskId = message.data.task_id;
-    setTimelineTasks(prev => prev.filter(task => task.id !== deletedTaskId));
-    
-    if (notificationsEnabled && message.user_id !== tokens?.user_id) {
-      toast.error(`Task deleted`);
-    }
-    onTaskDelete();
-  }, [notificationsEnabled, tokens?.user_id, onTaskDelete]);
-
-  const handleDependencyUpdated = useCallback((message: WebSocketMessage) => {
-    const updatedDep = message.data;
-    setDependencies(prev => prev.map(dep => 
-      dep.id === updatedDep.id ? { ...dep, ...updatedDep } : dep
-    ));
-  }, []);
-
-  const handleUserJoined = useCallback((message: WebSocketMessage) => {
-    const user = message.data;
-    setActiveUsers(prev => [...prev.filter(u => u.id !== user.id), user]);
-    
-    if (notificationsEnabled) {
-      toast(`${user.name} joined the timeline`, {
-        icon: '👋',
-        duration: 3000
+  // Task management functions
+  const handleTaskUpdate = useCallback(async (taskId: string, updates: Partial<TimelineTask>) => {
+    try {
+      const response = await fetch(API_ENDPOINTS.tasks.details(taskId), {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updates)
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to update task');
+      }
+
+      // Refresh timeline data
+      await fetchTimelineData();
+      onTaskUpdate();
+      toast.success('Task updated successfully');
+    } catch (error) {
+      console.error('Error updating task:', error);
+      toast.error('Failed to update task');
     }
-  }, [notificationsEnabled]);
+  }, [tokens?.access_token, fetchTimelineData, onTaskUpdate]);
 
-  const handleUserLeft = useCallback((message: WebSocketMessage) => {
-    const userId = message.data.user_id;
-    setActiveUsers(prev => prev.filter(u => u.id !== userId));
-  }, []);
-
-  const handleConflictDetected = useCallback((message: WebSocketMessage) => {
-    const conflict = message.data;
-    setConflicts(prev => [...prev, conflict]);
-    
-    if (notificationsEnabled) {
-      toast.error(`Conflict detected: ${conflict.message}`, {
-        duration: 6000
+  const handleTaskCreate = useCallback(async (taskData: Partial<TimelineTask>) => {
+    try {
+      const response = await fetch(API_ENDPOINTS.tasks.create, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...taskData,
+          project_id: project.id,
+          organization_id: project.organization_id || 'demo-org-001'
+        })
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to create task');
+      }
+
+      // Refresh timeline data
+      await fetchTimelineData();
+      onTaskCreate();
+      toast.success('Task created successfully');
+    } catch (error) {
+      console.error('Error creating task:', error);
+      toast.error('Failed to create task');
     }
-  }, [notificationsEnabled]);
+  }, [tokens?.access_token, project.id, project.organization_id, fetchTimelineData, onTaskCreate]);
+
+  const handleTaskDelete = useCallback(async (taskId: string) => {
+    if (!window.confirm('Are you sure you want to delete this task?')) return;
+    
+    try {
+      const response = await fetch(API_ENDPOINTS.tasks.details(taskId), {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete task');
+      }
+
+      // Refresh timeline data
+      await fetchTimelineData();
+      onTaskDelete();
+      toast.success('Task deleted successfully');
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      toast.error('Failed to delete task');
+    }
+  }, [tokens?.access_token, fetchTimelineData, onTaskDelete]);
 
   // Fetch timeline data from project tasks
   const fetchTimelineData = useCallback(async () => {
