@@ -10,6 +10,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useProjectFilterContext } from '../contexts/ProjectFilterContext';
 import { DynamicGanttChart } from '../components/timeline/DynamicGanttChart';
 import { EnhancedDragDropGantt } from '../components/timeline/EnhancedDragDropGantt';
+import { AdvancedTimelineFeatures } from '../components/timeline/AdvancedTimelineFeatures';
 import { 
   DynamicTimelineService, 
   DynamicTimelineTask, 
