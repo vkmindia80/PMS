@@ -58,8 +58,11 @@ async def list_users(
     # Build query based on user permissions
     query = {}
     
+    # Handle both string and enum values for role comparison
+    user_role = current_user.role.value if hasattr(current_user.role, 'value') else current_user.role
+    
     # Super admin can see all users
-    if current_user.role == UserRole.SUPER_ADMIN:
+    if user_role == UserRole.SUPER_ADMIN.value:
         if organization_id:
             query["organization_id"] = organization_id
     else:
