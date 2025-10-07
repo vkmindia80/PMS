@@ -219,7 +219,8 @@ class S3FileService:
         file: UploadFile,
         project_id: str,
         uploaded_by: str,
-        description: Optional[str] = None
+        description: Optional[str] = None,
+        organization_id: Optional[str] = None
     ) -> FileUploadResult:
         """Upload file to S3"""
         
