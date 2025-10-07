@@ -620,35 +620,42 @@ const ProjectDetailsPage: React.FC = () => {
         )}
 
         {activeTab === 'tasks' && (
-          <TasksTab 
+          <EnhancedTasksTab 
             tasks={tasks}
             project={project}
-            taskView={taskView}
-            setTaskView={setTaskView}
-            getTaskStatusColor={getTaskStatusColor}
-            getPriorityColor={getPriorityColor}
-            formatDate={formatDate}
-            getUserName={getUserName}
+            users={users}
+            onTaskUpdate={() => fetchTasks()}
+            onTaskCreate={() => fetchTasks()}
+            onTaskDelete={() => fetchTasks()}
           />
         )}
 
         {activeTab === 'team' && (
-          <TeamTab 
+          <EnhancedTeamTab 
             project={project}
             users={users}
+            onAddMember={() => fetchProjectData()}
+            onRemoveMember={() => fetchProjectData()}
+            onUpdateMemberRole={() => fetchProjectData()}
           />
         )}
 
         {activeTab === 'analytics' && (
-          <AnalyticsTab 
+          <EnhancedAnalyticsTab 
             project={project}
             tasks={tasks}
-            budgetUtilization={budgetUtilization}
+            users={users}
           />
         )}
 
         {activeTab === 'files' && (
-          <FilesTab project={project} />
+          <EnhancedFilesTab 
+            project={project}
+            users={users}
+            onFileUpload={() => console.log('File upload')}
+            onFileDelete={() => console.log('File delete')}
+            onFileShare={() => console.log('File share')}
+          />
         )}
 
         {activeTab === 'activity' && (
