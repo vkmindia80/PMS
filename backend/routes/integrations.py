@@ -51,6 +51,26 @@ class GoogleWorkspaceRequest(BaseModel):
     gmail_sync: bool = False
     settings: Optional[Dict[str, Any]] = None
 
+class S3IntegrationRequest(BaseModel):
+    bucket_name: str
+    access_key_id: str
+    secret_access_key: str
+    region: str = "us-east-1"
+    max_file_size_mb: int = 50
+    versioning_enabled: bool = True
+    lifecycle_policies_enabled: bool = True
+    allowed_file_types: List[str] = [
+        "jpg", "jpeg", "png", "gif", "webp", "svg",  # Images
+        "pdf", "doc", "docx", "txt", "rtf",           # Documents
+        "xls", "xlsx", "csv",                        # Spreadsheets
+        "ppt", "pptx",                              # Presentations
+        "zip", "tar", "gz", "rar",                  # Archives
+        "mp3", "wav", "ogg",                        # Audio
+        "mp4", "avi", "mov", "mkv",                 # Video
+        "json", "xml", "yaml", "yml"                # Data files
+    ]
+    settings: Optional[Dict[str, Any]] = None
+
 class IntegrationResponse(BaseModel):
     success: bool
     integration_type: str
