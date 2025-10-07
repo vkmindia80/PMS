@@ -36,6 +36,7 @@ from routes.timeline_enhancements import router as timeline_enhancements_router
 from routes.dynamic_timeline import router as dynamic_timeline_router
 from routes.timeline_tasks_integration import router as timeline_tasks_integration_router
 from routes.files import router as files_router
+from routes.advanced_timeline import router as advanced_timeline_router
 
 # Import models
 from models import (
