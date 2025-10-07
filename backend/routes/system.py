@@ -7,14 +7,143 @@ import logging
 router = APIRouter(prefix="/api/system", tags=["system"])
 logger = logging.getLogger(__name__)
 
-@router.post("/generate-demo-data", status_code=200)
+@router.post("/generate-demo-data", status_code=202)
 async def generate_comprehensive_demo_data():
     """
     Generate comprehensive demo data for the entire application
     This endpoint creates realistic enterprise data to showcase all features
+    Returns immediately with 202 Accepted while generation runs in background
     """
     try:
         logger.info("🚀 Starting comprehensive demo data generation via API...")
+        
+        # Import the generator
+        from comprehensive_demo_data_generator import ComprehensiveDemoDataGenerator
+        
+        # Create generator instance
+        generator = ComprehensiveDemoDataGenerator()
+        
+        # Run generation in background task
+        async def run_generation():
+            try:
+                success = await generator.run_complete_generation()
+                if success:
+                    logger.info("✅ Demo data generation completed successfully")
+                else:
+                    logger.error("❌ Demo data generation failed")
+            except Exception as e:
+                logger.error(f"❌ Background demo data generation error: {str(e)}")
+        
+        # Start background task
+        asyncio.create_task(run_generation())
+        
+        # Return immediately
+        return {
+            "success": True,
+            "message": "Demo data generation started! This may take 10-30 seconds to complete.",
+            "status": "processing",
+            "details": {
+                "note": "The generation is running in the background. You can refresh the page in a moment to see the new data.",
+                "access_info": {
+                    "demo_login": "demo@company.com / demo123456",
+                    "frontend_url": "http://localhost:3000",
+                    "backend_api": "http://localhost:8001",
+                    "api_docs": "http://localhost:8001/docs"
+                }
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Demo data generation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to start demo data generation: {str(e)}"
+        )
+
+
+@router.get("/demo-data-status", status_code=200)
+async def get_demo_data_status():
+    """
+    Check the status of demo data generation
+    """
+    try:
+        from database import get_database
+        import json
+        import glob
+        import os
+        
+        db = await get_database()
+        
+        # Check if demo data exists
+        demo_org = await db.organizations.find_one({"id": "demo-org-001"})
+        demo_user_count = await db.users.count_documents({"organization_id": "demo-org-001"})
+        project_count = await db.projects.count_documents({"organization_id": "demo-org-001"})
+        task_count = await db.tasks.count_documents({"organization_id": "demo-org-001"})
+        
+        has_data = demo_org is not None and demo_user_count > 1 and project_count > 0
+        
+        if has_data:
+            # Try to get the latest report
+            try:
+                report_files = glob.glob("/app/comprehensive_demo_data_report_*.json")
+                if report_files:
+                    latest_report_file = max(report_files, key=os.path.getctime)
+                    with open(latest_report_file, 'r') as f:
+                        report_data = json.load(f)
+                    
+                    return {
+                        "success": True,
+                        "status": "completed",
+                        "message": "Demo data is available",
+                        "details": {
+                            "users_created": demo_user_count,
+                            "projects_created": project_count,
+                            "tasks_created": task_count,
+                            "report": report_data.get('summary', {})
+                        }
+                    }
+            except Exception as report_error:
+                logger.warning(f"Could not read report: {report_error}")
+            
+            return {
+                "success": True,
+                "status": "completed",
+                "message": "Demo data is available",
+                "details": {
+                    "users": demo_user_count,
+                    "projects": project_count,
+                    "tasks": task_count
+                }
+            }
+        else:
+            return {
+                "success": True,
+                "status": "not_found",
+                "message": "No demo data found. Generate some first.",
+                "details": {
+                    "users": demo_user_count,
+                    "projects": project_count,
+                    "tasks": task_count
+                }
+            }
+            
+    except Exception as e:
+        logger.error(f"Error checking demo data status: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to check demo data status: {str(e)}"
+        )
+
+
+# Keep old sync version for backward compatibility
+@router.post("/generate-demo-data-sync", status_code=200)
+async def generate_comprehensive_demo_data_sync():
+    """
+    Generate comprehensive demo data synchronously (waits for completion)
+    WARNING: This may timeout for large datasets. Use /generate-demo-data instead.
+    """
+    try:
+        logger.info("🚀 Starting comprehensive demo data generation via API (SYNC)...")
         
         # Import and run the comprehensive demo data generator
         from comprehensive_demo_data_generator import ComprehensiveDemoDataGenerator
