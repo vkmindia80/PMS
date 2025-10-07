@@ -1,0 +1,645 @@
+{
+  "timestamp": "2025-10-07T14:56:10.459747",
+  "success": true,
+  "tests_run": 11,
+  "tests_passed": 8,
+  "results": [
+    {
+      "test_name": "User Login",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "message": "Login successful",
+        "tokens": {
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5ODUwNzcwLCJ0eXBlIjoiYWNjZXNzIn0.M_WL4woAMxpi_uGDWeI2IBpRR4-drHyLMV-8avktN00",
+          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwNDUzNzcwLCJ0eXBlIjoicmVmcmVzaCJ9.SFZe8QKTAhFOS3u9FJPfnVJMPqvv93v92lkAjWBGgwY",
+          "token_type": "bearer",
+          "expires_in": 1800
+        },
+        "user": {
+          "id": "demo-user-001",
+          "email": "demo@company.com",
+          "username": "demo_user",
+          "first_name": "Demo",
+          "last_name": "User",
+          "phone": "+1-555-0123",
+          "bio": "Demo user for testing the Enterprise Portfolio Management system",
+          "avatar_url": null,
+          "role": "admin",
+          "organization_id": "demo-org-001",
+          "is_active": true,
+          "status": "active",
+          "email_verified": true,
+          "last_login": "2025-10-07T14:51:30.211000",
+          "timezone": "UTC",
+          "language": "en",
+          "theme": "light",
+          "notifications_enabled": true,
+          "profile_completed": true,
+          "onboarding_completed": true,
+          "created_at": "2025-10-07T14:46:47.829000",
+          "updated_at": "2025-10-07T14:51:30.211000"
+        }
+      },
+      "timestamp": "2025-10-07T14:56:10.356658"
+    },
+    {
+      "test_name": "Get Projects List",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": [
+        {
+          "id": "proj-f10e46552cea",
+          "name": "AI-Powered Medical Diagnosis Platform",
+          "status": "active",
+          "priority": "critical",
+          "progress_percentage": 35,
+          "due_date": "2026-01-22",
+          "owner_id": "e9659cc8-d896-4b08-80bb-5dc0b8a5e65a",
+          "task_count": 15,
+          "team_member_count": 2
+        },
+        {
+          "id": "proj-b9a4aec4e661",
+          "name": "Smart City IoT Traffic Management System",
+          "status": "planning",
+          "priority": "high",
+          "progress_percentage": 9,
+          "due_date": "2026-05-26",
+          "owner_id": "aea321e3-2307-4108-a594-7d8bc71707b6",
+          "task_count": 10,
+          "team_member_count": 1
+        },
+        {
+          "id": "proj-427d36b15fe3",
+          "name": "Blockchain-Based Supply Chain Tracker",
+          "status": "active",
+          "priority": "medium",
+          "progress_percentage": 66,
+          "due_date": "2025-09-21",
+          "owner_id": "480a9556-20cd-4234-8730-ff8162763d09",
+          "task_count": 13,
+          "team_member_count": 1
+        },
+        {
+          "id": "proj-d390bf18a763",
+          "name": "Real-Time Financial Trading Platform",
+          "status": "active",
+          "priority": "critical",
+          "progress_percentage": 54,
+          "due_date": "2025-12-31",
+          "owner_id": "56ae422f-7745-4e0d-92f0-5c805ceffc8b",
+          "task_count": 13,
+          "team_member_count": 1
+        },
+        {
+          "id": "proj-f7cbc81de609",
+          "name": "AR/VR Corporate Training Ecosystem",
+          "status": "planning",
+          "priority": "medium",
+          "progress_percentage": 15,
+          "due_date": "2026-04-07",
+          "owner_id": "2306c6d3-c9ac-4dfc-909d-6ba8265e3d65",
+          "task_count": 14,
+          "team_member_count": 3
+        },
+        {
+          "id": "proj-fb1a86587344",
+          "name": "Quantum Computing Research Platform",
+          "status": "active",
+          "priority": "high",
+          "progress_percentage": 55,
+          "due_date": "2025-12-22",
+          "owner_id": "2306c6d3-c9ac-4dfc-909d-6ba8265e3d65",
+          "task_count": 12,
+          "team_member_count": 1
+        },
+        {
+          "id": "proj-2ef5d45c0ec7",
+          "name": "Sustainable Energy Management System",
+          "status": "active",
+          "priority": "high",
+          "progress_percentage": 36,
+          "due_date": "2026-03-13",
+          "owner_id": "360d9cfe-3c56-4db5-8bfc-aea44739e49f",
+          "task_count": 14,
+          "team_member_count": 1
+        },
+        {
+          "id": "proj-90ae5d581cbe",
+          "name": "Next-Gen Gaming Platform with Social Features",
+          "status": "completed",
+          "priority": "medium",
+          "progress_percentage": 100,
+          "due_date": "2026-05-04",
+          "owner_id": "2306c6d3-c9ac-4dfc-909d-6ba8265e3d65",
+          "task_count": 13,
+          "team_member_count": 2
+        },
+        {
+          "id": "proj-a90471d94ccc",
+          "name": "AI-Driven Cybersecurity Threat Detection",
+          "status": "active",
+          "priority": "critical",
+          "progress_percentage": 59,
+          "due_date": "2026-01-06",
+          "owner_id": "56ae422f-7745-4e0d-92f0-5c805ceffc8b",
+          "task_count": 13,
+          "team_member_count": 1
+        },
+        {
+          "id": "proj-b8813472f437",
+          "name": "Adaptive EdTech Learning Platform",
+          "status": "planning",
+          "priority": "medium",
+          "progress_percentage": 11,
+          "due_date": "2026-03-10",
+          "owner_id": "56ae422f-7745-4e0d-92f0-5c805ceffc8b",
+          "task_count": 11,
+          "team_member_count": 2
+        }
+      ],
+      "timestamp": "2025-10-07T14:56:10.360294"
+    },
+    {
+      "test_name": "Get Timeline Data (Integration)",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "project_id": "proj-f10e46552cea",
+        "tasks": [
+          {
+            "id": "5a6ca132-e353-4d45-83b5-9b71d9950966",
+            "name": "Stakeholder review",
+            "description": "Complete stakeholder review for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 36,
+            "start_date": "2025-10-06T14:47:11.318000",
+            "finish_date": "2025-07-17T14:47:11.314000",
+            "percent_complete": 80,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#3b82f6",
+            "created_at": "2025-10-06T14:47:11.318000",
+            "updated_at": "2025-10-07T14:47:11.318000"
+          },
+          {
+            "id": "959182f6-62f6-4640-b22d-a45f0013efde",
+            "name": "Project planning and scoping",
+            "description": "Complete project planning and scoping for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 13,
+            "start_date": "2025-10-02T14:47:11.318000",
+            "finish_date": "2025-07-25T14:47:11.314000",
+            "percent_complete": 100,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": true,
+            "assignee_ids": [
+              "2306c6d3-c9ac-4dfc-909d-6ba8265e3d65"
+            ],
+            "milestone": false,
+            "color": "#10b981",
+            "created_at": "2025-10-02T14:47:11.318000",
+            "updated_at": "2025-10-07T14:47:11.607000"
+          },
+          {
+            "id": "da71b5f4-532f-419a-8615-e9c385e21bb1",
+            "name": "Documentation creation",
+            "description": "Complete documentation creation for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 27,
+            "start_date": "2025-09-13T14:47:11.319000",
+            "finish_date": "2025-08-14T14:47:11.314000",
+            "percent_complete": 100,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#10b981",
+            "created_at": "2025-09-13T14:47:11.319000",
+            "updated_at": "2025-10-07T14:47:11.608000"
+          },
+          {
+            "id": "1bbb4100-dc98-4d7a-9055-d1e070cfeaed",
+            "name": "Development implementation",
+            "description": "Complete development implementation for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 35,
+            "start_date": "2025-09-26T14:47:11.319000",
+            "finish_date": "2025-08-17T14:47:11.314000",
+            "percent_complete": 80,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#3b82f6",
+            "created_at": "2025-09-26T14:47:11.319000",
+            "updated_at": "2025-10-07T14:47:11.610000"
+          },
+          {
+            "id": "f4cf8337-e585-46fe-ad6f-323eed6e37ad",
+            "name": "Requirements gathering",
+            "description": "Complete requirements gathering for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 39,
+            "start_date": "2025-09-10T14:47:11.319000",
+            "finish_date": "2025-09-02T14:47:11.314000",
+            "percent_complete": 80,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "2306c6d3-c9ac-4dfc-909d-6ba8265e3d65"
+            ],
+            "milestone": false,
+            "color": "#8b5cf6",
+            "created_at": "2025-09-10T14:47:11.319000",
+            "updated_at": "2025-10-07T14:47:11.605000"
+          },
+          {
+            "id": "d47c6234-a748-4441-ae8e-b6a19f5e8673",
+            "name": "Bug fixes and improvements",
+            "description": "Complete bug fixes and improvements for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 36,
+            "start_date": "2025-09-16T14:47:11.319000",
+            "finish_date": "2025-09-14T14:47:11.314000",
+            "percent_complete": 38,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#3b82f6",
+            "created_at": "2025-09-16T14:47:11.319000",
+            "updated_at": "2025-10-07T14:47:11.607000"
+          },
+          {
+            "id": "a0059164-e13b-42b7-8d27-2ee7de22211b",
+            "name": "Testing and quality assurance",
+            "description": "Complete testing and quality assurance for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 39,
+            "start_date": "2025-09-11T14:47:11.320000",
+            "finish_date": "2025-09-26T14:47:11.314000",
+            "percent_complete": 24,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": true,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#ef4444",
+            "created_at": "2025-09-11T14:47:11.320000",
+            "updated_at": "2025-10-07T14:47:11.609000"
+          },
+          {
+            "id": "a03e77ea-d668-474b-8091-a9e88eb2d797",
+            "name": "Final deployment",
+            "description": "Complete final deployment for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 25,
+            "start_date": "2025-09-13T14:47:11.320000",
+            "finish_date": "2025-10-07T14:47:11.314000",
+            "percent_complete": 45,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#8b5cf6",
+            "created_at": "2025-09-13T14:47:11.320000",
+            "updated_at": "2025-10-07T14:47:11.610000"
+          },
+          {
+            "id": "4443770e-9474-4e88-9271-b5a74bb5feaf",
+            "name": "Technical specification",
+            "description": "Complete technical specification for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 14,
+            "start_date": "2025-10-04T14:47:11.320000",
+            "finish_date": "2025-10-22T14:47:11.314000",
+            "percent_complete": 0,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": true,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#ef4444",
+            "created_at": "2025-10-04T14:47:11.320000",
+            "updated_at": "2025-10-07T14:47:11.611000"
+          },
+          {
+            "id": "3168043c-8068-46af-8405-b1dc9a303dd9",
+            "name": "Design and mockups",
+            "description": "Complete design and mockups for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 24,
+            "start_date": "2025-09-19T14:47:11.321000",
+            "finish_date": "2025-10-31T14:47:11.314000",
+            "percent_complete": 0,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#f59e0b",
+            "created_at": "2025-09-19T14:47:11.321000",
+            "updated_at": "2025-10-07T14:47:11.321000"
+          },
+          {
+            "id": "0bf9a011-b6f9-4635-b00e-52c0565f6985",
+            "name": "Additional task 11 for AI-Powered Medical Diagnosis Platform",
+            "description": "Complete additional task 11 for ai-powered medical diagnosis platform for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 14,
+            "start_date": "2025-09-20T14:47:11.404000",
+            "finish_date": "2025-11-11T14:47:11.314000",
+            "percent_complete": 0,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#3b82f6",
+            "created_at": "2025-09-20T14:47:11.404000",
+            "updated_at": "2025-10-07T14:47:11.609000"
+          },
+          {
+            "id": "cc7a181c-2a19-4ef4-9cf1-c0294fa040f7",
+            "name": "Additional task 12 for AI-Powered Medical Diagnosis Platform",
+            "description": "Complete additional task 12 for ai-powered medical diagnosis platform for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 24,
+            "start_date": "2025-09-25T14:47:11.405000",
+            "finish_date": "2025-11-27T14:47:11.314000",
+            "percent_complete": 0,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": true,
+            "assignee_ids": [
+              "2306c6d3-c9ac-4dfc-909d-6ba8265e3d65"
+            ],
+            "milestone": false,
+            "color": "#ef4444",
+            "created_at": "2025-09-25T14:47:11.405000",
+            "updated_at": "2025-10-07T14:47:11.611000"
+          },
+          {
+            "id": "6eb5ab55-05f1-4e24-88f2-7d259343c5ec",
+            "name": "Additional task 13 for AI-Powered Medical Diagnosis Platform",
+            "description": "Complete additional task 13 for ai-powered medical diagnosis platform for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 40,
+            "start_date": "2025-09-23T14:47:11.405000",
+            "finish_date": "2025-12-06T14:47:11.314000",
+            "percent_complete": 0,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "2306c6d3-c9ac-4dfc-909d-6ba8265e3d65"
+            ],
+            "milestone": false,
+            "color": "#3b82f6",
+            "created_at": "2025-09-23T14:47:11.405000",
+            "updated_at": "2025-10-07T14:47:11.611000"
+          },
+          {
+            "id": "657c50ca-047a-4190-9913-f8c159a18eb7",
+            "name": "Additional task 14 for AI-Powered Medical Diagnosis Platform",
+            "description": "Complete additional task 14 for ai-powered medical diagnosis platform for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 32,
+            "start_date": "2025-09-26T14:47:11.405000",
+            "finish_date": "2025-12-16T14:47:11.314000",
+            "percent_complete": 0,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": true,
+            "assignee_ids": [
+              "2306c6d3-c9ac-4dfc-909d-6ba8265e3d65"
+            ],
+            "milestone": false,
+            "color": "#ef4444",
+            "created_at": "2025-09-26T14:47:11.405000",
+            "updated_at": "2025-10-07T14:47:11.612000"
+          },
+          {
+            "id": "37371b65-873b-47ca-82c8-1ed5812c674c",
+            "name": "Additional task 15 for AI-Powered Medical Diagnosis Platform",
+            "description": "Complete additional task 15 for ai-powered medical diagnosis platform for the AI-Powered Medical Diagnosis Platform project. This task is part of the overall project deliverables and requires attention to detail and quality standards.",
+            "project_id": "proj-f10e46552cea",
+            "duration": 14,
+            "start_date": "2025-10-04T14:47:11.406000",
+            "finish_date": "2025-12-27T14:47:11.314000",
+            "percent_complete": 0,
+            "outline_level": 1,
+            "summary_task": false,
+            "critical": false,
+            "assignee_ids": [
+              "aea321e3-2307-4108-a594-7d8bc71707b6"
+            ],
+            "milestone": false,
+            "color": "#f59e0b",
+            "created_at": "2025-10-04T14:47:11.406000",
+            "updated_at": "2025-10-07T14:47:11.612000"
+          }
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "critical_path": [],
+        "last_updated": "2025-10-07T14:56:10.365519"
+      },
+      "timestamp": "2025-10-07T14:56:10.366945"
+    },
+    {
+      "test_name": "Create Timeline Task",
+      "success": true,
+      "details": "Status: 201",
+      "response_data": {
+        "title": "Test Timeline Task 145610",
+        "description": "Test task created for timeline functionality testing",
+        "status": "todo",
+        "priority": "medium",
+        "type": "task",
+        "project_id": "proj-f10e46552cea",
+        "organization_id": "demo-org-001",
+        "assignee_id": null,
+        "assignee_ids": [],
+        "reporter_id": "demo-user-001",
+        "parent_task_id": null,
+        "due_date": "2025-10-14T14:56:10.367000",
+        "start_date": null,
+        "completed_at": null,
+        "time_tracking": {
+          "estimated_hours": 8.0,
+          "actual_hours": 0.0,
+          "logged_time": []
+        },
+        "dependencies": [],
+        "subtasks": [],
+        "tags": [],
+        "labels": [],
+        "custom_fields": {},
+        "progress_percentage": 0.0,
+        "id": "87abd357-7e3b-4513-850a-c61e8cc8c292",
+        "created_at": "2025-10-07T14:56:10.371000",
+        "updated_at": "2025-10-07T14:56:10.373000",
+        "subtask_count": 0,
+        "comment_count": 0,
+        "attachment_count": 0
+      },
+      "timestamp": "2025-10-07T14:56:10.416315"
+    },
+    {
+      "test_name": "Auto-Schedule Tasks",
+      "success": false,
+      "details": "Status: 404",
+      "response_data": {
+        "detail": "No tasks found for project"
+      },
+      "timestamp": "2025-10-07T14:56:10.421032"
+    },
+    {
+      "test_name": "Update Task from Drag",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "task": {
+          "id": "87abd357-7e3b-4513-850a-c61e8cc8c292",
+          "name": "Test Timeline Task 145610",
+          "description": "Test task created for timeline functionality testing",
+          "project_id": "proj-f10e46552cea",
+          "duration": 12.0,
+          "start_date": "2025-10-08T14:56:10.421109",
+          "finish_date": "2025-10-09T02:56:10.421109",
+          "percent_complete": 0.0,
+          "outline_level": 1,
+          "summary_task": false,
+          "critical": false,
+          "assignee_ids": [],
+          "milestone": false,
+          "color": "#3b82f6",
+          "created_at": "2025-10-07T14:56:10.371000",
+          "updated_at": "2025-10-07T14:56:10.424000"
+        },
+        "cascaded_updates": true,
+        "message": "Task updated successfully"
+      },
+      "timestamp": "2025-10-07T14:56:10.441002"
+    },
+    {
+      "test_name": "Sync Task to Timeline",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "id": "87abd357-7e3b-4513-850a-c61e8cc8c292",
+        "name": "Updated Timeline Task Name",
+        "description": "Updated description from timeline",
+        "project_id": "proj-f10e46552cea",
+        "duration": 10.0,
+        "start_date": "2025-10-07T14:56:10.371000",
+        "finish_date": "2025-10-09T02:56:10.421109",
+        "percent_complete": 25.0,
+        "outline_level": 1,
+        "summary_task": false,
+        "critical": false,
+        "assignee_ids": [],
+        "milestone": false,
+        "color": "#3b82f6",
+        "created_at": "2025-10-07T14:56:10.371000",
+        "updated_at": "2025-10-07T14:56:10.444000"
+      },
+      "timestamp": "2025-10-07T14:56:10.446385"
+    },
+    {
+      "test_name": "Get Enhanced Gantt Data",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "project_id": "proj-f10e46552cea",
+        "tasks": [
+          {
+            "id": "87abd357-7e3b-4513-850a-c61e8cc8c292",
+            "duration": 10.0,
+            "finish_date": "2025-10-09T02:56:10.421109",
+            "project_id": "proj-f10e46552cea",
+            "start_date": "2025-10-08T14:56:10.421109",
+            "updated_at": "2025-10-07T14:56:10.444000"
+          }
+        ],
+        "dependencies": [],
+        "conflicts": [],
+        "critical_path": [],
+        "resource_conflicts": [],
+        "last_updated": "2025-10-07T14:56:10.449548"
+      },
+      "timestamp": "2025-10-07T14:56:10.450118"
+    },
+    {
+      "test_name": "Get Timeline Stats",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "total_tasks": 1,
+        "completed_tasks": 0,
+        "in_progress_tasks": 0,
+        "overdue_tasks": 0,
+        "critical_path_length": 0,
+        "resource_utilization": 0.0,
+        "timeline_health_score": 0.0,
+        "estimated_completion": "2025-10-09",
+        "conflicts_count": 0,
+        "last_updated": "2025-10-07T14:56:10.452737"
+      },
+      "timestamp": "2025-10-07T14:56:10.453140"
+    },
+    {
+      "test_name": "Search Tasks",
+      "success": false,
+      "details": "Status: 500",
+      "response_data": {
+        "detail": "Search failed"
+      },
+      "timestamp": "2025-10-07T14:56:10.455895"
+    },
+    {
+      "test_name": "Delete Task 87abd357-7e3b-4513-850a-c61e8cc8c292",
+      "success": false,
+      "details": "Status: 204",
+      "response_data": {
+        "raw_response": ""
+      },
+      "timestamp": "2025-10-07T14:56:10.459573"
+    }
+  ],
+  "project_id": "proj-f10e46552cea",
+  "created_task_ids": [
+    "87abd357-7e3b-4513-850a-c61e8cc8c292"
+  ],
+  "functionality_status": "WORKING"
+}
