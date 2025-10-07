@@ -276,8 +276,8 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
     setDragOver(false)
     
     const droppedFiles = e.dataTransfer.files
-    if (droppedFiles.length > 0 && onFileUpload) {
-      onFileUpload(droppedFiles)
+    if (droppedFiles.length > 0) {
+      handleFileUpload(droppedFiles)
     }
   }
 
