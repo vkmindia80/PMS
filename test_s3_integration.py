@@ -39,6 +39,8 @@ def get_auth_token():
             print("Response data:", json.dumps(data, indent=2))
             # Try different possible token field names
             token = data.get("access_token") or data.get("token") or data.get("access")
+            if not token and "tokens" in data:
+                token = data["tokens"].get("access_token")
             if token:
                 return token
             else:
