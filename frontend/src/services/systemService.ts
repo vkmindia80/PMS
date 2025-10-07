@@ -34,22 +34,36 @@ class SystemService {
       const apiUrl = `${getApiUrl()}/api/system/generate-demo-data`;
       console.log('📡 API URL:', apiUrl);
       
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: this.getAuthHeaders()
-      })
-
-      console.log('📨 Response status:', response.status);
+      // Create abort controller for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
       
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ Error response:', errorText);
-        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
-      }
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: this.getAuthHeaders(),
+          signal: controller.signal
+        });
 
-      const result = await response.json();
-      console.log('✅ Demo data generation result:', result);
-      return result;
+        clearTimeout(timeoutId);
+        console.log('📨 Response status:', response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('❌ Error response:', errorText);
+          throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ Demo data generation result:', result);
+        return result;
+      } catch (fetchError: any) {
+        clearTimeout(timeoutId);
+        if (fetchError.name === 'AbortError') {
+          throw new Error('Request timeout - Demo data generation is taking longer than expected. Please try again.');
+        }
+        throw fetchError;
+      }
     } catch (error) {
       console.error('❌ Error generating demo data:', error);
       throw error;
