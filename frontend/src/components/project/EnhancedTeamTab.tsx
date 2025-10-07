@@ -238,19 +238,23 @@ const EnhancedTeamTab: React.FC<EnhancedTeamTabProps> = ({
     })
   }
 
-  const TeamMemberCard: React.FC<{ member: any; isOwner: boolean }> = ({ member, isOwner }) => (
+  const TeamMemberCard: React.FC<{ member: any; isOwner: boolean }> = ({ member, isOwner }) => {
+    const memberName = member.user?.name || `${member.user?.first_name || ''} ${member.user?.last_name || ''}`.trim() || 'Unknown User'
+    const memberInitial = memberName.charAt(0).toUpperCase()
+    
+    return (
     <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-4">
           {/* Avatar */}
           <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-            {member.user.name.charAt(0).toUpperCase()}
+            {memberInitial}
           </div>
           
           {/* User Info */}
           <div>
             <div className="flex items-center space-x-2">
-              <h3 className="font-semibold text-gray-900">{member.user.name}</h3>
+              <h3 className="font-semibold text-gray-900">{memberName}</h3>
               {isOwner && <Crown className="w-4 h-4 text-yellow-500" />}
               {member.role === 'admin' && <Shield className="w-4 h-4 text-purple-500" />}
             </div>
