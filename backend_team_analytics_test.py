@@ -72,8 +72,8 @@ class TeamAnalyticsAPITester:
             data={"email": "demo@company.com", "password": "demo123456"}
         )
         
-        if success and 'access_token' in response:
-            self.token = response['access_token']
+        if success and 'tokens' in response and 'access_token' in response['tokens']:
+            self.token = response['tokens']['access_token']
             self.log_test("Login with demo credentials", True, "Token received")
             return True
         else:
