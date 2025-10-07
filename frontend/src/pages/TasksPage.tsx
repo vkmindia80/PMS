@@ -160,7 +160,7 @@ const TasksPage: React.FC = () => {
       }
       
       const queryString = params.toString()
-      const url = `${API_BASE}/api/tasks${queryString ? `?${queryString}` : ''}`
+      const url = `${API_BASE}/api/tasks/${queryString ? `?${queryString}` : ''}`
       
       const response = await fetch(url, {
         headers: {
