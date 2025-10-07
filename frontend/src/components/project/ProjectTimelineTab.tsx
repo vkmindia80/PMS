@@ -642,24 +642,46 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
 
       {/* Dynamic Timeline Component */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        <ProjectDynamicTimeline
-          projectId={project.id}
-          projectName={project.name}
-          tasks={timelineTasks}
-          dependencies={dependencies}
-          conflicts={conflicts}
-          onTaskUpdate={handleTimelineTaskUpdate}
-          onTaskCreate={handleTimelineTaskCreate}
-          onDependencyCreate={handleDependencyCreate}
-          viewConfig={viewConfig}
-          onViewConfigChange={handleViewConfigChange}
-          filter={filter}
-          onFilterChange={handleFilterChange}
-          isRealTimeConnected={isWebSocketConnected}
-          users={users}
-          showAdvancedFilters={showAdvancedFilters}
-          onToggleAdvancedFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
-        />
+        {timelineTasks.length === 0 && !loading && !error ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <Calendar className="h-16 w-16 text-gray-300 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Timeline Data Available</h3>
+            <p className="text-gray-600 mb-6">
+              This project doesn't have any tasks with timeline data yet.
+            </p>
+            <div className="space-y-4">
+              <button
+                onClick={fetchTimelineData}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <RefreshCw className="h-4 w-4" />
+                <span>Refresh Timeline</span>
+              </button>
+              <p className="text-sm text-gray-500">
+                Tasks with due dates and time estimates will appear here automatically.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <ProjectDynamicTimeline
+            projectId={project.id}
+            projectName={project.name}
+            tasks={timelineTasks}
+            dependencies={dependencies}
+            conflicts={conflicts}
+            onTaskUpdate={handleTimelineTaskUpdate}
+            onTaskCreate={handleTimelineTaskCreate}
+            onDependencyCreate={handleDependencyCreate}
+            viewConfig={viewConfig}
+            onViewConfigChange={handleViewConfigChange}
+            filter={filter}
+            onFilterChange={handleFilterChange}
+            isRealTimeConnected={isWebSocketConnected}
+            users={users}
+            showAdvancedFilters={showAdvancedFilters}
+            onToggleAdvancedFilters={() => setShowAdvancedFilters(!showAdvancedFilters)}
+          />
+        )}
       </div>
 
       {/* Quick Actions Footer */}
