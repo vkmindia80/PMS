@@ -1285,6 +1285,66 @@ async def validate_google_workspace_config(current_user: dict = Depends(get_curr
             "timestamp": datetime.utcnow()
         }
 
+@router.post("/s3_storage/validate")
+async def validate_s3_config(current_user: dict = Depends(get_current_user)):
+    """Validate AWS S3 integration configuration"""
+    try:
+        db = await get_database()
+        
+        # Get S3 configuration from database
+        s3_config = await db.integrations.find_one({
+            "organization_id": getattr(current_user, 'organization_id', 'demo-org-001'),
+            "type": "s3_storage"
+        })
+        
+        if not s3_config:
+            return {
+                "valid": False,
+                "errors": ["S3 integration not configured"],
+                "timestamp": datetime.utcnow()
+            }
+        
+        # Validate S3 connection and permissions
+        validation_result = await validate_s3_credentials(
+            s3_config["access_key_id"],
+            s3_config["secret_access_key"],
+            s3_config["region"],
+            s3_config["bucket_name"]
+        )
+        
+        if validation_result["valid"]:
+            # Get additional S3 status information
+            test_result = await test_s3_permissions(s3_config)
+            
+            return {
+                "valid": True,
+                "connection_status": "success",
+                "bucket_accessible": validation_result.get("bucket_exists", False),
+                "permissions": test_result.get("permissions", []),
+                "versioning_status": test_result.get("versioning_status", "Unknown"),
+                "lifecycle_policies_count": len(test_result.get("lifecycle_policies", [])),
+                "region": s3_config["region"],
+                "bucket_name": s3_config["bucket_name"],
+                "max_file_size_mb": s3_config.get("max_file_size_mb", 50),
+                "allowed_file_types_count": len(s3_config.get("allowed_file_types", [])),
+                "warnings": [],
+                "timestamp": datetime.utcnow()
+            }
+        else:
+            return {
+                "valid": False,
+                "connection_status": "failed",
+                "errors": [validation_result.get("error", "S3 validation failed")],
+                "timestamp": datetime.utcnow()
+            }
+            
+    except Exception as e:
+        return {
+            "valid": False,
+            "errors": [str(e)],
+            "timestamp": datetime.utcnow()
+        }
+
 # Enhanced Configuration Management Endpoints
 
 @router.get("/{integration_type}/config")
