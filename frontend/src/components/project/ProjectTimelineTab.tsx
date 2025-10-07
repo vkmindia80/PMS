@@ -210,6 +210,8 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
   // Fetch timeline data from project tasks
   const fetchTimelineData = useCallback(async () => {
     if (!project?.id || !tokens?.access_token) {
+      console.warn('Missing project ID or access token for timeline data fetch');
+      setError('Authentication required. Please log in to view timeline data.');
       return;
     }
 
@@ -217,9 +219,12 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
       setLoading(true);
       setError(null);
 
-      // Try to fetch from timeline-tasks integration first
+      // Try to fetch from timeline-tasks integration first with better error handling
       try {
-        const response = await fetch(`/api/timeline-tasks/project/${project.id}/timeline?include_completed=${filter.show_completed !== false}`, {
+        console.log(`Fetching timeline data for project: ${project.id}`);
+        const apiUrl = `${getBACKEND_URL()}/api/timeline-tasks/project/${project.id}/timeline?include_completed=${filter.show_completed !== false}`;
+        
+        const response = await fetch(apiUrl, {
           headers: {
             'Authorization': `Bearer ${tokens.access_token}`,
             'Content-Type': 'application/json'
@@ -228,29 +233,40 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
 
         if (response.ok) {
           const data = await response.json();
+          console.log('Successfully fetched timeline data from integration:', data);
           setTimelineTasks(data.tasks || []);
           setDependencies(data.dependencies || []);
           setConflicts(data.conflicts || []);
           return;
+        } else {
+          console.warn(`Timeline integration API returned ${response.status}, falling back to regular tasks`);
         }
       } catch (integrationError) {
-        console.log('Timeline integration not available, using regular tasks');
+        console.log('Timeline integration not available, using regular tasks fallback:', integrationError);
       }
 
-      // Fallback to taskTimelineService
-      const data = await taskTimelineService.fetchTasksAsTimeline(
-        project.id, 
-        tokens.access_token
-      );
-      
-      setTimelineTasks(data.tasks || []);
-      setDependencies(data.dependencies || []);
-      setConflicts([]);
+      // Fallback to taskTimelineService with better error handling
+      try {
+        console.log('Using taskTimelineService fallback for timeline data');
+        const data = await taskTimelineService.fetchTasksAsTimeline(
+          project.id, 
+          tokens.access_token
+        );
+        
+        console.log('Successfully fetched timeline data from fallback service:', data);
+        setTimelineTasks(data.tasks || []);
+        setDependencies(data.dependencies || []);
+        setConflicts([]);
+      } catch (fallbackError) {
+        console.error('Fallback timeline service also failed:', fallbackError);
+        throw fallbackError;
+      }
       
     } catch (err) {
       console.error('Error fetching timeline data:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load timeline data');
-      toast.error('Failed to load timeline data');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load timeline data';
+      setError(errorMessage);
+      toast.error(`Timeline Error: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
