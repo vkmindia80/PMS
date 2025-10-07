@@ -3,8 +3,9 @@ import {
   Upload, Search, Filter, Grid, List, Download, Eye, 
   Trash2, Share, Star, Clock, User, File, FileText, 
   Image, Video, Archive, Code, Plus, MoreVertical,
-  FolderPlus, Folder, ChevronRight, ArrowUpDown
+  FolderPlus, Folder, ChevronRight, ArrowUpDown, X
 } from 'lucide-react'
+import toast from 'react-hot-toast'
 
 interface ProjectFile {
   id: string
