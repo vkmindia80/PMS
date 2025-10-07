@@ -639,6 +639,13 @@ export const DynamicTimelinePage: React.FC = () => {
         </div>
       )}
 
+      {/* Advanced Features Panel */}
+      {showAdvancedFeatures && selectedProjectId && (
+        <div className="border-t border-gray-200">
+          <AdvancedTimelineFeatures projectId={selectedProjectId} tokens={tokens} />
+        </div>
+      )}
+
       {/* Dynamic Gantt Chart */}
       <div className="flex-1 p-4 sm:p-6">
         {!selectedProjectId ? (
