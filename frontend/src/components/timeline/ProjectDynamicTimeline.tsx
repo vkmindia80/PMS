@@ -246,11 +246,9 @@ const EnhancedGanttChart: React.FC<GanttChartProps> = ({
 
   // Handle task double-click for editing
   const handleTaskDoubleClick = useCallback((task: DynamicTimelineTask) => {
-    const newName = prompt('Edit task name:', task.name);
-    if (newName && newName !== task.name) {
-      onTaskUpdate(task.id, { name: newName });
-    }
-  }, [onTaskUpdate]);
+    setEditingTask(task);
+    setShowTaskEditModal(true);
+  }, []);
 
   // Handle task progress update
   const handleProgressUpdate = useCallback((task: DynamicTimelineTask, newProgress: number) => {
