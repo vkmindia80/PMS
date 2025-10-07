@@ -630,6 +630,13 @@ const ProjectDetailsPage: React.FC = () => {
           />
         )}
 
+        {activeTab === 'milestones' && (
+          <MilestonesManager 
+            project={project}
+            onMilestonesUpdate={fetchProjectData}
+          />
+        )}
+
         {activeTab === 'tasks' && (
           <EnhancedTasksTab 
             project={{ id: project.id, name: project.name }}
