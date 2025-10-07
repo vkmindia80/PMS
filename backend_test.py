@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class ProjectDetailsTester:
-    def __init__(self, base_url: str = "https://timeline-enhance.preview.emergentagent.com"):
+    def __init__(self, base_url: str = "https://repo-bridge-13.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user_data = None

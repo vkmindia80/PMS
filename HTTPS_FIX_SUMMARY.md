@@ -2,7 +2,7 @@
 
 ## Problem Identified
 The application was experiencing Mixed Content Security Errors where:
-- Frontend was served over HTTPS: `https://timeline-enhance.preview.emergentagent.com`
+- Frontend was served over HTTPS: `https://repo-bridge-13.preview.emergentagent.com`
 - API calls were being made to HTTP: `http://project-404.preview.emergentagent.com/api/`
 - Browsers block HTTP requests from HTTPS pages for security reasons
 
@@ -29,7 +29,7 @@ The application was experiencing Mixed Content Security Errors where:
 - `/app/frontend/src/components/security/MFASetup.tsx`
 
 **Changes:**
-- Replaced hardcoded `https://timeline-enhance.preview.emergentagent.com` fallbacks
+- Replaced hardcoded `https://repo-bridge-13.preview.emergentagent.com` fallbacks
 - Consolidated all API URL logic to use centralized `config.apiUrl`
 - Added proper imports for config utility
 
