@@ -224,11 +224,23 @@ class S3FileService:
     ) -> FileUploadResult:
         """Upload file to S3"""
         
+        # Load organization-specific config if provided
+        organization_config = None
+        s3_client = self.s3_client
+        bucket_name = self.config.bucket_name
+        
+        if organization_id:
+            await self.load_integration_config(organization_id)
+            organization_config = self.get_organization_config(organization_id)
+            if organization_config:
+                s3_client = self.get_s3_client_for_organization(organization_id)
+                bucket_name = organization_config["bucket_name"]
+        
         # Read file content
         content = await file.read()
         
         # Validate file
-        self._validate_file(file, content)
+        self._validate_file(file, content, organization_config)
         
         # Generate file path and calculate checksum
         file_path, file_id = self._generate_file_path(project_id, file.filename)
