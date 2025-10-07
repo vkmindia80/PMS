@@ -940,99 +940,11 @@ const OverviewTab: React.FC<any> = ({
   )
 }
 
+// Import enhanced components
 import EnhancedTasksTab from '../components/project/EnhancedTasksTab'
-
-// Team Tab Component (simplified)
-const TeamTab: React.FC<any> = ({ project, users }) => (
-  <div className="space-y-6">
-    <div className="flex items-center justify-between">
-      <h2 className="text-2xl font-bold text-gray-900">Team Members ({(project.team_members || []).length})</h2>
-      <button className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-        <Plus className="w-4 h-4" />
-        <span>Add Member</span>
-      </button>
-    </div>
-
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {(project.team_members || []).map(memberId => {
-          const user = users.find((u: any) => u.id === memberId)
-          return (
-            <div key={memberId} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
-              <div className="w-12 h-12 bg-primary-600 text-white rounded-full flex items-center justify-center font-semibold text-lg">
-                {user?.name?.charAt(0) || '?'}
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium text-gray-900">{user?.name || 'Unknown'}</h3>
-                <p className="text-sm text-gray-600">{user?.email || ''}</p>
-              </div>
-            </div>
-          )
-        })}
-        {(project.team_members || []).length === 0 && (
-          <div className="col-span-full text-center py-12">
-            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500">No team members assigned</p>
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-)
-
-// Analytics Tab Component (simplified)
-const AnalyticsTab: React.FC<any> = ({ project, tasks, budgetUtilization }) => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold text-gray-900">Project Analytics</h2>
-    
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Progress Overview</h3>
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-600">Overall Progress</span>
-            <span className="font-semibold text-gray-900">{project.progress_percentage}%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
-            <div 
-              className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full"
-              style={{ width: `${project.progress_percentage}%` }}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Task Distribution</h3>
-        <div className="text-center py-8 text-gray-500">
-          Task analytics charts will be implemented here
-        </div>
-      </div>
-    </div>
-  </div>
-)
-
-// Files Tab Component (placeholder)
-const FilesTab: React.FC<any> = ({ project }) => (
-  <div className="space-y-6">
-    <div className="flex items-center justify-between">
-      <h2 className="text-2xl font-bold text-gray-900">Project Files</h2>
-      <button className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-        <Plus className="w-4 h-4" />
-        <span>Upload File</span>
-      </button>
-    </div>
-
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-16 text-center">
-      <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-      <h3 className="text-lg font-medium text-gray-900 mb-2">No files uploaded</h3>
-      <p className="text-gray-600 mb-6">Upload project files, documents, and assets</p>
-      <button className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-        Upload First File
-      </button>
-    </div>
-  </div>
-)
+import EnhancedAnalyticsTab from '../components/project/EnhancedAnalyticsTab'
+import EnhancedTeamTab from '../components/project/EnhancedTeamTab'
+import EnhancedFilesTab from '../components/project/EnhancedFilesTab'
 
 // Activity Tab Component
 const ActivityTab: React.FC<any> = ({ activities, comments, newComment, setNewComment, handleAddComment, formatDateTime }) => (
