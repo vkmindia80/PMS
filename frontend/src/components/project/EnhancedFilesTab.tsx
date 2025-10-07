@@ -118,7 +118,7 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
     }
   ]
 
-  const allFiles = [...files, ...mockFiles]
+  const allFiles = [...files, ...mockFiles, ...uploadedFiles]
 
   const getFileIcon = (type: string) => {
     const icons = {
