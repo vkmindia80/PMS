@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class ProjectDetailsTester:
-    def __init__(self, base_url: str = "http://localhost:8001"):
+    def __init__(self, base_url: str = "https://full-tabs-system.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user_data = None
