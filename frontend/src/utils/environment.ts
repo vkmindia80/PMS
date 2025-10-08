@@ -59,10 +59,18 @@ export const getApiUrl = (): string => {
     return url;
   }
   
-  // For local development, use configured URL or localhost with debugging
-  let envBackendUrl = import.meta.env.VITE_API_URL || 
-                      import.meta.env.REACT_APP_BACKEND_URL || 
-                      'http://localhost:8001';
+  // For local development, use localhost backend
+  let envBackendUrl = 'http://localhost:8001'; // Default to localhost
+  
+  // Check environment variables but prefer localhost for development
+  const viteApiUrl = import.meta.env.VITE_API_URL;
+  const reactBackendUrl = import.meta.env.REACT_APP_BACKEND_URL;
+  
+  if (viteApiUrl && !viteApiUrl.includes('emergentagent.com')) {
+    envBackendUrl = viteApiUrl;
+  } else if (reactBackendUrl && !reactBackendUrl.includes('emergentagent.com')) {
+    envBackendUrl = reactBackendUrl;
+  }
   
   // Double-check: if we have an emergentagent.com URL but not HTTPS, force it
   if (envBackendUrl.includes('emergentagent.com') && !envBackendUrl.startsWith('https://')) {
@@ -73,7 +81,8 @@ export const getApiUrl = (): string => {
   console.log('🔧 Environment variables:', {
     VITE_API_URL: import.meta.env.VITE_API_URL,
     REACT_APP_BACKEND_URL: import.meta.env.REACT_APP_BACKEND_URL,
-    NODE_ENV: import.meta.env.NODE_ENV
+    NODE_ENV: import.meta.env.NODE_ENV,
+    finalUrl: envBackendUrl
   });
   
   return envBackendUrl;
