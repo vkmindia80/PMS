@@ -1,0 +1,105 @@
+{
+  "title": "AI Project Artifact Generator - Demo Showcase",
+  "description": "Pre-configured project data for quick testing and demonstration",
+  "generated_at": "2025-10-08T20:08:27.433981",
+  "projects": [
+    {
+      "id": "fintech_mobile_banking",
+      "name": "NextGen Mobile Banking Platform",
+      "description": "A cutting-edge mobile banking application with AI-powered financial insights, biometric security, and seamless multi-platform integration for modern banking customers.",
+      "domain": "Financial Technology",
+      "timeline": "12 months",
+      "priority": "critical",
+      "budget": "$1.2M-2M",
+      "objectives": [
+        "Increase mobile user engagement by 50%",
+        "Reduce transaction processing time by 60%",
+        "Achieve 99.9% uptime for critical banking operations"
+      ],
+      "stakeholders": [
+        "Chief Digital Officer",
+        "Mobile Development Team",
+        "Cybersecurity Team",
+        "Compliance Officer"
+      ],
+      "tech_stack": [
+        "React Native",
+        "Node.js",
+        "PostgreSQL",
+        "Redis"
+      ],
+      "compliance": [
+        "PCI DSS",
+        "SOX",
+        "FFIEC guidelines"
+      ]
+    },
+    {
+      "id": "healthcare_telemedicine",
+      "name": "TeleCare Plus - Remote Healthcare Platform",
+      "description": "Comprehensive telemedicine platform enabling secure video consultations, AI-assisted diagnostics, remote patient monitoring, and integrated electronic health records.",
+      "domain": "Healthcare Technology",
+      "timeline": "10 months",
+      "priority": "high",
+      "budget": "$800K-1.5M",
+      "objectives": [
+        "Provide healthcare access to rural and underserved communities",
+        "Reduce patient wait times by 70%",
+        "Enable 24/7 remote patient monitoring"
+      ],
+      "stakeholders": [
+        "Medical Director",
+        "Healthcare IT Team",
+        "Compliance and Legal Team",
+        "Patient Experience Manager"
+      ],
+      "tech_stack": [
+        "React",
+        "Python/Django",
+        "PostgreSQL",
+        "WebRTC"
+      ],
+      "compliance": [
+        "HIPAA",
+        "FDA regulations for medical devices",
+        "State medical licensing requirements"
+      ]
+    },
+    {
+      "id": "edtech_learning_platform",
+      "name": "EduSmart - AI-Powered Learning Management System",
+      "description": "Next-generation learning management system with personalized AI tutoring, adaptive learning paths, real-time progress analytics, and immersive virtual classroom experiences.",
+      "domain": "Education Technology",
+      "timeline": "8 months",
+      "priority": "high",
+      "budget": "$400K-700K",
+      "objectives": [
+        "Improve student learning outcomes by 40%",
+        "Reduce teacher administrative workload by 60%",
+        "Enable personalized learning for diverse learning styles"
+      ],
+      "stakeholders": [
+        "Educational Director",
+        "Curriculum Development Team",
+        "IT Department",
+        "Teachers and Educators"
+      ],
+      "tech_stack": [
+        "Vue.js",
+        "Python/Flask",
+        "MySQL",
+        "MongoDB"
+      ],
+      "compliance": [
+        "FERPA (Family Educational Rights and Privacy Act)",
+        "COPPA (Children's Online Privacy Protection Act)",
+        "Section 508 Accessibility Standards"
+      ]
+    }
+  ],
+  "usage_instructions": {
+    "web_ui": "Use these projects as templates in the AI Project Artifact Generator web interface",
+    "api": "Send these project scopes to /api/ai-project-generator/generate-documents endpoint",
+    "testing": "Perfect for automated testing and QA validation"
+  }
+}
