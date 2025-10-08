@@ -87,7 +87,7 @@ interface ProjectActivity {
   created_at: string
 }
 
-type TabType = 'overview' | 'milestones' | 'tasks' | 'team' | 'timeline' | 'analytics' | 'files' | 'activity'
+type TabType = 'overview' | 'milestones' | 'tasks' | 'team' | 'analytics' | 'files' | 'activity'
 
 const ProjectDetailsPage: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>()
