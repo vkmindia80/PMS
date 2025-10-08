@@ -1,0 +1,711 @@
+{
+  "timestamp": "2025-10-08T18:42:15.945960",
+  "success": true,
+  "tests_run": 15,
+  "tests_passed": 14,
+  "results": [
+    {
+      "test_name": "User Login",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "message": "Login successful",
+        "tokens": {
+          "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzU5OTUwNzMyLCJ0eXBlIjoiYWNjZXNzIn0.WM0Jyvbiq1jcpeNvhbWTNag3jEkgxiDpnfdo_upMPw8",
+          "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwiZW1haWwiOiJkZW1vQGNvbXBhbnkuY29tIiwicm9sZSI6ImFkbWluIiwib3JnYW5pemF0aW9uX2lkIjoiZGVtby1vcmctMDAxIiwiZXhwIjoxNzYwNTUzNzMyLCJ0eXBlIjoicmVmcmVzaCJ9.pTKvtE4Mg1hkJthCtI03d4894vTPsnh3IzIN9eTgiJ8",
+          "token_type": "bearer",
+          "expires_in": 1800
+        },
+        "user": {
+          "id": "demo-user-001",
+          "email": "demo@company.com",
+          "username": "demo_user",
+          "first_name": "Demo",
+          "last_name": "User",
+          "phone": "+1-555-0123",
+          "bio": "Demo user for testing the Enterprise Portfolio Management system",
+          "avatar_url": null,
+          "role": "admin",
+          "organization_id": "demo-org-001",
+          "is_active": true,
+          "status": "active",
+          "email_verified": true,
+          "last_login": "2025-10-08T18:38:01.513000",
+          "timezone": "UTC",
+          "language": "en",
+          "theme": "light",
+          "notifications_enabled": true,
+          "profile_completed": true,
+          "onboarding_completed": true,
+          "created_at": "2025-10-08T18:26:45.875000",
+          "updated_at": "2025-10-08T18:38:01.513000"
+        }
+      },
+      "timestamp": "2025-10-08T18:42:12.050471"
+    },
+    {
+      "test_name": "Get Current User Profile",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "id": "demo-user-001",
+        "email": "demo@company.com",
+        "username": "demo_user",
+        "first_name": "Demo",
+        "last_name": "User",
+        "phone": "+1-555-0123",
+        "bio": "Demo user for testing the Enterprise Portfolio Management system",
+        "avatar_url": null,
+        "role": "admin",
+        "organization_id": "demo-org-001",
+        "is_active": true,
+        "status": "active",
+        "email_verified": true,
+        "last_login": "2025-10-08T18:42:12.046000",
+        "timezone": "UTC",
+        "language": "en",
+        "theme": "light",
+        "notifications_enabled": true,
+        "profile_completed": true,
+        "onboarding_completed": true,
+        "created_at": "2025-10-08T18:26:45.875000",
+        "updated_at": "2025-10-08T18:42:12.046000"
+      },
+      "timestamp": "2025-10-08T18:42:12.089310"
+    },
+    {
+      "test_name": "Generate Demo Data",
+      "success": false,
+      "details": "Status: 202",
+      "response_data": {
+        "success": true,
+        "message": "Demo data generation started! This may take 10-30 seconds to complete.",
+        "status": "processing",
+        "details": {
+          "note": "The generation is running in the background. You can refresh the page in a moment to see the new data.",
+          "access_info": {
+            "demo_login": "demo@company.com / demo123456",
+            "frontend_url": "http://localhost:3000",
+            "backend_api": "http://localhost:8001",
+            "api_docs": "http://localhost:8001/docs"
+          }
+        }
+      },
+      "timestamp": "2025-10-08T18:42:12.183682"
+    },
+    {
+      "test_name": "Get Portfolio Cost Summary",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "summary": {
+          "total_projects": 0,
+          "active_projects": 0,
+          "total_budget": 0.0,
+          "total_spent": 0.0,
+          "remaining_budget": 0,
+          "budget_utilization": 0,
+          "average_project_budget": 0,
+          "average_project_spent": 0,
+          "currency": "USD"
+        },
+        "alerts": {
+          "projects_over_budget": 0,
+          "high_risk_projects": 0,
+          "overdue_projects": 0,
+          "risk_level": "low",
+          "risk_score": 0
+        },
+        "breakdown": {
+          "by_status": {},
+          "by_priority": {},
+          "monthly_spending": {
+            "2025-10": 0.0,
+            "2025-09": 0.0,
+            "2025-08": 0.0,
+            "2025-07": 0.0,
+            "2025-06": 0.0,
+            "2025-05": 0.0
+          }
+        },
+        "insights": {
+          "cost_efficiency": 100,
+          "projected_monthly_spend": 0,
+          "projected_completion_cost": 0.0,
+          "budget_target_variance": 0
+        },
+        "projects": [],
+        "last_updated": "2025-10-08T18:42:12.403119"
+      },
+      "timestamp": "2025-10-08T18:42:12.406676"
+    },
+    {
+      "test_name": "Get Budget Alerts",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "alerts": [],
+        "summary": {
+          "total_alerts": 0,
+          "critical_count": 0,
+          "warning_count": 0,
+          "info_count": 0
+        },
+        "last_updated": "2025-10-08T18:42:12.876107"
+      },
+      "timestamp": "2025-10-08T18:42:12.880171"
+    },
+    {
+      "test_name": "Cost Estimate Test Case 1",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "estimates": [
+          {
+            "method": "Team-Based Estimation",
+            "total_cost": 595200.0,
+            "breakdown": {
+              "labor_cost": 384000.0,
+              "overhead_cost": 153600.0,
+              "contingency": 57600.0
+            },
+            "details": {
+              "monthly_labor_cost": 64000,
+              "duration_months": 6,
+              "team_composition": {
+                "junior": 1,
+                "mid": 1,
+                "senior": 1,
+                "lead": 1
+              },
+              "project_multiplier": 1.0
+            },
+            "confidence": 85
+          },
+          {
+            "method": "Quick Estimation",
+            "total_cost": 450000,
+            "breakdown": {
+              "cost_per_member_per_month": 15000,
+              "team_size": 5,
+              "estimated_duration": 6
+            },
+            "confidence": 60,
+            "note": "Rule of thumb: $15k per team member per month"
+          }
+        ],
+        "benchmarks": {
+          "organization_avg_project_budget": null,
+          "organization_avg_team_size": null,
+          "industry_benchmarks": {
+            "software_development": {
+              "cost_per_dev_month": 12000,
+              "typical_duration_months": 8
+            },
+            "marketing_campaign": {
+              "cost_per_month": 25000,
+              "typical_duration_months": 3
+            },
+            "product_launch": {
+              "cost_per_month": 40000,
+              "typical_duration_months": 6
+            }
+          }
+        },
+        "recommendations": [
+          "Consider adding 15-20% contingency for unforeseen costs",
+          "Software projects typically see 20% scope creep",
+          "Include regular budget reviews every 2 weeks",
+          "Track actual vs. estimated hours for future accuracy"
+        ],
+        "parameters_used": {
+          "project_type": "software_development",
+          "team_size": 5,
+          "duration_months": 6,
+          "historical_projects_analyzed": 0
+        }
+      },
+      "timestamp": "2025-10-08T18:42:13.354700"
+    },
+    {
+      "test_name": "Cost Estimate Test Case 2",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "estimates": [
+          {
+            "method": "Team-Based Estimation",
+            "total_cost": 111600.0,
+            "breakdown": {
+              "labor_cost": 72000.0,
+              "overhead_cost": 28800.0,
+              "contingency": 10800.0
+            },
+            "details": {
+              "monthly_labor_cost": 40000,
+              "duration_months": 3,
+              "team_composition": {
+                "junior": 1,
+                "mid": 1,
+                "senior": 1,
+                "lead": 0
+              },
+              "project_multiplier": 0.6
+            },
+            "confidence": 85
+          },
+          {
+            "method": "Quick Estimation",
+            "total_cost": 135000,
+            "breakdown": {
+              "cost_per_member_per_month": 15000,
+              "team_size": 3,
+              "estimated_duration": 3
+            },
+            "confidence": 60,
+            "note": "Rule of thumb: $15k per team member per month"
+          }
+        ],
+        "benchmarks": {
+          "organization_avg_project_budget": null,
+          "organization_avg_team_size": null,
+          "industry_benchmarks": {
+            "software_development": {
+              "cost_per_dev_month": 12000,
+              "typical_duration_months": 8
+            },
+            "marketing_campaign": {
+              "cost_per_month": 25000,
+              "typical_duration_months": 3
+            },
+            "product_launch": {
+              "cost_per_month": 40000,
+              "typical_duration_months": 6
+            }
+          }
+        },
+        "recommendations": [
+          "Consider adding 15-20% contingency for unforeseen costs",
+          "Software projects typically see 20% scope creep",
+          "Include regular budget reviews every 2 weeks",
+          "Track actual vs. estimated hours for future accuracy"
+        ],
+        "parameters_used": {
+          "project_type": "marketing_campaign",
+          "team_size": 3,
+          "duration_months": 3,
+          "historical_projects_analyzed": 0
+        }
+      },
+      "timestamp": "2025-10-08T18:42:13.822885"
+    },
+    {
+      "test_name": "Cost Estimate Test Case 3",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "estimates": [
+          {
+            "method": "Team-Based Estimation",
+            "total_cost": 902720.0,
+            "breakdown": {
+              "labor_cost": 582400.0,
+              "overhead_cost": 232960.0,
+              "contingency": 87360.0
+            },
+            "details": {
+              "monthly_labor_cost": 104000,
+              "duration_months": 4,
+              "team_composition": {
+                "junior": 2,
+                "mid": 2,
+                "senior": 2,
+                "lead": 1
+              },
+              "project_multiplier": 1.4
+            },
+            "confidence": 85
+          },
+          {
+            "method": "Quick Estimation",
+            "total_cost": 480000,
+            "breakdown": {
+              "cost_per_member_per_month": 15000,
+              "team_size": 8,
+              "estimated_duration": 4
+            },
+            "confidence": 60,
+            "note": "Rule of thumb: $15k per team member per month"
+          }
+        ],
+        "benchmarks": {
+          "organization_avg_project_budget": null,
+          "organization_avg_team_size": null,
+          "industry_benchmarks": {
+            "software_development": {
+              "cost_per_dev_month": 12000,
+              "typical_duration_months": 8
+            },
+            "marketing_campaign": {
+              "cost_per_month": 25000,
+              "typical_duration_months": 3
+            },
+            "product_launch": {
+              "cost_per_month": 40000,
+              "typical_duration_months": 6
+            }
+          }
+        },
+        "recommendations": [
+          "Consider adding 15-20% contingency for unforeseen costs",
+          "Software projects typically see 20% scope creep",
+          "Include regular budget reviews every 2 weeks",
+          "Track actual vs. estimated hours for future accuracy"
+        ],
+        "parameters_used": {
+          "project_type": "product_launch",
+          "team_size": 8,
+          "duration_months": 4,
+          "historical_projects_analyzed": 0
+        }
+      },
+      "timestamp": "2025-10-08T18:42:14.294268"
+    },
+    {
+      "test_name": "Get Budget Alerts for Integration Test",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "alerts": [],
+        "summary": {
+          "total_alerts": 0,
+          "critical_count": 0,
+          "warning_count": 0,
+          "info_count": 0
+        },
+        "last_updated": "2025-10-08T18:42:14.761724"
+      },
+      "timestamp": "2025-10-08T18:42:14.768203"
+    },
+    {
+      "test_name": "Performance Test - Portfolio Summary",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "summary": {
+          "total_projects": 0,
+          "active_projects": 0,
+          "total_budget": 0.0,
+          "total_spent": 0.0,
+          "remaining_budget": 0,
+          "budget_utilization": 0,
+          "average_project_budget": 0,
+          "average_project_spent": 0,
+          "currency": "USD"
+        },
+        "alerts": {
+          "projects_over_budget": 0,
+          "high_risk_projects": 0,
+          "overdue_projects": 0,
+          "risk_level": "low",
+          "risk_score": 0
+        },
+        "breakdown": {
+          "by_status": {},
+          "by_priority": {},
+          "monthly_spending": {
+            "2025-10": 0.0,
+            "2025-09": 0.0,
+            "2025-08": 0.0,
+            "2025-07": 0.0,
+            "2025-06": 0.0,
+            "2025-05": 0.0
+          }
+        },
+        "insights": {
+          "cost_efficiency": 100,
+          "projected_monthly_spend": 0,
+          "projected_completion_cost": 0.0,
+          "budget_target_variance": 0
+        },
+        "projects": [],
+        "last_updated": "2025-10-08T18:42:15.235839"
+      },
+      "timestamp": "2025-10-08T18:42:15.242596"
+    },
+    {
+      "test_name": "Performance Test - Budget Alerts",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "alerts": [],
+        "summary": {
+          "total_alerts": 0,
+          "critical_count": 0,
+          "warning_count": 0,
+          "info_count": 0
+        },
+        "last_updated": "2025-10-08T18:42:15.704990"
+      },
+      "timestamp": "2025-10-08T18:42:15.708944"
+    },
+    {
+      "test_name": "Performance Test - Cost Estimates",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "estimates": [
+          {
+            "method": "Team-Based Estimation",
+            "total_cost": 595200.0,
+            "breakdown": {
+              "labor_cost": 384000.0,
+              "overhead_cost": 153600.0,
+              "contingency": 57600.0
+            },
+            "details": {
+              "monthly_labor_cost": 64000,
+              "duration_months": 6,
+              "team_composition": {
+                "junior": 1,
+                "mid": 1,
+                "senior": 1,
+                "lead": 1
+              },
+              "project_multiplier": 1.0
+            },
+            "confidence": 85
+          },
+          {
+            "method": "Quick Estimation",
+            "total_cost": 450000,
+            "breakdown": {
+              "cost_per_member_per_month": 15000,
+              "team_size": 5,
+              "estimated_duration": 6
+            },
+            "confidence": 60,
+            "note": "Rule of thumb: $15k per team member per month"
+          }
+        ],
+        "benchmarks": {
+          "organization_avg_project_budget": 965714.29,
+          "organization_avg_team_size": 1.3,
+          "industry_benchmarks": {
+            "software_development": {
+              "cost_per_dev_month": 12000,
+              "typical_duration_months": 8
+            },
+            "marketing_campaign": {
+              "cost_per_month": 25000,
+              "typical_duration_months": 3
+            },
+            "product_launch": {
+              "cost_per_month": 40000,
+              "typical_duration_months": 6
+            }
+          }
+        },
+        "recommendations": [
+          "Consider adding 15-20% contingency for unforeseen costs",
+          "Software projects typically see 20% scope creep",
+          "Include regular budget reviews every 2 weeks",
+          "Track actual vs. estimated hours for future accuracy"
+        ],
+        "parameters_used": {
+          "project_type": "software_development",
+          "team_size": 5,
+          "duration_months": 6,
+          "historical_projects_analyzed": 7
+        }
+      },
+      "timestamp": "2025-10-08T18:42:15.749317"
+    },
+    {
+      "test_name": "Edge Case Test 1",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "estimates": [
+          {
+            "method": "Team-Based Estimation",
+            "total_cost": 62000.0,
+            "breakdown": {
+              "labor_cost": 40000.0,
+              "overhead_cost": 16000.0,
+              "contingency": 6000.0
+            },
+            "details": {
+              "monthly_labor_cost": 40000,
+              "duration_months": 1,
+              "team_composition": {
+                "junior": 1,
+                "mid": 1,
+                "senior": 1,
+                "lead": 0
+              },
+              "project_multiplier": 1.0
+            },
+            "confidence": 85
+          },
+          {
+            "method": "Quick Estimation",
+            "total_cost": 15000,
+            "breakdown": {
+              "cost_per_member_per_month": 15000,
+              "team_size": 1,
+              "estimated_duration": 1
+            },
+            "confidence": 60,
+            "note": "Rule of thumb: $15k per team member per month"
+          }
+        ],
+        "benchmarks": {
+          "organization_avg_project_budget": 965714.29,
+          "organization_avg_team_size": 1.3,
+          "industry_benchmarks": {
+            "software_development": {
+              "cost_per_dev_month": 12000,
+              "typical_duration_months": 8
+            },
+            "marketing_campaign": {
+              "cost_per_month": 25000,
+              "typical_duration_months": 3
+            },
+            "product_launch": {
+              "cost_per_month": 40000,
+              "typical_duration_months": 6
+            }
+          }
+        },
+        "recommendations": [
+          "Consider adding 15-20% contingency for unforeseen costs",
+          "Software projects typically see 20% scope creep",
+          "Include regular budget reviews every 2 weeks",
+          "Track actual vs. estimated hours for future accuracy"
+        ],
+        "parameters_used": {
+          "project_type": "invalid_type",
+          "team_size": 1,
+          "duration_months": 1,
+          "historical_projects_analyzed": 7
+        }
+      },
+      "timestamp": "2025-10-08T18:42:15.828618"
+    },
+    {
+      "test_name": "Edge Case Test 2",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "estimates": [
+          {
+            "method": "Team-Based Estimation",
+            "total_cost": 41902080.0,
+            "breakdown": {
+              "labor_cost": 27033600.0,
+              "overhead_cost": 10813440.0,
+              "contingency": 4055040.0
+            },
+            "details": {
+              "monthly_labor_cost": 1126400,
+              "duration_months": 24,
+              "team_composition": {
+                "junior": 25,
+                "mid": 33,
+                "senior": 25,
+                "lead": 1
+              },
+              "project_multiplier": 1.0
+            },
+            "confidence": 85
+          },
+          {
+            "method": "Quick Estimation",
+            "total_cost": 36000000,
+            "breakdown": {
+              "cost_per_member_per_month": 15000,
+              "team_size": 100,
+              "estimated_duration": 24
+            },
+            "confidence": 60,
+            "note": "Rule of thumb: $15k per team member per month"
+          }
+        ],
+        "benchmarks": {
+          "organization_avg_project_budget": 965714.29,
+          "organization_avg_team_size": 1.3,
+          "industry_benchmarks": {
+            "software_development": {
+              "cost_per_dev_month": 12000,
+              "typical_duration_months": 8
+            },
+            "marketing_campaign": {
+              "cost_per_month": 25000,
+              "typical_duration_months": 3
+            },
+            "product_launch": {
+              "cost_per_month": 40000,
+              "typical_duration_months": 6
+            }
+          }
+        },
+        "recommendations": [
+          "Consider adding 15-20% contingency for unforeseen costs",
+          "Software projects typically see 20% scope creep",
+          "Include regular budget reviews every 2 weeks",
+          "Track actual vs. estimated hours for future accuracy"
+        ],
+        "parameters_used": {
+          "project_type": "software_development",
+          "team_size": 100,
+          "duration_months": 24,
+          "historical_projects_analyzed": 7
+        }
+      },
+      "timestamp": "2025-10-08T18:42:15.908448"
+    },
+    {
+      "test_name": "Edge Case Test 3",
+      "success": true,
+      "details": "Status: 200",
+      "response_data": {
+        "estimates": [],
+        "benchmarks": {
+          "organization_avg_project_budget": 965714.29,
+          "organization_avg_team_size": 1.3,
+          "industry_benchmarks": {
+            "software_development": {
+              "cost_per_dev_month": 12000,
+              "typical_duration_months": 8
+            },
+            "marketing_campaign": {
+              "cost_per_month": 25000,
+              "typical_duration_months": 3
+            },
+            "product_launch": {
+              "cost_per_month": 40000,
+              "typical_duration_months": 6
+            }
+          }
+        },
+        "recommendations": [
+          "Consider adding 15-20% contingency for unforeseen costs",
+          "Software projects typically see 20% scope creep",
+          "Include regular budget reviews every 2 weeks",
+          "Track actual vs. estimated hours for future accuracy"
+        ],
+        "parameters_used": {
+          "project_type": "software_development",
+          "team_size": 0,
+          "duration_months": 0,
+          "historical_projects_analyzed": 7
+        }
+      },
+      "timestamp": "2025-10-08T18:42:15.945000"
+    }
+  ],
+  "project_id": null,
+  "cost_data_available": true,
+  "functionality_status": "WORKING"
+}
