@@ -122,8 +122,19 @@ const ProjectDetailsPage: React.FC = () => {
   useEffect(() => {
     if (projectId && tokens?.access_token) {
       fetchProjectData()
+      // Initialize geolocation for activity tracking
+      initializeGeolocation()
+      // Log initial project view
+      logProjectAction('viewed', projectId, 'Viewed project details page')
     }
-  }, [projectId, tokens])
+  }, [projectId, tokens, initializeGeolocation, logProjectAction])
+
+  // Log tab navigation when active tab changes
+  useEffect(() => {
+    if (projectId && activeTab) {
+      logTabNavigation(activeTab, projectId)
+    }
+  }, [activeTab, projectId, logTabNavigation])
 
   const fetchProjectData = async () => {
     try {
