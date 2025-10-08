@@ -62,7 +62,7 @@ export default defineConfig({
         ? process.env.VITE_PROD_API_URL || (
             process.env.VITE_API_URL?.includes('emergentagent.com') 
               ? process.env.VITE_API_URL.replace('http:', 'https:')
-              : process.env.VITE_API_URL || 'https://api-gateway-fix-7.preview.emergentagent.com'
+              : process.env.VITE_API_URL || 'https://github-code.preview.emergentagent.com'
           )
         : process.env.VITE_API_URL || 'http://localhost:8001'
     ),
