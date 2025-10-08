@@ -188,11 +188,7 @@ async def create_enhanced_demo_activities():
                 "organization_id": demo_org["id"],
                 "project_id": project_id,
                 "task_id": str(uuid.uuid4()) if template["entity_type"] == "task" else None,
-                # Enhanced geolocation fields
-                "latitude": location["lat"] if location else None,
-                "longitude": location["lng"] if location else None,
-                "location_accuracy": location["accuracy"] if location else None,
-                "geolocation_enabled": has_geolocation,
+                # Enhanced tracking fields (geolocation removed)
                 "location_timestamp": activity_time.isoformat() if location else None,
                 # Enhanced tracking fields
                 "tab_name": template["tab_name"],
