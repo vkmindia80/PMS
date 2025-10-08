@@ -123,13 +123,25 @@ interface GeneratedDocument {
   }
 }
 
-const AIProjectArtifactGeneratorPage: React.FC = () => {
+interface AIProjectArtifactGeneratorPageProps {
+  loadedProjectScope?: ProjectScope | null
+  loadedDocumentTypes?: string[]
+  onProjectSaved?: () => void
+}
+
+const AIProjectArtifactGeneratorPage: React.FC<AIProjectArtifactGeneratorPageProps> = ({ 
+  loadedProjectScope,
+  loadedDocumentTypes,
+  onProjectSaved
+}) => {
   const [step, setStep] = useState(1)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([])
   const [generatedDocuments, setGeneratedDocuments] = useState<GeneratedDocument[]>([])
   const [viewingDocument, setViewingDocument] = useState<GeneratedDocument | null>(null)
   const [generationTime, setGenerationTime] = useState<number>(0)
+  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null)
 
   const [projectScope, setProjectScope] = useState<ProjectScope>({
     project_name: '',
