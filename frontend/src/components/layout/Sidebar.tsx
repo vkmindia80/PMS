@@ -241,6 +241,12 @@ const Sidebar: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Cost Calculation Sidebar */}
+      <CostCalculationSidebar 
+        isVisible={isCostSidebarOpen} 
+        onToggle={toggleCostSidebar} 
+      />
     </>
   )
 }
