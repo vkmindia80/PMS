@@ -20,6 +20,7 @@ class CostAnalyticsTester:
         self.tests_passed = 0
         self.test_project_id = None  # Will be set from projects list
         self.test_results = []
+        self.cost_data = None  # Store cost analytics data
 
     def log_result(self, test_name: str, success: bool, details: str = "", response_data: Any = None):
         """Log test result"""
