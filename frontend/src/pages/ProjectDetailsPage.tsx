@@ -224,34 +224,26 @@ const ProjectDetailsPage: React.FC = () => {
   }
 
   const fetchActivities = async () => {
-    // Mock activity data since there's no specific API endpoint
-    const mockActivities: ProjectActivity[] = [
-      {
-        id: '1',
-        type: 'status_change',
-        description: 'Changed project status from Planning to Active',
-        user_id: 'demo-user-001',
-        user_name: 'Demo User',
-        created_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString()
-      },
-      {
-        id: '2', 
-        type: 'task_created',
-        description: 'Created new task: Setup project infrastructure',
-        user_id: 'demo-user-001',
-        user_name: 'Demo User',
-        created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString()
-      },
-      {
-        id: '3',
-        type: 'milestone_completed',
-        description: 'Completed milestone: Project Kickoff',
-        user_id: 'demo-user-001',
-        user_name: 'Demo User',
-        created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString()
+    try {
+      const activitiesResponse = await fetch(API_ENDPOINTS.activities.project(projectId!), {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      
+      if (activitiesResponse.ok) {
+        const activitiesData = await activitiesResponse.json()
+        setActivities(activitiesData)
+      } else {
+        // Fallback to mock data if API is not available yet
+        console.log('Activities API not available, using mock data')
+        setActivities([])
       }
-    ]
-    setActivities(mockActivities)
+    } catch (error) {
+      console.log('Failed to fetch activities, using empty array')
+      setActivities([])
+    }
   }
 
   const fetchFilesCount = async () => {
