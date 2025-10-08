@@ -412,7 +412,6 @@ const ProjectDetailsPage: React.FC = () => {
     { id: 'milestones', name: 'Milestones', icon: Flag, count: (project?.milestones || []).length },
     { id: 'tasks', name: 'Tasks', icon: Target, count: tasks.length },
     { id: 'team', name: 'Team', icon: Users, count: project?.team_members?.length || 0 },
-    { id: 'timeline', name: 'Timeline', icon: GitBranch, count: null },
     { id: 'analytics', name: 'Analytics', icon: BarChart3, count: null },
     { id: 'files', name: 'Files', icon: FileText, count: 4 }, // EnhancedFilesTab has 4 mock files
     { id: 'activity', name: 'Activity', icon: Activity, count: activities.length }
