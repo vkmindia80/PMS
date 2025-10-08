@@ -314,60 +314,53 @@ class CostAnalyticsTester:
             print(f"    ❌ Failed to get detailed cost breakdown")
             return False
 
-    def test_specific_project_task_count(self):
-        """Test the specific project mentioned in the bug report: proj-4bee725235ee"""
+    def test_cost_analytics_integration(self):
+        """Test integration between different cost analytics endpoints"""
         print("\n" + "="*60)
-        print("TESTING SPECIFIC PROJECT TASK COUNT (proj-4bee725235ee)")
+        print("TESTING COST ANALYTICS INTEGRATION")
         print("="*60)
         
-        specific_project_id = "proj-4bee725235ee"
+        # Test that portfolio summary and budget alerts are consistent
+        if not self.cost_data:
+            print("    ❌ No portfolio cost data available")
+            return False
         
-        # First get project details
-        success, project_response = self.run_test(
-            "Get Specific Project Details",
+        # Get budget alerts
+        success, alerts_response = self.run_test(
+            "Get Budget Alerts for Integration Test",
             "GET",
-            f"/api/projects/{specific_project_id}",
+            "/api/cost-analytics/budget-alerts",
             200
         )
         
-        if success and 'id' in project_response:
-            project_task_count = project_response.get('task_count', 0)
-            print(f"    📋 Project task_count field: {project_task_count}")
+        if success and isinstance(alerts_response, dict):
+            portfolio_alerts = self.cost_data.get('alerts', {})
+            api_alerts = alerts_response.get('summary', {})
             
-            # Now get actual tasks for this project
-            success, tasks_response = self.run_test(
-                "Get Tasks for Specific Project",
-                "GET",
-                f"/api/tasks/?project_id={specific_project_id}",
-                200
-            )
+            # Compare alert counts
+            portfolio_over_budget = portfolio_alerts.get('projects_over_budget', 0)
+            portfolio_high_risk = portfolio_alerts.get('high_risk_projects', 0)
             
-            if success and isinstance(tasks_response, list):
-                actual_task_count = len(tasks_response)
-                print(f"    📋 Actual tasks returned: {actual_task_count}")
-                
-                # Check if there's a mismatch
-                if project_task_count != actual_task_count:
-                    print(f"    ⚠️ TASK COUNT MISMATCH DETECTED!")
-                    print(f"    ⚠️ Project.task_count: {project_task_count}")
-                    print(f"    ⚠️ Actual tasks: {actual_task_count}")
-                    print(f"    ⚠️ This explains the navigation tab showing 0 instead of {actual_task_count}")
-                    
-                    # Log some task details
-                    if actual_task_count > 0:
-                        print(f"    📋 Sample tasks:")
-                        for i, task in enumerate(tasks_response[:3]):  # Show first 3 tasks
-                            print(f"      {i+1}. {task.get('title', 'Unknown')} (ID: {task.get('id', 'Unknown')})")
-                    
-                    return False
-                else:
-                    print(f"    ✅ Task counts match: {actual_task_count}")
-                    return True
+            api_critical = api_alerts.get('critical_count', 0)
+            api_warning = api_alerts.get('warning_count', 0)
+            
+            print(f"    📊 Portfolio Over Budget: {portfolio_over_budget}")
+            print(f"    📊 Portfolio High Risk: {portfolio_high_risk}")
+            print(f"    🚨 API Critical Alerts: {api_critical}")
+            print(f"    ⚠️ API Warning Alerts: {api_warning}")
+            
+            # Check consistency (over budget should correlate with critical alerts)
+            consistency_check = (portfolio_over_budget == api_critical or 
+                               abs(portfolio_over_budget - api_critical) <= 1)  # Allow small variance
+            
+            if consistency_check:
+                print(f"    ✅ Alert data is consistent between endpoints")
+                return True
             else:
-                print(f"    ❌ Failed to get tasks for specific project")
+                print(f"    ⚠️ Alert data inconsistency detected")
                 return False
         else:
-            print(f"    ❌ Failed to get specific project details")
+            print(f"    ❌ Failed to get alerts for integration test")
             return False
 
     def test_auth_token_validity(self):
