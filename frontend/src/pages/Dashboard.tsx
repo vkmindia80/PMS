@@ -518,6 +518,78 @@ const Dashboard: React.FC = () => {
               <span className="text-xs opacity-90">Configure system preferences</span>
             </button>
           </div>
+          
+          {/* Admin-only Data Generation Section */}
+          {isAdmin && (
+            <div className="mt-8">
+              <div className="border-t pt-6">
+                <h4 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                  <Database className="h-5 w-5 mr-2 text-orange-600" />
+                  Admin Data Management
+                </h4>
+                <p className="text-sm text-gray-600 mb-4">
+                  Generate comprehensive demo data to showcase system capabilities and test functionality
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button 
+                    className="btn-outline p-4 h-auto flex-col space-y-2 transition-all hover:scale-105 bg-gradient-to-br from-orange-50 to-red-50 border-orange-200 hover:border-orange-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    onClick={handleGenerateEnhancedData}
+                    disabled={isGeneratingData}
+                  >
+                    <div className="flex items-center justify-center">
+                      {isGeneratingData ? (
+                        <RefreshCw className="h-6 w-6 text-orange-600 animate-spin" />
+                      ) : (
+                        <Database className="h-6 w-6 text-orange-600" />
+                      )}
+                    </div>
+                    <span className="font-semibold text-orange-700">
+                      {isGeneratingData ? 'Generating...' : 'Enhanced Demo Data'}
+                    </span>
+                    <span className="text-xs text-orange-600 text-center">
+                      {isGeneratingData 
+                        ? 'Creating comprehensive enterprise data...' 
+                        : 'Generate comprehensive enterprise-grade demo data with advanced features'
+                      }
+                    </span>
+                    {!isGeneratingData && (
+                      <div className="text-xs text-orange-500 text-center mt-1">
+                        ✨ Includes: C-level executives, budget tracking, performance metrics, certifications
+                      </div>
+                    )}
+                  </button>
+                  
+                  <button 
+                    className="btn-outline p-4 h-auto flex-col space-y-2 transition-all hover:scale-105 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    onClick={handleGenerateStandardData}
+                    disabled={isGeneratingData}
+                  >
+                    <div className="flex items-center justify-center">
+                      {isGeneratingData ? (
+                        <RefreshCw className="h-6 w-6 text-blue-600 animate-spin" />
+                      ) : (
+                        <RefreshCw className="h-6 w-6 text-blue-600" />
+                      )}
+                    </div>
+                    <span className="font-semibold text-blue-700">
+                      {isGeneratingData ? 'Generating...' : 'Standard Demo Data'}
+                    </span>
+                    <span className="text-xs text-blue-600 text-center">
+                      {isGeneratingData 
+                        ? 'Creating standard demo data...' 
+                        : 'Generate standard demo data with basic features'
+                      }
+                    </span>
+                    {!isGeneratingData && (
+                      <div className="text-xs text-blue-500 text-center mt-1">
+                        📊 Includes: Users, teams, projects, tasks, comments, files
+                      </div>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
