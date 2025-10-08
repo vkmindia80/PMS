@@ -279,6 +279,7 @@ app.include_router(files_router)
 app.include_router(advanced_timeline_router)
 app.include_router(activities_router)
 app.include_router(cost_analytics_router)
+app.include_router(ai_project_generator_router, prefix="/api/ai-project-generator", tags=["AI Project Generator"])
 
 # Health check endpoint
 @app.get("/api/health")
