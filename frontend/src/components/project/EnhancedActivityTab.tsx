@@ -237,18 +237,7 @@ export const EnhancedActivityTab: React.FC<EnhancedActivityTabProps> = ({
         </div>
       </div>
 
-      {/* Geolocation Status */}
-      {geolocationSettings.enabled && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-          <div className="flex items-center space-x-2 text-green-700">
-            <MapPin className="w-5 h-5" />
-            <span className="font-medium">Location tracking is active</span>
-          </div>
-          <p className="text-green-600 text-sm mt-1">
-            Activity logs will include location data for enhanced tracking and analysis.
-          </p>
-        </div>
-      )}
+      {/* Geolocation status removed */}
 
       {/* Activity Statistics */}
       {showStats && stats && (
