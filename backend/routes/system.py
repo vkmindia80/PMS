@@ -170,18 +170,6 @@ async def generate_ultimate_comprehensive_demo_data():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to start ULTIMATE demo data generation: {str(e)}"
         )
-                    "backend_api": "http://localhost:8001",
-                    "api_docs": "http://localhost:8001/docs"
-                }
-            }
-        }
-        
-    except Exception as e:
-        logger.error(f"❌ Enhanced demo data generation failed: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to start enhanced demo data generation: {str(e)}"
-        )
 
 
 @router.get("/demo-data-status", status_code=200)
