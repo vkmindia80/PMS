@@ -38,6 +38,7 @@ export const DEMO_CREDENTIALS = {
 
 // API endpoints - now using dynamic API URL generation
 export const API_ENDPOINTS = {
+  get base() { return getApiUrl(); },
   auth: {
     get login() { return `${getApiUrl()}/api/auth/login`; },
     get register() { return `${getApiUrl()}/api/auth/register`; },
