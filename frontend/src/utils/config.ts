@@ -81,7 +81,7 @@ export const API_ENDPOINTS = {
     dependencyUpdate: (dependencyId: string) => `${getApiUrl()}/api/timeline/dependencies/${dependencyId}`,
     dependencyDelete: (dependencyId: string) => `${getApiUrl()}/api/timeline/dependencies/${dependencyId}`,
     project: (projectId: string) => `${getApiUrl()}/api/timeline/project/${projectId}`,
-    stats: (projectId: string) => `${getApiUrl()}/api/timeline/stats/${projectId}`,
+    stats: (projectId: string) => `${getApiUrl()}/api/dynamic-timeline/stats/${projectId}/realtime`,
   },
   analytics: {
     get dashboard() { return `${getApiUrl()}/api/analytics/dashboard`; },
