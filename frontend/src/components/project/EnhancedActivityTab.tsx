@@ -59,8 +59,6 @@ export const EnhancedActivityTab: React.FC<EnhancedActivityTabProps> = ({
 }) => {
   const { tokens } = useAuth();
   const { 
-    geolocationSettings, 
-    toggleGeolocation, 
     logCommentAction 
   } = useActivityTracking(projectId);
 
