@@ -60,6 +60,75 @@ async def generate_comprehensive_demo_data():
             detail=f"Failed to start demo data generation: {str(e)}"
         )
 
+@router.post("/generate-enhanced-demo-data", status_code=202)
+async def generate_enhanced_comprehensive_demo_data():
+    """
+    Generate ENHANCED comprehensive demo data with extensive enterprise features
+    This creates much more comprehensive data including:
+    - Enhanced user profiles with certifications, salary ranges, performance ratings
+    - Advanced team structures with budget allocation and performance targets  
+    - Comprehensive project templates with detailed financial tracking
+    - Professional organizational hierarchy and management structure
+    Returns immediately with 202 Accepted while generation runs in background
+    """
+    try:
+        logger.info("🚀 Starting ENHANCED comprehensive demo data generation via API...")
+        
+        # Import the enhanced generator
+        from enhanced_comprehensive_demo_generator import EnhancedComprehensiveDemoDataGenerator
+        
+        # Create enhanced generator instance
+        generator = EnhancedComprehensiveDemoDataGenerator()
+        
+        # Run enhanced generation in background task
+        async def run_enhanced_generation():
+            try:
+                success = await generator.run_complete_enhanced_generation()
+                if success:
+                    logger.info("✅ Enhanced demo data generation completed successfully")
+                else:
+                    logger.error("❌ Enhanced demo data generation failed")
+            except Exception as e:
+                logger.error(f"❌ Background enhanced demo data generation error: {str(e)}")
+        
+        # Start background task
+        asyncio.create_task(run_enhanced_generation())
+        
+        # Return immediately
+        return {
+            "success": True,
+            "message": "Enhanced Demo Data generation started! This creates comprehensive enterprise data and may take 30-60 seconds to complete.",
+            "status": "processing",
+            "generator_version": "Enhanced Comprehensive v2.0",
+            "enhanced_features": [
+                "🏢 Comprehensive organizational hierarchy with C-level executives",
+                "💼 Enhanced user profiles with certifications & performance ratings", 
+                "💰 Advanced financial tracking with budget allocation & salary ranges",
+                "🎯 Team performance management with KPI targets",
+                "🚀 Next-generation technology coverage (AI, Blockchain, IoT, XR)",
+                "🔒 Security clearance levels and compliance tracking",
+                "📊 Professional achievements and career progression data",
+                "🌍 Global team distribution with location and timezone data"
+            ],
+            "details": {
+                "note": "The enhanced generation creates enterprise-grade demo data. You can refresh the page in a moment to see the comprehensive new data.",
+                "data_scope": "15+ professional users, 15+ specialized teams, comprehensive organizational structure",
+                "access_info": {
+                    "demo_login": "demo@company.com / demo123456", 
+                    "frontend_url": "http://localhost:3000",
+                    "backend_api": "http://localhost:8001",
+                    "api_docs": "http://localhost:8001/docs"
+                }
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Enhanced demo data generation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to start enhanced demo data generation: {str(e)}"
+        )
+
 
 @router.get("/demo-data-status", status_code=200)
 async def get_demo_data_status():
