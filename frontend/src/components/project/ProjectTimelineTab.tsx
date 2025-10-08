@@ -436,6 +436,13 @@ const ProjectTimelineTab: React.FC<ProjectTimelineTabProps> = ({
               <RefreshCw className="h-4 w-4" />
             </button>
 
+            <TimelineExportButton
+              elementId="project-timeline-container"
+              tasks={filteredTasks}
+              projectName={project?.name || 'Timeline'}
+              className="hidden sm:inline-block"
+            />
+
             <button
               onClick={handleNewTask}
               className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
