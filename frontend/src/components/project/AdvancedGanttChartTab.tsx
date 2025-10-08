@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { API_ENDPOINTS } from '../../utils/config';
+import { exportTimelineToPNG } from '../../utils/timelineExport';
 import toast from 'react-hot-toast';
 
 interface Task {
