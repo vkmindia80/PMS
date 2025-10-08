@@ -101,7 +101,7 @@ const AdvancedGanttChartTab: React.FC<AdvancedGanttChartTabProps> = ({ projectId
     try {
       setLoading(true);
       const response = await fetch(
-        `${API_ENDPOINTS.timeline.gantt(projectId)}?show_completed=${filterCompleted}`,
+        `${API_ENDPOINTS.base}/api/timeline/gantt/${projectId}?show_completed=${filterCompleted}`,
         {
           headers: {
             'Authorization': `Bearer ${tokens?.access_token}`,
