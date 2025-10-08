@@ -1,11 +1,11 @@
 /**
  * Activity Tracking Settings Component
- * Allows users to configure activity logging and geolocation preferences
+ * Allows users to configure activity logging preferences
  */
 
 import React, { useState, useEffect } from 'react';
 import { 
-  MapPin, Lock, Globe, Eye, Settings, Shield, 
+  Eye, Settings, Shield, 
   Info, AlertCircle, CheckCircle, X, Save 
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
