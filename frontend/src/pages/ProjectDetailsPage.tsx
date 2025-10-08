@@ -5,7 +5,7 @@ import {
   TrendingUp, Clock, CheckCircle, AlertCircle, MessageSquare, 
   BarChart3, Plus, Save, X, MoreVertical, FolderOpen, Settings,
   FileText, Activity, Eye, Star, Share, Download, Filter,
-  Zap, PieChart, LineChart, Grid, List, Kanban, Flag, GitBranch
+  Zap, PieChart, LineChart, Grid, List, Kanban, Flag
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { API_ENDPOINTS, getBACKEND_URL } from '../utils/config'
