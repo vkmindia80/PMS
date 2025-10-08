@@ -470,7 +470,7 @@ const ProjectDetailsPage: React.FC = () => {
     { id: 'team', name: 'Team', icon: Users, count: project?.team_members?.length || 0 },
     { id: 'analytics', name: 'Analytics', icon: BarChart3, count: null },
     { id: 'files', name: 'Files', icon: FileText, count: filesCount },
-    { id: 'activity', name: 'Activity', icon: Activity, count: activities.length }
+    { id: 'activity', name: 'Activity', icon: Activity, count: activities.length + comments.length }
   ] as const
 
   if (loading) {
