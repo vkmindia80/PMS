@@ -164,6 +164,64 @@ const AIProjectArtifactGeneratorPage: React.FC<AIProjectArtifactGeneratorPagePro
 
   const [additionalInstructions, setAdditionalInstructions] = useState('')
 
+  // Load project scope when passed from parent
+  useEffect(() => {
+    if (loadedProjectScope) {
+      setProjectScope(loadedProjectScope)
+    }
+  }, [loadedProjectScope])
+
+  // Load document types when passed from parent
+  useEffect(() => {
+    if (loadedDocumentTypes && loadedDocumentTypes.length > 0) {
+      setSelectedDocuments(loadedDocumentTypes)
+    }
+  }, [loadedDocumentTypes])
+
+  // Save project function
+  const saveProject = async () => {
+    if (!generatedDocuments || generatedDocuments.length === 0) {
+      toast.error('No documents to save')
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
+      
+      const requestBody = {
+        project_scope: projectScope,
+        generated_documents: generatedDocuments,
+        tags: []
+      }
+
+      const response = await fetch(`${backendUrl}/api/ai-project-generator/projects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        },
+        body: JSON.stringify(requestBody)
+      })
+
+      if (!response.ok) throw new Error('Failed to save project')
+
+      const savedProject = await response.json()
+      setCurrentProjectId(savedProject.id)
+      
+      toast.success('Project saved successfully!')
+      
+      if (onProjectSaved) {
+        onProjectSaved()
+      }
+    } catch (error: any) {
+      console.error('Error saving project:', error)
+      toast.error('Failed to save project')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   // Helper functions for array fields
   const addArrayItem = (field: keyof ProjectScope, value: string = '') => {
     setProjectScope(prev => ({
