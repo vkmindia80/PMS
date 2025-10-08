@@ -197,6 +197,123 @@ const Dashboard: React.FC = () => {
     }
   }, [selectedProject, apiStatus])
 
+  // Generate enhanced demo data
+  const handleGenerateEnhancedData = async () => {
+    if (isGeneratingData) return
+    
+    try {
+      setIsGeneratingData(true)
+      toast.loading('Starting enhanced data generation...', { id: 'data-generation' })
+      
+      const authTokensStr = localStorage.getItem('auth_tokens')
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json'
+      }
+      
+      if (authTokensStr) {
+        try {
+          const authTokens = JSON.parse(authTokensStr)
+          headers['Authorization'] = `Bearer ${authTokens.access_token}`
+        } catch (e) {
+          console.error('Failed to parse auth tokens:', e)
+        }
+      }
+
+      const response = await fetch(`${API_URL_CONFIG}/api/system/generate-enhanced-demo-data`, {
+        method: 'POST',
+        headers
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        toast.success(result.message, { 
+          id: 'data-generation',
+          duration: 6000
+        })
+        
+        // Wait a moment then refresh dashboard data
+        setTimeout(() => {
+          if (apiStatus === 'connected') {
+            fetchDashboardData(API_URL_CONFIG)
+          }
+        }, 5000)
+        
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Failed to generate enhanced demo data')
+      }
+      
+    } catch (error: any) {
+      console.error('Enhanced data generation failed:', error)
+      toast.error(`Failed to generate enhanced demo data: ${error.message}`, { 
+        id: 'data-generation',
+        duration: 8000
+      })
+    } finally {
+      setIsGeneratingData(false)
+    }
+  }
+
+  // Generate standard demo data
+  const handleGenerateStandardData = async () => {
+    if (isGeneratingData) return
+    
+    try {
+      setIsGeneratingData(true)
+      toast.loading('Starting standard data generation...', { id: 'data-generation' })
+      
+      const authTokensStr = localStorage.getItem('auth_tokens')
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json'
+      }
+      
+      if (authTokensStr) {
+        try {
+          const authTokens = JSON.parse(authTokensStr)
+          headers['Authorization'] = `Bearer ${authTokens.access_token}`
+        } catch (e) {
+          console.error('Failed to parse auth tokens:', e)
+        }
+      }
+
+      const response = await fetch(`${API_URL_CONFIG}/api/system/generate-demo-data`, {
+        method: 'POST',
+        headers
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        toast.success(result.message, { 
+          id: 'data-generation',
+          duration: 5000
+        })
+        
+        // Wait a moment then refresh dashboard data
+        setTimeout(() => {
+          if (apiStatus === 'connected') {
+            fetchDashboardData(API_URL_CONFIG)
+          }
+        }, 3000)
+        
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.detail || 'Failed to generate demo data')
+      }
+      
+    } catch (error: any) {
+      console.error('Standard data generation failed:', error)
+      toast.error(`Failed to generate demo data: ${error.message}`, { 
+        id: 'data-generation',
+        duration: 8000
+      })
+    } finally {
+      setIsGeneratingData(false)
+    }
+  }
+
+  // Check if user is admin/super_admin
+  const isAdmin = user?.role === 'admin' || user?.role === 'super_admin'
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
