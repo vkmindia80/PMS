@@ -11,14 +11,14 @@ echo "📦 Updating package list..."
 apt-get update -qq
 
 # Install libmagic (required by python-magic for file type detection)
-echo "📦 Installing libmagic1..."
-apt-get install -y libmagic1
+echo "📦 Installing libmagic1 and libmagic-dev..."
+apt-get install -y libmagic1 libmagic-dev
 
 # Verify installation
-if dpkg -l | grep -q libmagic1; then
-    echo "✅ libmagic1 installed successfully"
+if dpkg -l | grep -q libmagic1 && dpkg -l | grep -q libmagic-dev; then
+    echo "✅ libmagic1 and libmagic-dev installed successfully"
 else
-    echo "❌ Failed to install libmagic1"
+    echo "❌ Failed to install libmagic libraries"
     exit 1
 fi
 
