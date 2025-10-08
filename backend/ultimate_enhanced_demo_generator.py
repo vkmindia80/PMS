@@ -615,7 +615,7 @@ class UltimateEnhancedDemoDataGenerator:
                             "logged_hours": random.randint(0, 35) if status != "todo" else 0,
                             "progress_percentage": 100 if status == "completed" else random.randint(0, 80) if status == "in_progress" else 0,
                             "tags": random.sample(project["tags"], min(2, len(project["tags"]))) if project["tags"] else [],
-                            "watchers": random.sample(project["team_members"], random.randint(1, 3)),
+                            "watchers": random.sample(project["team_members"], min(random.randint(1, 3), len(project["team_members"]))) if project["team_members"] else [],
                             "created_at": datetime.utcnow() - timedelta(days=random.randint(1, 60)),
                             "updated_at": datetime.utcnow()
                         }
