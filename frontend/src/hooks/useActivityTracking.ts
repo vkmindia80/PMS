@@ -30,21 +30,7 @@ export const useActivityTracking = (projectId?: string) => {
   const [isTrackingEnabled, setIsTrackingEnabled] = useState(true);
   const sessionId = useRef<string>(generateSessionId());
 
-  // Initialize geolocation settings from user preferences
-  useEffect(() => {
-    if (user) {
-      const geoEnabled = user.geolocation_enabled || false;
-      setGeolocationSettings(prev => ({
-        ...prev,
-        enabled: geoEnabled
-      }));
-
-      // Request geolocation if enabled
-      if (geoEnabled) {
-        initializeGeolocation();
-      }
-    }
-  }, [user]);
+  // No geolocation initialization needed
 
   /**
    * Initialize geolocation tracking
