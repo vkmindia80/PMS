@@ -1,6 +1,6 @@
 """
-Create Enhanced Demo Activity Data with Geolocation
-Generates comprehensive activity logs with location data for demonstration
+Create Enhanced Demo Activity Data
+Generates comprehensive activity logs for demonstration
 """
 
 import asyncio
@@ -8,16 +8,6 @@ import uuid
 from datetime import datetime, timedelta
 from database import connect_to_mongo, get_database
 import random
-
-# Sample locations (coordinates for major cities)
-SAMPLE_LOCATIONS = [
-    {"name": "New York City", "lat": 40.7128, "lng": -74.0060, "accuracy": 10},
-    {"name": "San Francisco", "lat": 37.7749, "lng": -122.4194, "accuracy": 15},
-    {"name": "London", "lat": 51.5074, "lng": -0.1278, "accuracy": 12},
-    {"name": "Tokyo", "lat": 35.6762, "lng": 139.6503, "accuracy": 8},
-    {"name": "Berlin", "lat": 52.5200, "lng": 13.4050, "accuracy": 20},
-    {"name": "Sydney", "lat": -33.8688, "lng": 151.2093, "accuracy": 18},
-]
 
 # Sample activities with realistic descriptions
 ACTIVITY_TEMPLATES = [
