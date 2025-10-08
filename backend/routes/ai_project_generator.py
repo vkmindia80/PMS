@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Query
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from enum import Enum
@@ -9,10 +9,14 @@ from io import BytesIO
 import asyncio
 import os
 from dotenv import load_dotenv
+import uuid
 
 # Import auth dependencies
 from auth.middleware import get_current_user
 from models.user import User
+
+# Import database
+from database import get_database
 
 # Import emergent integrations
 from emergentintegrations.llm.chat import LlmChat, UserMessage
