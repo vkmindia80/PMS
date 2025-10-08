@@ -747,6 +747,15 @@ const ProjectDetailsPage: React.FC = () => {
             projectName={project.name}
           />
         )}
+
+        {activeTab === 'cost' && (
+          <CostBreakdownTab 
+            project={project}
+            tasks={tasks}
+            users={users}
+            budgetUtilization={budgetUtilization}
+          />
+        )}
       </div>
     </div>
   )
