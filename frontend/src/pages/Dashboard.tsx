@@ -10,12 +10,14 @@ import { useAuth } from '../contexts/AuthContext'
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const { selectedProject, getSelectedProjectIds } = useProjectFilterContext()
   const [apiStatus, setApiStatus] = useState<'loading' | 'connected' | 'error'>('loading')
   const [apiData, setApiData] = useState<any>(null)
   const [dbStatus, setDbStatus] = useState<any>(null)
   const [modelsInfo, setModelsInfo] = useState<any>(null)
   const [showProjectModal, setShowProjectModal] = useState(false)
+  const [isGeneratingData, setIsGeneratingData] = useState(false)
   const [dashboardData, setDashboardData] = useState({
     projects: 0,
     total_projects: 0,
