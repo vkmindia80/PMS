@@ -29,11 +29,6 @@ interface ProjectActivity {
   project_id?: string;
   task_id?: string;
   // Enhanced fields
-  latitude?: number;
-  longitude?: number;
-  location_accuracy?: number;
-  geolocation_enabled: boolean;
-  location_timestamp?: string;
   tab_name?: string;
   session_id?: string;
   user_agent?: string;
