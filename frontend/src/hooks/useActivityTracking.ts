@@ -1,11 +1,10 @@
 /**
  * Activity Tracking Hook
- * Provides comprehensive activity logging with geolocation support
+ * Provides comprehensive activity logging
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { geolocationService } from '../services/geolocationService';
 import { API_ENDPOINTS } from '../utils/config';
 import toast from 'react-hot-toast';
 
