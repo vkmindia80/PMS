@@ -399,15 +399,11 @@ const AdvancedTimelineTab: React.FC<AdvancedTimelineTabProps> = ({
   }, [timelineTasks]);
 
   /**
-   * Export timeline data
+   * Export timeline data - Now handled by TimelineExportButton component
    */
   const handleExport = useCallback(async (format: 'png' | 'pdf' | 'csv') => {
-    toast.loading(`Exporting timeline as ${format.toUpperCase()}...`, { id: 'export' });
-    
-    // Implementation will trigger export from Gantt chart component
-    setTimeout(() => {
-      toast.success(`Timeline exported as ${format.toUpperCase()}`, { id: 'export' });
-    }, 1000);
+    // This is now handled by the TimelineExportButton component
+    // Keeping this method for compatibility
   }, []);
 
   /**
