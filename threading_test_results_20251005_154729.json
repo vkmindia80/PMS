@@ -1,7 +1,7 @@
 {
   "test_summary": {
     "start_time": "2025-10-05T15:47:29.179813",
-    "base_url": "https://zero-downtime-gen.preview.emergentagent.com",
+    "base_url": "https://timeline-png-export.preview.emergentagent.com",
     "test_entity": "task/test-task-threading-001",
     "end_time": "2025-10-05T15:47:29.355614",
     "total_tests": 3,
