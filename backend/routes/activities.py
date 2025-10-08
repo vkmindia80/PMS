@@ -37,7 +37,7 @@ async def create_activity(
             "organization_id": current_user.organization_id,
             "project_id": activity_data.project_id,
             "task_id": activity_data.task_id,
-            # Enhanced tracking fields  
+            # Enhanced tracking fields (geolocation removed)
             "tab_name": activity_data.tab_name,
             "session_id": activity_data.session_id,
             "user_agent": activity_data.user_agent,
