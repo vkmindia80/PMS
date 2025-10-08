@@ -744,13 +744,9 @@ const ProjectDetailsPage: React.FC = () => {
         )}
 
         {activeTab === 'activity' && (
-          <ActivityTab 
-            activities={activities}
-            comments={comments}
-            newComment={newComment}
-            setNewComment={setNewComment}
-            handleAddComment={handleAddComment}
-            formatDateTime={formatDateTime}
+          <EnhancedActivityTab 
+            projectId={project.id}
+            projectName={project.name}
           />
         )}
       </div>
