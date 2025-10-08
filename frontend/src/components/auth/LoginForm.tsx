@@ -237,8 +237,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
+                className={`w-full pl-10 pr-12 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 ${
+                  errors.password ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400 focus:bg-white'
                 }`}
                 placeholder="Enter your password"
                 disabled={isLoading}
