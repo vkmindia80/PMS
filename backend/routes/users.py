@@ -472,3 +472,57 @@ async def assign_user_to_organization(
         "organization_id": organization_id,
         "role": role
     }
+
+@router.patch("/{user_id}/preferences")
+async def update_user_preferences(
+    user_id: str,
+    preferences: dict,
+    current_user: User = Depends(get_current_active_user)
+):
+    """Update user preferences including activity tracking settings"""
+    # Users can only update their own preferences, or admins can update any
+    if (user_id != current_user.id and 
+        current_user.role not in [UserRole.SUPER_ADMIN, UserRole.ADMIN]):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Can only update your own preferences"
+        )
+    
+    db = await get_database()
+    
+    # Validate and prepare preference updates
+    valid_preferences = {
+        "timezone", "language", "theme", "notifications_enabled",
+        "geolocation_enabled", "activity_tracking_level", "location_sharing_scope"
+    }
+    
+    update_data = {}
+    for key, value in preferences.items():
+        if key in valid_preferences:
+            update_data[key] = value
+    
+    if not update_data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No valid preferences provided"
+        )
+    
+    update_data["updated_at"] = datetime.utcnow()
+    
+    # Update user preferences
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": update_data}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No changes made to user preferences"
+        )
+    
+    logger.info(f"User preferences updated: {user_id} by {current_user.email}")
+    return {
+        "message": "User preferences updated successfully",
+        "updated_preferences": update_data
+    }
