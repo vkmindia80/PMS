@@ -153,11 +153,23 @@ async def generate_ultimate_comprehensive_demo_data():
                 "🌍 Global team distribution with location and timezone data"
             ],
             "details": {
-                "note": "The enhanced generation creates enterprise-grade demo data. You can refresh the page in a moment to see the comprehensive new data.",
-                "data_scope": "15+ professional users, 15+ specialized teams, comprehensive organizational structure",
+                "note": "The ULTIMATE generation creates the most comprehensive enterprise-grade demo data covering ALL data points. You can refresh the page in a moment to see the new data.",
+                "data_scope": "13+ professional users across all departments, comprehensive teams, 6+ enterprise projects, detailed tasks with dependencies, timeline data, comments, files, notifications",
                 "access_info": {
                     "demo_login": "demo@company.com / demo123456", 
                     "frontend_url": "http://localhost:3000",
+                    "backend_api": "http://localhost:8001",
+                    "api_docs": "http://localhost:8001/docs"
+                }
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ ULTIMATE demo data generation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to start ULTIMATE demo data generation: {str(e)}"
+        )
                     "backend_api": "http://localhost:8001",
                     "api_docs": "http://localhost:8001/docs"
                 }
