@@ -346,14 +346,31 @@ const AdvancedGanttChartTab: React.FC<AdvancedGanttChartTabProps> = ({ projectId
   }, [showContextMenu]);
 
   // Export to PNG
-  const handleExport = useCallback(() => {
-    if (!canvasRef.current) return;
-    
-    const link = document.createElement('a');
-    link.download = `${projectName}-timeline-${new Date().toISOString().split('T')[0]}.png`;
-    link.href = canvasRef.current.toDataURL();
-    link.click();
-    toast.success('Timeline exported successfully');
+  const handleExport = useCallback(async () => {
+    try {
+      const elementId = 'gantt-chart-container';
+      const filename = `${projectName}-timeline-${new Date().toISOString().split('T')[0]}.png`;
+      
+      toast.loading('Exporting timeline as PNG...', { id: 'export' });
+      
+      await exportTimelineToPNG(elementId, {
+        format: 'png',
+        filename,
+        quality: 2, // High quality
+        includeBackground: true
+      });
+      
+      toast.success('Timeline exported successfully! Check your downloads.', { 
+        id: 'export', 
+        duration: 4000 
+      });
+    } catch (error) {
+      console.error('Export failed:', error);
+      toast.error(
+        error instanceof Error ? error.message : 'Export failed. Please try again.',
+        { id: 'export' }
+      );
+    }
   }, [projectName]);
 
   // Filtered tasks
