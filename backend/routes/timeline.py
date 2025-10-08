@@ -144,9 +144,12 @@ async def get_timeline_gantt_data(
         
         current_date = datetime.utcnow()
         for task in timeline_tasks:
-            end_date = datetime.fromisoformat(task["end_date"].replace('Z', '+00:00'))
-            if end_date < current_date and task.get("status") != "completed":
-                overdue_tasks += 1
+            # Handle both end_date and finish_date field names
+            end_date_str = task.get("end_date") or task.get("finish_date")
+            if end_date_str:
+                end_date = datetime.fromisoformat(end_date_str.replace('Z', '+00:00'))
+                if end_date < current_date and task.get("status") != "completed":
+                    overdue_tasks += 1
         
         # Calculate project health score (0-100)
         if total_tasks > 0:
