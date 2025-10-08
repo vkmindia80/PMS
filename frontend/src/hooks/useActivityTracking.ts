@@ -32,51 +32,7 @@ export const useActivityTracking = (projectId?: string) => {
 
   // No geolocation initialization needed
 
-  /**
-   * Initialize geolocation tracking
-   */
-  const initializeGeolocation = async () => {
-    try {
-      const hasPermission = await geolocationService.requestPermission();
-      
-      if (hasPermission) {
-        const position = await geolocationService.getCurrentPosition();
-        
-        setGeolocationSettings(prev => ({
-          ...prev,
-          permission: 'granted',
-          currentPosition: position
-        }));
-
-        // Start watching position changes
-        geolocationService.startWatching(
-          (newPosition) => {
-            setGeolocationSettings(prev => ({
-              ...prev,
-              currentPosition: newPosition
-            }));
-          },
-          (error) => {
-            console.warn('Geolocation tracking error:', error);
-          }
-        );
-
-        toast.success('Location tracking enabled for activity logging');
-      } else {
-        setGeolocationSettings(prev => ({
-          ...prev,
-          permission: 'denied'
-        }));
-        toast.error('Location permission denied. Activity will be logged without location data.');
-      }
-    } catch (error) {
-      console.error('Failed to initialize geolocation:', error);
-      setGeolocationSettings(prev => ({
-        ...prev,
-        permission: 'denied'
-      }));
-    }
-  };
+  // Geolocation functionality removed
 
   /**
    * Log an activity with optional geolocation
