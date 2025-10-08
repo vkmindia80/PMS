@@ -20,17 +20,10 @@ class Activity(BaseModel):
     organization_id: str
     project_id: Optional[str] = None
     task_id: Optional[str] = None
-    # Geolocation fields
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
-    location_accuracy: Optional[float] = None  # Accuracy in meters
-    geolocation_enabled: bool = False  # Whether user has geolocation enabled
-    location_timestamp: Optional[datetime] = None  # When location was captured
     # Enhanced tracking fields
     tab_name: Optional[str] = None  # Which tab the activity occurred in
     session_id: Optional[str] = None  # User session identifier
     user_agent: Optional[str] = None  # Browser/device info
-    ip_address: Optional[str] = None  # User IP (for general location if geo disabled)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
     class Config:
