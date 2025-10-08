@@ -493,7 +493,7 @@ async def update_user_preferences(
     # Validate and prepare preference updates
     valid_preferences = {
         "timezone", "language", "theme", "notifications_enabled",
-        "geolocation_enabled", "activity_tracking_level", "location_sharing_scope"
+        "activity_tracking_level"
     }
     
     update_data = {}
