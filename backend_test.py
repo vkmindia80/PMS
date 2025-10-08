@@ -428,7 +428,7 @@ class CostAnalyticsTester:
         return all_success
 
     def test_generate_demo_data(self):
-        """Test generate demo data functionality"""
+        """Test generate demo data functionality to ensure cost data exists"""
         print("\n" + "="*60)
         print("TESTING GENERATE DEMO DATA FUNCTIONALITY")
         print("="*60)
@@ -448,6 +448,9 @@ class CostAnalyticsTester:
             print(f"    👨‍👩‍👧‍👦 Teams created: {details.get('teams_created', 0)}")
             print(f"    📁 Projects created: {details.get('projects_created', 0)}")
             print(f"    ✅ Tasks created: {details.get('tasks_created', 0)}")
+            
+            # Wait a moment for data to be available
+            time.sleep(2)
             return True
         else:
             print(f"    ❌ Demo data generation failed")
