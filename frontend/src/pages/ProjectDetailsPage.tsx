@@ -98,8 +98,7 @@ const ProjectDetailsPage: React.FC = () => {
   // Enhanced activity tracking
   const { 
     logTabNavigation, 
-    logProjectAction, 
-    initializeGeolocation 
+    logProjectAction
   } = useActivityTracking(projectId)
   
   const [project, setProject] = useState<Project | null>(null)
