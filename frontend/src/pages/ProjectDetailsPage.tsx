@@ -95,6 +95,13 @@ const ProjectDetailsPage: React.FC = () => {
   const navigate = useNavigate()
   const { tokens } = useAuth()
   
+  // Enhanced activity tracking
+  const { 
+    logTabNavigation, 
+    logProjectAction, 
+    initializeGeolocation 
+  } = useActivityTracking(projectId)
+  
   const [project, setProject] = useState<Project | null>(null)
   const [tasks, setTasks] = useState<Task[]>([])
   const [users, setUsers] = useState<User[]>([])
