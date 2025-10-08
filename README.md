@@ -55,11 +55,29 @@ A comprehensive SaaS platform for portfolio and project management with advanced
 - Node.js 18+
 - MongoDB (local or cloud)
 - Yarn package manager
-- System libraries: `libmagic1` (auto-installed via entrypoint script)
+- System libraries: `libmagic1` and `libmagic-dev` (required for file type detection)
+
+### Quick Start
+
+**🚀 For immediate startup**:
+```bash
+bash /app/scripts/startup.sh
+```
+
+**⚠️ If you encounter 502 errors**, see: [502 Error Fix Documentation](/app/502_ERROR_PERMANENT_FIX.md)
+
+**📚 Quick reference guide**: [Quick Start Guide](/app/QUICK_START_GUIDE.md)
 
 ### Installation
 
-**Note:** System dependencies (like `libmagic1`) are automatically installed via the container entrypoint script. If you need to manually install them, run: `bash /app/setup_system_dependencies.sh`
+**System Dependencies** (automatically installed):
+```bash
+bash /app/setup_system_dependencies.sh
+```
+
+This installs:
+- `libmagic1` - Core file type detection library
+- `libmagic-dev` - Development headers for python-magic
 
 1. **Install Backend Dependencies**
    ```bash
