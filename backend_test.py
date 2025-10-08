@@ -261,36 +261,58 @@ class CostAnalyticsTester:
         
         return all_success
 
-    def test_tasks_for_project(self):
-        """Test tasks list for the project (needed for project details page)"""
+    def test_detailed_cost_breakdown(self):
+        """Test detailed cost breakdown for a specific project"""
         print("\n" + "="*60)
-        print("TESTING TASKS FOR PROJECT")
+        print("TESTING DETAILED COST BREAKDOWN")
         print("="*60)
         
         if not self.test_project_id:
             print("    ❌ No test project ID available")
-            return []
+            return False
             
         success, response = self.run_test(
-            "Get Tasks for Project",
+            "Get Detailed Cost Breakdown",
             "GET",
-            f"/api/tasks/?project_id={self.test_project_id}",
+            f"/api/cost-analytics/detailed-breakdown/{self.test_project_id}",
             200
         )
         
-        if success and isinstance(response, list):
-            task_count = len(response)
-            print(f"    ✅ Retrieved {task_count} tasks for project")
+        if success and isinstance(response, dict):
+            budget_summary = response.get('budget_summary', {})
+            cost_breakdown = response.get('cost_breakdown', {})
+            insights = response.get('insights', {})
             
-            if task_count > 0:
-                sample_task = response[0]
-                print(f"    📋 Sample task fields: {list(sample_task.keys())}")
-                print(f"    📋 Sample task: {sample_task.get('title', 'Unknown')}")
-                
-            return response
+            print(f"    📊 Project: {response.get('project_name', 'Unknown')}")
+            print(f"    💰 Total Budget: ${budget_summary.get('total_budget', 0):,.2f}")
+            print(f"    💸 Spent Amount: ${budget_summary.get('spent_amount', 0):,.2f}")
+            print(f"    📈 Budget Utilization: {budget_summary.get('budget_utilization', 0):.1f}%")
+            
+            # Check cost breakdown categories
+            by_category = cost_breakdown.get('by_category', {})
+            print(f"    📋 Cost Categories: {list(by_category.keys())}")
+            
+            # Check task breakdown
+            by_task = cost_breakdown.get('by_task', [])
+            print(f"    📋 Task Breakdown: {len(by_task)} tasks")
+            
+            # Check team breakdown
+            by_team = cost_breakdown.get('by_team_member', [])
+            print(f"    👥 Team Breakdown: {len(by_team)} members")
+            
+            # Validate required fields
+            required_fields = ['project_id', 'project_name', 'budget_summary', 'cost_breakdown', 'insights']
+            missing_fields = [field for field in required_fields if field not in response]
+            
+            if missing_fields:
+                print(f"    ⚠️ Missing fields: {missing_fields}")
+                return False
+            else:
+                print(f"    ✅ All required fields present")
+                return True
         else:
-            print(f"    ❌ Failed to get tasks for project")
-            return []
+            print(f"    ❌ Failed to get detailed cost breakdown")
+            return False
 
     def test_specific_project_task_count(self):
         """Test the specific project mentioned in the bug report: proj-4bee725235ee"""
