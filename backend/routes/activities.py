@@ -6,7 +6,7 @@ from typing import List, Optional
 from datetime import datetime, timedelta
 import uuid
 
-from auth.jwt_handler import get_current_user
+from auth.middleware import get_current_user
 from models.user import User
 from models.activity import Activity, ActivityCreate, ActivityFilter, ActivityStats
 from database import get_database
