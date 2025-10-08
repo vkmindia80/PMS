@@ -152,9 +152,7 @@ class UserUpdate(BaseUpdateModel):
     notifications_enabled: Optional[bool] = Field(None, description="Email notifications enabled")
     
     # Activity tracking preferences
-    geolocation_enabled: Optional[bool] = Field(None, description="Allow geolocation tracking for activity logging")
     activity_tracking_level: Optional[str] = Field(None, description="Activity tracking level: minimal, standard, detailed")
-    location_sharing_scope: Optional[str] = Field(None, description="Location sharing scope: none, project, organization")
     
     # Profile flags
     profile_completed: Optional[bool] = Field(None, description="Profile completion status")
