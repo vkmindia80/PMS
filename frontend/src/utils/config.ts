@@ -126,6 +126,12 @@ export const API_ENDPOINTS = {
     stats: (projectId: string) => `${getApiUrl()}/api/activities/stats/project/${projectId}`,
     get recent() { return `${getApiUrl()}/api/activities/recent`; },
     delete: (activityId: string) => `${getApiUrl()}/api/activities/${activityId}`,
+  },
+  costAnalytics: {
+    get portfolioSummary() { return `${getApiUrl()}/api/cost-analytics/portfolio-summary`; },
+    get costEstimates() { return `${getApiUrl()}/api/cost-analytics/cost-estimates`; },
+    detailedBreakdown: (projectId: string) => `${getApiUrl()}/api/cost-analytics/detailed-breakdown/${projectId}`,
+    get budgetAlerts() { return `${getApiUrl()}/api/cost-analytics/budget-alerts`; },
   }
 };
 
