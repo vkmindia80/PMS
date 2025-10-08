@@ -167,9 +167,9 @@ export const ActivityTrackingSettings: React.FC<ActivityTrackingSettingsProps> =
                 <h4 className="font-medium text-yellow-900">Privacy & Data Usage</h4>
                 <div className="mt-2 text-sm text-yellow-800 space-y-1">
                   <p>• Activity data helps improve project insights and team collaboration</p>
-                  <p>• Location data is encrypted and stored securely</p>
+                  <p>• All data is encrypted and stored securely</p>
                   <p>• You can disable tracking or delete your data at any time</p>
-                  <p>• Data is only shared within your specified scope settings</p>
+                  <p>• Data is only shared within your organization</p>
                 </div>
               </div>
             </div>
