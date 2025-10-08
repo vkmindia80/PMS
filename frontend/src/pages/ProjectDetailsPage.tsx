@@ -154,7 +154,8 @@ const ProjectDetailsPage: React.FC = () => {
         fetchTasks(),
         fetchUsers(),
         fetchComments(),
-        fetchActivities()
+        fetchActivities(),
+        fetchFilesCount()
       ])
       
       setError(null)
