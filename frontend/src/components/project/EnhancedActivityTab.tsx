@@ -368,7 +368,6 @@ export const EnhancedActivityTab: React.FC<EnhancedActivityTabProps> = ({
                 {dateActivities.map((activity, index) => {
                   const Icon = getActivityIcon(activity.entity_type, activity.action_type);
                   const colorClass = getActivityColor(activity.entity_type, activity.action_type);
-                  const location = formatLocation(activity);
                   
                   return (
                     <div 
