@@ -40,7 +40,7 @@ async def create_demo_project():
     project_doc = {
         "id": project_id,
         "name": "Demo Project - Activity Tracking",
-        "description": "A demonstration project showcasing enhanced activity tracking with geolocation data. This project includes various tasks, milestones, and team activities to demonstrate the comprehensive logging capabilities.",
+        "description": "A demonstration project showcasing enhanced activity tracking. This project includes various tasks, milestones, and team activities to demonstrate the comprehensive logging capabilities.",
         "status": "active",
         "priority": "medium",
         "visibility": "team",
