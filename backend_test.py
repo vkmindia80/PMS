@@ -112,28 +112,61 @@ class CostAnalyticsTester:
             print(f"    ❌ Login failed")
             return False
 
-    def test_get_projects_list(self):
-        """Get projects list to find a test project"""
+    def test_portfolio_cost_summary(self):
+        """Test portfolio cost summary endpoint - CORE FUNCTIONALITY"""
         print("\n" + "="*60)
-        print("TESTING PROJECTS LIST")
+        print("TESTING PORTFOLIO COST SUMMARY")
         print("="*60)
         
         success, response = self.run_test(
-            "Get Projects List",
+            "Get Portfolio Cost Summary",
             "GET",
-            "/api/projects",
+            "/api/cost-analytics/portfolio-summary",
             200
         )
         
-        if success and isinstance(response, list) and len(response) > 0:
-            # Get the first project for testing
-            self.test_project_id = response[0].get('id')
-            print(f"    ✅ Found {len(response)} projects")
-            print(f"    🎯 Using project ID for testing: {self.test_project_id}")
-            print(f"    📋 Project name: {response[0].get('name', 'Unknown')}")
+        if success and isinstance(response, dict):
+            self.cost_data = response
+            
+            # Check required sections
+            required_sections = ['summary', 'alerts', 'breakdown', 'insights', 'projects']
+            missing_sections = [section for section in required_sections if section not in response]
+            
+            if missing_sections:
+                print(f"    ⚠️ Missing required sections: {missing_sections}")
+                return False
+            
+            # Validate summary data
+            summary = response.get('summary', {})
+            print(f"    📊 Total Projects: {summary.get('total_projects', 0)}")
+            print(f"    📊 Active Projects: {summary.get('active_projects', 0)}")
+            print(f"    💰 Total Budget: ${summary.get('total_budget', 0):,.2f}")
+            print(f"    💸 Total Spent: ${summary.get('total_spent', 0):,.2f}")
+            print(f"    📈 Budget Utilization: {summary.get('budget_utilization', 0):.1f}%")
+            
+            # Validate alerts data
+            alerts = response.get('alerts', {})
+            print(f"    🚨 Over Budget Projects: {alerts.get('projects_over_budget', 0)}")
+            print(f"    ⚠️ High Risk Projects: {alerts.get('high_risk_projects', 0)}")
+            print(f"    📅 Overdue Projects: {alerts.get('overdue_projects', 0)}")
+            print(f"    🎯 Risk Level: {alerts.get('risk_level', 'unknown')}")
+            
+            # Validate insights data
+            insights = response.get('insights', {})
+            print(f"    📊 Cost Efficiency: {insights.get('cost_efficiency', 0):.1f}%")
+            print(f"    📈 Projected Monthly Spend: ${insights.get('projected_monthly_spend', 0):,.2f}")
+            
+            # Validate projects data
+            projects = response.get('projects', [])
+            print(f"    📁 Projects in Response: {len(projects)}")
+            
+            if len(projects) > 0:
+                self.test_project_id = projects[0].get('id')
+                print(f"    🎯 Using project ID for testing: {self.test_project_id}")
+            
             return True
         else:
-            print(f"    ❌ No projects found or failed to get projects list")
+            print(f"    ❌ Failed to get portfolio cost summary")
             return False
 
     def test_project_details(self):
