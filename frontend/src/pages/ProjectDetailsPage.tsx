@@ -469,6 +469,7 @@ const ProjectDetailsPage: React.FC = () => {
     { id: 'tasks', name: 'Tasks', icon: Target, count: tasks.length },
     { id: 'team', name: 'Team', icon: Users, count: project?.team_members?.length || 0 },
     { id: 'analytics', name: 'Analytics', icon: BarChart3, count: null },
+    { id: 'cost', name: 'Cost Breakdown', icon: DollarSign, count: null },
     { id: 'files', name: 'Files', icon: FileText, count: filesCount },
     { id: 'activity', name: 'Activity', icon: Activity, count: activities.length + comments.length }
   ] as const
