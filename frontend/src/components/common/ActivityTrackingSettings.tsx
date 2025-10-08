@@ -58,7 +58,7 @@ export const ActivityTrackingSettings: React.FC<ActivityTrackingSettingsProps> =
     setIsSaving(true);
     try {
       const response = await fetch(
-        API_ENDPOINTS.users.details(user?.id || '').replace('/users/', '/users/') + '/preferences',
+        `${API_ENDPOINTS.users.details(user?.id || '')}/preferences`,
         {
           method: 'PATCH',
           headers: {
