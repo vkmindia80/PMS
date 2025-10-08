@@ -17,8 +17,11 @@ import {
   Zap,
   Menu,
   X,
-  Calendar
+  Calendar,
+  DollarSign,
+  Calculator
 } from 'lucide-react'
+import CostCalculationSidebar from '../cost/CostCalculationSidebar'
 
 const Sidebar: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuth()
