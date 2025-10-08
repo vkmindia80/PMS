@@ -98,6 +98,24 @@ async def generate_enhanced_comprehensive_demo_data():
         return {
             "success": True,
             "message": "Enhanced Demo Data generation started! This creates comprehensive enterprise data and may take 30-60 seconds to complete.",
+            "status": "processing",
+            "details": {
+                "note": "The enhanced generation is running in the background. You can refresh the page in a moment to see the new data.",
+                "access_info": {
+                    "demo_login": "demo@company.com / demo123456",
+                    "frontend_url": "http://localhost:3000",
+                    "backend_api": "http://localhost:8001",
+                    "api_docs": "http://localhost:8001/docs"
+                }
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"❌ Enhanced demo data generation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to start enhanced demo data generation: {str(e)}"
+        )
 
 @router.post("/generate-ultimate-demo-data", status_code=202) 
 async def generate_ultimate_comprehensive_demo_data():
