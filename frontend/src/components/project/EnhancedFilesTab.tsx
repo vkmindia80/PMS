@@ -467,7 +467,7 @@ const EnhancedFilesTab: React.FC<EnhancedFilesTabProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">
-            Project Files ({stats?.total_files || 0})
+            Project Files ({stats?.total_files || files.length})
           </h2>
           <p className="text-gray-600 mt-1">
             Manage project documents and assets
