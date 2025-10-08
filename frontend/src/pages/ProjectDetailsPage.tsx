@@ -254,6 +254,27 @@ const ProjectDetailsPage: React.FC = () => {
     setActivities(mockActivities)
   }
 
+  const fetchFilesCount = async () => {
+    try {
+      const filesResponse = await fetch(API_ENDPOINTS.files.list(projectId!), {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      
+      if (filesResponse.ok) {
+        const filesData = await filesResponse.json()
+        setFilesCount(filesData.files?.length || 0)
+      } else {
+        setFilesCount(0)
+      }
+    } catch (error) {
+      console.log('Failed to fetch files count')
+      setFilesCount(0)
+    }
+  }
+
   const handleUpdateProject = async (updates: Partial<Project>) => {
     try {
       const response = await fetch(API_ENDPOINTS.projects.details(projectId!), {
