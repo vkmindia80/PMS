@@ -68,11 +68,6 @@ export const ActivityTrackingSettings: React.FC<ActivityTrackingSettingsProps> =
       if (response.ok) {
         toast.success('Activity tracking preferences updated');
         setHasChanges(false);
-        
-        // Update geolocation if changed
-        if (preferences.geolocation_enabled !== geolocationSettings.enabled) {
-          await toggleGeolocation(preferences.geolocation_enabled);
-        }
       } else {
         throw new Error('Failed to update preferences');
       }
