@@ -37,17 +37,10 @@ async def create_activity(
             "organization_id": current_user.organization_id,
             "project_id": activity_data.project_id,
             "task_id": activity_data.task_id,
-            # Enhanced geolocation fields
-            "latitude": activity_data.latitude if activity_data.geolocation_enabled else None,
-            "longitude": activity_data.longitude if activity_data.geolocation_enabled else None,
-            "location_accuracy": activity_data.location_accuracy if activity_data.geolocation_enabled else None,
-            "geolocation_enabled": activity_data.geolocation_enabled and getattr(current_user, 'geolocation_enabled', False),
-            "location_timestamp": datetime.utcnow().isoformat() if activity_data.geolocation_enabled else None,
             # Enhanced tracking fields  
             "tab_name": activity_data.tab_name,
             "session_id": activity_data.session_id,
             "user_agent": activity_data.user_agent,
-            "ip_address": activity_data.ip_address,
             "created_at": datetime.utcnow().isoformat()
         }
         
