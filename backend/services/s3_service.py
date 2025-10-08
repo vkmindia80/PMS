@@ -199,12 +199,15 @@ class S3FileService:
         
         # Validate MIME type using file content
         try:
-            detected_mime = magic.from_buffer(content, mime=True)
-            if detected_mime not in self.config.allowed_mime_types:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"File type '{detected_mime}' is not allowed"
-                )
+            if MAGIC_AVAILABLE:
+                detected_mime = magic.from_buffer(content, mime=True)
+                if detected_mime not in self.config.allowed_mime_types:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"File type '{detected_mime}' is not allowed"
+                    )
+            else:
+                logger.debug("MIME validation skipped - libmagic not available")
         except Exception as e:
             logger.warning(f"Could not detect MIME type: {e}")
             # Continue without MIME validation if detection fails
