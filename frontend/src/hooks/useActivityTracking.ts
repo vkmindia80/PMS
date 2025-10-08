@@ -20,10 +20,6 @@ interface ActivityData {
 }
 
 interface ActivityLog extends ActivityData {
-  latitude?: number;
-  longitude?: number;
-  location_accuracy?: number;
-  geolocation_enabled: boolean;
   session_id?: string;
   user_agent?: string;
   ip_address?: string;
