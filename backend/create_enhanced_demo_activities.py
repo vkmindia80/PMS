@@ -208,7 +208,7 @@ async def create_enhanced_demo_activities():
     
     print(f"🎉 Successfully created {activities_created} enhanced demo activities!")
     print(f"📊 Activities include:")
-    print(f"   - Geolocation data ({int(activities_created * 0.8)} activities with location)")
+    print(f"   - Enhanced tracking fields")
     print(f"   - Tab navigation tracking")
     print(f"   - Session and user agent information")
     print(f"   - Comprehensive metadata")
