@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Project Details Functionality
-Testing login, projects list, and project details loading - the reported issue
+Backend API Testing for Cost Analytics Functionality
+Testing cost analytics endpoints, portfolio summary, budget alerts, and cost estimates
 """
 
 import requests
@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 from typing import Dict, Any, Optional
 
-class ProjectDetailsTester:
+class CostAnalyticsTester:
     def __init__(self, base_url: str = "https://cost-breakdown-1.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
