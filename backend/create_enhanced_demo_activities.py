@@ -137,9 +137,7 @@ async def create_enhanced_demo_activities():
             # Choose random activity template
             template = random.choice(ACTIVITY_TEMPLATES)
             
-            # Choose random location (80% chance of having geolocation)
-            has_geolocation = random.random() < 0.8
-            location = random.choice(SAMPLE_LOCATIONS) if has_geolocation else None
+            # No geolocation data generated
             
             # Generate dynamic description based on template
             description = template["description"]
