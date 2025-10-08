@@ -728,7 +728,7 @@ const AdvancedTimelineTab: React.FC<AdvancedTimelineTabProps> = ({
         </div>
 
         {/* View Content */}
-        <div className="p-6">
+        <div id="advanced-timeline-container" className="p-6">
           {activeView === 'gantt' && (
             <AdvancedGanttChart
               projectId={project.id}
