@@ -98,6 +98,48 @@ async def generate_enhanced_comprehensive_demo_data():
         return {
             "success": True,
             "message": "Enhanced Demo Data generation started! This creates comprehensive enterprise data and may take 30-60 seconds to complete.",
+
+@router.post("/generate-ultimate-demo-data", status_code=202) 
+async def generate_ultimate_comprehensive_demo_data():
+    """
+    Generate ULTIMATE comprehensive demo data with ALL enterprise features
+    This is the most comprehensive data generator that creates ALL data points:
+    - Enhanced user profiles with comprehensive professional data
+    - Advanced team structures with detailed management hierarchy  
+    - Comprehensive projects with realistic timelines and financial tracking
+    - Detailed tasks with dependencies, time tracking, and assignees
+    - Realistic timeline data with Gantt chart compatibility
+    - Comments, files, notifications, and complete user interactions
+    - Advanced analytics data for reporting and insights
+    Returns immediately with 202 Accepted while generation runs in background
+    """
+    try:
+        logger.info("🚀 Starting ULTIMATE comprehensive demo data generation via API...")
+        
+        # Import the ultimate generator
+        from ultimate_enhanced_demo_generator import UltimateEnhancedDemoDataGenerator
+        
+        # Create ultimate generator instance
+        generator = UltimateEnhancedDemoDataGenerator()
+        
+        # Run ultimate generation in background task
+        async def run_ultimate_generation():
+            try:
+                success = await generator.run_ultimate_comprehensive_generation()
+                if success:
+                    logger.info("✅ ULTIMATE demo data generation completed successfully")
+                else:
+                    logger.error("❌ ULTIMATE demo data generation failed")
+            except Exception as e:
+                logger.error(f"❌ Background ULTIMATE demo data generation error: {str(e)}")
+        
+        # Start background task
+        asyncio.create_task(run_ultimate_generation())
+        
+        # Return immediately
+        return {
+            "success": True,
+            "message": "ULTIMATE Demo Data generation started! This creates the most comprehensive enterprise data including all data points and may take 45-90 seconds to complete.",
             "status": "processing",
             "generator_version": "Enhanced Comprehensive v2.0",
             "enhanced_features": [
