@@ -11,6 +11,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { API_ENDPOINTS } from '../../utils/config';
 import toast from 'react-hot-toast';
 import EnhancedGanttChart from './EnhancedGanttChart';
+import TimelineExportButton from '../timeline/TimelineExportButton';
 
 interface ProjectTimelineTabProps {
   project: any;
