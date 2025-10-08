@@ -184,10 +184,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="bg-white rounded-lg shadow-lg p-8">
+      <div className="p-8">
         <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-primary-500 to-purple-600 mb-4 shadow-lg">
+            <Lock className="h-8 w-8 text-white" />
+          </div>
           <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
-          <p className="text-gray-600 mt-2">Sign in to your Enterprise Portfolio account</p>
+          <p className="text-gray-600 mt-2">Sign in to access your enterprise dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
