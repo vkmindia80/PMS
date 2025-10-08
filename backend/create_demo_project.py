@@ -85,7 +85,7 @@ async def create_demo_project():
             "time_tracking_enabled": True,
             "budget_tracking_enabled": True
         },
-        "tags": ["demo", "activity-tracking", "geolocation"],
+        "tags": ["demo", "activity-tracking"],
         "category": "Software Development",
         "progress_percentage": 35,
         "task_count": 8,
