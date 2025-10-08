@@ -614,7 +614,7 @@ class UltimateEnhancedDemoDataGenerator:
                             "estimated_hours": random.randint(8, 40),
                             "logged_hours": random.randint(0, 35) if status != "todo" else 0,
                             "progress_percentage": 100 if status == "completed" else random.randint(0, 80) if status == "in_progress" else 0,
-                            "tags": random.sample(project["tags"], min(2, len(project["tags"]))),
+                            "tags": random.sample(project["tags"], min(2, len(project["tags"]))) if project["tags"] else [],
                             "watchers": random.sample(project["team_members"], random.randint(1, 3)),
                             "created_at": datetime.utcnow() - timedelta(days=random.randint(1, 60)),
                             "updated_at": datetime.utcnow()
@@ -938,7 +938,7 @@ class UltimateEnhancedDemoDataGenerator:
                             "project_phase": random.choice(["planning", "development", "testing", "deployment"]),
                             "access_level": "team"
                         },
-                        "tags": random.sample(project["tags"], min(2, len(project["tags"]))),
+                        "tags": random.sample(project["tags"], min(2, len(project["tags"]))) if project["tags"] else [],
                         "created_at": datetime.utcnow() - timedelta(days=random.randint(1, 60)),
                         "updated_at": datetime.utcnow()
                     }
