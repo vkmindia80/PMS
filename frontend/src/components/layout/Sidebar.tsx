@@ -27,6 +27,7 @@ const Sidebar: React.FC = () => {
   const { user, logout, isAuthenticated } = useAuth()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isCostSidebarOpen, setIsCostSidebarOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
