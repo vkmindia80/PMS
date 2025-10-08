@@ -301,6 +301,18 @@ const ProjectDetailsPage: React.FC = () => {
         throw new Error('Failed to update project')
       }
 
+      // Log the project update activity
+      const updateFields = Object.keys(updates).join(', ')
+      await logProjectAction(
+        'updated', 
+        projectId!, 
+        `Updated project fields: ${updateFields}`,
+        { 
+          updated_fields: updateFields,
+          changes: updates
+        }
+      )
+
       toast.success('Project updated successfully')
       await fetchProjectData()
     } catch (error) {
