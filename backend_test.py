@@ -456,30 +456,47 @@ class CostAnalyticsTester:
             print(f"    ❌ Demo data generation failed")
             return False
 
-    def test_comments_endpoint(self):
-        """Test comments endpoint for project activity"""
+    def test_cost_data_validation(self):
+        """Test cost data validation and edge cases"""
         print("\n" + "="*60)
-        print("TESTING COMMENTS ENDPOINT")
+        print("TESTING COST DATA VALIDATION")
         print("="*60)
         
-        if not self.test_project_id:
-            print("    ❌ No test project ID available")
-            return False
-            
-        success, response = self.run_test(
-            "Get Project Comments",
-            "GET",
-            f"/api/comments/threads/project/{self.test_project_id}",
-            200
-        )
+        # Test cost estimates with edge case parameters
+        edge_cases = [
+            {"project_type": "invalid_type", "team_size": 1, "duration_months": 1},
+            {"project_type": "software_development", "team_size": 100, "duration_months": 24},
+            {"project_type": "software_development", "team_size": 0, "duration_months": 0}
+        ]
         
-        if success and isinstance(response, list):
-            comment_count = len(response)
-            print(f"    ✅ Retrieved {comment_count} comments for project")
-            return True
-        else:
-            print(f"    ❌ Failed to get project comments")
-            return False
+        all_success = True
+        
+        for i, params in enumerate(edge_cases):
+            query_params = "&".join([f"{k}={v}" for k, v in params.items()])
+            
+            success, response = self.run_test(
+                f"Edge Case Test {i+1}",
+                "GET",
+                f"/api/cost-analytics/cost-estimates?{query_params}",
+                200  # Should handle gracefully
+            )
+            
+            if success:
+                estimates = response.get('estimates', [])
+                print(f"    📊 Edge Case {i+1}: Generated {len(estimates)} estimates")
+                
+                # Check if estimates are reasonable
+                if len(estimates) > 0:
+                    for estimate in estimates:
+                        cost = estimate.get('total_cost', 0)
+                        if cost < 0 or cost > 10000000:  # Unreasonable cost
+                            print(f"    ⚠️ Unreasonable cost estimate: ${cost:,.2f}")
+                            all_success = False
+            else:
+                print(f"    ❌ Edge case {i+1} failed")
+                all_success = False
+        
+        return all_success
 
     def run_all_tests(self):
         """Run all project details API tests"""
