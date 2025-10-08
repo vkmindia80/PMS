@@ -1,13 +1,13 @@
 /**
  * Enhanced Activity Tab Component
- * Shows comprehensive activity logging with geolocation data
+ * Shows comprehensive activity logging
  */
 
 import React, { useState, useEffect } from 'react';
 import { 
-  MapPin, Clock, User, Calendar, Filter, BarChart3, 
+  Clock, User, Calendar, Filter, BarChart3, 
   MessageSquare, Plus, CheckCircle, Edit2, Zap, Users, 
-  Trash2, Activity, Eye, Settings, Globe, Lock, 
+  Trash2, Activity, Eye, Settings,
   TrendingUp, PieChart, Download
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
