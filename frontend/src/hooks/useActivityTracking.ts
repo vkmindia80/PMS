@@ -199,39 +199,7 @@ export const useActivityTracking = (projectId?: string) => {
     });
   }, [logActivity]);
 
-  /**
-   * Toggle geolocation tracking
-   */
-  const toggleGeolocation = useCallback(async (enabled: boolean) => {
-    try {
-      // Update user preferences
-      const response = await fetch(API_ENDPOINTS.users.details(user?.id || ''), {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${tokens?.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          geolocation_enabled: enabled
-        }),
-      });
-
-      if (response.ok) {
-        setGeolocationSettings(prev => ({ ...prev, enabled }));
-        
-        if (enabled) {
-          await initializeGeolocation();
-        } else {
-          geolocationService.stopWatching();
-          geolocationService.clearCache();
-          toast.success('Location tracking disabled');
-        }
-      }
-    } catch (error) {
-      console.error('Failed to update geolocation setting:', error);
-      toast.error('Failed to update location tracking setting');
-    }
-  }, [tokens, user, initializeGeolocation]);
+  // Geolocation toggle functionality removed
 
   /**
    * Toggle activity tracking
