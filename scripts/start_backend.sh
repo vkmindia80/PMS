@@ -7,16 +7,32 @@ echo "🚀 Starting Backend Service..."
 # Step 1: Verify system dependencies
 echo "📦 Checking system dependencies..."
 
+# Function to check if libmagic is actually usable
+check_libmagic() {
+    python3 -c "import magic; magic.Magic()" 2>/dev/null
+}
+
 # Check and install libmagic if needed
-if ! dpkg -l | grep -q "^ii.*libmagic1" || ! dpkg -l | grep -q "^ii.*libmagic-dev"; then
-    echo "⚠️  libmagic libraries not found. Installing..."
+if ! check_libmagic; then
+    echo "⚠️  libmagic not functional. Installing system libraries..."
     apt-get update -qq >/dev/null 2>&1
-    apt-get install -y libmagic1 libmagic-dev >/dev/null 2>&1
-    apt-get remove -y libmagic-mgc >/dev/null 2>&1 || true
-    apt-get install -y libmagic1 libmagic-dev libmagic-mgc >/dev/null 2>&1
-    echo "✅ libmagic libraries installed"
+    apt-get install -y --reinstall libmagic1 libmagic-dev libmagic-mgc >/dev/null 2>&1
+    
+    # Verify installation worked
+    if check_libmagic; then
+        echo "✅ libmagic libraries installed and verified"
+    else
+        echo "❌ libmagic installation failed. Reinstalling python-magic..."
+        pip install --force-reinstall python-magic >/dev/null 2>&1
+        
+        if check_libmagic; then
+            echo "✅ python-magic reinstalled successfully"
+        else
+            echo "❌ CRITICAL: libmagic still not working. Backend may fail."
+        fi
+    fi
 else
-    echo "✅ libmagic libraries present"
+    echo "✅ libmagic libraries functional"
 fi
 
 # Step 2: Verify Python can import required modules
