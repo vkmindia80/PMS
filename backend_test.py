@@ -578,13 +578,13 @@ class CostAnalyticsTester:
 
 def main():
     """Main test execution"""
-    tester = ProjectDetailsTester()
+    tester = CostAnalyticsTester()
     
     try:
         success = tester.run_all_tests()
         
         # Save test results
-        with open('/app/test_reports/backend_project_test_results.json', 'w') as f:
+        with open('/app/test_reports/backend_cost_analytics_test_results.json', 'w') as f:
             json.dump({
                 'timestamp': datetime.utcnow().isoformat(),
                 'success': success,
@@ -592,6 +592,7 @@ def main():
                 'tests_passed': tester.tests_passed,
                 'results': tester.test_results,
                 'project_id': tester.test_project_id,
+                'cost_data_available': tester.cost_data is not None,
                 'functionality_status': 'WORKING' if success else 'ISSUES_FOUND'
             }, f, indent=2)
         
