@@ -67,7 +67,6 @@ export const EnhancedActivityTab: React.FC<EnhancedActivityTabProps> = ({
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<string>('all');
   const [showStats, setShowStats] = useState(false);
-  const [showLocationData, setShowLocationData] = useState(false);
   const [newComment, setNewComment] = useState('');
 
   useEffect(() => {
