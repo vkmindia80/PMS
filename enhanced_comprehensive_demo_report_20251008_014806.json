@@ -1,0 +1,64 @@
+{
+  "generation_info": {
+    "generator_version": "Enhanced Comprehensive v2.0",
+    "generation_date": "2025-10-08T01:48:06.041614",
+    "generation_duration_seconds": 4.21,
+    "database_name": "enterprise_portfolio_db",
+    "organization_id": "demo-org-001"
+  },
+  "summary": {
+    "total_enhanced_data_points": 34,
+    "users_created": 19,
+    "teams_created": 15,
+    "projects_planned": 5,
+    "departments_covered": 16,
+    "management_levels": 3,
+    "skill_categories": 108
+  },
+  "financial_metrics": {
+    "total_team_budget_allocation": 18150000,
+    "total_salary_capacity": 5930000,
+    "average_hourly_rate": 185.78947368421052,
+    "budget_utilization_range": "30% - 80%",
+    "currency": "USD"
+  },
+  "performance_analytics": {
+    "average_performance_rating": 4.77,
+    "high_performers_count": 19,
+    "management_span_coverage": 133,
+    "total_experience_years": 231
+  },
+  "organizational_structure": {
+    "c_level_executives": 2,
+    "directors_and_vps": 1,
+    "team_leads": 13,
+    "individual_contributors": 3,
+    "clearance_levels": 2
+  },
+  "technology_coverage": {
+    "ai_ml_specialists": 3,
+    "blockchain_experts": 2,
+    "cybersecurity_professionals": 1,
+    "iot_engineers": 1,
+    "fintech_specialists": 1
+  },
+  "enhanced_features": [
+    "\ud83c\udfe2 15 Specialized Teams with Budget Allocation ($$18,150,000 total)",
+    "\ud83d\udc65 19 Professional Users with Comprehensive Profiles",
+    "\ud83d\udcbc Complete Organizational Hierarchy (C-Level to IC)",
+    "\ud83c\udfaf Performance Management System (Avg Rating: 4.8/5.0)",
+    "\ud83d\udcb0 Financial Planning & Budget Tracking",
+    "\ud83c\udfc6 Professional Achievements & Certifications",
+    "\ud83c\udf0d Global Team Distribution & Remote Work Capabilities",
+    "\ud83d\udd12 Security Clearance & Compliance Tracking",
+    "\ud83d\udcca Advanced Analytics & Reporting Capabilities",
+    "\ud83d\ude80 Next-Generation Technology Coverage (AI, Blockchain, IoT, XR)"
+  ],
+  "access_information": {
+    "demo_login": "demo@company.com / demo123456",
+    "frontend_url": "http://localhost:3000",
+    "backend_api": "http://localhost:8001",
+    "api_docs": "http://localhost:8001/docs",
+    "health_check": "http://localhost:8001/api/health"
+  }
+}
