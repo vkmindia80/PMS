@@ -527,13 +527,11 @@ const AdvancedTimelineTab: React.FC<AdvancedTimelineTabProps> = ({
               <RefreshCw className="h-4 w-4" />
             </button>
 
-            <button
-              onClick={() => handleExport('png')}
-              className="p-2 rounded-lg bg-white hover:bg-gray-50 text-gray-600 border border-gray-300 transition-all"
-              title="Export Timeline"
-            >
-              <Download className="h-4 w-4" />
-            </button>
+            <TimelineExportButton
+              elementId="advanced-timeline-container"
+              tasks={timelineTasks}
+              projectName={project?.name || 'Advanced Timeline'}
+            />
           </div>
         </div>
 
