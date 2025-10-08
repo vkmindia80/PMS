@@ -36,6 +36,7 @@ import CriticalPathPanel from './CriticalPathPanel';
 import ResourceHistogram from './ResourceHistogram';
 import BaselineComparisonView from './BaselineComparisonView';
 import DependencyManager from './DependencyManager';
+import TimelineExportButton from '../timeline/TimelineExportButton';
 
 interface AdvancedTimelineTabProps {
   project: any;
