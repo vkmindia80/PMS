@@ -55,8 +55,11 @@ A comprehensive SaaS platform for portfolio and project management with advanced
 - Node.js 18+
 - MongoDB (local or cloud)
 - Yarn package manager
+- System libraries: `libmagic1` (auto-installed via entrypoint script)
 
 ### Installation
+
+**Note:** System dependencies (like `libmagic1`) are automatically installed via the container entrypoint script. If you need to manually install them, run: `bash /app/setup_system_dependencies.sh`
 
 1. **Install Backend Dependencies**
    ```bash
