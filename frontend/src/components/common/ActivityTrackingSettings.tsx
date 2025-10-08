@@ -35,9 +35,7 @@ export const ActivityTrackingSettings: React.FC<ActivityTrackingSettingsProps> =
   useEffect(() => {
     if (user) {
       setPreferences({
-        geolocation_enabled: user.geolocation_enabled || false,
-        activity_tracking_level: user.activity_tracking_level || 'standard',
-        location_sharing_scope: user.location_sharing_scope || 'organization'
+        activity_tracking_level: user.activity_tracking_level || 'standard'
       });
     }
   }, [user]);
