@@ -25,19 +25,8 @@ interface ActivityLog extends ActivityData {
   ip_address?: string;
 }
 
-interface GeolocationSettings {
-  enabled: boolean;
-  permission: 'granted' | 'denied' | 'prompt' | 'unknown';
-  currentPosition: any;
-}
-
 export const useActivityTracking = (projectId?: string) => {
   const { tokens, user } = useAuth();
-  const [geolocationSettings, setGeolocationSettings] = useState<GeolocationSettings>({
-    enabled: false,
-    permission: 'unknown',
-    currentPosition: null
-  });
   const [isTrackingEnabled, setIsTrackingEnabled] = useState(true);
   const sessionId = useRef<string>(generateSessionId());
 
