@@ -208,40 +208,58 @@ class CostAnalyticsTester:
             print(f"    ❌ Failed to get budget alerts")
             return None
 
-    def test_users_list(self):
-        """Test users list endpoint (needed for project details page)"""
+    def test_cost_estimates(self):
+        """Test cost estimates endpoint with different parameters"""
         print("\n" + "="*60)
-        print("TESTING USERS LIST ENDPOINT")
+        print("TESTING COST ESTIMATES ENDPOINT")
         print("="*60)
         
-        success, response = self.run_test(
-            "Get Users List",
-            "GET",
-            "/api/users/",
-            200
-        )
+        # Test with different project types and parameters
+        test_cases = [
+            {"project_type": "software_development", "team_size": 5, "duration_months": 6},
+            {"project_type": "marketing_campaign", "team_size": 3, "duration_months": 3},
+            {"project_type": "product_launch", "team_size": 8, "duration_months": 4}
+        ]
         
-        if success and isinstance(response, list):
-            user_count = len(response)
-            print(f"    ✅ Retrieved {user_count} users")
+        all_success = True
+        
+        for i, params in enumerate(test_cases):
+            query_params = "&".join([f"{k}={v}" for k, v in params.items()])
             
-            if user_count > 0:
-                sample_user = response[0]
-                print(f"    👤 Sample user fields: {list(sample_user.keys())}")
+            success, response = self.run_test(
+                f"Cost Estimate Test Case {i+1}",
+                "GET",
+                f"/api/cost-analytics/cost-estimates?{query_params}",
+                200
+            )
+            
+            if success and isinstance(response, dict):
+                estimates = response.get('estimates', [])
+                benchmarks = response.get('benchmarks', {})
                 
-                # Check required fields for project details page
-                required_fields = ['id', 'name', 'email']
-                missing_fields = [field for field in required_fields if field not in sample_user]
+                print(f"    📊 Test Case {i+1} - {params['project_type']}")
+                print(f"    👥 Team Size: {params['team_size']}, Duration: {params['duration_months']} months")
+                print(f"    💰 Estimates Generated: {len(estimates)}")
+                
+                if len(estimates) > 0:
+                    for estimate in estimates:
+                        method = estimate.get('method', 'Unknown')
+                        cost = estimate.get('total_cost', 0)
+                        confidence = estimate.get('confidence', 0)
+                        print(f"      - {method}: ${cost:,.2f} ({confidence}% confidence)")
+                
+                # Check required fields
+                required_fields = ['estimates', 'benchmarks', 'recommendations', 'parameters_used']
+                missing_fields = [field for field in required_fields if field not in response]
                 
                 if missing_fields:
-                    print(f"    ⚠️ Missing required user fields: {missing_fields}")
-                else:
-                    print(f"    ✅ All required user fields present")
-                
-            return response
-        else:
-            print(f"    ❌ Failed to get users list")
-            return []
+                    print(f"    ⚠️ Missing fields in test case {i+1}: {missing_fields}")
+                    all_success = False
+            else:
+                print(f"    ❌ Test case {i+1} failed")
+                all_success = False
+        
+        return all_success
 
     def test_tasks_for_project(self):
         """Test tasks list for the project (needed for project details page)"""
