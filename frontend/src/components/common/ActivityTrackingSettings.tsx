@@ -23,12 +23,10 @@ export const ActivityTrackingSettings: React.FC<ActivityTrackingSettingsProps> =
   onClose
 }) => {
   const { tokens, user } = useAuth();
-  const { geolocationSettings, toggleGeolocation } = useActivityTracking();
+  const { isTrackingEnabled } = useActivityTracking();
   
   const [preferences, setPreferences] = useState({
-    geolocation_enabled: false,
-    activity_tracking_level: 'standard',
-    location_sharing_scope: 'organization'
+    activity_tracking_level: 'standard'
   });
   
   const [isSaving, setIsSaving] = useState(false);
