@@ -655,6 +655,13 @@ const ProjectDetailsPage: React.FC = () => {
           />
         )}
 
+        {activeTab === 'timeline' && (
+          <AdvancedGanttChartTab 
+            projectId={project.id}
+            projectName={project.name}
+          />
+        )}
+
         {activeTab === 'milestones' && (
           <MilestonesManager 
             project={project}
