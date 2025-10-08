@@ -153,7 +153,7 @@ const AppContent: React.FC = () => {
             path="/ai-project-generator" 
             element={
               <ProtectedRoute>
-                <AIProjectArtifactGeneratorPage />
+                <AIProjectArtifactGeneratorWithTabs />
               </ProtectedRoute>
             } 
           />
