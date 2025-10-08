@@ -1286,4 +1286,460 @@ const ActivityTab: React.FC<any> = ({ activities, comments, newComment, setNewCo
   )
 }
 
+// Cost Breakdown Tab Component
+const CostBreakdownTab: React.FC<any> = ({ project, tasks, users, budgetUtilization }) => {
+  const [timeRange, setTimeRange] = React.useState<'week' | 'month' | 'quarter' | 'all'>('all')
+  const [costView, setCostView] = React.useState<'category' | 'task' | 'team' | 'timeline'>('category')
+
+  // Calculate cost breakdown
+  const totalBudget = project.budget.total_budget || 0
+  const spentAmount = project.budget.spent_amount || 0
+  const remainingBudget = totalBudget - spentAmount
+  const currency = project.budget.currency || 'USD'
+
+  // Mock cost categories (in real app, this would come from backend)
+  const costCategories = [
+    { name: 'Labor', amount: spentAmount * 0.60, percentage: 60, color: 'bg-blue-500', icon: Users },
+    { name: 'Resources', amount: spentAmount * 0.20, percentage: 20, color: 'bg-green-500', icon: Settings },
+    { name: 'Materials', amount: spentAmount * 0.12, percentage: 12, color: 'bg-purple-500', icon: FolderOpen },
+    { name: 'Tools & Software', amount: spentAmount * 0.05, percentage: 5, color: 'bg-orange-500', icon: Zap },
+    { name: 'Other', amount: spentAmount * 0.03, percentage: 3, color: 'bg-gray-500', icon: MoreVertical }
+  ]
+
+  // Task-based costs
+  const taskCosts = tasks.slice(0, 10).map(task => ({
+    id: task.id,
+    title: task.title,
+    estimated: Math.random() * 5000 + 1000,
+    actual: Math.random() * 4500 + 800,
+    status: task.status
+  }))
+
+  // Team member costs
+  const teamCosts = users.slice(0, project.team_members?.length || 5).map(user => ({
+    id: user.id,
+    name: user.name || `${user.first_name} ${user.last_name}`,
+    role: 'Developer',
+    hoursWorked: Math.floor(Math.random() * 100 + 50),
+    hourlyRate: Math.floor(Math.random() * 50 + 50),
+    totalCost: 0
+  })).map(member => ({
+    ...member,
+    totalCost: member.hoursWorked * member.hourlyRate
+  }))
+
+  // Monthly spending trend
+  const monthlySpending = [
+    { month: 'Jan', amount: spentAmount * 0.10 },
+    { month: 'Feb', amount: spentAmount * 0.15 },
+    { month: 'Mar', amount: spentAmount * 0.18 },
+    { month: 'Apr', amount: spentAmount * 0.22 },
+    { month: 'May', amount: spentAmount * 0.20 },
+    { month: 'Jun', amount: spentAmount * 0.15 }
+  ]
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount)
+  }
+
+  const getBudgetStatus = () => {
+    if (budgetUtilization > 100) return { color: 'text-red-600', bg: 'bg-red-50', status: 'Over Budget' }
+    if (budgetUtilization > 80) return { color: 'text-orange-600', bg: 'bg-orange-50', status: 'High Utilization' }
+    if (budgetUtilization > 50) return { color: 'text-yellow-600', bg: 'bg-yellow-50', status: 'On Track' }
+    return { color: 'text-green-600', bg: 'bg-green-50', status: 'Under Budget' }
+  }
+
+  const budgetStatus = getBudgetStatus()
+
+  return (
+    <div className="space-y-6" data-testid="cost-breakdown-tab">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+            <DollarSign className="w-8 h-8 mr-3 text-green-600" />
+            Cost Breakdown
+          </h2>
+          <p className="text-gray-600 mt-1">Detailed financial analysis and budget tracking</p>
+        </div>
+        
+        <div className="flex items-center space-x-3">
+          <select
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value as any)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          >
+            <option value="week">This Week</option>
+            <option value="month">This Month</option>
+            <option value="quarter">This Quarter</option>
+            <option value="all">All Time</option>
+          </select>
+          
+          <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            <Download className="w-4 h-4" />
+            <span className="text-sm font-medium">Export</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Budget Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-2 bg-white/20 rounded-lg">
+              <DollarSign className="w-6 h-6" />
+            </div>
+            <TrendingUp className="w-5 h-5 opacity-70" />
+          </div>
+          <div className="text-3xl font-bold mb-1">{formatCurrency(totalBudget)}</div>
+          <div className="text-blue-100 text-sm">Total Budget</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-2 bg-white/20 rounded-lg">
+              <CheckCircle className="w-6 h-6" />
+            </div>
+            <div className="text-sm bg-white/20 px-2 py-1 rounded">
+              {budgetUtilization.toFixed(0)}%
+            </div>
+          </div>
+          <div className="text-3xl font-bold mb-1">{formatCurrency(spentAmount)}</div>
+          <div className="text-green-100 text-sm">Spent</div>
+        </div>
+
+        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-2 bg-white/20 rounded-lg">
+              <PieChart className="w-6 h-6" />
+            </div>
+            <div className="text-sm bg-white/20 px-2 py-1 rounded">
+              {(100 - budgetUtilization).toFixed(0)}%
+            </div>
+          </div>
+          <div className="text-3xl font-bold mb-1">{formatCurrency(remainingBudget)}</div>
+          <div className="text-purple-100 text-sm">Remaining</div>
+        </div>
+
+        <div className={`bg-gradient-to-br ${budgetStatus.bg.replace('bg-', 'from-').replace('-50', '-100')} ${budgetStatus.bg.replace('bg-', 'to-').replace('-50', '-200')} rounded-xl p-6 shadow-lg border-2 ${budgetStatus.bg.replace('bg-', 'border-').replace('-50', '-300')}`}>
+          <div className="flex items-center justify-between mb-2">
+            <div className={`p-2 ${budgetStatus.bg} rounded-lg`}>
+              <AlertCircle className={`w-6 h-6 ${budgetStatus.color}`} />
+            </div>
+            <div className={`text-sm ${budgetStatus.bg} ${budgetStatus.color} px-2 py-1 rounded font-medium`}>
+              {budgetUtilization.toFixed(1)}%
+            </div>
+          </div>
+          <div className={`text-3xl font-bold mb-1 ${budgetStatus.color}`}>{budgetStatus.status}</div>
+          <div className={`${budgetStatus.color} opacity-70 text-sm`}>Budget Status</div>
+        </div>
+      </div>
+
+      {/* Budget Utilization Bar */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-semibold text-gray-900">Budget Utilization</h3>
+          <span className={`text-sm font-medium ${budgetStatus.color}`}>
+            {budgetUtilization.toFixed(1)}% Used
+          </span>
+        </div>
+        <div className="relative">
+          <div className="w-full bg-gray-200 rounded-full h-6">
+            <div
+              className={`h-6 rounded-full transition-all duration-500 ${
+                budgetUtilization > 100 ? 'bg-red-500' :
+                budgetUtilization > 80 ? 'bg-orange-500' :
+                budgetUtilization > 50 ? 'bg-yellow-500' : 'bg-green-500'
+              }`}
+              style={{ width: `${Math.min(budgetUtilization, 100)}%` }}
+            >
+              <div className="h-full flex items-center justify-end pr-3">
+                <span className="text-white text-xs font-bold">
+                  {budgetUtilization > 10 ? `${budgetUtilization.toFixed(0)}%` : ''}
+                </span>
+              </div>
+            </div>
+          </div>
+          {budgetUtilization > 100 && (
+            <div className="mt-2 flex items-center text-red-600 text-sm">
+              <AlertCircle className="w-4 h-4 mr-1" />
+              Over budget by {formatCurrency(spentAmount - totalBudget)}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* View Selector */}
+      <div className="flex space-x-2 bg-gray-100 p-1 rounded-lg w-fit">
+        <button
+          onClick={() => setCostView('category')}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            costView === 'category'
+              ? 'bg-white text-primary-600 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          By Category
+        </button>
+        <button
+          onClick={() => setCostView('task')}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            costView === 'task'
+              ? 'bg-white text-primary-600 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          By Task
+        </button>
+        <button
+          onClick={() => setCostView('team')}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            costView === 'team'
+              ? 'bg-white text-primary-600 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          By Team
+        </button>
+        <button
+          onClick={() => setCostView('timeline')}
+          className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            costView === 'timeline'
+              ? 'bg-white text-primary-600 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          Timeline
+        </button>
+      </div>
+
+      {/* Cost Breakdown by Category */}
+      {costView === 'category' && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">Cost by Category</h3>
+          <div className="space-y-4">
+            {costCategories.map((category, index) => {
+              const Icon = category.icon
+              return (
+                <div key={index} className="group hover:bg-gray-50 p-4 rounded-lg transition-colors">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3">
+                      <div className={`p-2 ${category.color} bg-opacity-10 rounded-lg`}>
+                        <Icon className={`w-5 h-5 ${category.color.replace('bg-', 'text-')}`} />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-900">{category.name}</div>
+                        <div className="text-sm text-gray-500">{category.percentage}% of budget</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-gray-900">{formatCurrency(category.amount)}</div>
+                      <div className="text-xs text-gray-500">of {formatCurrency(spentAmount)}</div>
+                    </div>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className={`${category.color} h-2 rounded-full transition-all duration-500`}
+                      style={{ width: `${category.percentage}%` }}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Cost Breakdown by Task */}
+      {costView === 'task' && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">Cost by Task</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Task</th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
+                  <th className="text-right py-3 px-4 font-semibold text-gray-700">Estimated</th>
+                  <th className="text-right py-3 px-4 font-semibold text-gray-700">Actual</th>
+                  <th className="text-right py-3 px-4 font-semibold text-gray-700">Variance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {taskCosts.map((task) => {
+                  const variance = task.actual - task.estimated
+                  const variancePercent = (variance / task.estimated) * 100
+                  return (
+                    <tr key={task.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-3 px-4">
+                        <div className="font-medium text-gray-900">{task.title}</div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          task.status === 'completed' ? 'bg-green-100 text-green-700' :
+                          task.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>
+                          {task.status.replace('_', ' ')}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-right text-gray-600">
+                        {formatCurrency(task.estimated)}
+                      </td>
+                      <td className="py-3 px-4 text-right font-semibold text-gray-900">
+                        {formatCurrency(task.actual)}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <span className={`font-medium ${variance > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                          {variance > 0 ? '+' : ''}{formatCurrency(variance)}
+                          <span className="text-xs ml-1">({variancePercent > 0 ? '+' : ''}{variancePercent.toFixed(1)}%)</span>
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Cost Breakdown by Team */}
+      {costView === 'team' && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">Cost by Team Member</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {teamCosts.map((member) => (
+              <div key={member.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-semibold">
+                      {member.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">{member.name}</div>
+                      <div className="text-xs text-gray-500">{member.role}</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Hours Worked</span>
+                    <span className="font-semibold text-gray-900">{member.hoursWorked}h</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Hourly Rate</span>
+                    <span className="font-semibold text-gray-900">{formatCurrency(member.hourlyRate)}/h</span>
+                  </div>
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="flex justify-between">
+                      <span className="text-gray-700 font-medium">Total Cost</span>
+                      <span className="text-lg font-bold text-primary-600">{formatCurrency(member.totalCost)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Cost Timeline */}
+      {costView === 'timeline' && (
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">Spending Timeline</h3>
+          <div className="space-y-4">
+            <div className="flex items-end justify-between space-x-2 h-64">
+              {monthlySpending.map((month, index) => {
+                const maxAmount = Math.max(...monthlySpending.map(m => m.amount))
+                const height = (month.amount / maxAmount) * 100
+                return (
+                  <div key={index} className="flex-1 flex flex-col items-center">
+                    <div className="relative group w-full">
+                      <div
+                        className="w-full bg-gradient-to-t from-primary-600 to-primary-400 rounded-t-lg transition-all duration-300 hover:from-primary-700 hover:to-primary-500 cursor-pointer"
+                        style={{ height: `${height}%`, minHeight: '20px' }}
+                      >
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-2 py-1 rounded text-xs whitespace-nowrap">
+                          {formatCurrency(month.amount)}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-xs text-gray-600 mt-2 font-medium">{month.month}</div>
+                  </div>
+                )
+              })}
+            </div>
+            
+            {/* Trend Summary */}
+            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(monthlySpending.reduce((sum, m) => sum + m.amount, 0) / monthlySpending.length)}
+                </div>
+                <div className="text-sm text-gray-600">Avg. Monthly</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  {formatCurrency(Math.max(...monthlySpending.map(m => m.amount)))}
+                </div>
+                <div className="text-sm text-gray-600">Highest Month</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {formatCurrency(Math.min(...monthlySpending.map(m => m.amount)))}
+                </div>
+                <div className="text-sm text-gray-600">Lowest Month</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cost Insights */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+          <div className="flex items-start space-x-4">
+            <div className="p-3 bg-blue-500 rounded-lg">
+              <TrendingUp className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">Cost Efficiency</h4>
+              <p className="text-sm text-gray-700 mb-3">
+                Your project is operating at {(100 - budgetUtilization * 0.2).toFixed(0)}% efficiency based on current spending patterns.
+              </p>
+              <div className="text-xs text-blue-700 font-medium">
+                {budgetUtilization < 80 ? 'Within optimal range' : 'Consider cost optimization'}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
+          <div className="flex items-start space-x-4">
+            <div className="p-3 bg-purple-500 rounded-lg">
+              <LineChart className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">Forecast</h4>
+              <p className="text-sm text-gray-700 mb-3">
+                At current burn rate, estimated completion cost will be {formatCurrency(spentAmount * 1.2)}.
+              </p>
+              <div className="text-xs text-purple-700 font-medium">
+                {spentAmount * 1.2 <= totalBudget ? 'On target to finish under budget' : 'May exceed budget'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
 export default ProjectDetailsPage
