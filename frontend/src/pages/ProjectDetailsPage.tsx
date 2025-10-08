@@ -995,6 +995,7 @@ import EnhancedTasksTab from '../components/project/EnhancedTasksTab'
 import EnhancedAnalyticsTab from '../components/project/EnhancedAnalyticsTab'
 import EnhancedTeamTab from '../components/project/EnhancedTeamTab'
 import EnhancedFilesTab from '../components/project/EnhancedFilesTab'
+import EnhancedActivityTab from '../components/project/EnhancedActivityTab'
 import MilestonesManager from '../components/project/MilestonesManager'
 import AdvancedGanttChartTab from '../components/project/AdvancedGanttChartTab'
 
