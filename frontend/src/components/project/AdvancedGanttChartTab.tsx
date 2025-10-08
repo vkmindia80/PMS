@@ -42,7 +42,6 @@ interface AdvancedGanttChartTabProps {
 
 const AdvancedGanttChartTab: React.FC<AdvancedGanttChartTabProps> = ({ projectId, projectName }) => {
   const { tokens } = useAuth();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
   // State
