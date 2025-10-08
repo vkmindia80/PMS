@@ -74,6 +74,11 @@ class User(BaseDBModel):
     theme: str = Field(default="light", description="UI theme preference")
     notifications_enabled: bool = Field(default=True, description="Email notifications enabled")
     
+    # Activity tracking preferences
+    geolocation_enabled: bool = Field(default=False, description="Allow geolocation tracking for activity logging")
+    activity_tracking_level: str = Field(default="standard", description="Activity tracking level: minimal, standard, detailed")
+    location_sharing_scope: str = Field(default="organization", description="Location sharing scope: none, project, organization")
+    
     # Profile completion
     profile_completed: bool = Field(default=False, description="Profile completion status")
     onboarding_completed: bool = Field(default=False, description="Onboarding completion status")
