@@ -6,7 +6,6 @@ Provides file upload, download, and management functionality using AWS S3.
 
 import os
 import uuid
-import magic
 import hashlib
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict, Any, Tuple
@@ -15,6 +14,14 @@ from botocore.exceptions import ClientError, NoCredentialsError
 from fastapi import HTTPException, UploadFile
 from pydantic import BaseModel
 import logging
+
+# Try to import magic, but make it optional
+try:
+    import magic
+    MAGIC_AVAILABLE = True
+except (ImportError, OSError) as e:
+    MAGIC_AVAILABLE = False
+    logging.warning(f"python-magic not available, will use fallback MIME detection: {e}")
 
 logger = logging.getLogger(__name__)
 
