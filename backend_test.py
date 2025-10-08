@@ -499,8 +499,8 @@ class CostAnalyticsTester:
         return all_success
 
     def run_all_tests(self):
-        """Run all project details API tests"""
-        print("🚀 Starting Project Details Functionality Testing")
+        """Run all cost analytics API tests"""
+        print("🚀 Starting Cost Analytics Functionality Testing")
         print("="*80)
         
         # Test authentication
@@ -513,62 +513,66 @@ class CostAnalyticsTester:
             print("❌ Auth token validation failed, stopping tests")
             return False
             
-        # Get projects list
-        if not self.test_get_projects_list():
-            print("❌ Projects list not available, stopping tests")
-            return False
-            
-        # Test project details - KEY FUNCTIONALITY
-        project_details_success = self.test_project_details() is not None
-        
-        # Test users list (needed for project details page)
-        users_success = len(self.test_users_list()) >= 0  # Allow empty list
-        
-        # Test tasks for project (needed for project details page)
-        tasks_success = len(self.test_tasks_for_project()) >= 0  # Allow empty list
-        
-        # Test specific project task count issue
-        specific_project_success = self.test_specific_project_task_count()
-        
-        # Test project update functionality
-        update_success = self.test_project_update()
-        
-        # Test demo data generation
+        # Generate demo data first to ensure we have cost data
         demo_data_success = self.test_generate_demo_data()
+        if not demo_data_success:
+            print("⚠️ Demo data generation failed, continuing with existing data")
         
-        # Test comments endpoint
-        comments_success = self.test_comments_endpoint()
+        # Test portfolio cost summary - CORE FUNCTIONALITY
+        portfolio_success = self.test_portfolio_cost_summary()
+        
+        # Test budget alerts - KEY FUNCTIONALITY
+        alerts_success = self.test_budget_alerts() is not None
+        
+        # Test cost estimates - KEY FUNCTIONALITY
+        estimates_success = self.test_cost_estimates()
+        
+        # Test detailed cost breakdown (if we have a project)
+        breakdown_success = self.test_detailed_cost_breakdown() if self.test_project_id else True
+        
+        # Test cost analytics integration
+        integration_success = self.test_cost_analytics_integration()
+        
+        # Test performance
+        performance_success = self.test_cost_analytics_performance()
+        
+        # Test data validation
+        validation_success = self.test_cost_data_validation()
         
         # Calculate overall success
-        key_tests_passed = sum([project_details_success, users_success, tasks_success, update_success, demo_data_success, comments_success, specific_project_success])
-        overall_success = key_tests_passed >= 5  # At least 5 out of 7 key tests must pass
+        key_tests = [portfolio_success, alerts_success, estimates_success, breakdown_success, integration_success]
+        key_tests_passed = sum(key_tests)
+        overall_success = key_tests_passed >= 4  # At least 4 out of 5 key tests must pass
         
         # Print summary
         print("\n" + "="*80)
-        print("PROJECT DETAILS FUNCTIONALITY TEST SUMMARY")
+        print("COST ANALYTICS FUNCTIONALITY TEST SUMMARY")
         print("="*80)
         print(f"Tests run: {self.tests_run}")
         print(f"Tests passed: {self.tests_passed}")
         print(f"Success rate: {(self.tests_passed/self.tests_run)*100:.1f}%")
         
         print(f"\n🎯 KEY FUNCTIONALITY TESTS:")
-        print(f"  Project Details: {'✅' if project_details_success else '❌'}")
-        print(f"  Users List: {'✅' if users_success else '❌'}")
-        print(f"  Tasks List: {'✅' if tasks_success else '❌'}")
-        print(f"  Project Update: {'✅' if update_success else '❌'}")
+        print(f"  Portfolio Cost Summary: {'✅' if portfolio_success else '❌'}")
+        print(f"  Budget Alerts: {'✅' if alerts_success else '❌'}")
+        print(f"  Cost Estimates: {'✅' if estimates_success else '❌'}")
+        print(f"  Detailed Breakdown: {'✅' if breakdown_success else '❌'}")
+        print(f"  Integration Tests: {'✅' if integration_success else '❌'}")
+        print(f"  Performance Tests: {'✅' if performance_success else '❌'}")
+        print(f"  Data Validation: {'✅' if validation_success else '❌'}")
         print(f"  Demo Data Generation: {'✅' if demo_data_success else '❌'}")
-        print(f"  Comments Endpoint: {'✅' if comments_success else '❌'}")
-        print(f"  Specific Project Task Count: {'✅' if specific_project_success else '❌'}")
         
         if overall_success:
-            print("\n🎉 Project Details functionality is working!")
-            print("✅ Project cards should navigate to details page")
-            print("✅ Project details should load with full information")
-            print("✅ Edit capabilities should work")
+            print("\n🎉 Cost Analytics functionality is working!")
+            print("✅ Portfolio cost summary should display correctly")
+            print("✅ Budget alerts should show relevant warnings")
+            print("✅ Cost estimator should generate accurate estimates")
+            print("✅ Sidebar integration should work properly")
         else:
-            print("\n❌ Project Details has issues")
-            print("🐛 Project navigation may not work properly")
-            print("🐛 This matches the reported 'Failed to fetch' error")
+            print("\n❌ Cost Analytics has issues")
+            print("🐛 Cost sidebar may not load properly")
+            print("🐛 Budget calculations may be incorrect")
+            print("🐛 API endpoints may be failing")
         
         return overall_success
 
