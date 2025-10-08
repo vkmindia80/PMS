@@ -35,7 +35,7 @@ export const useActivityTracking = (projectId?: string) => {
   // Geolocation functionality removed
 
   /**
-   * Log an activity with optional geolocation
+   * Log an activity
    */
   const logActivity = useCallback(async (activityData: ActivityData): Promise<boolean> => {
     if (!tokens?.access_token || !isTrackingEnabled) {
@@ -43,15 +43,8 @@ export const useActivityTracking = (projectId?: string) => {
     }
 
     try {
-      const position = geolocationSettings.enabled ? geolocationSettings.currentPosition : null;
-      
       const activityLog: ActivityLog = {
         ...activityData,
-        // Add geolocation data if available and enabled
-        latitude: position?.latitude,
-        longitude: position?.longitude,
-        location_accuracy: position?.accuracy,
-        geolocation_enabled: geolocationSettings.enabled && position !== null,
         // Add session and environment data
         session_id: sessionId.current,
         user_agent: navigator.userAgent,
