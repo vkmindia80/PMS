@@ -8,10 +8,12 @@ echo "🚀 Starting Backend Service..."
 echo "📦 Checking system dependencies..."
 
 # Check and install libmagic if needed
-if ! dpkg -l | grep -q "libmagic1" || ! dpkg -l | grep -q "libmagic-dev"; then
+if ! dpkg -l | grep -q "^ii.*libmagic1" || ! dpkg -l | grep -q "^ii.*libmagic-dev"; then
     echo "⚠️  libmagic libraries not found. Installing..."
-    apt-get update -qq
-    apt-get install -y libmagic1 libmagic-dev
+    apt-get update -qq >/dev/null 2>&1
+    apt-get install -y libmagic1 libmagic-dev >/dev/null 2>&1
+    apt-get remove -y libmagic-mgc >/dev/null 2>&1 || true
+    apt-get install -y libmagic1 libmagic-dev libmagic-mgc >/dev/null 2>&1
     echo "✅ libmagic libraries installed"
 else
     echo "✅ libmagic libraries present"
