@@ -129,6 +129,25 @@ const Sidebar: React.FC = () => {
               </button>
             )
           })}
+          
+          {/* Cost Analytics Button */}
+          <div className="pt-4 border-t border-gray-200">
+            <button
+              onClick={toggleCostSidebar}
+              className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                isCostSidebarOpen
+                  ? 'text-blue-600 bg-blue-50 border-r-2 border-blue-600'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+              data-testid="cost-analytics-toggle"
+            >
+              <Calculator className="h-5 w-5 flex-shrink-0" />
+              <span className="truncate">Cost Analytics</span>
+              <div className="ml-auto">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              </div>
+            </button>
+          </div>
         </nav>
 
         {/* User Profile Section */}
