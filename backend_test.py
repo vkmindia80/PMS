@@ -387,34 +387,45 @@ class CostAnalyticsTester:
             print(f"    ❌ Auth token validation failed")
             return False
 
-    def test_project_update(self):
-        """Test project update functionality (used by edit features)"""
+    def test_cost_analytics_performance(self):
+        """Test performance and response times of cost analytics endpoints"""
         print("\n" + "="*60)
-        print("TESTING PROJECT UPDATE FUNCTIONALITY")
+        print("TESTING COST ANALYTICS PERFORMANCE")
         print("="*60)
         
-        if not self.test_project_id:
-            print("    ❌ No test project ID available")
-            return False
+        endpoints = [
+            ("/api/cost-analytics/portfolio-summary", "Portfolio Summary"),
+            ("/api/cost-analytics/budget-alerts", "Budget Alerts"),
+            ("/api/cost-analytics/cost-estimates?project_type=software_development&team_size=5&duration_months=6", "Cost Estimates")
+        ]
+        
+        all_success = True
+        
+        for endpoint, name in endpoints:
+            start_time = time.time()
             
-        # Try to update project description
-        test_description = f"Updated description at {datetime.utcnow().isoformat()}"
+            success, response = self.run_test(
+                f"Performance Test - {name}",
+                "GET",
+                endpoint,
+                200
+            )
+            
+            end_time = time.time()
+            response_time = (end_time - start_time) * 1000  # Convert to milliseconds
+            
+            if success:
+                print(f"    ⏱️ {name} Response Time: {response_time:.2f}ms")
+                if response_time > 5000:  # 5 seconds threshold
+                    print(f"    ⚠️ Slow response time for {name}")
+                    all_success = False
+                else:
+                    print(f"    ✅ Good response time for {name}")
+            else:
+                print(f"    ❌ Performance test failed for {name}")
+                all_success = False
         
-        success, response = self.run_test(
-            "Update Project Description",
-            "PUT",
-            f"/api/projects/{self.test_project_id}",
-            200,
-            data={"description": test_description}
-        )
-        
-        if success and 'id' in response:
-            print(f"    ✅ Project update successful")
-            print(f"    📝 Updated description: {response.get('description', 'Not found')}")
-            return True
-        else:
-            print(f"    ❌ Project update failed")
-            return False
+        return all_success
 
     def test_generate_demo_data(self):
         """Test generate demo data functionality"""
