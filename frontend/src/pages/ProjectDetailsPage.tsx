@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useActivityTracking } from '../hooks/useActivityTracking'
 import { 
   ArrowLeft, Edit2, Trash2, Calendar, Users, DollarSign, Target, 
   TrendingUp, Clock, CheckCircle, AlertCircle, MessageSquare, 
