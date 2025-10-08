@@ -231,14 +231,12 @@ async def show_activity_stats(db):
     for stat in action_stats:
         print(f"   {stat['_id']}: {stat['count']} activities")
     
-    # Count activities with geolocation
-    geo_count = await db.activities.count_documents({"geolocation_enabled": True})
+    # Count total activities
     total_count = await db.activities.count_documents({})
     
-    print(f"\n🌍 Geolocation Statistics:")
+    print(f"\n📊 Activity Statistics:")
     print(f"   Total activities: {total_count}")
-    print(f"   With geolocation: {geo_count} ({(geo_count/total_count*100):.1f}%)")
-    print(f"   Without geolocation: {total_count - geo_count} ({((total_count-geo_count)/total_count*100):.1f}%)")
+    print(f"   Enhanced tracking enabled")
 
 async def main():
     """Main function"""
