@@ -48,6 +48,16 @@ class ActivityCreate(BaseModel):
     metadata: Optional[Dict[str, Any]] = {}
     project_id: Optional[str] = None
     task_id: Optional[str] = None
+    # Geolocation fields (optional)
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    location_accuracy: Optional[float] = None
+    geolocation_enabled: bool = False
+    # Enhanced tracking fields
+    tab_name: Optional[str] = None
+    session_id: Optional[str] = None
+    user_agent: Optional[str] = None
+    ip_address: Optional[str] = None
 
 
 class ActivityFilter(BaseModel):
