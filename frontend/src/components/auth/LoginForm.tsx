@@ -266,10 +266,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
+            className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-300 transform ${
               isLoading
                 ? 'bg-gray-300 cursor-not-allowed'
-                : 'bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'
+                : 'bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 shadow-lg hover:shadow-xl'
             } text-white`}
           >
             {isLoading ? (
@@ -278,7 +278,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
                 Signing In...
               </div>
             ) : (
-              'Sign In'
+              <span className="flex items-center justify-center">
+                Sign In
+                <svg className="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
             )}
           </button>
         </form>
@@ -289,7 +294,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
             Don't have an account?{' '}
             <button
               onClick={onSwitchToRegister}
-              className="text-primary-600 hover:text-primary-500 font-medium"
+              className="text-primary-600 hover:text-primary-500 font-semibold hover:underline transition-colors"
               disabled={isLoading}
             >
               Sign up here
