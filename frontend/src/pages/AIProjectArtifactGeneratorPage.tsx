@@ -910,12 +910,37 @@ const AIProjectArtifactGeneratorPage: React.FC<AIProjectArtifactGeneratorPagePro
         })}
       </div>
 
-      <div className="text-center">
+      <div className="text-center flex justify-center space-x-4">
+        <button
+          onClick={saveProject}
+          disabled={isSaving || !!currentProjectId}
+          className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          data-testid="save-project-btn"
+        >
+          {isSaving ? (
+            <>
+              <RefreshCw className="h-5 w-5 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : currentProjectId ? (
+            <>
+              <Save className="h-5 w-5 mr-2" />
+              Saved
+            </>
+          ) : (
+            <>
+              <Save className="h-5 w-5 mr-2" />
+              Save Project
+            </>
+          )}
+        </button>
+
         <button
           onClick={() => {
             setStep(1)
             setGeneratedDocuments([])
             setSelectedDocuments([])
+            setCurrentProjectId(null)
           }}
           className="inline-flex items-center px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors"
           data-testid="generate-new-documents-btn"
