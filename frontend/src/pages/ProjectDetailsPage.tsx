@@ -333,7 +333,19 @@ const ProjectDetailsPage: React.FC = () => {
   }
 
   const handleStatusChange = async (newStatus: string) => {
+    const oldStatus = project?.status
     await handleUpdateProject({ status: newStatus as any })
+    
+    // Log status change specifically
+    await logProjectAction(
+      'status_changed',
+      projectId!,
+      `Changed project status from ${oldStatus} to ${newStatus}`,
+      {
+        old_status: oldStatus,
+        new_status: newStatus
+      }
+    )
   }
 
   const handlePriorityChange = async (newPriority: string) => {
