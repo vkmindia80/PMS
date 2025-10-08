@@ -60,6 +60,7 @@ const Sidebar: React.FC = () => {
     { name: 'Resources', path: '/resource-management', icon: Brain },
     { name: 'AI/ML', path: '/ai-ml', icon: Cpu },
     { name: 'Advanced AI', path: '/advanced-ai', icon: Brain },
+    { name: 'AI Project Artifact Generator', path: '/ai-project-generator', icon: Sparkles },
     { name: 'Security', path: '/security', icon: Shield },
     { name: 'Integrations', path: '/integrations', icon: Zap },
   ]
