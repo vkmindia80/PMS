@@ -44,6 +44,10 @@ const Sidebar: React.FC = () => {
     setIsSidebarOpen(!isSidebarOpen)
   }
 
+  const toggleCostSidebar = () => {
+    setIsCostSidebarOpen(!isCostSidebarOpen)
+  }
+
   const navigationItems = [
     { name: 'Dashboard', path: '/dashboard', icon: BarChart3 },
     { name: 'Organization', path: '/organization', icon: Building2 },
