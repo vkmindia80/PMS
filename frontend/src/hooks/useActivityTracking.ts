@@ -211,7 +211,6 @@ export const useActivityTracking = (projectId?: string) => {
 
   return {
     // State
-    geolocationSettings,
     isTrackingEnabled,
     
     // General activity logging
@@ -226,9 +225,7 @@ export const useActivityTracking = (projectId?: string) => {
     logFileAction,
     
     // Settings
-    toggleGeolocation,
     toggleActivityTracking,
-    initializeGeolocation,
   };
 };
 
