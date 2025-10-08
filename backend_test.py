@@ -169,45 +169,43 @@ class CostAnalyticsTester:
             print(f"    ❌ Failed to get portfolio cost summary")
             return False
 
-    def test_project_details(self):
-        """Test project details endpoint - KEY FUNCTIONALITY"""
+    def test_budget_alerts(self):
+        """Test budget alerts endpoint - KEY FUNCTIONALITY"""
         print("\n" + "="*60)
-        print("TESTING PROJECT DETAILS ENDPOINT")
+        print("TESTING BUDGET ALERTS ENDPOINT")
         print("="*60)
         
-        if not self.test_project_id:
-            print("    ❌ No test project ID available")
-            return None
-            
         success, response = self.run_test(
-            "Get Project Details",
+            "Get Budget Alerts",
             "GET",
-            f"/api/projects/{self.test_project_id}",
+            "/api/cost-analytics/budget-alerts",
             200
         )
         
-        if success and 'id' in response:
-            print(f"    ✅ Project details retrieved successfully")
-            print(f"    📋 Project ID: {response.get('id')}")
-            print(f"    📋 Project Name: {response.get('name', 'Unknown')}")
-            print(f"    📋 Status: {response.get('status', 'Unknown')}")
-            print(f"    📋 Priority: {response.get('priority', 'Unknown')}")
-            print(f"    📋 Progress: {response.get('progress_percentage', 0)}%")
-            print(f"    📋 Team Members: {len(response.get('team_members', []))}")
-            print(f"    📋 Task Count: {response.get('task_count', 0)}")
+        if success and isinstance(response, dict):
+            alerts = response.get('alerts', [])
+            summary = response.get('summary', {})
             
-            # Check required fields for frontend
-            required_fields = ['id', 'name', 'status', 'priority', 'progress_percentage']
-            missing_fields = [field for field in required_fields if field not in response]
+            print(f"    🚨 Total Alerts: {summary.get('total_alerts', 0)}")
+            print(f"    🔴 Critical Alerts: {summary.get('critical_count', 0)}")
+            print(f"    🟡 Warning Alerts: {summary.get('warning_count', 0)}")
+            print(f"    🔵 Info Alerts: {summary.get('info_count', 0)}")
             
-            if missing_fields:
-                print(f"    ⚠️ Missing required fields: {missing_fields}")
-            else:
-                print(f"    ✅ All required fields present")
+            # Check alert structure
+            if len(alerts) > 0:
+                sample_alert = alerts[0]
+                required_fields = ['type', 'severity', 'project_id', 'project_name', 'message']
+                missing_fields = [field for field in required_fields if field not in sample_alert]
+                
+                if missing_fields:
+                    print(f"    ⚠️ Missing alert fields: {missing_fields}")
+                else:
+                    print(f"    ✅ Alert structure is valid")
+                    print(f"    📋 Sample Alert: {sample_alert.get('message', 'Unknown')}")
             
             return response
         else:
-            print(f"    ❌ Failed to get project details")
+            print(f"    ❌ Failed to get budget alerts")
             return None
 
     def test_users_list(self):
