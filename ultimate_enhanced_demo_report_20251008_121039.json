@@ -1,0 +1,32 @@
+{
+  "generation_id": "d6cf1e19-e6c4-4696-bbdc-89ba641e0e16",
+  "type": "ultimate_enhanced_comprehensive",
+  "status": "completed",
+  "start_time": "2025-10-08T12:10:36.199075",
+  "end_time": "2025-10-08T12:10:39.895326",
+  "duration_seconds": 3.696251,
+  "organization_id": "demo-org-001",
+  "data_generated": {
+    "users": 14,
+    "teams": 9,
+    "projects": 6,
+    "tasks": 120,
+    "comments": 176,
+    "files": 32,
+    "notifications": 128,
+    "timeline_tasks": 120,
+    "task_dependencies": 85
+  },
+  "quality_metrics": {
+    "data_consistency": "high",
+    "relationship_integrity": "complete",
+    "business_realism": "enterprise_grade",
+    "feature_coverage": "comprehensive"
+  },
+  "access_info": {
+    "frontend_url": "http://localhost:3000",
+    "backend_api": "http://localhost:8001",
+    "demo_credentials": "demo@company.com / demo123456",
+    "api_documentation": "http://localhost:8001/docs"
+  }
+}
