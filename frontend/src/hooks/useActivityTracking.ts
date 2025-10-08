@@ -70,7 +70,7 @@ export const useActivityTracking = (projectId?: string) => {
       console.error('Error logging activity:', error);
       return false;
     }
-  }, [tokens, geolocationSettings, isTrackingEnabled, projectId]);
+  }, [tokens, isTrackingEnabled, projectId]);
 
   /**
    * Log project tab navigation
