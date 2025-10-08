@@ -302,78 +302,122 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister }) => {
           </p>
         </div>
 
-        {/* Demo Credentials */}
-        <div className="mt-6 p-4 bg-primary-50 border border-primary-200 rounded-lg">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-primary-800 font-medium flex items-center">
-              <User className="h-4 w-4 mr-2" />
-              Quick Demo Login
-            </p>
-            <div className="flex space-x-2">
+        {/* Demo Access Card */}
+        <div className="mt-6 rounded-xl bg-gradient-to-br from-primary-50 via-purple-50 to-blue-50 border-2 border-primary-200 overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-primary-600 to-purple-600 px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                  <User className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-white">Try Demo Account</p>
+                  <p className="text-xs text-primary-100">Full admin access • No signup required</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="p-4">
+            <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 mb-3 border border-primary-100">
+              <div className="text-xs space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Mail className="h-3 w-3 text-primary-600" />
+                  <span className="text-gray-700 font-mono">{DEMO_CREDENTIALS.email}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Lock className="h-3 w-3 text-primary-600" />
+                  <span className="text-gray-700 font-mono">{DEMO_CREDENTIALS.password}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex space-x-2 mb-3">
               <button
                 type="button"
                 onClick={fillDemoCredentials}
-                className="text-xs bg-primary-600 text-white px-3 py-1 rounded-md hover:bg-primary-700 transition-colors"
+                className="flex-1 text-xs bg-white border-2 border-primary-600 text-primary-600 px-3 py-2 rounded-lg hover:bg-primary-50 transition-all font-semibold hover:scale-105 transform"
                 disabled={isLoading || isGeneratingDemo}
               >
-                Auto Fill
+                Auto Fill Form
               </button>
               <button
                 type="button"
                 onClick={performDemoLogin}
-                className="text-xs bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition-colors"
+                className="flex-1 text-xs bg-gradient-to-r from-green-600 to-emerald-600 text-white px-3 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all font-semibold hover:scale-105 transform shadow-md"
                 disabled={isLoading || isGeneratingDemo}
                 data-testid="quick-demo-login"
               >
-                Quick Login
+                Quick Login →
               </button>
             </div>
-          </div>
-          
-          <div className="text-xs text-primary-700 space-y-1">
-            <p>📧 Email: {DEMO_CREDENTIALS.email}</p>
-            <p>🔑 Password: {DEMO_CREDENTIALS.password}</p>
-            <p className="text-primary-600 font-medium mt-2">
-              ✨ Demo account ready with full admin access
-            </p>
-          </div>
 
-          {/* Demo Data Generation */}
-          <div className="mt-3 pt-3 border-t border-primary-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Database className="h-4 w-4 text-primary-600" />
-                <span className="text-xs text-primary-700 font-medium">
-                  Generate Sample Data
-                </span>
+            {/* Demo Data Section */}
+            <div className="pt-3 border-t border-primary-200">
+              <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg p-3 border border-orange-200">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-r from-orange-500 to-yellow-500 flex items-center justify-center">
+                      <Database className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <span className="text-xs text-gray-900 font-bold block">Sample Data Generator</span>
+                      <span className="text-xs text-gray-600">500+ realistic data points</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={generateDemoData}
+                    disabled={isLoading || isGeneratingDemo}
+                    className={`text-xs px-3 py-2 rounded-lg font-semibold transition-all flex items-center space-x-1 transform hover:scale-105 shadow-md ${
+                      isGeneratingDemo
+                        ? 'bg-orange-400 text-white cursor-not-allowed'
+                        : 'bg-gradient-to-r from-orange-600 to-yellow-600 text-white hover:from-orange-700 hover:to-yellow-700'
+                    }`}
+                    data-testid="generate-demo-data"
+                  >
+                    {isGeneratingDemo ? (
+                      <>
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        <span>Creating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Database className="h-3 w-3" />
+                        <span>Generate</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <p className="text-xs text-gray-600 leading-relaxed mt-2">
+                  Projects, tasks, teams, timelines, dependencies, and analytics data
+                </p>
               </div>
-              <button
-                type="button"
-                onClick={generateDemoData}
-                disabled={isLoading || isGeneratingDemo}
-                className={`text-xs px-3 py-1 rounded-md font-medium transition-colors flex items-center space-x-1 ${
-                  isGeneratingDemo
-                    ? 'bg-orange-500 text-white cursor-not-allowed'
-                    : 'bg-orange-600 text-white hover:bg-orange-700'
-                }`}
-                data-testid="generate-demo-data"
-              >
-                {isGeneratingDemo ? (
-                  <>
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                    <span>Generating...</span>
-                  </>
-                ) : (
-                  <>
-                    <Database className="h-3 w-3" />
-                    <span>Generate Data</span>
-                  </>
-                )}
-              </button>
             </div>
-            <p className="text-xs text-primary-600 mt-1">
-              🚀 Create 500+ enhanced data points: tasks with start/end dates, dependencies, multiple assignees, and comprehensive project analytics
-            </p>
+
+            {/* Feature Badges */}
+            <div className="flex flex-wrap gap-2 mt-3">
+              <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full font-medium flex items-center">
+                <svg className="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                Instant Access
+              </span>
+              <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-medium flex items-center">
+                <svg className="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                Full Features
+              </span>
+              <span className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full font-medium flex items-center">
+                <svg className="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                No Credit Card
+              </span>
+            </div>
           </div>
         </div>
       </div>
