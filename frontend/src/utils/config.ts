@@ -72,7 +72,7 @@ export const API_ENDPOINTS = {
     details: (id: string) => `${getApiUrl()}/api/tasks/${id}`,
   },
   timeline: {
-    gantt: (projectId: string) => `${getApiUrl()}/api/timeline/gantt/${projectId}`,
+    gantt: (projectId: string) => `${getApiUrl()}/api/dynamic-timeline/gantt/${projectId}/enhanced`,
     tasks: (projectId: string) => `${getApiUrl()}/api/timeline/tasks/${projectId}`,
     taskUpdate: (taskId: string) => `${getApiUrl()}/api/timeline/tasks/${taskId}`,
     taskCreate: () => `${getApiUrl()}/api/timeline/tasks`,
