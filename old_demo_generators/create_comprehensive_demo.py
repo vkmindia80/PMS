@@ -622,7 +622,7 @@ class ComprehensiveDemoCreator:
         print("• Sample comments and file attachments")
         
         print(f"\n🌐 Access the system:")
-        print(f"• External URL: https://enhanced-timeline.preview.emergentagent.com")
+        print(f"• External URL: https://data-gen-wizard.preview.emergentagent.com")
         print(f"• Demo Login: demo@company.com / demo123456")
         print(f"• Analytics Dashboard: Navigate to Portfolio Analytics")
         
