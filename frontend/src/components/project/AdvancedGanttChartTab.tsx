@@ -596,8 +596,10 @@ const AdvancedGanttChartTab: React.FC<AdvancedGanttChartTabProps> = ({ projectId
 
       {/* Gantt Chart */}
       <div 
+        id="gantt-chart-container"
         ref={containerRef}
         className="flex-1 bg-white rounded-lg border border-gray-200 overflow-hidden"
+        data-testid="gantt-chart-container"
       >
         <div className="flex h-full">
           {/* Task Names Column */}
