@@ -568,3 +568,298 @@ async def health_check():
             "error": str(e),
             "timestamp": datetime.now().isoformat()
         }
+
+
+# ==================== SAVED PROJECTS CRUD OPERATIONS ====================
+
+# Models for saved projects
+class SaveProjectRequest(BaseModel):
+    project_scope: ProjectScope
+    generated_documents: List[GeneratedDocument]
+    tags: List[str] = Field(default=[])
+
+class UpdateProjectRequest(BaseModel):
+    project_scope: Optional[ProjectScope] = None
+    generated_documents: Optional[List[GeneratedDocument]] = None
+    tags: Optional[List[str]] = None
+
+class SavedProjectResponse(BaseModel):
+    id: str
+    user_id: str
+    project_scope: ProjectScope
+    generated_documents: List[GeneratedDocument]
+    created_at: str
+    updated_at: str
+    tags: List[str]
+    document_count: int
+
+class SavedProjectListItem(BaseModel):
+    id: str
+    project_name: str
+    project_description: str
+    business_domain: str
+    priority: str
+    document_count: int
+    created_at: str
+    updated_at: str
+    tags: List[str]
+
+@router.post("/projects", response_model=SavedProjectResponse, status_code=status.HTTP_201_CREATED)
+async def save_project(
+    request: SaveProjectRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Save a generated project with all its documents."""
+    try:
+        db = await get_database()
+        
+        # Create project document
+        project_id = str(uuid.uuid4())
+        now = datetime.utcnow()
+        
+        project_doc = {
+            "id": project_id,
+            "user_id": current_user.id,
+            "project_scope": request.project_scope.model_dump(),
+            "generated_documents": [doc.model_dump() for doc in request.generated_documents],
+            "tags": request.tags,
+            "created_at": now,
+            "updated_at": now
+        }
+        
+        await db.ai_saved_projects.insert_one(project_doc)
+        
+        logger.info(f"Saved project {project_id} for user {current_user.id}")
+        
+        return SavedProjectResponse(
+            id=project_id,
+            user_id=current_user.id,
+            project_scope=request.project_scope,
+            generated_documents=request.generated_documents,
+            created_at=now.isoformat(),
+            updated_at=now.isoformat(),
+            tags=request.tags,
+            document_count=len(request.generated_documents)
+        )
+    except Exception as e:
+        logger.error(f"Error saving project: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to save project: {str(e)}"
+        )
+
+@router.get("/projects", response_model=List[SavedProjectListItem])
+async def list_projects(
+    search: Optional[str] = Query(None, description="Search by project name or description"),
+    domain: Optional[str] = Query(None, description="Filter by business domain"),
+    priority: Optional[str] = Query(None, description="Filter by priority"),
+    tags: Optional[str] = Query(None, description="Filter by tags (comma-separated)"),
+    current_user: User = Depends(get_current_user)
+):
+    """List all saved projects for the current user with optional filtering."""
+    try:
+        db = await get_database()
+        
+        # Build query
+        query = {"user_id": current_user.id}
+        
+        # Apply filters
+        if domain:
+            query["project_scope.business_domain"] = {"$regex": domain, "$options": "i"}
+        if priority:
+            query["project_scope.priority"] = priority
+        if tags:
+            tag_list = [tag.strip() for tag in tags.split(",")]
+            query["tags"] = {"$in": tag_list}
+        
+        # Get projects
+        cursor = db.ai_saved_projects.find(query).sort("updated_at", -1)
+        projects = await cursor.to_list(length=None)
+        
+        # Apply search filter if provided
+        if search:
+            search_lower = search.lower()
+            projects = [
+                p for p in projects
+                if search_lower in p["project_scope"]["project_name"].lower()
+                or search_lower in p["project_scope"]["project_description"].lower()
+            ]
+        
+        # Transform to list items
+        result = []
+        for project in projects:
+            result.append(SavedProjectListItem(
+                id=project["id"],
+                project_name=project["project_scope"]["project_name"],
+                project_description=project["project_scope"]["project_description"],
+                business_domain=project["project_scope"]["business_domain"],
+                priority=project["project_scope"]["priority"],
+                document_count=len(project.get("generated_documents", [])),
+                created_at=project["created_at"].isoformat(),
+                updated_at=project["updated_at"].isoformat(),
+                tags=project.get("tags", [])
+            ))
+        
+        return result
+    except Exception as e:
+        logger.error(f"Error listing projects: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to list projects: {str(e)}"
+        )
+
+@router.get("/projects/{project_id}", response_model=SavedProjectResponse)
+async def get_project(
+    project_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get a specific saved project by ID."""
+    try:
+        db = await get_database()
+        
+        project = await db.ai_saved_projects.find_one({
+            "id": project_id,
+            "user_id": current_user.id
+        })
+        
+        if not project:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found"
+            )
+        
+        # Convert to response model
+        return SavedProjectResponse(
+            id=project["id"],
+            user_id=project["user_id"],
+            project_scope=ProjectScope(**project["project_scope"]),
+            generated_documents=[GeneratedDocument(**doc) for doc in project["generated_documents"]],
+            created_at=project["created_at"].isoformat(),
+            updated_at=project["updated_at"].isoformat(),
+            tags=project.get("tags", []),
+            document_count=len(project["generated_documents"])
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting project {project_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to get project: {str(e)}"
+        )
+
+@router.put("/projects/{project_id}", response_model=SavedProjectResponse)
+async def update_project(
+    project_id: str,
+    request: UpdateProjectRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Update a saved project."""
+    try:
+        db = await get_database()
+        
+        # Check if project exists and belongs to user
+        existing = await db.ai_saved_projects.find_one({
+            "id": project_id,
+            "user_id": current_user.id
+        })
+        
+        if not existing:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found"
+            )
+        
+        # Build update document
+        update_doc = {"updated_at": datetime.utcnow()}
+        
+        if request.project_scope:
+            update_doc["project_scope"] = request.project_scope.model_dump()
+        if request.generated_documents is not None:
+            update_doc["generated_documents"] = [doc.model_dump() for doc in request.generated_documents]
+        if request.tags is not None:
+            update_doc["tags"] = request.tags
+        
+        # Update project
+        await db.ai_saved_projects.update_one(
+            {"id": project_id, "user_id": current_user.id},
+            {"$set": update_doc}
+        )
+        
+        # Get updated project
+        updated_project = await db.ai_saved_projects.find_one({
+            "id": project_id,
+            "user_id": current_user.id
+        })
+        
+        return SavedProjectResponse(
+            id=updated_project["id"],
+            user_id=updated_project["user_id"],
+            project_scope=ProjectScope(**updated_project["project_scope"]),
+            generated_documents=[GeneratedDocument(**doc) for doc in updated_project["generated_documents"]],
+            created_at=updated_project["created_at"].isoformat(),
+            updated_at=updated_project["updated_at"].isoformat(),
+            tags=updated_project.get("tags", []),
+            document_count=len(updated_project["generated_documents"])
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating project {project_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to update project: {str(e)}"
+        )
+
+@router.delete("/projects/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_project(
+    project_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Delete a saved project."""
+    try:
+        db = await get_database()
+        
+        result = await db.ai_saved_projects.delete_one({
+            "id": project_id,
+            "user_id": current_user.id
+        })
+        
+        if result.deleted_count == 0:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Project not found"
+            )
+        
+        logger.info(f"Deleted project {project_id} for user {current_user.id}")
+        return None
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting project {project_id}: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete project: {str(e)}"
+        )
+
+@router.get("/sample-projects")
+async def get_sample_projects(current_user: User = Depends(get_current_user)):
+    """Get list of sample projects for inspiration."""
+    try:
+        # Load sample projects from JSON file
+        sample_file_path = "/app/sample_data/ai_generator_sample_projects.json"
+        
+        if not os.path.exists(sample_file_path):
+            logger.warning(f"Sample projects file not found: {sample_file_path}")
+            return {"samples": []}
+        
+        with open(sample_file_path, 'r') as f:
+            samples = json.load(f)
+        
+        return {"samples": samples}
+    except Exception as e:
+        logger.error(f"Error loading sample projects: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to load sample projects: {str(e)}"
+        )
