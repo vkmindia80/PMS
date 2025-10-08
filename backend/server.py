@@ -39,6 +39,7 @@ from routes.timeline_tasks_integration import router as timeline_tasks_integrati
 from routes.files import router as files_router
 from routes.advanced_timeline import router as advanced_timeline_router
 from routes.activities import router as activities_router
+from routes.cost_analytics import router as cost_analytics_router
 
 # Import models
 from models import (
