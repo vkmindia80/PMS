@@ -967,87 +967,284 @@ import EnhancedFilesTab from '../components/project/EnhancedFilesTab'
 import MilestonesManager from '../components/project/MilestonesManager'
 import AdvancedGanttChartTab from '../components/project/AdvancedGanttChartTab'
 
-// Activity Tab Component
-const ActivityTab: React.FC<any> = ({ activities, comments, newComment, setNewComment, handleAddComment, formatDateTime }) => (
-  <div className="space-y-6">
-    <h2 className="text-2xl font-bold text-gray-900">Project Activity</h2>
+// Activity Tab Component - Enhanced with filtering and grouping
+const ActivityTab: React.FC<any> = ({ activities, comments, newComment, setNewComment, handleAddComment, formatDateTime }) => {
+  const [filterType, setFilterType] = React.useState<string>('all')
+  const [showStats, setShowStats] = React.useState(false)
+  
+  // Combine and sort all activities
+  const allActivities = [
+    ...comments.map(c => ({
+      id: c.id,
+      type: 'comment',
+      user_name: c.author_name || 'Unknown',
+      description: c.content,
+      created_at: c.created_at,
+      action_type: 'commented',
+      metadata: {}
+    })),
+    ...activities
+  ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+  
+  // Filter activities
+  const filteredActivities = filterType === 'all' 
+    ? allActivities 
+    : allActivities.filter(a => a.type === filterType || a.action_type === filterType)
+  
+  // Group activities by date
+  const groupedActivities = filteredActivities.reduce((groups, activity) => {
+    const date = new Date(activity.created_at).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+    if (!groups[date]) {
+      groups[date] = []
+    }
+    groups[date].push(activity)
+    return groups
+  }, {} as Record<string, typeof allActivities>)
+  
+  const getActivityIcon = (type: string, actionType: string) => {
+    if (type === 'comment' || actionType === 'commented') return MessageSquare
+    if (actionType === 'created') return Plus
+    if (actionType === 'completed') return CheckCircle
+    if (actionType === 'updated') return Edit2
+    if (actionType === 'status_changed') return Zap
+    if (actionType === 'assigned') return Users
+    if (actionType === 'deleted') return Trash2
+    return Activity
+  }
+  
+  const getActivityColor = (type: string, actionType: string) => {
+    if (type === 'comment' || actionType === 'commented') return 'bg-blue-50 border-blue-200 text-blue-700'
+    if (actionType === 'created') return 'bg-green-50 border-green-200 text-green-700'
+    if (actionType === 'completed') return 'bg-purple-50 border-purple-200 text-purple-700'
+    if (actionType === 'updated') return 'bg-orange-50 border-orange-200 text-orange-700'
+    if (actionType === 'status_changed') return 'bg-yellow-50 border-yellow-200 text-yellow-700'
+    if (actionType === 'assigned') return 'bg-indigo-50 border-indigo-200 text-indigo-700'
+    if (actionType === 'deleted') return 'bg-red-50 border-red-200 text-red-700'
+    return 'bg-gray-50 border-gray-200 text-gray-700'
+  }
 
-    {/* Add Comment */}
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Comment</h3>
-      <div className="space-y-4">
-        <textarea
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          rows={3}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          placeholder="Share an update, ask a question, or provide feedback..."
-          data-testid="new-comment-textarea"
-        />
-        <div className="flex justify-end">
+  return (
+    <div className="space-y-6">
+      {/* Header with Stats Toggle */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+          <Activity className="w-7 h-7 mr-3 text-primary-600" />
+          Project Activity
+        </h2>
+        <button
+          onClick={() => setShowStats(!showStats)}
+          className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          <BarChart3 className="w-4 h-4" />
+          <span className="text-sm font-medium">
+            {showStats ? 'Hide' : 'Show'} Stats
+          </span>
+        </button>
+      </div>
+
+      {/* Activity Stats */}
+      {showStats && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+            <div className="text-3xl font-bold mb-2">{allActivities.length}</div>
+            <div className="text-blue-100 text-sm">Total Activities</div>
+          </div>
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
+            <div className="text-3xl font-bold mb-2">
+              {allActivities.filter(a => a.created_at && 
+                new Date(a.created_at) > new Date(Date.now() - 24*60*60*1000)
+              ).length}
+            </div>
+            <div className="text-green-100 text-sm">Last 24 Hours</div>
+          </div>
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+            <div className="text-3xl font-bold mb-2">{comments.length}</div>
+            <div className="text-purple-100 text-sm">Comments</div>
+          </div>
+          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white">
+            <div className="text-3xl font-bold mb-2">{activities.length}</div>
+            <div className="text-orange-100 text-sm">System Events</div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Comment */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <MessageSquare className="w-5 h-5 mr-2 text-primary-600" />
+          Add Comment
+        </h3>
+        <div className="space-y-4">
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            rows={3}
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+            placeholder="Share an update, ask a question, or provide feedback..."
+            data-testid="new-comment-textarea"
+          />
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-500">
+              {newComment.length} / 1000 characters
+            </span>
+            <button
+              onClick={handleAddComment}
+              disabled={!newComment.trim()}
+              className="px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg transform hover:scale-105"
+              data-testid="add-comment-button"
+            >
+              Post Comment
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Bar */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div className="flex flex-wrap gap-2">
           <button
-            onClick={handleAddComment}
-            disabled={!newComment.trim()}
-            className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-            data-testid="add-comment-button"
+            onClick={() => setFilterType('all')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filterType === 'all'
+                ? 'bg-primary-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
           >
-            Post Comment
+            All ({allActivities.length})
+          </button>
+          <button
+            onClick={() => setFilterType('comment')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filterType === 'comment'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <MessageSquare className="w-4 h-4 inline mr-1" />
+            Comments ({comments.length})
+          </button>
+          <button
+            onClick={() => setFilterType('created')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filterType === 'created'
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <Plus className="w-4 h-4 inline mr-1" />
+            Created
+          </button>
+          <button
+            onClick={() => setFilterType('completed')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filterType === 'completed'
+                ? 'bg-purple-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <CheckCircle className="w-4 h-4 inline mr-1" />
+            Completed
+          </button>
+          <button
+            onClick={() => setFilterType('updated')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filterType === 'updated'
+                ? 'bg-orange-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <Edit2 className="w-4 h-4 inline mr-1" />
+            Updated
           </button>
         </div>
       </div>
-    </div>
 
-    {/* Activity Feed */}
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-6">Recent Activity</h3>
+      {/* Activity Feed - Grouped by Date */}
       <div className="space-y-6">
-        {/* Comments */}
-        {comments.map(comment => (
-          <div key={comment.id} className="flex space-x-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
-            <div className="w-10 h-10 bg-primary-600 text-white rounded-full flex items-center justify-center font-semibold">
-              {comment.author_name?.charAt(0) || '?'}
+        {Object.keys(groupedActivities).length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12">
+            <div className="text-center">
+              <MessageSquare className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No activity yet</h3>
+              <p className="text-gray-600">Be the first to comment or update this project</p>
             </div>
-            <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-2">
-                <span className="font-medium text-gray-900">{comment.author_name || 'Unknown'}</span>
-                <span className="text-sm text-gray-500">commented</span>
-                <span className="text-sm text-gray-500">
-                  {formatDateTime(comment.created_at)}
-                </span>
+          </div>
+        ) : (
+          Object.entries(groupedActivities).map(([date, dateActivities]) => (
+            <div key={date} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              {/* Date Header */}
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 border-b border-gray-200">
+                <div className="flex items-center space-x-2">
+                  <Calendar className="w-4 h-4 text-gray-500" />
+                  <h3 className="text-sm font-semibold text-gray-700">{date}</h3>
+                  <span className="text-xs text-gray-500">({dateActivities.length} activities)</span>
+                </div>
               </div>
-              <p className="text-gray-700">{comment.content}</p>
-            </div>
-          </div>
-        ))}
-
-        {/* System Activities */}
-        {activities.map(activity => (
-          <div key={activity.id} className="flex space-x-4 p-4 bg-gray-50 rounded-xl">
-            <div className="w-10 h-10 bg-gray-400 text-white rounded-full flex items-center justify-center">
-              <Activity className="w-5 h-5" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="font-medium text-gray-900">{activity.user_name}</span>
-                <span className="text-sm text-gray-500">
-                  {formatDateTime(activity.created_at)}
-                </span>
+              
+              {/* Activities */}
+              <div className="p-6 space-y-4">
+                {dateActivities.map((activity, index) => {
+                  const Icon = getActivityIcon(activity.type, activity.action_type)
+                  const colorClass = getActivityColor(activity.type, activity.action_type)
+                  
+                  return (
+                    <div 
+                      key={activity.id} 
+                      className={`flex space-x-4 p-4 rounded-xl border ${colorClass} transition-all hover:shadow-md`}
+                    >
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        activity.type === 'comment' ? 'bg-blue-600' : 'bg-gray-600'
+                      } text-white`}>
+                        {activity.type === 'comment' ? (
+                          <span className="font-semibold text-sm">
+                            {activity.user_name?.charAt(0) || '?'}
+                          </span>
+                        ) : (
+                          <Icon className="w-5 h-5" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2 mb-1 flex-wrap">
+                          <span className="font-semibold text-gray-900">{activity.user_name}</span>
+                          <span className="text-sm text-gray-600">
+                            {activity.action_type || 'activity'}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {formatDateTime(activity.created_at)}
+                          </span>
+                          {activity.metadata?.task_name && (
+                            <span className="text-xs bg-white px-2 py-1 rounded-full border border-current">
+                              {activity.metadata.task_name}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-gray-800 leading-relaxed break-words">{activity.description}</p>
+                        {activity.metadata?.old_value && activity.metadata?.new_value && (
+                          <div className="mt-2 flex items-center space-x-2 text-xs">
+                            <span className="px-2 py-1 bg-red-100 text-red-700 rounded">
+                              {activity.metadata.old_value}
+                            </span>
+                            <span className="text-gray-400">→</span>
+                            <span className="px-2 py-1 bg-green-100 text-green-700 rounded">
+                              {activity.metadata.new_value}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
-              <p className="text-gray-700">{activity.description}</p>
             </div>
-          </div>
-        ))}
-
-        {comments.length === 0 && activities.length === 0 && (
-          <div className="text-center py-12">
-            <MessageSquare className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No activity yet</h3>
-            <p className="text-gray-600">Be the first to comment or update this project</p>
-          </div>
+          ))
         )}
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default ProjectDetailsPage
