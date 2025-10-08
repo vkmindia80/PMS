@@ -224,37 +224,6 @@ export const EnhancedActivityTab: React.FC<EnhancedActivityTabProps> = ({
         </h2>
         
         <div className="flex items-center space-x-3">
-          {/* Location Toggle */}
-          <button
-            onClick={() => toggleGeolocation(!geolocationSettings.enabled)}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${
-              geolocationSettings.enabled
-                ? 'bg-green-50 border-green-200 text-green-700'
-                : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
-            }`}
-            data-testid="geolocation-toggle"
-          >
-            {geolocationSettings.enabled ? <MapPin className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
-            <span className="text-sm font-medium">
-              {geolocationSettings.enabled ? 'Location On' : 'Location Off'}
-            </span>
-          </button>
-
-          {/* Show Location Data Toggle */}
-          <button
-            onClick={() => setShowLocationData(!showLocationData)}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${
-              showLocationData
-                ? 'bg-blue-50 border-blue-200 text-blue-700'
-                : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            <Globe className="w-4 h-4" />
-            <span className="text-sm font-medium">
-              {showLocationData ? 'Hide Locations' : 'Show Locations'}
-            </span>
-          </button>
-
           {/* Stats Toggle */}
           <button
             onClick={() => setShowStats(!showStats)}
