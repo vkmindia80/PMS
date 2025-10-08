@@ -19,7 +19,9 @@ import {
   X,
   Calendar,
   DollarSign,
-  Calculator
+  Calculator,
+  FileText,
+  Sparkles
 } from 'lucide-react'
 import CostCalculationSidebar from '../cost/CostCalculationSidebar'
 
