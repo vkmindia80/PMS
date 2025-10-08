@@ -45,7 +45,7 @@
       {
         "issue": "Frontend accessible at localhost:3000 and production URL, but browser automation tool redirects to localhost:8001",
         "affected_screen": ["all pages"],
-        "details": "Production URL: https://project-gantt-3.preview.emergentagent.com works correctly"
+        "details": "Production URL: https://zero-downtime-gen.preview.emergentagent.com works correctly"
       }
     ]
   },
