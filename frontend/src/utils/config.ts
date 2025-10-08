@@ -117,6 +117,15 @@ export const API_ENDPOINTS = {
     delete: (projectId: string, fileId: string) => `${getApiUrl()}/api/files/projects/${projectId}/${fileId}`,
     details: (projectId: string, fileId: string) => `${getApiUrl()}/api/files/projects/${projectId}/${fileId}`,
     stats: (projectId: string) => `${getApiUrl()}/api/files/projects/${projectId}/stats`,
+  },
+  activities: {
+    get list() { return `${getApiUrl()}/api/activities/`; },
+    get create() { return `${getApiUrl()}/api/activities/`; },
+    project: (projectId: string) => `${getApiUrl()}/api/activities/project/${projectId}`,
+    task: (taskId: string) => `${getApiUrl()}/api/activities/task/${taskId}`,
+    stats: (projectId: string) => `${getApiUrl()}/api/activities/stats/project/${projectId}`,
+    get recent() { return `${getApiUrl()}/api/activities/recent`; },
+    delete: (activityId: string) => `${getApiUrl()}/api/activities/${activityId}`,
   }
 };
 
