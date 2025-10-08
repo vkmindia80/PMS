@@ -258,7 +258,10 @@ class S3FileService:
         
         # Detect content type
         try:
-            content_type = magic.from_buffer(content, mime=True)
+            if MAGIC_AVAILABLE:
+                content_type = magic.from_buffer(content, mime=True)
+            else:
+                content_type = file.content_type or 'application/octet-stream'
         except Exception:
             content_type = file.content_type or 'application/octet-stream'
         
