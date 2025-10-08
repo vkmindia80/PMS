@@ -99,6 +99,7 @@ const ProjectDetailsPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([])
   const [comments, setComments] = useState<Comment[]>([])
   const [activities, setActivities] = useState<ProjectActivity[]>([])
+  const [filesCount, setFilesCount] = useState<number>(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
