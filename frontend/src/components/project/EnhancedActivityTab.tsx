@@ -1,591 +1,514 @@
-import React, { useState } from 'react'
-import { 
-  MessageSquare, Activity, Calendar, Users, Target, CheckCircle, 
-  Edit2, Trash2, Star, Eye, Clock, Filter, Search, Plus,
-  AlertCircle, TrendingUp, FileText, Settings, Zap, Bell
-} from 'lucide-react'
+/**
+ * Enhanced Activity Tab Component
+ * Shows comprehensive activity logging with geolocation data
+ */
 
-interface Comment {
-  id: string
-  content: string
-  author_id: string
-  author_name?: string
-  created_at: string
-  updated_at: string
-  replies?: Comment[]
-  attachments?: string[]
-  mentions?: string[]
-}
+import React, { useState, useEffect } from 'react';
+import { 
+  MapPin, Clock, User, Calendar, Filter, BarChart3, 
+  MessageSquare, Plus, CheckCircle, Edit2, Zap, Users, 
+  Trash2, Activity, Eye, Settings, Globe, Lock, 
+  TrendingUp, PieChart, Download
+} from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useActivityTracking } from '../../hooks/useActivityTracking';
+import { API_ENDPOINTS } from '../../utils/config';
+import toast from 'react-hot-toast';
 
 interface ProjectActivity {
-  id: string
-  type: 'status_change' | 'task_created' | 'task_completed' | 'task_updated' | 'milestone_completed' | 
-        'comment_added' | 'member_added' | 'member_removed' | 'file_uploaded' | 'deadline_updated' | 
-        'budget_updated' | 'priority_changed'
-  description: string
-  details?: any
-  user_id: string
-  user_name: string
-  created_at: string
-  metadata?: {
-    old_value?: any
-    new_value?: any
-    related_id?: string
-    related_type?: string
-  }
+  id: string;
+  entity_type: string;
+  entity_id: string;
+  action_type: string;
+  user_id: string;
+  user_name: string;
+  user_email: string;
+  description: string;
+  metadata: Record<string, any>;
+  organization_id: string;
+  project_id?: string;
+  task_id?: string;
+  // Enhanced fields
+  latitude?: number;
+  longitude?: number;
+  location_accuracy?: number;
+  geolocation_enabled: boolean;
+  location_timestamp?: string;
+  tab_name?: string;
+  session_id?: string;
+  user_agent?: string;
+  ip_address?: string;
+  created_at: string;
+}
+
+interface ActivityStats {
+  total_activities: number;
+  activities_by_type: Record<string, number>;
+  activities_by_action: Record<string, number>;
+  most_active_users: Array<{
+    user_id: string;
+    user_name: string;
+    count: number;
+  }>;
+  recent_activity_count: number;
 }
 
 interface EnhancedActivityTabProps {
-  project: any
-  comments: Comment[]
-  activities: ProjectActivity[]
-  users: any[]
-  newComment: string
-  setNewComment: (comment: string) => void
-  onAddComment: () => void
-  onEditComment?: (commentId: string, content: string) => void
-  onDeleteComment?: (commentId: string) => void
-  formatDateTime: (dateString: string) => string
+  projectId: string;
+  projectName: string;
 }
 
-const EnhancedActivityTab: React.FC<EnhancedActivityTabProps> = ({
-  project,
-  comments,
-  activities,
-  users,
-  newComment,
-  setNewComment,
-  onAddComment,
-  onEditComment,
-  onDeleteComment,
-  formatDateTime
+export const EnhancedActivityTab: React.FC<EnhancedActivityTabProps> = ({ 
+  projectId, 
+  projectName 
 }) => {
-  const [activeView, setActiveView] = useState<'all' | 'comments' | 'activities'>('all')
-  const [filterType, setFilterType] = useState('all')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [showCommentForm, setShowCommentForm] = useState(false)
-  const [replyingTo, setReplyingTo] = useState<string | null>(null)
-  const [editingComment, setEditingComment] = useState<string | null>(null)
+  const { tokens } = useAuth();
+  const { 
+    geolocationSettings, 
+    toggleGeolocation, 
+    logCommentAction 
+  } = useActivityTracking(projectId);
 
-  // Enhanced mock activities for better demonstration
-  const enhancedActivities: ProjectActivity[] = [
-    {
-      id: 'act-1',
-      type: 'task_completed',
-      description: 'Completed task: Database schema design',
-      user_id: 'demo-user-001',
-      user_name: 'Demo User',
-      created_at: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-      metadata: {
-        related_id: 'task-123',
-        related_type: 'task'
+  const [activities, setActivities] = useState<ProjectActivity[]>([]);
+  const [stats, setStats] = useState<ActivityStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [filterType, setFilterType] = useState<string>('all');
+  const [showStats, setShowStats] = useState(false);
+  const [showLocationData, setShowLocationData] = useState(false);
+  const [newComment, setNewComment] = useState('');
+
+  useEffect(() => {
+    fetchActivities();
+    fetchActivityStats();
+  }, [projectId, tokens]);
+
+  const fetchActivities = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.activities.project(projectId), {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setActivities(data);
       }
-    },
-    {
-      id: 'act-2',
-      type: 'status_change',
-      description: 'Changed project status from Planning to Active',
-      user_id: 'demo-user-001',
-      user_name: 'Demo User',
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-      metadata: {
-        old_value: 'planning',
-        new_value: 'active'
+    } catch (error) {
+      console.error('Failed to fetch activities:', error);
+      toast.error('Failed to load activities');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchActivityStats = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.activities.stats(projectId), {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data);
       }
-    },
-    {
-      id: 'act-3',
-      type: 'member_added',
-      description: 'Added Dr. Sarah Neural to the project team',
-      user_id: 'demo-user-001',
-      user_name: 'Demo User',
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
-      metadata: {
-        related_id: 'dr.sarah.neural@company.com',
-        related_type: 'user'
+    } catch (error) {
+      console.error('Failed to fetch activity stats:', error);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+
+    try {
+      const response = await fetch(API_ENDPOINTS.comments.create, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${tokens?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          entity_type: 'project',
+          entity_id: projectId,
+          content: newComment,
+        }),
+      });
+
+      if (response.ok) {
+        const comment = await response.json();
+        
+        // Log the comment activity
+        await logCommentAction(
+          'commented',
+          comment.id,
+          'project',
+          projectId,
+          `Added comment: ${newComment.substring(0, 50)}${newComment.length > 50 ? '...' : ''}`
+        );
+
+        toast.success('Comment added');
+        setNewComment('');
+        await fetchActivities(); // Refresh activities
       }
-    },
-    {
-      id: 'act-4',
-      type: 'file_uploaded',
-      description: 'Uploaded Architecture Diagram.png',
-      user_id: 'demo-user-001',
-      user_name: 'Demo User',
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
-      metadata: {
-        related_id: 'file-arch-diagram',
-        related_type: 'file'
-      }
-    },
-    {
-      id: 'act-5',
-      type: 'milestone_completed',
-      description: 'Completed milestone: Project Kickoff',
-      user_id: 'demo-user-001',
-      user_name: 'Demo User',
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-      metadata: {
-        related_id: 'milestone-kickoff',
-        related_type: 'milestone'
-      }
-    },
-    {
-      id: 'act-6',
-      type: 'priority_changed',
-      description: 'Changed project priority from Medium to High',
-      user_id: 'demo-user-001',
-      user_name: 'Demo User',
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
-      metadata: {
-        old_value: 'medium',
-        new_value: 'high'
-      }
-    },
-    {
-      id: 'act-7',
-      type: 'budget_updated',
-      description: 'Updated project budget allocation',
-      user_id: 'demo-user-001',
-      user_name: 'Demo User',
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
-      metadata: {
-        old_value: 750000,
-        new_value: 850000
-      }
+    } catch (error) {
+      toast.error('Failed to add comment');
     }
-  ]
+  };
 
-  const allActivities = [...activities, ...enhancedActivities]
+  // Filter activities
+  const filteredActivities = filterType === 'all' 
+    ? activities 
+    : activities.filter(a => a.action_type === filterType || a.entity_type === filterType);
 
-  const getActivityIcon = (type: string) => {
-    const icons = {
-      status_change: Settings,
-      task_created: Plus,
-      task_completed: CheckCircle,
-      task_updated: Edit2,
-      milestone_completed: Star,
-      comment_added: MessageSquare,
-      member_added: Users,
-      member_removed: Users,
-      file_uploaded: FileText,
-      deadline_updated: Calendar,
-      budget_updated: TrendingUp,
-      priority_changed: AlertCircle
+  // Group activities by date
+  const groupedActivities = filteredActivities.reduce((groups, activity) => {
+    const date = new Date(activity.created_at).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    if (!groups[date]) {
+      groups[date] = [];
     }
-    return icons[type as keyof typeof icons] || Activity
-  }
+    groups[date].push(activity);
+    return groups;
+  }, {} as Record<string, ProjectActivity[]>);
 
-  const getActivityColor = (type: string) => {
-    const colors = {
-      status_change: 'text-blue-600 bg-blue-100',
-      task_created: 'text-green-600 bg-green-100',
-      task_completed: 'text-green-600 bg-green-100',
-      task_updated: 'text-yellow-600 bg-yellow-100',
-      milestone_completed: 'text-purple-600 bg-purple-100',
-      comment_added: 'text-blue-600 bg-blue-100',
-      member_added: 'text-green-600 bg-green-100',
-      member_removed: 'text-red-600 bg-red-100',
-      file_uploaded: 'text-indigo-600 bg-indigo-100',
-      deadline_updated: 'text-orange-600 bg-orange-100',
-      budget_updated: 'text-emerald-600 bg-emerald-100',
-      priority_changed: 'text-red-600 bg-red-100'
-    }
-    return colors[type as keyof typeof colors] || 'text-gray-600 bg-gray-100'
-  }
+  const getActivityIcon = (entityType: string, actionType: string) => {
+    if (entityType === 'comment' || actionType === 'commented') return MessageSquare;
+    if (actionType === 'created') return Plus;
+    if (actionType === 'completed') return CheckCircle;
+    if (actionType === 'updated') return Edit2;
+    if (actionType === 'status_changed') return Zap;
+    if (actionType === 'assigned') return Users;
+    if (actionType === 'tab_viewed') return Eye;
+    if (actionType === 'deleted') return Trash2;
+    return Activity;
+  };
 
-  const getUserAvatar = (userId: string, userName: string) => {
-    return userName.charAt(0).toUpperCase()
-  }
+  const getActivityColor = (entityType: string, actionType: string) => {
+    if (entityType === 'comment' || actionType === 'commented') return 'bg-blue-50 border-blue-200 text-blue-700';
+    if (actionType === 'created') return 'bg-green-50 border-green-200 text-green-700';
+    if (actionType === 'completed') return 'bg-purple-50 border-purple-200 text-purple-700';
+    if (actionType === 'updated') return 'bg-orange-50 border-orange-200 text-orange-700';
+    if (actionType === 'status_changed') return 'bg-yellow-50 border-yellow-200 text-yellow-700';
+    if (actionType === 'assigned') return 'bg-indigo-50 border-indigo-200 text-indigo-700';
+    if (actionType === 'tab_viewed') return 'bg-gray-50 border-gray-200 text-gray-700';
+    if (actionType === 'deleted') return 'bg-red-50 border-red-200 text-red-700';
+    return 'bg-gray-50 border-gray-200 text-gray-700';
+  };
 
-  const filteredItems = (() => {
-    let items: any[] = []
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
+  };
 
-    if (activeView === 'all' || activeView === 'comments') {
-      items = [...items, ...comments.map(comment => ({ ...comment, itemType: 'comment' }))]
-    }
+  const formatLocation = (activity: ProjectActivity) => {
+    if (!activity.latitude || !activity.longitude) return null;
+    
+    return {
+      coordinates: `${activity.latitude.toFixed(6)}, ${activity.longitude.toFixed(6)}`,
+      accuracy: activity.location_accuracy ? `±${Math.round(activity.location_accuracy)}m` : 'Unknown accuracy',
+      mapUrl: `https://www.google.com/maps?q=${activity.latitude},${activity.longitude}&z=15`
+    };
+  };
 
-    if (activeView === 'all' || activeView === 'activities') {
-      items = [...items, ...allActivities.map(activity => ({ ...activity, itemType: 'activity' }))]
-    }
-
-    // Filter by type
-    if (filterType !== 'all') {
-      items = items.filter(item => {
-        if (item.itemType === 'activity') {
-          return item.type === filterType
-        }
-        return filterType === 'comment_added'
-      })
-    }
-
-    // Filter by search term
-    if (searchTerm) {
-      items = items.filter(item => {
-        const searchContent = item.itemType === 'comment' ? item.content : item.description
-        return searchContent.toLowerCase().includes(searchTerm.toLowerCase())
-      })
-    }
-
-    // Sort by date
-    return items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-  })()
-
-  const ActivityItem: React.FC<{ activity: ProjectActivity }> = ({ activity }) => {
-    const ActivityIcon = getActivityIcon(activity.type)
-    const colorClass = getActivityColor(activity.type)
-
+  if (loading) {
     return (
-      <div className="flex space-x-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${colorClass}`}>
-          <ActivityIcon className="w-5 h-5" />
-        </div>
-        
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-2 mb-1">
-            <span className="font-medium text-gray-900">{activity.user_name}</span>
-            <span className="text-sm text-gray-500">
-              {formatDateTime(activity.created_at)}
-            </span>
-          </div>
-          
-          <p className="text-gray-700 mb-2">{activity.description}</p>
-          
-          {activity.metadata && (activity.metadata.old_value || activity.metadata.new_value) && (
-            <div className="bg-white rounded-lg p-3 border border-gray-200 text-sm">
-              {activity.metadata.old_value && (
-                <div className="flex items-center space-x-2">
-                  <span className="text-gray-500">From:</span>
-                  <span className="px-2 py-1 bg-red-100 text-red-800 rounded">
-                    {activity.metadata.old_value}
-                  </span>
-                </div>
-              )}
-              {activity.metadata.new_value && (
-                <div className="flex items-center space-x-2 mt-1">
-                  <span className="text-gray-500">To:</span>
-                  <span className="px-2 py-1 bg-green-100 text-green-800 rounded">
-                    {activity.metadata.new_value}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        <span className="ml-2 text-gray-600">Loading activities...</span>
       </div>
-    )
+    );
   }
-
-  const CommentItem: React.FC<{ comment: Comment }> = ({ comment }) => (
-    <div className="flex space-x-4 p-4 bg-blue-50 rounded-xl border border-blue-200 hover:bg-blue-100 transition-colors">
-      <div className="w-10 h-10 bg-primary-600 text-white rounded-full flex items-center justify-center font-semibold">
-        {getUserAvatar(comment.author_id, comment.author_name || 'Unknown')}
-      </div>
-      
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            <span className="font-medium text-gray-900">{comment.author_name || 'Unknown'}</span>
-            <span className="text-sm text-blue-600 font-medium">commented</span>
-            <span className="text-sm text-gray-500">
-              {formatDateTime(comment.created_at)}
-            </span>
-          </div>
-          
-          <div className="flex items-center space-x-1">
-            <button 
-              onClick={() => setReplyingTo(comment.id)}
-              className="p-1 hover:bg-blue-200 rounded transition-colors"
-            >
-              <MessageSquare className="w-4 h-4 text-blue-600" />
-            </button>
-            <button 
-              onClick={() => setEditingComment(comment.id)}
-              className="p-1 hover:bg-blue-200 rounded transition-colors"
-            >
-              <Edit2 className="w-4 h-4 text-blue-600" />
-            </button>
-          </div>
-        </div>
-        
-        {editingComment === comment.id ? (
-          <div className="space-y-3">
-            <textarea
-              defaultValue={comment.content}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              rows={3}
-            />
-            <div className="flex space-x-2">
-              <button className="px-3 py-1 bg-primary-600 text-white text-sm rounded hover:bg-primary-700 transition-colors">
-                Save
-              </button>
-              <button 
-                onClick={() => setEditingComment(null)}
-                className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        ) : (
-          <>
-            <p className="text-gray-700 leading-relaxed">{comment.content}</p>
-            
-            {comment.mentions && comment.mentions.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1">
-                {comment.mentions.map(mention => (
-                  <span key={mention} className="px-2 py-1 bg-blue-200 text-blue-800 text-xs rounded">
-                    @{mention}
-                  </span>
-                ))}
-              </div>
-            )}
-            
-            {replyingTo === comment.id && (
-              <div className="mt-3 pl-4 border-l-2 border-blue-300">
-                <textarea
-                  placeholder="Write a reply..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  rows={2}
-                />
-                <div className="flex space-x-2 mt-2">
-                  <button className="px-3 py-1 bg-primary-600 text-white text-sm rounded hover:bg-primary-700 transition-colors">
-                    Reply
-                  </button>
-                  <button 
-                    onClick={() => setReplyingTo(null)}
-                    className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
-            
-            {comment.replies && comment.replies.length > 0 && (
-              <div className="mt-3 pl-4 border-l-2 border-blue-200 space-y-3">
-                {comment.replies.map(reply => (
-                  <div key={reply.id} className="flex space-x-3">
-                    <div className="w-8 h-8 bg-gray-400 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                      {getUserAvatar(reply.author_id, reply.author_name || 'Unknown')}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <span className="font-medium text-gray-900 text-sm">{reply.author_name}</span>
-                        <span className="text-xs text-gray-500">{formatDateTime(reply.created_at)}</span>
-                      </div>
-                      <p className="text-gray-700 text-sm">{reply.content}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  )
-
-  const activityTypeOptions = [
-    { value: 'all', label: 'All Activities' },
-    { value: 'comment_added', label: 'Comments' },
-    { value: 'status_change', label: 'Status Changes' },
-    { value: 'task_completed', label: 'Task Completed' },
-    { value: 'task_created', label: 'Task Created' },
-    { value: 'member_added', label: 'Team Changes' },
-    { value: 'file_uploaded', label: 'File Uploads' },
-    { value: 'milestone_completed', label: 'Milestones' },
-    { value: 'budget_updated', label: 'Budget Updates' }
-  ]
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-6" data-testid="enhanced-activity-tab">
+      {/* Header with Controls */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Project Activity</h2>
-          <p className="text-gray-600 mt-1">Track all project updates and conversations</p>
-        </div>
+        <h2 className="text-2xl font-bold text-gray-900 flex items-center">
+          <Activity className="w-7 h-7 mr-3 text-primary-600" />
+          Project Activity Log
+        </h2>
         
-        <button
-          onClick={() => setShowCommentForm(!showCommentForm)}
-          className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-        >
-          <MessageSquare className="w-4 h-4" />
-          <span>Add Comment</span>
-        </button>
+        <div className="flex items-center space-x-3">
+          {/* Location Toggle */}
+          <button
+            onClick={() => toggleGeolocation(!geolocationSettings.enabled)}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${
+              geolocationSettings.enabled
+                ? 'bg-green-50 border-green-200 text-green-700'
+                : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+            }`}
+            data-testid="geolocation-toggle"
+          >
+            {geolocationSettings.enabled ? <MapPin className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+            <span className="text-sm font-medium">
+              {geolocationSettings.enabled ? 'Location On' : 'Location Off'}
+            </span>
+          </button>
+
+          {/* Show Location Data Toggle */}
+          <button
+            onClick={() => setShowLocationData(!showLocationData)}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${
+              showLocationData
+                ? 'bg-blue-50 border-blue-200 text-blue-700'
+                : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            <Globe className="w-4 h-4" />
+            <span className="text-sm font-medium">
+              {showLocationData ? 'Hide Locations' : 'Show Locations'}
+            </span>
+          </button>
+
+          {/* Stats Toggle */}
+          <button
+            onClick={() => setShowStats(!showStats)}
+            className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <BarChart3 className="w-4 h-4" />
+            <span className="text-sm font-medium">
+              {showStats ? 'Hide Stats' : 'Show Stats'}
+            </span>
+          </button>
+        </div>
       </div>
 
-      {/* Activity Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-blue-600 mb-1">{comments.length}</div>
-          <div className="text-sm text-gray-600">Comments</div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-green-600 mb-1">{allActivities.length}</div>
-          <div className="text-sm text-gray-600">Activities</div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-purple-600 mb-1">
-            {allActivities.filter(a => a.type === 'task_completed').length}
+      {/* Geolocation Status */}
+      {geolocationSettings.enabled && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+          <div className="flex items-center space-x-2 text-green-700">
+            <MapPin className="w-5 h-5" />
+            <span className="font-medium">Location tracking is active</span>
           </div>
-          <div className="text-sm text-gray-600">Tasks Completed</div>
+          <p className="text-green-600 text-sm mt-1">
+            Activity logs will include location data for enhanced tracking and analysis.
+          </p>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-orange-600 mb-1">
-            {new Set(allActivities.map(a => a.user_id)).size}
-          </div>
-          <div className="text-sm text-gray-600">Active Contributors</div>
-        </div>
-      </div>
+      )}
 
-      {/* Add Comment Form */}
-      {showCommentForm && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Comment</h3>
-          <div className="space-y-4">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              rows={4}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              placeholder="Share an update, ask a question, or provide feedback... Use @username to mention team members"
-            />
-            
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500">
-                💡 Tip: Use @username to mention team members and get their attention
-              </div>
-              
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => {
-                    setShowCommentForm(false)
-                    setNewComment('')
-                  }}
-                  className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => {
-                    onAddComment()
-                    setShowCommentForm(false)
-                  }}
-                  disabled={!newComment.trim()}
-                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-                >
-                  Post Comment
-                </button>
-              </div>
-            </div>
+      {/* Activity Statistics */}
+      {showStats && stats && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+            <div className="text-3xl font-bold mb-2">{stats.total_activities}</div>
+            <div className="text-blue-100 text-sm">Total Activities</div>
+          </div>
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
+            <div className="text-3xl font-bold mb-2">{stats.recent_activity_count}</div>
+            <div className="text-green-100 text-sm">Last 24 Hours</div>
+          </div>
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+            <div className="text-3xl font-bold mb-2">{Object.keys(stats.activities_by_type).length}</div>
+            <div className="text-purple-100 text-sm">Activity Types</div>
+          </div>
+          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white">
+            <div className="text-3xl font-bold mb-2">{stats.most_active_users.length}</div>
+            <div className="text-orange-100 text-sm">Active Users</div>
           </div>
         </div>
       )}
 
-      {/* Filters */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
-        <div className="flex flex-col lg:flex-row gap-4">
-          {/* View Toggle */}
-          <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+      {/* Add Comment Section */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <MessageSquare className="w-5 h-5 mr-2 text-primary-600" />
+          Add Activity Comment
+        </h3>
+        <div className="space-y-4">
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            rows={3}
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+            placeholder="Share an update, ask a question, or provide feedback..."
+            data-testid="new-comment-textarea"
+          />
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-500">
+              {newComment.length} / 1000 characters
+            </span>
             <button
-              onClick={() => setActiveView('all')}
-              className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
-                activeView === 'all' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-600'
-              }`}
+              onClick={handleAddComment}
+              disabled={!newComment.trim()}
+              className="px-6 py-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg transform hover:scale-105"
+              data-testid="add-comment-button"
             >
-              All
-            </button>
-            <button
-              onClick={() => setActiveView('comments')}
-              className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
-                activeView === 'comments' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-600'
-              }`}
-            >
-              Comments ({comments.length})
-            </button>
-            <button
-              onClick={() => setActiveView('activities')}
-              className={`px-3 py-2 text-sm font-medium rounded transition-colors ${
-                activeView === 'activities' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-600'
-              }`}
-            >
-              Activities ({allActivities.length})
+              Post Comment
             </button>
           </div>
+        </div>
+      </div>
 
-          {/* Search */}
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search activity and comments..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              />
-            </div>
-          </div>
-
-          {/* Type Filter */}
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+      {/* Filter Bar */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setFilterType('all')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filterType === 'all'
+                ? 'bg-primary-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
           >
-            {activityTypeOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            All ({activities.length})
+          </button>
+          <button
+            onClick={() => setFilterType('commented')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filterType === 'commented'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <MessageSquare className="w-4 h-4 inline mr-1" />
+            Comments
+          </button>
+          <button
+            onClick={() => setFilterType('created')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filterType === 'created'
+                ? 'bg-green-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <Plus className="w-4 h-4 inline mr-1" />
+            Created
+          </button>
+          <button
+            onClick={() => setFilterType('tab_viewed')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              filterType === 'tab_viewed'
+                ? 'bg-gray-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <Eye className="w-4 h-4 inline mr-1" />
+            Navigation
+          </button>
         </div>
       </div>
 
       {/* Activity Feed */}
-      <div className="space-y-4">
-        {filteredItems.length > 0 ? (
-          filteredItems.map(item => (
-            <div key={`${item.itemType}-${item.id}`}>
-              {item.itemType === 'comment' ? (
-                <CommentItem comment={item} />
-              ) : (
-                <ActivityItem activity={item} />
-              )}
+      <div className="space-y-6">
+        {Object.keys(groupedActivities).length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12">
+            <div className="text-center">
+              <Activity className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No activity yet</h3>
+              <p className="text-gray-600">Start interacting with the project to see activity logs here</p>
+            </div>
+          </div>
+        ) : (
+          Object.entries(groupedActivities).map(([date, dateActivities]) => (
+            <div key={date} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              {/* Date Header */}
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 border-b border-gray-200">
+                <div className="flex items-center space-x-2">
+                  <Calendar className="w-4 h-4 text-gray-500" />
+                  <h3 className="text-sm font-semibold text-gray-700">{date}</h3>
+                  <span className="text-xs text-gray-500">({dateActivities.length} activities)</span>
+                </div>
+              </div>
+              
+              {/* Activities for this date */}
+              <div className="p-6 space-y-4">
+                {dateActivities.map((activity, index) => {
+                  const Icon = getActivityIcon(activity.entity_type, activity.action_type);
+                  const colorClass = getActivityColor(activity.entity_type, activity.action_type);
+                  const location = formatLocation(activity);
+                  
+                  return (
+                    <div 
+                      key={activity.id} 
+                      className={`flex space-x-4 p-4 rounded-xl border ${colorClass} transition-all hover:shadow-md`}
+                    >
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        activity.entity_type === 'comment' ? 'bg-blue-600' : 'bg-gray-600'
+                      } text-white`}>
+                        {activity.entity_type === 'comment' ? (
+                          <span className="font-semibold text-sm">
+                            {activity.user_name?.charAt(0) || '?'}
+                          </span>
+                        ) : (
+                          <Icon className="w-5 h-5" />
+                        )}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2 mb-1 flex-wrap">
+                          <span className="font-semibold text-gray-900">{activity.user_name}</span>
+                          <span className="text-sm text-gray-600">{activity.action_type}</span>
+                          <span className="text-xs text-gray-500">{formatDateTime(activity.created_at)}</span>
+                          
+                          {/* Tab indicator */}
+                          {activity.tab_name && (
+                            <span className="text-xs bg-white px-2 py-1 rounded-full border border-current">
+                              {activity.tab_name} tab
+                            </span>
+                          )}
+                        </div>
+                        
+                        <p className="text-gray-800 leading-relaxed break-words">{activity.description}</p>
+                        
+                        {/* Metadata display */}
+                        {activity.metadata?.old_value && activity.metadata?.new_value && (
+                          <div className="mt-2 flex items-center space-x-2 text-xs">
+                            <span className="px-2 py-1 bg-red-100 text-red-700 rounded">
+                              {activity.metadata.old_value}
+                            </span>
+                            <span className="text-gray-400">→</span>
+                            <span className="px-2 py-1 bg-green-100 text-green-700 rounded">
+                              {activity.metadata.new_value}
+                            </span>
+                          </div>
+                        )}
+                        
+                        {/* Location data */}
+                        {showLocationData && location && (
+                          <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-center space-x-2">
+                                <MapPin className="w-4 h-4 text-blue-600" />
+                                <div>
+                                  <div className="text-sm font-medium text-blue-900">Location Data</div>
+                                  <div className="text-xs text-blue-700">
+                                    {location.coordinates} ({location.accuracy})
+                                  </div>
+                                </div>
+                              </div>
+                              <a
+                                href={location.mapUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-blue-600 hover:text-blue-800 underline"
+                              >
+                                View on Map
+                              </a>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           ))
-        ) : (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-            <Activity className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No activity found</h3>
-            <p className="text-gray-600 mb-6">
-              {searchTerm || filterType !== 'all'
-                ? 'Try adjusting your search or filters'
-                : 'Be the first to comment or update this project'}
-            </p>
-            {!searchTerm && filterType === 'all' && (
-              <button
-                onClick={() => setShowCommentForm(true)}
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                Add First Comment
-              </button>
-            )}
-          </div>
         )}
       </div>
-
-      {/* Load More */}
-      {filteredItems.length > 0 && (
-        <div className="text-center">
-          <button className="px-6 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-            Load More Activity
-          </button>
-        </div>
-      )}
     </div>
-  )
-}
+  );
+};
 
-export default EnhancedActivityTab
+export default EnhancedActivityTab;
