@@ -87,7 +87,7 @@ SAMPLE_COMMENTS = [
 ]
 
 async def create_enhanced_demo_activities():
-    """Create comprehensive demo activities with geolocation data"""
+    """Create comprehensive demo activities"""
     
     # Connect to database
     await connect_to_mongo()
