@@ -203,15 +203,7 @@ export const EnhancedActivityTab: React.FC<EnhancedActivityTabProps> = ({
     });
   };
 
-  const formatLocation = (activity: ProjectActivity) => {
-    if (!activity.latitude || !activity.longitude) return null;
-    
-    return {
-      coordinates: `${activity.latitude.toFixed(6)}, ${activity.longitude.toFixed(6)}`,
-      accuracy: activity.location_accuracy ? `±${Math.round(activity.location_accuracy)}m` : 'Unknown accuracy',
-      mapUrl: `https://www.google.com/maps?q=${activity.latitude},${activity.longitude}&z=15`
-    };
-  };
+  // Location functionality removed
 
   if (loading) {
     return (
