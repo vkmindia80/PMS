@@ -92,10 +92,15 @@ const AIProjectArtifactGeneratorWithTabs: React.FC = () => {
 
   const handleLoadProject = async (projectId: string) => {
     try {
+      const accessToken = getAccessToken()
+      if (!accessToken) {
+        throw new Error('Not authenticated')
+      }
+
       const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
       const response = await fetch(`${backendUrl}/api/ai-project-generator/projects/${projectId}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          'Authorization': `Bearer ${accessToken}`
         }
       })
 
