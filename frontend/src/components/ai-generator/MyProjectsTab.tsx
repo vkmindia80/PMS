@@ -103,21 +103,29 @@ const MyProjectsTab: React.FC<MyProjectsTabProps> = ({ onLoadProject, refreshTri
     if (!confirm(`Are you sure you want to delete "${projectName}"?`)) return
 
     try {
+      const accessToken = getAccessToken()
+      if (!accessToken) {
+        throw new Error('Not authenticated')
+      }
+
       const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
       const response = await fetch(`${backendUrl}/api/ai-project-generator/projects/${projectId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          'Authorization': `Bearer ${accessToken}`
         }
       })
 
-      if (!response.ok) throw new Error('Failed to delete project')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || 'Failed to delete project')
+      }
 
       toast.success('Project deleted successfully')
       loadProjects()
     } catch (error: any) {
       console.error('Error deleting project:', error)
-      toast.error('Failed to delete project')
+      toast.error(error.message || 'Failed to delete project')
     }
   }
 
