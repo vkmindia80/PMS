@@ -38,6 +38,19 @@ const MyProjectsTab: React.FC<MyProjectsTabProps> = ({ onLoadProject, refreshTri
   const [filterPriority, setFilterPriority] = useState('')
   const [showFilters, setShowFilters] = useState(false)
 
+  // Helper to get access token
+  const getAccessToken = (): string | null => {
+    try {
+      const authTokensStr = localStorage.getItem('auth_tokens')
+      if (!authTokensStr) return null
+      const authTokens = JSON.parse(authTokensStr)
+      return authTokens.access_token
+    } catch (error) {
+      console.error('Error getting access token:', error)
+      return null
+    }
+  }
+
   useEffect(() => {
     loadProjects()
   }, [refreshTrigger])
