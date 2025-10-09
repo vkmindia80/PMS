@@ -66,6 +66,11 @@ const MyProjectsTab: React.FC<MyProjectsTabProps> = ({ onLoadProject, refreshTri
   const loadProjects = async () => {
     setLoading(true)
     try {
+      const accessToken = getAccessToken()
+      if (!accessToken) {
+        throw new Error('Not authenticated')
+      }
+
       const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
       
       const params = new URLSearchParams()
@@ -75,17 +80,20 @@ const MyProjectsTab: React.FC<MyProjectsTabProps> = ({ onLoadProject, refreshTri
 
       const response = await fetch(`${backendUrl}/api/ai-project-generator/projects?${params}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          'Authorization': `Bearer ${accessToken}`
         }
       })
 
-      if (!response.ok) throw new Error('Failed to load projects')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || 'Failed to load projects')
+      }
 
       const data = await response.json()
       setProjects(data)
     } catch (error: any) {
       console.error('Error loading projects:', error)
-      toast.error('Failed to load projects')
+      toast.error(error.message || 'Failed to load projects')
     } finally {
       setLoading(false)
     }
