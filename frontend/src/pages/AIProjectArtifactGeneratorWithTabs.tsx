@@ -45,6 +45,11 @@ const AIProjectArtifactGeneratorWithTabs: React.FC = () => {
   const handleGenerateSample = async (sample: SampleProject) => {
     setIsGenerating(true)
     try {
+      const accessToken = getAccessToken()
+      if (!accessToken) {
+        throw new Error('Not authenticated')
+      }
+
       const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
       
       const requestBody = {
@@ -57,7 +62,7 @@ const AIProjectArtifactGeneratorWithTabs: React.FC = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify(requestBody)
       })
