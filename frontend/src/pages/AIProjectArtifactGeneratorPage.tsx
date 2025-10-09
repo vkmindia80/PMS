@@ -285,6 +285,11 @@ const AIProjectArtifactGeneratorPage: React.FC<AIProjectArtifactGeneratorPagePro
     setGeneratedDocuments([])
 
     try {
+      const accessToken = getAccessToken()
+      if (!accessToken) {
+        throw new Error('Not authenticated. Please login again.')
+      }
+
       const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
       
       // Clean up the project scope - remove empty strings from arrays
@@ -310,7 +315,7 @@ const AIProjectArtifactGeneratorPage: React.FC<AIProjectArtifactGeneratorPagePro
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify(requestBody)
       })
