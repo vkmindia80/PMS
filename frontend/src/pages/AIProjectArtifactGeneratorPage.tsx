@@ -349,17 +349,17 @@ const AIProjectArtifactGeneratorPage: React.FC<AIProjectArtifactGeneratorPagePro
     }
   }
 
-  const downloadDocument = (document: GeneratedDocument, format: string = 'txt') => {
-    const blob = new Blob([document.content], { type: 'text/plain' })
+  const downloadDocument = (doc: GeneratedDocument, format: string = 'txt') => {
+    const blob = new Blob([doc.content], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
+    const a = window.document.createElement('a')
     a.href = url
-    a.download = `${document.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.${format}`
-    document.body.appendChild(a)
+    a.download = `${doc.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.${format}`
+    window.document.body.appendChild(a)
     a.click()
-    document.body.removeChild(a)
+    window.document.body.removeChild(a)
     URL.revokeObjectURL(url)
-    toast.success(`Downloaded ${document.title}`)
+    toast.success(`Downloaded ${doc.title}`)
   }
 
   const renderProjectScopeForm = () => (
