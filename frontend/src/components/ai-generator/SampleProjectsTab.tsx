@@ -49,20 +49,31 @@ const SampleProjectsTab: React.FC<SampleProjectsTabProps> = ({
   const loadSampleProjects = async () => {
     setLoading(true)
     try {
+      // Get access token from localStorage
+      const authTokensStr = localStorage.getItem('auth_tokens')
+      if (!authTokensStr) {
+        throw new Error('No authentication tokens found')
+      }
+      const authTokens = JSON.parse(authTokensStr)
+      const accessToken = authTokens.access_token
+      
       const backendUrl = import.meta.env.VITE_BACKEND_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001'
       const response = await fetch(`${backendUrl}/api/ai-project-generator/sample-projects`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          'Authorization': `Bearer ${accessToken}`
         }
       })
 
-      if (!response.ok) throw new Error('Failed to load sample projects')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.detail || 'Failed to load sample projects')
+      }
 
       const data = await response.json()
       setSampleProjects(data.samples || [])
     } catch (error: any) {
       console.error('Error loading sample projects:', error)
-      toast.error('Failed to load sample projects')
+      toast.error(error.message || 'Failed to load sample projects')
     } finally {
       setLoading(false)
     }
